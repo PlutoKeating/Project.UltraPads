@@ -296,6 +296,18 @@ impl HubServer {
         st.pending.clear();
     }
 
+    /// 当前仍有效（未过期、还有尝试次数）的配对码。
+    pub fn current_pairing_code(&self) -> Option<PairingCode> {
+        let mut st = self.shared.pairing.lock().expect("pairing");
+        st.purge();
+        let a = st.active.as_ref().filter(|a| a.attempts_left > 0)?;
+        let left = a.expires.saturating_duration_since(Instant::now());
+        Some(PairingCode {
+            code: a.code.clone(),
+            expires_at: SystemTime::now() + left,
+        })
+    }
+
     /// 当前配对码是否仍有效。
     pub fn pairing_open(&self) -> bool {
         let mut st = self.shared.pairing.lock().expect("pairing");

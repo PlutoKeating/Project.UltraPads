@@ -663,6 +663,9 @@ class MockEngineClient implements EngineClient {
   Future<void> hubCancelPairing() async => _pairingCode = null;
 
   @override
+  Future<PairingCode?> hubPairingCode() async => _pairingCode;
+
+  @override
   Future<List<PairedDevice>> hubTrustedDevices() async =>
       _trusted.values.toList().reversed.toList(growable: false);
 

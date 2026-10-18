@@ -45,6 +45,7 @@ pub struct PadParams {                       // serde 缺省字段取默认值
     pub start_frame: u64, pub end_frame: Option<u64>,   // end 为开区间
     pub loop_start: Option<u64>, pub loop_end: Option<u64>, // Loop 模式的循环区（默认 start..end）
     pub quantize_override: Option<Quantize>, // None = Loop 跟随全局，OneShot/Gate 立即
+    pub pitch: f32,                          // 实时移调（半音，-12..=12）：播放速率 × 2^(pitch/12)，与 speed 相乘（变调同时变长）
 }
 
 pub enum PadPlayState { Idle, Pending, Playing, Stopping }
@@ -75,7 +76,9 @@ pub struct RenderScript { duration_secs: f64, events: Vec<TimedCommand { at_secs
 - **One-shot**：再按从头重触发（旧声部 5 ms 淡出）；**Gate**：松手淡出。
 - **Choke**：触发 pad X（组 g）时，所有 `choked_by.or(choke_group) == g` 的其它 pad 停止（Loop 也关掉，Pending 取消）。
 - **复音**：默认最多 32 个发声声部 + 16 个淡出尾巴；超限时偷取最老的 one-shot/gate（Loop 最后被偷），被偷声部淡出。
-- **速度**：`SetSpeed` 对所有声部做 4 点 Hermite 插值变速变调，transport 同比缩放；原 App 的三档 1.0 / 0.7 / 0.5 是推荐预设。离线 pitch/tempo 接口见 `up_dsp::stretch::OfflineStretcher`（后续接 Signalsmith Stretch）。
+- **速度**：`SetSpeed` 对所有声部做 4 点 Hermite 插值变速变调，transport 同比缩放；原 App 的三档 1.0 / 0.7 / 0.5 是推荐预设。UI 的速度控件只在教程模式出现（4.7.0），选择后发送 `SetSpeed`，教程时间轴按同一比例推进，退出教程恢复 1.0。
+- **Pitch**：`PadParams.pitch`（KitDoc `pitchSemitones`）在声部起播时换算为速率倍数 `2^(pitch/12)`，与 speed 相乘；对在播声部实时生效。独立变调不变速留给 `OfflineStretcher`。
+- **试听声部**：作品播放与编辑器试听共用一个不占用 pad 的立体声试听声部（不受 speed 影响）；新的试听会替换正在播放的作品（推送 `TrackPlayback { track: None }`）。离线 pitch/tempo 接口见 `up_dsp::stretch::OfflineStretcher`（后续接 Signalsmith Stretch）。
 - 事件约 60 Hz 合并：Meters 只保留最新值（无声时不重复发送）；PadState、Transport、Recorder 变化立即排队（控制线程 4 ms 轮询）。
 
 ## 3. FFI 面（bridge/up-ffi → Dart `lib/src/rust/api/*.dart`）
@@ -101,13 +104,15 @@ DTO 定义在 `bridge/up-ffi/src/api/types.rs`（与引擎类型一一对应，D
 | `library_genres() -> Vec<String>` / `library_set_favorite(kit, bool) -> KitSummary` / `library_delete_kit(kit)` | | |
 | `library_load_kit(kit: String) -> KitSummary` | | 解码 + 重采样 + 交给引擎（先 StopAll），推送 `KitLoaded`。开发便利：若 `kit` 不是曲库 ID 而是一个文件夹路径，则按"音频文件按名排序 → pad"加载 |
 | `library_import(path) -> ImportReport` | | `.upkit`（ZIP/文件夹）、SFZ、音频文件夹、单个音频文件（入库为样本）、原 App 素材目录；`ImportReport { kind, kits, duplicates, samples, catalog_entries, warnings }` |
+| `library_import_bytes(name, bytes) -> ImportReport` | | 内存中的 `.upkit`/ZIP（应用资源里的内置 Kit）；`name` 以 `.upkit` 结尾时强制按 upkit 读取，否则自动识别（含原 App 素材 ZIP） |
 | `library_export_kit(kit, path, format) -> String` | | `format`：`upkit` / `upkit-folder` / `sfz` / `dawproject`；返回写出的路径 |
 | `library_save_kit(kit_json: String) -> KitSummary` | | `kit_json` = `up_model::KitDoc` 的 camelCase JSON（避免在 FFI 镜像整套文档模型） |
 | `library_current_kit_json() -> Option<String>` / `library_kit_json(kit) -> String` | | 当前 / 任意 Kit 的 `KitDoc` JSON（编辑器读取→修改→`library_save_kit`） |
 | `library_list_samples() -> Vec<SampleInfo>` / `library_use_sample(sample)` | | 独立样本（麦克风/导入）；`use` 把样本注册进引擎后即可用 `SetPadParams` 分配 |
 | `sample_waveform(sample, buckets) -> Vec<f32>` | | 峰值概要 0..=1（引擎已加载的样本优先，其次曲库） |
+| `sample_preview(sample, start_frame, end_frame: Option<u64>)` / `sample_preview_stop()` | | 在试听声部播放样本的 `start..end`（引擎采样率帧），不占用 pad；曲库样本未加载时先注册进引擎 |
 | `sampler_record_start(input_device: Option<String>)` / `sampler_record_stop() -> String` | | 麦克风采样（最长 30 s）；停止后存入曲库（`Microphone` 样本）并注册进引擎，返回 `SampleId`（BLAKE3） |
-| `tracks_list() -> Vec<TrackInfo>` / `track_play(id)` / `track_stop()` / `track_rename(id, name) -> TrackInfo` / `track_export(id, path, fmt) -> String` / `track_delete(id)` | | 录音作品（曲库 `tracks/`），`fmt`：`wav`（BWF）/ `dawproject`；`TrackInfo.waveform` 为 128 段概要 |
+| `tracks_list() -> Vec<TrackInfo>` / `track_play(id, looping)` / `track_stop()` / `track_rename(id, name) -> TrackInfo` / `track_export(id, path, fmt) -> String` / `track_delete(id)` | | 录音作品（曲库 `tracks/`），`fmt`：`wav`（BWF）/ `dawproject`；`TrackInfo.waveform` 为 128 段概要 |
 | `hub_*` | | 个人多设备 Hub（`runtime/up-hub`），见 §3.1 |
 
 `KitSummary`（FFI）= 引擎字段 `{ id, name, pad_count, bpm, has_tutorial }` + 曲库字段 `{ description, authors, genres, tags, theme_color, inspired_by, cover_path, favorite, source_kind, last_used_at_ms }`（引擎事件中曲库字段为空）。
@@ -145,6 +150,7 @@ pub struct TutorialEvent { time_secs: f64, pad: Option<PadId>, page_switch: Opti
 | `hub_stop_server()` | 异步 | 停止（释放远端控制器按住的 pad、释放组播锁），推送 `ServerStopped`；未运行时为 no-op |
 | `hub_server_info() -> Option<HubServerInfo>` | | `HubServerInfo { id, name, listen_address /*0.0.0.0:47100*/, port, udp_port, addresses: Vec<"ip:port"> /*本机局域网 IPv4，供手动输入*/, advertising }` |
 | `hub_new_pairing_code() -> PairingCode` | | `{ code /*6 位*/, expires_unix_ms, ttl_secs }`；默认 5 分钟、5 次尝试，作废旧码。设备用此码配对成功后推送 `Paired { id, name }` |
+| `hub_pairing_code() -> Option<PairingCode>` | | 当前仍有效（未过期、还有尝试次数）的配对码，重新打开 Hub 页时显示；Hub 未运行时为 `None` |
 | `hub_cancel_pairing()` | | 关闭配对窗口 |
 | `hub_trusted_devices() -> Vec<PairedDevice>` / `hub_revoke(id) -> bool` | | 受信设备（新→旧；含作为客户端配对过的 Hub）/ 撤销（Hub 运行时立即关闭其控制器会话，之后请求一律 403） |
 | `hub_controller_stats() -> Vec<ControllerSessionStats>` | | `{ session_id, device_id, name, packets, accepted_events, duplicates, reordered_dropped, too_old, bad_mac, idle_ms, held_pads }`；Hub 未运行时为空 |
@@ -185,7 +191,17 @@ pub enum HubEvent {
 
 **Android 组播锁**：在 Rust 内经 JNI 管理（只调用框架类 `Context.getSystemService("wifi")` → `WifiManager.createMulticastLock("ultrapads-mdns")`，`setReferenceCounted(false)`，不受 R8 混淆影响），Dart 无需调用任何 MethodChannel。`hub_discover` 与 `hub_start_server` 在启动 mDNS **之前**登记一个持有者，`hub_discover_stop`/新的 `hub_discover`/`hub_stop_server` 时注销；只有"至少一个持有者且 Activity 在前台"时才真正持锁——`onStop` 释放、`onStart` 重新获取。
 
-Dart 侧：`package:up_engine` 导出 `abstract class EngineClient`，提供 `FfiEngineClient`（FRB）和 `MockEngineClient`（UI 开发和 golden test 用）两种实现。
+Dart 侧：`package:up_engine` 导出 `abstract class EngineClient`，提供 `FfiEngineClient`（FRB，`app/ultrapads/lib/src/engine/`）和 `MockEngineClient`（UI 开发和 golden test 用）两种实现。`EngineClient` 覆盖本节全部 Hub 函数（`hubStartServer/StopServer/ServerInfo/NewPairingCode/CancelPairing/TrustedDevices/Revoke/ControllerStats/SetDeviceName/DeviceId/Discover/DiscoverStop/Probe/KnownPeers/Pair/Forget/Sync/ControllerConnect/ControllerDisconnect/ControllerStatus/ControllerSetLocalEcho`），Hub 事件映射为 `HubServerChanged`、`HubPeerPaired`、`HubSyncStarted`/`HubSyncProgress`/`HubSyncFinished`、`HubControllerChanged`、`HubRemoteControllerChanged`、`HubErrorEvent`；发现流为 `HubPeerFound`/`HubPeerLost`。
+
+**ColorRole ↔ token 调色板**：Dart `ColorRole` 与引擎同名同序（FFI 按名字一一映射）。映射到 `design/tokens` 调色板 `pad.palette.0..7` 的唯一定义是 `ColorRole.paletteIndex`（`packages/up_engine/lib/src/models.dart`）：
+
+| 角色 | 调色板下标 | 说明 |
+|---|---|---|
+| pink / orange / green / blue | 0 / 1 / 2 / 3 | 原 Kit 的 rosa / amarelo / verde / azul(_loop) |
+| red / yellow / cyan / purple | 4 / 5 / 6 / 7 | 4 = 霓虹 magenta（霓虹主题无纯红），7 = Halloween 紫 |
+| lime / grey / neutral | 2 / 6 / 6 | 没有独立色，分别同 green / cyan |
+
+`ColorRole.palette` 是调色板每个下标的代表角色（编辑器色板），`ColorRole.fromPalette(i)` 反查。
 
 ## 4. Hub 协议（局域网，`runtime/up-hub`）
 
@@ -292,7 +308,7 @@ end 16B  tag       HMAC-SHA256(会话密钥, 前面所有字节) 的前 16 字�
 | `load_kit_assets(id) -> LoadedKit` / `load_kit_assets_with(id, LoadOptions)` | `library_load_kit` | `LoadedKit { doc: up_format::KitDoc, model: up_model::KitDoc, summary, samples: 包内路径 → LoadedSample { sample_id, file, sample_rate, channels, frames, pcm: Option<DecodedPcm> }, warnings }`；`model` 中 `SampleRef.id` = BLAKE3 = `LoadedSample.sample_id`；`pcm` 为交错 f32；会记为最近使用 |
 | `kit_model(id) -> up_model::KitDoc` / `save_kit_model(&up_model::KitDoc) -> KitSummary` | `library_current_kit_json` / `library_save_kit` | 保存时合并到原 Kit（模型已覆盖多采样层/轮替/loop 点/非对称 choke/细粒度量化，直接映射；教程保留在包内）；新采样用 `SampleRef.blake3`（或 `id`）引用曲库样本 |
 | `kit_doc(id)` / `save_kit(&up_format::KitDoc)` / `kit_package(id)` / `kit_manifest(id)` / `kit_tutorials(id)` | | 完整格式层文档（`.upkit` 无损） |
-| `import(path) -> ImportReport` / `import_zip_bytes(name, bytes)` / `import_fs(&dyn SourceFs, force_upkit)` | `library_import` | 自动识别：原 App 素材（多来源，见下）→ `.upkit`（ZIP/文件夹）→ SFZ → 音频文件夹；单个 `.wav` 作为样本入库。`ImportReport { kind, kits: [ImportedKit { kit_id, name, pad_count, pads_used, duplicate }], samples, catalog_entries, warnings }` |
+| `import(path) -> ImportReport` / `import_zip_bytes(name, bytes)` / `import_fs(&dyn SourceFs, force_upkit)` | `library_import` / `library_import_bytes` | 自动识别：原 App 素材（多来源，见下）→ `.upkit`（ZIP/文件夹）→ SFZ → 音频文件夹；单个 `.wav` 作为样本入库。`ImportReport { kind, kits: [ImportedKit { kit_id, name, pad_count, pads_used, duplicate }], samples, catalog_entries, warnings }` |
 | `export_kit(id, dest, ExportFormat)` | `library_export_kit` | `ExportFormat::parse("upkit"/"upkit-folder"/"sfz"/"dawproject")` |
 | `catalog_entries(source)` / `catalog_categories(source)` | | 外部目录（原 App list.json / fetch.json）：`CatalogEntry { status: NotDownloaded / Downloaded{kitId}, genres, tags, difficulty, themeColor, videoUrl, … }` |
 | `add_sample(bytes, name, SampleOrigin)` / `add_sample_file(path, origin)` / `list_samples()` / `sample_path(id)` / `delete_sample(id)` | `sampler_record_stop` | 麦克风录音/导入的样本入库（内容寻址，`SampleId` = BLAKE3） |

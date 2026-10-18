@@ -311,11 +311,12 @@ class HubProjection extends Notifier<HubView> {
     final engine = _engine;
     final info = await tryEngine(engine.hubServerInfo);
     final trusted = await tryEngine(engine.hubTrustedDevices);
+    final code = info == null ? null : await tryEngine(engine.hubPairingCode);
     if (!ref.mounted) return;
     state = state.copyWith(
       server: info ?? const HubServerStatus(running: false),
       trusted: trusted,
-      pairingCode: info == null ? () => null : null,
+      pairingCode: () => code,
     );
     _refreshController(null);
   }

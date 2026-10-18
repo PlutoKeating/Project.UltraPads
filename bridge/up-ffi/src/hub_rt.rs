@@ -954,6 +954,22 @@ impl Hub {
         }
     }
 
+    pub(crate) fn current_pairing_code(&self) -> R<Option<t::PairingCode>> {
+        self.with_server(|r| {
+            Ok(r.server.current_pairing_code().map(|code| {
+                let ttl = code
+                    .expires_at
+                    .duration_since(SystemTime::now())
+                    .unwrap_or_default();
+                t::PairingCode {
+                    code: code.code,
+                    expires_unix_ms: unix_ms(code.expires_at),
+                    ttl_secs: ttl.as_secs_f64().round() as u32,
+                }
+            }))
+        })
+    }
+
     pub(crate) fn new_pairing_code(self: Arc<Self>) -> R<t::PairingCode> {
         let me = Arc::clone(&self);
         self.with_server(|r| {

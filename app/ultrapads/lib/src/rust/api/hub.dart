@@ -26,6 +26,12 @@ Future<HubServerInfo?> hubServerInfo() =>
 Future<PairingCode> hubNewPairingCode() =>
     RustLib.instance.api.crateApiHubHubNewPairingCode();
 
+/// The active pairing code (not expired, attempts left), e.g. to show it
+/// again when the hub page is reopened. `None` when there is none or the
+/// server is not running.
+Future<PairingCode?> hubPairingCode() =>
+    RustLib.instance.api.crateApiHubHubPairingCode();
+
 /// Close the pairing window.
 Future<void> hubCancelPairing() =>
     RustLib.instance.api.crateApiHubHubCancelPairing();

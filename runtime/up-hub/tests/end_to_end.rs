@@ -149,9 +149,11 @@ async fn pair_sync_controller_end_to_end() {
         phone.pair(&peer, "123456").await,
         Err(HubError::Pairing(_))
     ));
+    assert!(server.current_pairing_code().is_none());
     let code = server.new_pairing_code();
     assert_eq!(code.code.len(), 6);
     assert!(server.pairing_open());
+    assert_eq!(server.current_pairing_code().unwrap().code, code.code);
     // 错误配对码：客户端在 Hub 的确认 MAC 上就能发现
     let wrong = format!("{:06}", (code.code.parse::<u32>().unwrap() + 1) % 1_000_000);
     assert!(matches!(

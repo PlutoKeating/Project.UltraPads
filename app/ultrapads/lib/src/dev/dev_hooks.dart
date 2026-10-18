@@ -54,8 +54,7 @@ abstract final class DevHooks {
             (a, b) => a > b ? a : b,
           );
           final now = DateTime.now();
-          if (peak > 0 &&
-              now.difference(lastMeter) > _meterLogInterval) {
+          if (peak > 0 && now.difference(lastMeter) > _meterLogInterval) {
             lastMeter = now;
             debugPrint(
               'UltraPads[dev]: meters peak ${peak.toStringAsFixed(3)}',

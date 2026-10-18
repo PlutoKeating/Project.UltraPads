@@ -261,6 +261,12 @@ class FfiEngineClient implements EngineClient {
     advertising: i.advertising,
   );
 
+  static PairingCode _pairing(t.PairingCode c) => PairingCode(
+    code: c.code,
+    expiresAt: DateTime.fromMillisecondsSinceEpoch(c.expiresUnixMs.toInt()),
+    ttl: Duration(seconds: c.ttlSecs),
+  );
+
   static SyncReport _report(t.SyncReport r) => SyncReport(
     pulled: r.pulled,
     pushed: r.pushed,
@@ -863,17 +869,16 @@ class FfiEngineClient implements EngineClient {
       });
 
   @override
-  Future<PairingCode> hubNewPairingCode() => _call(
-    'hub_new_pairing_code',
-    () async {
-      final c = await ffi_hub.hubNewPairingCode();
-      return PairingCode(
-        code: c.code,
-        expiresAt: DateTime.fromMillisecondsSinceEpoch(c.expiresUnixMs.toInt()),
-        ttl: Duration(seconds: c.ttlSecs),
-      );
-    },
-  );
+  Future<PairingCode> hubNewPairingCode() =>
+      _call('hub_new_pairing_code', () async {
+        return _pairing(await ffi_hub.hubNewPairingCode());
+      });
+
+  @override
+  Future<PairingCode?> hubPairingCode() => _call('hub_pairing_code', () async {
+    final c = await ffi_hub.hubPairingCode();
+    return c == null ? null : _pairing(c);
+  });
 
   @override
   Future<void> hubCancelPairing() =>

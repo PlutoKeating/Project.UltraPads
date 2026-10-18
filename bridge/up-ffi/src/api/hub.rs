@@ -44,6 +44,17 @@ pub fn hub_new_pairing_code() -> R<PairingCode> {
     hub()?.new_pairing_code()
 }
 
+/// The active pairing code (not expired, attempts left), e.g. to show it
+/// again when the hub page is reopened. `None` when there is none or the
+/// server is not running.
+pub fn hub_pairing_code() -> R<Option<PairingCode>> {
+    match hub()?.current_pairing_code() {
+        Ok(c) => Ok(c),
+        Err(e) if e.code == ErrorCode::InvalidState => Ok(None),
+        Err(e) => Err(e),
+    }
+}
+
 /// Close the pairing window.
 pub fn hub_cancel_pairing() -> R<()> {
     hub()?.cancel_pairing()

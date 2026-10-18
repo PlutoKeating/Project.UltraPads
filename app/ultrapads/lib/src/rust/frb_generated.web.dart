@@ -104,6 +104,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PadParams dco_decode_box_autoadd_pad_params(dynamic raw);
 
   @protected
+  PairingCode dco_decode_box_autoadd_pairing_code(dynamic raw);
+
+  @protected
   Quantize dco_decode_box_autoadd_quantize(dynamic raw);
 
   @protected
@@ -269,6 +272,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PadId? dco_decode_opt_box_autoadd_pad_id(dynamic raw);
+
+  @protected
+  PairingCode? dco_decode_opt_box_autoadd_pairing_code(dynamic raw);
 
   @protected
   Quantize? dco_decode_opt_box_autoadd_quantize(dynamic raw);
@@ -446,6 +452,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PadParams sse_decode_box_autoadd_pad_params(SseDeserializer deserializer);
+
+  @protected
+  PairingCode sse_decode_box_autoadd_pairing_code(SseDeserializer deserializer);
 
   @protected
   Quantize sse_decode_box_autoadd_quantize(SseDeserializer deserializer);
@@ -637,6 +646,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PadId? sse_decode_opt_box_autoadd_pad_id(SseDeserializer deserializer);
+
+  @protected
+  PairingCode? sse_decode_opt_box_autoadd_pairing_code(
+    SseDeserializer deserializer,
+  );
 
   @protected
   Quantize? sse_decode_opt_box_autoadd_quantize(SseDeserializer deserializer);
@@ -846,6 +860,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_pad_params(
     PadParams self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_pairing_code(
+    PairingCode self,
     SseSerializer serializer,
   );
 
@@ -1085,6 +1105,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_box_autoadd_pad_id(PadId? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_pairing_code(
+    PairingCode? self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_opt_box_autoadd_quantize(

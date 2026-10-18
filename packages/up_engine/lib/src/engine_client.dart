@@ -85,6 +85,9 @@ abstract class EngineClient {
   Future<PairingCode> hubNewPairingCode();
   Future<void> hubCancelPairing();
 
+  /// 当前仍有效的配对码（重新打开 Hub 页时显示）；没有时为 null。
+  Future<PairingCode?> hubPairingCode();
+
   /// 受信设备（新→旧）。
   Future<List<PairedDevice>> hubTrustedDevices();
 
