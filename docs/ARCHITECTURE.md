@@ -83,3 +83,23 @@
 ## 7. 目录结构
 
 见 `README.md` 中的"仓库结构"一节。
+
+## 8. 曲库与文件格式（up-library / up-format）
+
+- **格式层 `engine/up-format`**：纯函数，输入输出都是字节/字符串/回调；包含 SFZ（UltraPads SFZ Profile 白名单）、`ultrapads-kit.json`/`manifest.json`/`tutorial.json` 模型、WAV 元数据 chunk、SMF、`.upkit` 逻辑包、DAWproject 1.0 导出，以及 `KitDoc` ↔ `up_model::KitDoc` 适配。格式规格见 `docs/research/kit-and-project-formats.md`，决策见 ADR-0002。
+- **曲库 `runtime/up-library`** 的数据根目录：
+
+```
+<root>/
+├── library.json                 索引（content/schema/library-1.schema.json）：Kit/样本/作品摘要、收藏、最近使用、外部目录、删除墓碑
+├── kits/<kit-id>/manifest.json  Kit 的包清单；包内其它文件都在 samples/
+├── samples/<hh>/<blake3>        内容寻址存储（所有 Kit 文件与独立样本，同内容只存一份）
+├── samples/.partial/            同步中未完成的 blob（可续传）
+├── sync-manifest.json           Hub 同步清单（LibraryHubStore）
+├── tracks/<track-id>.wav        录音作品
+└── projects/                    编曲工程（预留）
+```
+
+- 导入安全：ZIP 条目路径规范化（拒绝绝对路径/`..`/盘符/符号链接）、条目数/单文件/总大小/压缩比限额、manifest 哈希校验后才入库；写文件一律"临时文件 → fsync → rename"。
+- 所有导入的音频在入库时统一为 WAV（Ogg/MP3/FLAC 等经 up-codec 解码转码），引擎只需解析 WAV。
+- 示例 Kit：`content/kits/*.upkit` 由 `cargo run -p up-library --example kitgen -- content/kits` 用代码合成生成（CC0-1.0）。原 App 素材只在被忽略的 `private-assets/` 中导入到用户自己的数据目录，永不入库。

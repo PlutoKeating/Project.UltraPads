@@ -24,7 +24,7 @@ UltraPads 以学习研究为目的，1:1 复刻 Ref（打击垫/DJ App）的界�
 | 10 | 状态架构 | **引擎为唯一事实源**：UI 发 Command，订阅 Event/快照；UI 状态只是只读投影 |
 | 11 | 动效 | Flutter 动画体系（隐式/显式动画、spring 物理）+ Rive + Fragment Shader 光效；GSAP/Motion/WAAPI 这类 Web 技术的诉求由 Flutter 等价物承担 |
 | 12 | Token | W3C DTCG JSON + Style Dictionary，生成 Dart（以及 CSS，供文档和工具使用） |
-| 13 | 设计稿 | 先建 Figma 设计系统，代码对齐 Figma |
+| 13 | 设计稿 | ~~先建 Figma 设计系统~~ → 2026-10-18 修订：跳过 Figma（可用的 Figma 账号不属于项目所有者），改为应用内的 Design Gallery（Storybook 式组件画廊），展示全部 token、组件、皮肤和动效 |
 | 14 | 复刻精度 | 高保真 + 视觉回归（golden test） |
 | 15 | 皮肤 | 霓虹渐变发光、深色描边、浅色、用户自定义皮肤编辑器 |
 | 16 | MVP | 演奏、曲库下载、编辑 Kit、录音分享、教程、皮肤全部纳入 |

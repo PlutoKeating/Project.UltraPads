@@ -1,0 +1,43 @@
+# cargo-deny 配置：许可证闸门（ADR-0001 #5、ADR-0002 #5）。
+# 用法：cargo deny check licenses   （需要先 `cargo install cargo-deny`）
+# 默认构建禁止 GPL/LGPL/AGPL 等 copyleft 依赖；MPL-2.0 为文件级 copyleft，作为未修改依赖可接受。
+
+[graph]
+all-features = false
+
+[licenses]
+version = 2
+confidence-threshold = 0.9
+allow = [
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "MIT",
+  "MIT-0",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "Unicode-3.0",
+  "Unicode-DFS-2016",
+  "Zlib",
+  "CC0-1.0",
+  "MPL-2.0",
+  "Unlicense",
+  "BSL-1.0",
+  "0BSD",
+  "CDLA-Permissive-2.0",
+]
+
+[licenses.private]
+ignore = true
+
+[bans]
+multiple-versions = "allow"
+wildcards = "allow"
+
+[advisories]
+version = 2
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ultrapads.dev/schema/tutorial-1.json",
+  "title": "UltraPads tutorial.json 1.x",
+  "description": "教程说明。mode=timed 时谱面时刻来自 chart.mid；mode=sequence 时只规定按键顺序、不计时。",
+  "type": "object",
+  "required": ["id"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "$ref": "#/$defs/localized" },
+    "mode": { "enum": ["timed", "sequence"] },
+    "chart": { "type": "string" },
+    "tempo": {
+      "type": "object",
+      "required": ["start", "target"],
+      "properties": { "start": { "type": "number" }, "target": { "type": "number" } }
+    },
+    "judge": {
+      "type": "object",
+      "required": ["perfectMs", "goodMs"],
+      "properties": { "perfectMs": { "type": "integer", "minimum": 0 }, "goodMs": { "type": "integer", "minimum": 0 } }
+    },
+    "videoUrl": { "type": "string" },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fromBar": { "type": "integer", "minimum": 1 },
+          "toBar": { "type": "integer", "minimum": 1 },
+          "hint": { "$ref": "#/$defs/localized" },
+          "pads": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 127 } },
+          "bank": { "enum": ["A", "B"] },
+          "loop": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "localized": { "type": "object", "additionalProperties": { "type": "string" } }
+  }
+}

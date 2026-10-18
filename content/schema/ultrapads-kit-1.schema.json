@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ultrapads.dev/schema/kit-1.json",
+  "title": "UltraPads ultrapads-kit.json 1.x",
+  "description": "SFZ 表达不了的交互/布局/外观扩展。声音行为以 kit.sfz 为准；未知字段必须被读取方忽略并在回写时保留。",
+  "type": "object",
+  "required": ["formatVersion"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "formatVersion": { "$ref": "#/$defs/semver" },
+    "sfz": { "$ref": "#/$defs/path", "default": "kit.sfz" },
+    "layout": {
+      "type": "object",
+      "required": ["padCount"],
+      "properties": {
+        "padCount": { "enum": [12, 24] },
+        "grid": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 12 }, "minItems": 2, "maxItems": 2 },
+        "banks": { "type": "array", "items": { "enum": ["A", "B"] }, "maxItems": 2 }
+      }
+    },
+    "pads": { "type": "array", "maxItems": 24, "items": { "$ref": "#/$defs/pad" } },
+    "defaults": {
+      "type": "object",
+      "properties": {
+        "oneShot": { "$ref": "#/$defs/kindDefaults" },
+        "loop": { "$ref": "#/$defs/kindDefaults" }
+      }
+    },
+    "tempo": {
+      "type": "object",
+      "required": ["bpm"],
+      "properties": {
+        "bpm": { "type": "number", "exclusiveMinimum": 0, "maximum": 999 },
+        "timeSignature": { "$ref": "#/$defs/timeSignature" }
+      }
+    },
+    "tutorials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path"],
+        "properties": { "id": { "type": "string", "minLength": 1 }, "path": { "$ref": "#/$defs/path" } }
+      }
+    },
+    "skin": { "$ref": "#/$defs/path" },
+    "cover": { "$ref": "#/$defs/path" },
+    "themeColor": { "type": "string" }
+  },
+  "$defs": {
+    "semver": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+){0,2}([-+].*)?$" },
+    "path": { "type": "string", "minLength": 1, "not": { "pattern": "(^/|^[A-Za-z]:|(^|[/\\\\])\\.\\.([/\\\\]|$))" } },
+    "timeSignature": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 32 }, "minItems": 2, "maxItems": 2 },
+    "color": {
+      "type": "string",
+      "description": "调色板角色名或 #RRGGBB / #RRGGBBAA",
+      "anyOf": [
+        { "enum": ["blue", "green", "orange", "pink", "aqua", "lime", "red", "purple", "yellow", "grey"] },
+        { "pattern": "^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$" }
+      ]
+    },
+    "launch": {
+      "type": "object",
+      "properties": {
+        "mode": { "enum": ["trigger", "gate", "toggle"] },
+        "quantize": { "enum": ["none", "1/16", "1/8", "1/4", "1beat", "1bar", "2bar", "4bar", "global"] },
+        "retrigger": { "enum": ["restart", "continue"] }
+      }
+    },
+    "kindDefaults": { "type": "object", "properties": { "launch": { "$ref": "#/$defs/launch" } } },
+    "pad": {
+      "type": "object",
+      "required": ["note"],
+      "properties": {
+        "note": { "type": "integer", "minimum": 0, "maximum": 127 },
+        "bank": { "enum": ["A", "B"] },
+        "index": { "type": "integer", "minimum": 0, "maximum": 11 },
+        "name": { "type": "string" },
+        "color": { "$ref": "#/$defs/color" },
+        "icon": { "type": "string" },
+        "kind": { "enum": ["oneShot", "loop"] },
+        "launch": { "$ref": "#/$defs/launch" },
+        "tempo": {
+          "type": "object",
+          "required": ["bpm"],
+          "properties": {
+            "bpm": { "type": "number", "exclusiveMinimum": 0, "maximum": 999 },
+            "beats": { "type": "number", "exclusiveMinimum": 0 },
+            "timeSignature": { "$ref": "#/$defs/timeSignature" },
+            "stretch": { "enum": ["none", "beats", "repitch"] }
+          }
+        },
+        "exclusive": { "type": "string" }
+      }
+    }
+  }
+}

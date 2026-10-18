@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ultrapads.dev/schema/library-1.json",
+  "title": "UltraPads library.json 1.x",
+  "description": "曲库索引（runtime/up-library）。Kit 内容在 kits/<id>/manifest.json + samples/ 内容寻址存储中；本文件是可重建的缓存加用户状态。",
+  "type": "object",
+  "required": ["formatVersion"],
+  "properties": {
+    "formatVersion": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+){0,2}$" },
+    "kits": { "type": "object", "additionalProperties": { "$ref": "#/$defs/kit" } },
+    "samples": { "type": "object", "additionalProperties": { "$ref": "#/$defs/sample" } },
+    "tracks": { "type": "object", "additionalProperties": { "$ref": "#/$defs/track" } },
+    "catalog": {
+      "type": "object",
+      "properties": {
+        "entries": { "type": "object", "additionalProperties": { "$ref": "#/$defs/catalogEntry" } },
+        "categories": { "type": "object", "additionalProperties": { "$ref": "#/$defs/catalogCategory" } }
+      }
+    },
+    "tombstones": { "type": "object", "additionalProperties": { "type": "integer" } }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9_-][A-Za-z0-9_~-]*$" },
+    "strings": { "type": "array", "items": { "type": "string" } },
+    "kit": {
+      "type": "object",
+      "required": ["id", "name", "padCount", "padsUsed", "sampleCount", "totalBytes", "hasTutorial", "sourceKind", "createdAtMs", "updatedAtMs", "manifestBlake3", "contentBlake3"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "authors": { "$ref": "#/$defs/strings" },
+        "license": { "type": "string" },
+        "genres": { "$ref": "#/$defs/strings" },
+        "tags": { "$ref": "#/$defs/strings" },
+        "padCount": { "enum": [12, 24] },
+        "padsUsed": { "type": "integer", "minimum": 0, "maximum": 24 },
+        "sampleCount": { "type": "integer", "minimum": 0 },
+        "totalBytes": { "type": "integer", "minimum": 0 },
+        "bpm": { "type": "number" },
+        "themeColor": { "type": "string" },
+        "coverBlob": { "$ref": "#/$defs/hash" },
+        "hasTutorial": { "type": "boolean" },
+        "sourceKind": { "type": "string" },
+        "sourceId": { "type": "string" },
+        "inspiredBy": { "type": "string" },
+        "favorite": { "type": "boolean" },
+        "favoritedAtMs": { "type": "integer" },
+        "lastUsedAtMs": { "type": "integer" },
+        "createdAtMs": { "type": "integer" },
+        "updatedAtMs": { "type": "integer" },
+        "manifestBlake3": { "$ref": "#/$defs/hash" },
+        "contentBlake3": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "sample": {
+      "type": "object",
+      "required": ["id", "name", "origin", "size", "mediaType", "sampleRate", "channels", "frames", "createdAtMs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/hash" },
+        "name": { "type": "string" },
+        "origin": { "enum": ["kit", "import", "microphone", "track", "generated"] },
+        "size": { "type": "integer", "minimum": 0 },
+        "mediaType": { "type": "string" },
+        "sampleRate": { "type": "integer", "minimum": 0 },
+        "channels": { "type": "integer", "minimum": 0 },
+        "frames": { "type": "integer", "minimum": 0 },
+        "createdAtMs": { "type": "integer" }
+      }
+    },
+    "track": {
+      "type": "object",
+      "required": ["id", "name", "blob", "size", "sampleRate", "channels", "durationSecs", "createdAtMs", "updatedAtMs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "blob": { "$ref": "#/$defs/hash" },
+        "size": { "type": "integer", "minimum": 0 },
+        "sampleRate": { "type": "integer", "minimum": 0 },
+        "channels": { "type": "integer", "minimum": 0 },
+        "durationSecs": { "type": "number", "minimum": 0 },
+        "kitId": { "type": "string" },
+        "bpm": { "type": "number" },
+        "createdAtMs": { "type": "integer" },
+        "updatedAtMs": { "type": "integer" }
+      }
+    },
+    "catalogEntry": {
+      "type": "object",
+      "required": ["id", "source", "originalId", "name", "hasTutorial", "status"],
+      "properties": {
+        "id": { "type": "string" },
+        "source": { "type": "string" },
+        "originalId": { "type": "string" },
+        "name": { "type": "string" },
+        "inspiredBy": { "type": "string" },
+        "genres": { "$ref": "#/$defs/strings" },
+        "tags": { "$ref": "#/$defs/strings" },
+        "categoryIds": { "$ref": "#/$defs/strings" },
+        "themeColor": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "hasTutorial": { "type": "boolean" },
+        "isNew": { "type": "boolean" },
+        "isTop": { "type": "boolean" },
+        "order": { "type": "integer" },
+        "difficulty": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "extra": { "type": "object" },
+        "status": {
+          "oneOf": [
+            { "type": "object", "required": ["state"], "properties": { "state": { "const": "notDownloaded" } } },
+            { "type": "object", "required": ["state", "kitId"], "properties": { "state": { "const": "downloaded" }, "kitId": { "type": "string" } } }
+          ]
+        }
+      }
+    },
+    "catalogCategory": {
+      "type": "object",
+      "required": ["id", "source", "name", "order", "kind"],
+      "properties": {
+        "id": { "type": "string" },
+        "source": { "type": "string" },
+        "name": { "type": "string" },
+        "order": { "type": "integer" },
+        "kind": { "type": "integer" },
+        "groupId": { "type": "string" },
+        "entries": { "$ref": "#/$defs/strings" }
+      }
+    }
+  }
+}
