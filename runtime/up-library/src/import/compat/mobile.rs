@@ -1,4 +1,4 @@
-//! 原 App 素材：旧版 Android APK 3.x 与新版 iOS IPA 4.x。
+//! 私有素材包（移动端 pad 应用的 Kit 格式）：Android 格式与 iOS 格式。
 //!
 //! 两个版本的 Kit 结构相同：`Sounds/pad{N}_{preset}.{wav|ogg}` + `Sounds/<Kit 名>.txt`（JSON）：
 //! - `behaviour.padN`：100 = Loop（按一下开、再按关）、200 = One-shot（重触发从头播）、300 = Gate（按住播放）
@@ -604,10 +604,7 @@ fn run(
                     docs.push(v);
                     break;
                 }
-                _ => warnings.push(Warning::new(
-                    "compat.bad_catalog",
-                    format!("{f} 无法解析"),
-                )),
+                _ => warnings.push(Warning::new("compat.bad_catalog", format!("{f} 无法解析"))),
             }
         }
     }
@@ -773,12 +770,11 @@ fn build_kit(
     let files = fs.files();
     let mut doc = KitDoc::new(fsutil::new_id(), c.name.clone());
     doc.license = Some(PRIVATE_LICENSE.into());
-    doc.authors = vec!["Unknown".into()];
     doc.description = Some(format!(
-        "从 {} 素材包导入；原 App 素材仅限私有研究，禁止分发。",
+        "从私有素材包（{}格式）导入；仅限私有研究，禁止分发。",
         match flavor {
-            Flavor::Android => "Android 3.x ",
-            Flavor::Ios => "iOS 4.x ",
+            Flavor::Android => "Android ",
+            Flavor::Ios => "iOS ",
         }
     ));
     let mut assets = BTreeMap::new();

@@ -3,7 +3,7 @@
 //! * Modes: [`PadMode::OneShot`] (retrigger restarts), [`PadMode::Loop`]
 //!   (toggle), [`PadMode::Gate`] (plays while held).
 //! * Loops launch on the [`Quantize`] grid (default `None` = immediately,
-//!   like Ref); state machine `Idle → Pending → Playing → Stopping → Idle`.
+//!   like a classic pad app); state machine `Idle → Pending → Playing → Stopping → Idle`.
 //! * Choke groups: triggering a pad stops every *other* pad in its group.
 //! * Velocity → gain (square law); per-pad gain and constant-power pan.
 //! * Bounded polyphony with oldest-first voice stealing; stolen and stopped

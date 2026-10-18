@@ -140,7 +140,7 @@ pub struct PadDoc {
     /// Choke group this pad belongs to (SFZ `group`).
     pub choke_group: Option<u8>,
     /// Group that stops this pad (SFZ `off_by`); `None` = `choke_group`
-    /// (symmetric mutual exclusion, Ref semantics).
+    /// (symmetric mutual exclusion).
     pub choked_by: Option<u8>,
     pub choke_release: ChokeRelease,
     /// Re-triggering cuts the pad's previous voice (SFZ `note_polyphony=1`).
@@ -285,7 +285,7 @@ pub struct KitMeta {
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct KitSource {
-    /// `upkit` | `sfz` | `wav-folder` | `compat` | `generated` | `user` …
+    /// `upkit` | `sfz` | `wav-folder` | `compat-android` | `compat-ios` | `generated` | `user` …
     pub kind: String,
     pub original_id: Option<String>,
     pub original_name: Option<String>,

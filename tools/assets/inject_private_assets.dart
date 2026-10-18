@@ -3,8 +3,8 @@
 // 并生成清单 injected.json。没有私有素材时应用回退到开源占位资源，构建照常通过。
 //
 // 支持两个来源，按优先级：
-//   1. ios —— private-assets/compat-ios/（App Store 4.7.0，第一复刻基准）
-//   2. apk —— private-assets/compat/（APK 3.7.6，补充：Lottie、Uni Sans 等）
+//   1. ios —— private-assets/compat-ios/（iOS 格式，优先）
+//   2. apk —— private-assets/compat-android/（Android 格式，补充：Lottie、Uni Sans 等）
 // 运行时 PrivateAssets 按 manifest 的 `priority` 顺序解析同一逻辑素材。
 //
 // 用法（仓库根目录）：
@@ -15,9 +15,9 @@
 //   dart run tools/assets/inject_private_assets.dart --root <dir>   # 自定义 private-assets 根
 //
 // 内置 Kit：ios 来源的 `kit`（audio/kits/**）与 `data`（data/initial/*.json）类别就是
-// 4.7.0 的 6 个内置 Kit 及其目录/教程。清单的 `privateKits` 记录它们在原目录结构中的
+// 私有素材包的 6 个内置 Kit 及其目录/教程。清单的 `privateKits` 记录它们在原目录结构中的
 // 相对路径 → 打包资源路径；应用首次启动时把这些文件还原到临时目录，再交给曲库的
-// 原 App 素材导入器（`library_import`，compat-ios 来源）导入，见
+// 私有素材包导入器（`library_import`，compat-ios 来源）导入，见
 // app/ultrapads/lib/src/library/first_run.dart。
 //
 // 为什么是扁平目录：pubspec 声明的资源目录必须存在，且目录声明不递归。
@@ -32,6 +32,7 @@ const _manifestName = 'injected.json';
 const _trackedFiles = {'manifest.json', '.gitignore'};
 
 /// 不注入的 UI 包（付费墙、广告/隐私弹窗等，ADR-0001 #4）。
+/// 另外，名称含 `Splash` 的启动页包一律不注入（见 [_allowedPackage]）。
 const _excludedPackages = {
   'GetPremium',
   'GdprPortrait',
@@ -39,7 +40,6 @@ const _excludedPackages = {
   'IdfaLandscape',
   'IdfaPortrait',
   'LDFA',
-  'VendorSplash',
 };
 
 class _Category {
@@ -61,7 +61,7 @@ bool _png(String p) => p.endsWith('.png') && !p.endsWith('.9.png');
 bool _allowedPackage(String p) {
   final file = p.split('/').last;
   final pkg = file.contains('__') ? file.split('__').first : '';
-  return !_excludedPackages.contains(pkg);
+  return !_excludedPackages.contains(pkg) && !pkg.contains('Splash');
 }
 
 final _sources = <_Source>[
@@ -90,7 +90,7 @@ final _sources = <_Source>[
       (p) => p.endsWith('.png') || p.endsWith('.plist'),
     ),
   ]),
-  _Source('apk', 'compat', [
+  _Source('apk', 'compat-android', [
     _Category('lottie', 'animations/lottie', (p) => p.endsWith('.json')),
     _Category('icon', 'images/icons', _png),
     _Category('skin', 'images/skins', _png),

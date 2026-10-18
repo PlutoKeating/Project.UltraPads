@@ -113,7 +113,7 @@ impl fmt::Display for PadId {
     }
 }
 
-/// Pad playback behaviour. Matches Ref `behaviour` codes 100/200/300.
+/// Pad playback behaviour. Matches the compat kit config `behaviour` codes 100/200/300.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum PadMode {
     /// Press plays the sample once from the start; re-press retriggers (code 200).
@@ -126,7 +126,7 @@ pub enum PadMode {
 }
 
 impl PadMode {
-    /// Map a Ref `behaviour` code.
+    /// Map a compat kit config `behaviour` code.
     pub fn from_compat_code(code: i32) -> Option<Self> {
         match code {
             100 => Some(PadMode::Loop),
@@ -140,7 +140,7 @@ impl PadMode {
 /// Launch quantization grid. A beat is a quarter note.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum Quantize {
-    /// Start immediately (Ref behaviour, default).
+    /// Start immediately (default).
     #[default]
     None,
     /// Next 1/16 note.
@@ -175,7 +175,7 @@ impl Quantize {
 /// What a re-press of a playing one-shot/gate pad does.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum Retrigger {
-    /// Restart from the start (Ref behaviour).
+    /// Restart from the start (default).
     #[default]
     Restart,
     /// Ignore the press while the pad is still playing.
@@ -214,7 +214,7 @@ pub enum ColorRole {
 }
 
 impl ColorRole {
-    /// Map the Portuguese color names (`azul`, `amarelo`, `rosa`, `verde`).
+    /// Map the compat kit config's Portuguese color names (`azul`, `amarelo`, `rosa`, `verde`).
     pub fn from_compat_name(name: &str) -> Option<Self> {
         match name {
             "azul" | "azul_loop" => Some(ColorRole::Blue),
@@ -261,10 +261,7 @@ mod tests {
         assert_eq!(PadMode::from_compat_code(200), Some(PadMode::OneShot));
         assert_eq!(PadMode::from_compat_code(300), Some(PadMode::Gate));
         assert_eq!(PadMode::from_compat_code(-1), None);
-        assert_eq!(
-            ColorRole::from_compat_name("rosa"),
-            Some(ColorRole::Pink)
-        );
+        assert_eq!(ColorRole::from_compat_name("rosa"), Some(ColorRole::Pink));
     }
 
     #[test]

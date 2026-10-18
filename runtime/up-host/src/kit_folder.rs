@@ -3,12 +3,12 @@
 //! * Files are sorted by name (case-insensitive, natural number order) and
 //!   mapped to pads A0..B11 in flat order.
 //! * Old-style names `pad{N}_{preset}.wav` map to pad `N-1`.
-//! * An optional Ref config (`*.txt`/`*.json` with a `behaviour`
+//! * An optional compat kit config (`*.txt`/`*.json` with a `behaviour`
 //!   object: 100 = Loop, 200 = One-shot, 300 = Gate; `colors`, `groups`)
 //!   sets modes, colors and choke groups. Otherwise names containing
 //!   "loop" become loops.
 //! * An optional `tutorial.json` (native [`up_model::TutorialChart`] or the
-//!   Ref 4.x `[{time,pad,color,state}]` array) and `*_lesson.json`
+//!   compat iOS-format `[{time,pad,color,state}]` array) and `*_lesson.json`
 //!   files are attached as the kit's tutorial.
 //!
 //! The real kit formats (`.upkit`, SFZ, …) live in `runtime/up-library`.
@@ -386,7 +386,7 @@ pub fn load_folder_kit(dir: &Path, sample_rate: u32) -> UpResult<LoadedKit> {
             Err(e) => log::warn!("invalid tutorial.json: {e}"),
         }
     }
-    // Ref 4.x lessons (`<id>_lesson.json`).
+    // Ref (iOS format) lessons (`<id>_lesson.json`).
     if let Ok(rd) = std::fs::read_dir(&src) {
         for e in rd.flatten() {
             let p = e.path();

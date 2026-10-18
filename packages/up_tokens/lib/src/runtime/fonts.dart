@@ -5,10 +5,10 @@ import '../generated/primitives.g.dart';
 
 /// Which font family set text roles render with.
 enum UpFontSet {
-  /// Open Sans (SIL OFL 1.1) bundled in up_tokens — Ref 4.7.0 default.
+  /// Open Sans (SIL OFL 1.1) bundled in up_tokens — the default text font.
   openSans,
 
-  /// Uni Sans (Fontfabric, commercial, Ref 3.x). Optional skin font:
+  /// Uni Sans (Fontfabric, commercial). Optional skin font:
   /// only used when the private files were injected; otherwise Open Sans.
   uniSans;
 
@@ -23,7 +23,7 @@ enum UpFontSet {
 ///   (declared in pubspec.yaml) and need no loading.
 /// * The Uni Sans cuts are **never committed**. `just inject-assets`
 ///   (tools/assets/inject_private_assets.dart) copies them from
-///   `private-assets/compat/fonts/` into the app's git-ignored
+///   `private-assets/compat-android/fonts/` into the app's git-ignored
 ///   `assets/private_manifest/` as `font__<name>.ttf`; [loadPrivate] registers
 ///   whatever is present.
 abstract final class UpFonts {

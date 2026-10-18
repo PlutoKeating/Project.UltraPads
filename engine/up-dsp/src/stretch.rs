@@ -1,6 +1,6 @@
 //! Offline pitch / tempo processing interface.
 //!
-//! Ref only changes pitch (±12 semitones) and time (0.5×–2.0×) offline
+//! Kit editing only changes pitch (±12 semitones) and time (0.5×–2.0×) offline
 //! while editing a kit. This module defines the interface; the default
 //! implementation is a high-quality varispeed (pitch and time coupled). A
 //! true time-stretcher (Signalsmith Stretch, C++ binding) will implement

@@ -606,7 +606,7 @@ fn compat_android_fake_sounds_zip_and_catalog() {
     assert_eq!(p13.note, 48);
 
     // 2. 素材目录：解包后的 Sounds/ + 目录 list.json → 曲库目录与教程
-    let root = dir.path().join("compat");
+    let root = dir.path().join("compat-android");
     std::fs::create_dir_all(root.join("audio/kits/fake/Sounds")).unwrap();
     std::fs::create_dir_all(root.join("data")).unwrap();
     let fs = up_library::archive::read_zip(
@@ -658,17 +658,15 @@ fn compat_android_fake_sounds_zip_and_catalog() {
     assert!(s.has_tutorial);
     // 教程：sequence 模式 + chart.mid
     let pkg = other.kit_package(&kid).unwrap();
-    let t = up_format::tutorial::TutorialDoc::from_slice(
-        &pkg.files["tutorials/compat/tutorial.json"],
-    )
-    .unwrap();
+    let t =
+        up_format::tutorial::TutorialDoc::from_slice(&pkg.files["tutorials/compat/tutorial.json"])
+            .unwrap();
     assert_eq!(t.mode, up_format::tutorial::TutorialMode::Sequence);
     assert_eq!(t.steps[0].bank.as_deref(), Some("A"));
     assert_eq!(t.steps[1].pads, vec![36]);
     assert_eq!(t.steps[2].pads, vec![37, 38]);
     assert_eq!(t.steps[4].pads, vec![48]);
-    let chart =
-        up_format::smf::Chart::from_smf(&pkg.files["tutorials/compat/chart.mid"]).unwrap();
+    let chart = up_format::smf::Chart::from_smf(&pkg.files["tutorials/compat/chart.mid"]).unwrap();
     assert_eq!(chart.notes.len(), 4);
     // 删除后目录条目回到“未下载”，再导入恢复
     other.delete_kit(&kid).unwrap();
@@ -725,9 +723,9 @@ fn compat_ios_fake_catalog_lessons_and_timed_tutorial_parsing() {
 /// 用真实的原 App 素材跑一次（私有素材不在仓库中；存在时手动运行：
 /// `cargo test -p up-library -- --ignored real_`）。
 #[test]
-#[ignore = "需要 private-assets/compat（不入库的私有素材）"]
+#[ignore = "需要 private-assets/compat-android（不入库的私有素材）"]
 fn real_compat_android_assets() {
-    let root = repo_root().join("private-assets/compat");
+    let root = repo_root().join("private-assets/compat-android");
     if !root.exists() {
         eprintln!("跳过：没有 {}", root.display());
         return;
@@ -748,13 +746,9 @@ fn real_compat_android_assets() {
         r.warnings.len()
     );
     assert!(r.catalog_entries >= 400);
-    let sunset = lib
-        .list_kits(&KitQuery {
-            text: Some("sunset".into()),
-            ..Default::default()
-        })
-        .pop()
-        .unwrap();
+    // 取本次目录导入的 Sunset（上面 initialpack.zip 单独导入的那份没有目录 ID，也没有教程）。
+    let sunset_id = &r.kits.iter().find(|k| k.name == "Sunset").unwrap().kit_id;
+    let sunset = lib.kit_summary(sunset_id).unwrap();
     assert!(sunset.has_tutorial);
     let loaded = lib.load_kit_assets(&sunset.id).unwrap();
     assert_eq!(loaded.samples.len(), 12);

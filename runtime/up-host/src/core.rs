@@ -347,7 +347,7 @@ impl AppCore {
         handle: &EngineHandle,
         kit: LoadedKit,
     ) -> UpResult<up_engine::KitSummary> {
-        // Stop whatever the previous kit was playing (Ref behaviour).
+        // Stop whatever the previous kit was playing (classic pad-app behaviour).
         handle.send(Command::StopAll)?;
         apply_kit(handle, &kit)?;
         // Make `snapshot()` reflect the new kit as soon as this returns.

@@ -77,12 +77,12 @@ pub struct PadParams {
     /// stops every *other* pad whose `choked_by` equals this group.
     pub choke_group: Option<u8>,
     /// Group that stops this pad (SFZ `off_by`). `None` = same as
-    /// `choke_group` (symmetric mutual exclusion, Ref semantics).
+    /// `choke_group` (symmetric mutual exclusion).
     pub choked_by: Option<u8>,
     /// Fade-out used when this pad is choked, in ms (`None` = 5 ms).
     pub choke_release_ms: Option<f32>,
     /// Re-triggering the pad cuts its own previous voice (default `true`,
-    /// Ref); `false` lets one-shots overlap.
+    /// like a classic pad app); `false` lets one-shots overlap.
     pub self_choke: bool,
     pub retrigger: Retrigger,
     pub color: ColorRole,

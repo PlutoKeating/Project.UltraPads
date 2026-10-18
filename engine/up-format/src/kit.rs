@@ -484,7 +484,7 @@ pub struct TutorialRef {
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct KitSource {
-    /// `upkit` | `sfz` | `wav-folder` | `compat` | `generated` | `user`
+    /// `upkit` | `sfz` | `wav-folder` | `compat-android` | `compat-ios` | `generated` | `user`
     pub kind: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub original_id: Option<String>,

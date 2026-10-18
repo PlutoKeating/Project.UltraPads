@@ -19,8 +19,8 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 flutter:
-  # Open Sans (SIL OFL 1.1, see assets/fonts/OFL.txt) — the font Ref 4.7.0
-  # ships. Referenced as `packages/up_tokens/Open Sans`. The optional Uni Sans
+  # Open Sans (SIL OFL 1.1, see assets/fonts/OFL.txt) — the default text font.
+  # Referenced as `packages/up_tokens/Open Sans`. The optional Uni Sans
   # skin font (commercial) is injected into the *app* bundle
   # (assets/private_manifest/font__*.ttf, see `just inject-assets`) and
   # registered at runtime by UpFonts.loadPrivate().

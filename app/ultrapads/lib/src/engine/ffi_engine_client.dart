@@ -220,7 +220,7 @@ class FfiEngineClient implements EngineClient {
     source: switch (k.sourceKind) {
       'user' => KitSource.user,
       'hub' => KitSource.hub,
-      'compat' || 'builtin' || 'generated' => KitSource.builtin,
+      'builtin' || 'generated' => KitSource.builtin,
       _ => KitSource.imported,
     },
     color: ColorRole.fromPalette(k.id.hashCode.abs()),

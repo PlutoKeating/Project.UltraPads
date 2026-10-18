@@ -1,18 +1,16 @@
-//! 原 App 素材导入器（可插拔、多来源）。
+//! 私有素材包导入器（可插拔、多来源）。
 //!
 //! 每个来源实现 [`CompatSource`]：探测输入是否属于该来源，然后把其中的 Kit 逐个交给回调入库，
 //! 并返回外部目录（分类/曲目元数据，没有音频的条目标记为“未下载”）。
 //!
 //! 内置来源：
-//! - [`compat::AndroidSource`]（`compat-android`）：旧版 APK 3.x —— `Sounds/pad{N}_{preset}.wav`、
+//! - [`mobile::AndroidSource`]（`compat-android`）：Android 格式 —— `Sounds/pad{N}_{preset}.wav`、
 //!   `<Kit>.txt`（JSON）、`initialpack.zip`/`Sounds.zip`、`list.json`、按顺序的教程 `sequence`
-//! - [`compat::IosSource`]（`compat-ios`）：新版 IPA 4.x —— `Sounds/pad{N}_{preset}.ogg`（入库时转 WAV）、
+//! - [`mobile::IosSource`]（`compat-ios`）：iOS 格式 —— `Sounds/pad{N}_{preset}.ogg`（入库时转 WAV）、
 //!   同结构 JSON、`initial/sp/<id>.zip`/`kit.zip`/`Sounds_OGG.zip`、`fetch.json`/`fetch_next.json`、
 //!   计时教程 `tutorial.json` 与分课 `<id>_lesson.json`
-//!
-//! 设计与字段含义见 `docs/research/compat-apk-analysis.md`、`docs/research/compat-ipa-4.7.0-analysis.md`。
 
-pub mod compat;
+pub mod mobile;
 
 use std::collections::BTreeMap;
 
@@ -57,8 +55,5 @@ pub trait CompatSource: Send + Sync {
 
 /// 内置来源（按探测顺序）。
 pub fn builtin_sources() -> Vec<Box<dyn CompatSource>> {
-    vec![
-        Box::new(compat::IosSource),
-        Box::new(compat::AndroidSource),
-    ]
+    vec![Box::new(mobile::IosSource), Box::new(mobile::AndroidSource)]
 }

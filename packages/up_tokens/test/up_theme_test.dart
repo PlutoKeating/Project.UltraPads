@@ -5,7 +5,7 @@ import 'package:up_tokens/up_tokens.dart';
 void main() {
   group('generated tokens', () {
     test('APK-calibrated values reach Dart', () {
-      // Ref 4.7.0 (IPA) values.
+      // Reference design values.
       final UpSemantic c = UpThemes.neon.colors;
       expect(c.surfacePads, const Color(0xFF242B2E));
       expect(c.surfacePage, const Color(0xFF262B2F));

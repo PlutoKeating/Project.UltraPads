@@ -1,5 +1,5 @@
-//! Tutorial charts (Ref 4.7.0 semantics, see
-//! docs/research/compat-ipa-4.7.0-analysis.md §7.2).
+//! Tutorial charts (timed events; the compat iOS-format `tutorial.json`
+//! and the compat Android-format `sequence` are converted on import).
 //!
 //! A chart is a time line of events. **Time unit: song seconds at speed
 //! 1.0** (`time_secs`). When the user slows the tutorial down (speed 0.7 /
@@ -19,13 +19,13 @@ pub enum TutorialTarget {
     Pad {
         pad: PadId,
     },
-    /// Switch to the given bank (Ref codes 100 / 101).
+    /// Switch to the given bank (compat codes 100 / 101).
     Page {
         bank: Bank,
     },
 }
 
-/// Kind of press (Ref `state`: 0 = start/toggle a loop, 1 = tap).
+/// Kind of press (compat `state`: 0 = start/toggle a loop, 1 = tap).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum TutorialAction {
@@ -112,7 +112,7 @@ pub struct TutorialChart {
     pub lessons: Vec<TutorialLesson>,
     pub bpm: Option<f64>,
     pub judge: JudgeWindow,
-    /// `false` for compat (Ref 3.x) order-only charts: event times
+    /// `false` for compat (Android format) order-only charts: event times
     /// are then just 1 s apart and only the order matters.
     pub timed: bool,
 }
@@ -171,7 +171,7 @@ struct SpLessons {
     lessons: Vec<SpLesson>,
 }
 
-/// Ref 3.x note code → flat pad index.
+/// Ref (Android format) note code → flat pad index.
 fn compat_code_to_flat(code: i32) -> Option<usize> {
     const A: [i32; 12] = [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19];
     if let Some(i) = A.iter().position(|c| *c == code) {
@@ -201,7 +201,7 @@ impl TutorialChart {
         }
     }
 
-    /// Parse Ref 4.x `tutorial.json` (`[{time, pad, color, state}]`).
+    /// Parse the compat (iOS format) `tutorial.json` (`[{time, pad, color, state}]`).
     pub fn from_compat_tutorial(json: &str) -> Result<Self, up_core::UpError> {
         let raw: Vec<SpEvent> =
             serde_json::from_str(json).map_err(|e| up_core::UpError::format(e.to_string()))?;
@@ -231,7 +231,7 @@ impl TutorialChart {
         Ok(chart)
     }
 
-    /// Merge Ref `<id>_lesson.json`
+    /// Merge compat `<id>_lesson.json`
     /// (`{bpm, lessons:[{steps:[{pad,time,type}], duration, midStartTime}]}`).
     pub fn add_compat_lessons(&mut self, json: &str) -> Result<(), up_core::UpError> {
         let raw: SpLessons =
@@ -261,7 +261,7 @@ impl TutorialChart {
         Ok(())
     }
 
-    /// Convert Ref 3.x `Kit.sequence` (order-only steps of note
+    /// Convert the compat (Android format) `Kit.sequence` (order-only steps of note
     /// codes; 100/101 = page A/B). Steps are placed 1 s apart and the chart
     /// is marked `timed = false`.
     pub fn from_compat_sequence(seq: &[Vec<i32>]) -> Self {
@@ -289,7 +289,7 @@ impl TutorialChart {
         chart
     }
 
-    /// Parse either the native format (object) or Ref 4.x (array).
+    /// Parse either the native format (object) or the compat iOS format (array).
     pub fn from_json_any(json: &str) -> Result<Self, up_core::UpError> {
         let trimmed = json.trim_start();
         if trimmed.starts_with('[') {
@@ -315,7 +315,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_compat_4_tutorial() {
+    fn parses_compat_timed_tutorial() {
         let json = r#"[
             {"time": 3.0, "pad": 8, "color": "blue", "state": 0},
             {"time": 0.0, "pad": 100, "color": "page", "state": 1},

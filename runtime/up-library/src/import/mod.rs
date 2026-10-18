@@ -219,7 +219,7 @@ impl Library {
             return Ok(report);
         }
         Err(LibraryError::UnsupportedSource(format!(
-            "{} 中没有可识别的 Kit（.upkit、SFZ、WAV 或原 App 素材）",
+            "{} 中没有可识别的 Kit（.upkit、SFZ、WAV 或私有素材包）",
             fs.display_name()
         )))
     }
