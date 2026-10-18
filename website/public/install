@@ -229,16 +229,18 @@ remove_path_blocks() {
 
 # ---- 运行库检查：ldd 找缺失的 .so，按包管理器换算包名 ----
 
-# ldd 对非 ELF 文件或缺失的库会返回非 0：逐个忽略退出码，只看输出里的 "not found"
+# ldd 对非 ELF 文件或缺失的库会返回非 0：逐个忽略退出码，只看输出里的 "not found"。
+# 包内的库互相依赖（插件 → libflutter_linux_gtk.so），主程序靠 $ORIGIN/lib 找到它们，单独检查时要带上 LD_LIBRARY_PATH；
+# libjvm.so 是 jni 插件（libdartjni.so）在有 JVM 时才加载的可选依赖，不算缺失。
 missing_libs() {
   local dir="$1" f
   {
     ldd "$dir/ultrapads" 2>/dev/null || true
     for f in "$dir"/lib/*.so; do
       [ -e "$f" ] || continue
-      ldd "$f" 2>/dev/null || true
+      LD_LIBRARY_PATH="$dir/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" ldd "$f" 2>/dev/null || true
     done
-  } | awk '/not found/ {print $1}' | sort -u
+  } | awk '/not found/ && $1 != "libjvm.so" {print $1}' | sort -u
 }
 
 pkg_manager() {
