@@ -78,3 +78,8 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // FileProvider（应用内更新把 APK 交给系统安装器）
+    implementation("androidx.core:core:1.18.0")
+}

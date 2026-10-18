@@ -2783,6 +2783,120 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'System default'**
   String get settingsBufferSizeSystem;
+
+  /// No description provided for @settingsUpdateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Software update'**
+  String get settingsUpdateTitle;
+
+  /// No description provided for @settingsUpdateAutoCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates automatically'**
+  String get settingsUpdateAutoCheck;
+
+  /// No description provided for @settingsUpdateAutoCheckHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks the update server once after launch; sends nothing about you or this device.'**
+  String get settingsUpdateAutoCheckHint;
+
+  /// No description provided for @settingsUpdateCheckNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates'**
+  String get settingsUpdateCheckNow;
+
+  /// No description provided for @settingsUpdateChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for updates…'**
+  String get settingsUpdateChecking;
+
+  /// No description provided for @settingsUpdateUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'UltraPads is up to date'**
+  String get settingsUpdateUpToDate;
+
+  /// No description provided for @settingsUpdateCheckFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t check for updates'**
+  String get settingsUpdateCheckFailed;
+
+  /// No description provided for @settingsUpdateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is available'**
+  String settingsUpdateAvailable(String version);
+
+  /// No description provided for @settingsUpdateAvailableToast.
+  ///
+  /// In en, this message translates to:
+  /// **'UltraPads {version} is available — update it in Settings'**
+  String settingsUpdateAvailableToast(String version);
+
+  /// No description provided for @settingsUpdateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get settingsUpdateNow;
+
+  /// No description provided for @settingsUpdateDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading… {percent}%'**
+  String settingsUpdateDownloading(int percent);
+
+  /// No description provided for @settingsUpdateDownloadingGithub.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading from GitHub… {percent}%'**
+  String settingsUpdateDownloadingGithub(int percent);
+
+  /// No description provided for @settingsUpdateRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart to finish'**
+  String get settingsUpdateRestart;
+
+  /// No description provided for @settingsUpdateInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get settingsUpdateInstall;
+
+  /// No description provided for @settingsUpdateInstallPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow UltraPads to install apps in the next screen, then tap Install again.'**
+  String get settingsUpdateInstallPermission;
+
+  /// No description provided for @settingsUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Update failed'**
+  String get settingsUpdateFailed;
+
+  /// No description provided for @settingsUpdateReleaseNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get settingsUpdateReleaseNotes;
+
+  /// No description provided for @settingsUpdateDownloadPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Download page'**
+  String get settingsUpdateDownloadPage;
+
+  /// No description provided for @settingsUpdateManualHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This copy wasn\'t installed with the install script, so it can\'t update itself. Get the new version from the download page.'**
+  String get settingsUpdateManualHint;
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

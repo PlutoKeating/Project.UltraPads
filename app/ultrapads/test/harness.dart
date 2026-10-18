@@ -35,6 +35,7 @@ Future<AppHarness> pumpApp(
   bool onboarded = true,
   Map<String, Object> prefs = const {},
   Size size = phone,
+  MockEngineClient? engine,
 }) async {
   await t.binding.setSurfaceSize(size);
   t.view.devicePixelRatio = 1;
@@ -45,7 +46,7 @@ Future<AppHarness> pumpApp(
     ...prefs,
   });
   final p = await SharedPreferences.getInstance();
-  final engine = MockEngineClient(realtime: false);
+  engine ??= MockEngineClient(realtime: false);
   final locales = LocaleController(store: InMemoryLocaleStore('en'));
   await locales.load();
   final container = ProviderContainer(

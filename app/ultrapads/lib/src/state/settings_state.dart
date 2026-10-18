@@ -49,6 +49,7 @@ class AppSettings {
     this.keyboardEnabled = true,
     this.classicPads = false,
     this.firstGuideSeen = false,
+    this.autoUpdateCheck = true,
   });
 
   /// 当前皮肤：内置 id 或自定义皮肤 id。
@@ -66,6 +67,9 @@ class AppSettings {
   /// 演奏页首次引导（4.7.0 FirstGuide）已完成或跳过。
   final bool firstGuideSeen;
 
+  /// 启动后自动检查新版本（只发一次 GET /api/version，不上报设备信息）。
+  final bool autoUpdateCheck;
+
   AppSettings copyWith({
     String? skinId,
     List<UpSkin>? customSkins,
@@ -76,6 +80,7 @@ class AppSettings {
     bool? keyboardEnabled,
     bool? classicPads,
     bool? firstGuideSeen,
+    bool? autoUpdateCheck,
   }) => AppSettings(
     skinId: skinId ?? this.skinId,
     customSkins: customSkins ?? this.customSkins,
@@ -86,6 +91,7 @@ class AppSettings {
     keyboardEnabled: keyboardEnabled ?? this.keyboardEnabled,
     classicPads: classicPads ?? this.classicPads,
     firstGuideSeen: firstGuideSeen ?? this.firstGuideSeen,
+    autoUpdateCheck: autoUpdateCheck ?? this.autoUpdateCheck,
   );
 }
 
@@ -99,6 +105,7 @@ class SettingsController extends Notifier<AppSettings> {
   static const _kKeyboard = 'keyboard';
   static const _kClassic = 'classicPads';
   static const _kFirstGuide = 'firstGuideSeen';
+  static const _kAutoUpdate = 'autoUpdateCheck';
 
   SharedPreferences get _p => ref.read(prefsProvider);
 
@@ -123,6 +130,7 @@ class SettingsController extends Notifier<AppSettings> {
       keyboardEnabled: p.getBool(_kKeyboard) ?? true,
       classicPads: p.getBool(_kClassic) ?? false,
       firstGuideSeen: p.getBool(_kFirstGuide) ?? false,
+      autoUpdateCheck: p.getBool(_kAutoUpdate) ?? true,
     );
   }
 
@@ -176,6 +184,11 @@ class SettingsController extends Notifier<AppSettings> {
   void setClassicPads(bool v) {
     state = state.copyWith(classicPads: v);
     _p.setBool(_kClassic, v);
+  }
+
+  void setAutoUpdateCheck(bool v) {
+    state = state.copyWith(autoUpdateCheck: v);
+    _p.setBool(_kAutoUpdate, v);
   }
 
   void setKeyboardEnabled(bool v) {

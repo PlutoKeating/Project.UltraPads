@@ -2,9 +2,14 @@ package dev.ultrapads.ultrapads
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import androidx.core.content.FileProvider
+import java.io.File
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -28,6 +33,12 @@ import io.flutter.plugin.common.MethodChannel
  * MethodChannel (see docs/API.md §3):
  *  - `recordAudioStatus` → `"granted"` | `"denied"`
  *  - `requestRecordAudio` → `true` when granted
+ *
+ * In-app update (docs/API.md §6) uses the `dev.ultrapads/update` MethodChannel;
+ * Rust downloads and SHA-256-verifies the APK into `cacheDir/updates/`:
+ *  - `canInstallPackages` → whether "install unknown apps" is allowed
+ *  - `openInstallSettings` → opens that setting for this app
+ *  - `installApk(path)` → hands the APK to the system installer (the user confirms)
  */
 class MainActivity : FlutterActivity() {
     private var pendingPermissionResult: MethodChannel.Result? = null
@@ -58,6 +69,39 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, UPDATE_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "canInstallPackages" -> result.success(packageManager.canRequestPackageInstalls())
+                    "openInstallSettings" -> {
+                        startActivity(
+                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:$packageName")),
+                        )
+                        result.success(true)
+                    }
+                    "installApk" -> installApk(call.argument<String>("path"), result)
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    private fun installApk(path: String?, result: MethodChannel.Result) {
+        val updates = File(cacheDir, "updates").canonicalFile
+        val apk = path?.let { File(it).canonicalFile }
+        if (apk == null || apk.parentFile != updates || !apk.name.endsWith(".apk") || !apk.isFile) {
+            result.error("invalid_path", "not a downloaded update: $path", null)
+            return
+        }
+        val uri = FileProvider.getUriForFile(this, "$packageName.updates", apk)
+        val intent = Intent(Intent.ACTION_VIEW)
+            .setDataAndType(uri, "application/vnd.android.package-archive")
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            startActivity(intent)
+            result.success(true)
+        } catch (e: Exception) {
+            result.error("no_installer", e.message, null)
+        }
     }
 
     private fun hasRecordAudio(): Boolean =
@@ -119,6 +163,7 @@ class MainActivity : FlutterActivity() {
     companion object {
         private const val TAG = "UltraPads"
         private const val PERMISSION_CHANNEL = "dev.ultrapads/permissions"
+        private const val UPDATE_CHANNEL = "dev.ultrapads/update"
         private const val REQUEST_RECORD_AUDIO = 4201
     }
 }

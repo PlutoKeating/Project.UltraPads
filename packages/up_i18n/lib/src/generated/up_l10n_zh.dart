@@ -1590,4 +1590,70 @@ class UpL10nZh extends UpL10n {
 
   @override
   String get settingsBufferSizeSystem => '系统默认';
+
+  @override
+  String get settingsUpdateTitle => '软件更新';
+
+  @override
+  String get settingsUpdateAutoCheck => '自动检查更新';
+
+  @override
+  String get settingsUpdateAutoCheckHint => '启动后向更新服务器查询一次，不发送任何个人或设备信息。';
+
+  @override
+  String get settingsUpdateCheckNow => '检查更新';
+
+  @override
+  String get settingsUpdateChecking => '正在检查更新…';
+
+  @override
+  String get settingsUpdateUpToDate => '已是最新版本';
+
+  @override
+  String get settingsUpdateCheckFailed => '检查更新失败';
+
+  @override
+  String settingsUpdateAvailable(String version) {
+    return '新版本 $version 可用';
+  }
+
+  @override
+  String settingsUpdateAvailableToast(String version) {
+    return 'UltraPads $version 已发布，可在设置中更新';
+  }
+
+  @override
+  String get settingsUpdateNow => '更新';
+
+  @override
+  String settingsUpdateDownloading(int percent) {
+    return '正在下载… $percent%';
+  }
+
+  @override
+  String settingsUpdateDownloadingGithub(int percent) {
+    return '正在从 GitHub 下载… $percent%';
+  }
+
+  @override
+  String get settingsUpdateRestart => '重启以完成更新';
+
+  @override
+  String get settingsUpdateInstall => '安装';
+
+  @override
+  String get settingsUpdateInstallPermission =>
+      '请在接下来的页面允许 UltraPads 安装应用，然后再点一次「安装」。';
+
+  @override
+  String get settingsUpdateFailed => '更新失败';
+
+  @override
+  String get settingsUpdateReleaseNotes => '更新内容';
+
+  @override
+  String get settingsUpdateDownloadPage => '下载页';
+
+  @override
+  String get settingsUpdateManualHint => '当前副本不是用安装脚本安装的，无法自动更新，请从下载页获取新版本。';
 }

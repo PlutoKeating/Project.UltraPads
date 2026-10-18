@@ -1,8 +1,9 @@
 {
-  "$comment": "外部链接配置（演奏页顶栏的视频教程按钮）。页面里不写 URL。videoSearch 按语言选择（找不到用 default），{query} 替换为 URL 编码后的「Kit 名 + videoQuerySuffix」；Kit 自带 videoUrl 时优先使用。",
+  "$comment": "外部链接配置（演奏页顶栏的视频教程按钮、设置页「软件更新」的下载页）。页面里不写 URL。videoSearch 按语言选择（找不到用 default），{query} 替换为 URL 编码后的「Kit 名 + videoQuerySuffix」；Kit 自带 videoUrl 时优先使用。",
   "videoQuerySuffix": "pads tutorial",
   "videoSearch": {
     "default": "https://www.youtube.com/results?search_query={query}",
     "zh": "https://search.bilibili.com/all?keyword={query}"
-  }
+  },
+  "downloadPage": "https://ultrapads.plutokeating.beer"
 }

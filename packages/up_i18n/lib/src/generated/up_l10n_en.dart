@@ -1618,4 +1618,72 @@ class UpL10nEn extends UpL10n {
 
   @override
   String get settingsBufferSizeSystem => 'System default';
+
+  @override
+  String get settingsUpdateTitle => 'Software update';
+
+  @override
+  String get settingsUpdateAutoCheck => 'Check for updates automatically';
+
+  @override
+  String get settingsUpdateAutoCheckHint =>
+      'Asks the update server once after launch; sends nothing about you or this device.';
+
+  @override
+  String get settingsUpdateCheckNow => 'Check for updates';
+
+  @override
+  String get settingsUpdateChecking => 'Checking for updates…';
+
+  @override
+  String get settingsUpdateUpToDate => 'UltraPads is up to date';
+
+  @override
+  String get settingsUpdateCheckFailed => 'Couldn\'t check for updates';
+
+  @override
+  String settingsUpdateAvailable(String version) {
+    return 'Version $version is available';
+  }
+
+  @override
+  String settingsUpdateAvailableToast(String version) {
+    return 'UltraPads $version is available — update it in Settings';
+  }
+
+  @override
+  String get settingsUpdateNow => 'Update';
+
+  @override
+  String settingsUpdateDownloading(int percent) {
+    return 'Downloading… $percent%';
+  }
+
+  @override
+  String settingsUpdateDownloadingGithub(int percent) {
+    return 'Downloading from GitHub… $percent%';
+  }
+
+  @override
+  String get settingsUpdateRestart => 'Restart to finish';
+
+  @override
+  String get settingsUpdateInstall => 'Install';
+
+  @override
+  String get settingsUpdateInstallPermission =>
+      'Allow UltraPads to install apps in the next screen, then tap Install again.';
+
+  @override
+  String get settingsUpdateFailed => 'Update failed';
+
+  @override
+  String get settingsUpdateReleaseNotes => 'What\'s new';
+
+  @override
+  String get settingsUpdateDownloadPage => 'Download page';
+
+  @override
+  String get settingsUpdateManualHint =>
+      'This copy wasn\'t installed with the install script, so it can\'t update itself. Get the new version from the download page.';
 }

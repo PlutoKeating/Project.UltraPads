@@ -18,6 +18,7 @@ import '../../routing/routes.dart';
 import '../../state/engine_state.dart';
 import '../../state/perform_state.dart';
 import '../../state/settings_state.dart';
+import '../../update/update_controller.dart';
 import '../recorder/save_recording_sheet.dart';
 import '../skins/skins_sheet.dart';
 import '../tutorial/tutorial_feedback.dart';
@@ -79,6 +80,22 @@ class _PerformPageState extends ConsumerState<PerformPage>
   void initState() {
     super.initState();
     _events = ref.read(engineProvider).events.listen(_onEngineEvent);
+    // 启动后静默检查一次新版本（设置可关）；有新版时由 _onUpdate 提示一次
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => ref.read(updateProvider.notifier).autoCheck(),
+    );
+  }
+
+  static const _kUpdateNotified = 'updateNotified';
+
+  /// 每个新版本只提示一次（详情与操作在设置 → 关于 → 软件更新）。
+  void _onUpdate(UpdateState? prev, UpdateState next) {
+    final latest = next.info?.latest;
+    if (next.phase != UpdatePhase.available || latest == null) return;
+    final prefs = ref.read(prefsProvider);
+    if (prefs.getString(_kUpdateNotified) == latest) return;
+    prefs.setString(_kUpdateNotified, latest);
+    showUpToast(context, context.l10n.settingsUpdateAvailableToast(latest));
   }
 
   @override
@@ -295,6 +312,7 @@ class _PerformPageState extends ConsumerState<PerformPage>
     final l10n = context.l10n;
     final theme = UpTheme.of(context);
     final c = theme.colors;
+    ref.listen(updateProvider, _onUpdate);
     final view = ref.watch(engineViewProvider.select(_performView));
     final bank = ref.watch(bankProvider);
     final tutorial = ref.watch(tutorialProvider);

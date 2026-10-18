@@ -1522,5 +1522,67 @@
   "settingsReplayGuideDone": "The guide will show on the perform screen",
   "@settingsReplayGuideDone": {},
   "settingsBufferSizeSystem": "System default",
-  "@settingsBufferSizeSystem": {}
+  "@settingsBufferSizeSystem": {},
+  "settingsUpdateTitle": "Software update",
+  "@settingsUpdateTitle": {},
+  "settingsUpdateAutoCheck": "Check for updates automatically",
+  "@settingsUpdateAutoCheck": {},
+  "settingsUpdateAutoCheckHint": "Asks the update server once after launch; sends nothing about you or this device.",
+  "@settingsUpdateAutoCheckHint": {},
+  "settingsUpdateCheckNow": "Check for updates",
+  "@settingsUpdateCheckNow": {},
+  "settingsUpdateChecking": "Checking for updates…",
+  "@settingsUpdateChecking": {},
+  "settingsUpdateUpToDate": "UltraPads is up to date",
+  "@settingsUpdateUpToDate": {},
+  "settingsUpdateCheckFailed": "Couldn't check for updates",
+  "@settingsUpdateCheckFailed": {},
+  "settingsUpdateAvailable": "Version {version} is available",
+  "@settingsUpdateAvailable": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsUpdateAvailableToast": "UltraPads {version} is available — update it in Settings",
+  "@settingsUpdateAvailableToast": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsUpdateNow": "Update",
+  "@settingsUpdateNow": {},
+  "settingsUpdateDownloading": "Downloading… {percent}%",
+  "@settingsUpdateDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsUpdateDownloadingGithub": "Downloading from GitHub… {percent}%",
+  "@settingsUpdateDownloadingGithub": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsUpdateRestart": "Restart to finish",
+  "@settingsUpdateRestart": {},
+  "settingsUpdateInstall": "Install",
+  "@settingsUpdateInstall": {},
+  "settingsUpdateInstallPermission": "Allow UltraPads to install apps in the next screen, then tap Install again.",
+  "@settingsUpdateInstallPermission": {},
+  "settingsUpdateFailed": "Update failed",
+  "@settingsUpdateFailed": {},
+  "settingsUpdateReleaseNotes": "What's new",
+  "@settingsUpdateReleaseNotes": {},
+  "settingsUpdateDownloadPage": "Download page",
+  "@settingsUpdateDownloadPage": {},
+  "settingsUpdateManualHint": "This copy wasn't installed with the install script, so it can't update itself. Get the new version from the download page.",
+  "@settingsUpdateManualHint": {}
 }

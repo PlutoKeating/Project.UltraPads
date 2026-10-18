@@ -5,7 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// 外部链接配置（入库的 `assets/config/links.json`）。页面不硬编码任何 URL。
 class AppLinks {
-  const AppLinks({this.videoSearch = const {}, this.videoQuerySuffix = ''});
+  const AppLinks({
+    this.videoSearch = const {},
+    this.videoQuerySuffix = '',
+    this.downloadPage,
+  });
 
   static const asset = 'assets/config/links.json';
 
@@ -13,11 +17,18 @@ class AppLinks {
   final Map<String, String> videoSearch;
   final String videoQuerySuffix;
 
+  /// 下载落地页（无法自动更新时，设置页「软件更新」打开它）。
+  final Uri? downloadPage;
+
   factory AppLinks.fromJson(Map<String, dynamic> json) => AppLinks(
     videoSearch: Map<String, String>.from(
       json['videoSearch'] as Map? ?? const {},
     ),
     videoQuerySuffix: json['videoQuerySuffix'] as String? ?? '',
+    downloadPage: switch (json['downloadPage']) {
+      final String url when url.isNotEmpty => Uri.tryParse(url),
+      _ => null,
+    },
   );
 
   static Future<AppLinks> load([AssetBundle? bundle]) async {

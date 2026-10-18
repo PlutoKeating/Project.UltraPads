@@ -13,6 +13,7 @@ import '../../routing/routes.dart';
 import '../../state/engine_state.dart';
 import '../../state/settings_state.dart';
 import '../skins/skins_sheet.dart';
+import 'update_section.dart';
 
 /// 设置：音频（缓冲 / 设备 / 延迟）、外观（皮肤 / 动画 pad / 经典动画）、
 /// 语言、键盘映射、我的设备、关于。
@@ -244,9 +245,11 @@ class SettingsPage extends ConsumerWidget {
                   header(l10n.settingsAbout),
                   UpListItem(
                     icon: Icons.info_rounded,
-                    title: l10n.settingsVersion('0.0.1'),
+                    title: l10n.settingsVersion(engine.appVersion),
                     subtitle: l10n.settingsEngineBackend(engine.backendName),
                   ),
+                  const SizedBox(height: UpSheetTokens.itemGap),
+                  const UpdateSection(),
                   const SizedBox(height: UpSheetTokens.itemGap),
                   UpListItem(
                     icon: Icons.folder_special_rounded,
