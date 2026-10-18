@@ -55,8 +55,8 @@
 
 | 平台 | 外壳 | 音频后端 | 验证（v0.0.1） |
 |---|---|---|---|
-| Linux x64 | Flutter linux（GTK） | cpal → ALSA（PipeWire/Pulse 兼容） | ✅（`docs/research/v0.0.1-verification.md`） |
-| Android | Flutter android，minSdk 26；release 开启 R8，keep 规则见 `android/app/proguard-rules.pro` | cpal → AAudio（需 `ndk_context` 初始化，见 bridge 文档；默认设备为伪设备 `aaudio:-1`） | ✅ 模拟器（真机待验收） |
+| Linux x64 | Flutter linux（GTK） | cpal → ALSA（PipeWire/Pulse 兼容）；默认周期 128 帧、双缓冲 | ✅（`docs/research/v0.0.1-verification.md`） |
+| Android | Flutter android，minSdk 26；release 开启 R8，keep 规则见 `android/app/proguard-rules.pro` | cpal → AAudio（需 `ndk_context` 初始化，见 bridge 文档；默认设备为伪设备 `aaudio:-1`）；cpal `realtime` feature 请求 `PERFORMANCE_MODE_LOW_LATENCY`，缓冲固定交给 AAudio（按 burst 回调、欠载时自动加大），忽略 `buffer_frames` | ✅ 模拟器（真机待验收） |
 | Windows | Flutter windows | cpal → WASAPI | 仅开发 |
 | macOS/iOS | Flutter | cpal → CoreAudio | 仅开发 |
 | Web | Flutter web（skwasm） | Rust→WASM，AudioWorklet，需 COOP/COEP；不支持时降级 | 仅开发 |

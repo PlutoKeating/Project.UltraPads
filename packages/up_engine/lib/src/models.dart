@@ -533,7 +533,7 @@ final class AudioStatus {
   const AudioStatus({
     required this.running,
     this.sampleRate = 48000,
-    this.bufferFrames = 256,
+    this.bufferFrames = 128,
     this.device = '',
     this.latencyMs = 0,
     this.host = '',

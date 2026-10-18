@@ -193,9 +193,9 @@ class MockEngineClient implements EngineClient {
   Future<AudioStatus> audioStart(AudioConfig cfg) async => AudioStatus(
     running: true,
     sampleRate: cfg.sampleRate ?? 48000,
-    bufferFrames: cfg.bufferFrames ?? 256,
+    bufferFrames: cfg.bufferFrames ?? 128,
     device: cfg.outputDevice ?? 'mock-out',
-    latencyMs: (cfg.bufferFrames ?? 256) / (cfg.sampleRate ?? 48000) * 1000,
+    latencyMs: (cfg.bufferFrames ?? 128) / (cfg.sampleRate ?? 48000) * 1000,
   );
 
   @override

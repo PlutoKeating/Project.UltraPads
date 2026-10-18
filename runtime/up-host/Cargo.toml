@@ -12,7 +12,11 @@ up-engine = { workspace = true }
 up-codec = { workspace = true }
 up-model = { workspace = true }
 up-recorder = { workspace = true }
-cpal = "0.18"
+# `realtime`: AAudio requests PERFORMANCE_MODE_LOW_LATENCY (without it Android
+# streams take the normal mixer path, tens of ms slower) and the callback
+# thread is promoted to real-time priority (Android / Windows / ALSA when the
+# rlimit allows).
+cpal = { version = "0.18", features = ["realtime"] }
 blake3 = "1"
 uuid = { version = "1", features = ["v7"] }
 serde = { version = "1", features = ["derive"] }

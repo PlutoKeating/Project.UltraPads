@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +22,9 @@ class SettingsPage extends ConsumerWidget {
   /// 缓冲档位（帧）。
   static const _buffers = [64, 128, 256, 512, 1024];
 
+  /// Android 的缓冲由 AAudio 按 burst 决定（引擎忽略固定缓冲请求），不提供档位。
+  static bool get _systemBuffer => !kIsWeb && Platform.isAndroid;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
@@ -33,6 +39,9 @@ class SettingsPage extends ConsumerWidget {
     final devices =
         ref.watch(_devicesProvider).value ?? const <AudioDeviceInfo>[];
     final rate = status.value?.sampleRate;
+    final buffer = _systemBuffer
+        ? 0
+        : settings.bufferFrames ?? status.value?.bufferFrames;
 
     Widget header(String s) => Padding(
       padding: const EdgeInsets.fromLTRB(0, UpSpacing.xxl, 0, UpSpacing.sm),
@@ -124,38 +133,32 @@ class SettingsPage extends ConsumerWidget {
                     icon: Icons.tune_rounded,
                     title: l10n.settingsBufferSize,
                     // 后端没有固定缓冲（如 AAudio 默认）时 bufferFrames 为 0。
-                    subtitle: rate == null
+                    subtitle: rate == null || buffer == null
                         ? null
-                        : (settings.bufferFrames ??
-                                  status.value!.bufferFrames) ==
-                              0
+                        : buffer == 0
                         ? l10n.settingsBufferSizeSystem
                         : l10n.settingsBufferSizeValue(
-                            settings.bufferFrames ?? status.value!.bufferFrames,
-                            (settings.bufferFrames ??
-                                    status.value!.bufferFrames) /
-                                rate *
-                                Duration.millisecondsPerSecond,
+                            buffer,
+                            buffer / rate * Duration.millisecondsPerSecond,
                           ),
-                    trailing: Wrap(
-                      spacing: UpSpacing.xs,
-                      children: [
-                        for (final b in _buffers)
-                          UpChip(
-                            label: '$b',
-                            variant:
-                                (settings.bufferFrames ??
-                                        status.value?.bufferFrames) ==
-                                    b
-                                ? UpChipVariant.selected
-                                : UpChipVariant.normal,
-                            onTap: () async {
-                              ctrl.setBufferFrames(b);
-                              await restartAudio();
-                            },
+                    trailing: _systemBuffer
+                        ? null
+                        : Wrap(
+                            spacing: UpSpacing.xs,
+                            children: [
+                              for (final b in _buffers)
+                                UpChip(
+                                  label: '$b',
+                                  variant: buffer == b
+                                      ? UpChipVariant.selected
+                                      : UpChipVariant.normal,
+                                  onTap: () async {
+                                    ctrl.setBufferFrames(b);
+                                    await restartAudio();
+                                  },
+                                ),
+                            ],
                           ),
-                      ],
-                    ),
                   ),
                   const SizedBox(height: UpSheetTokens.itemGap),
                   UpListItem(

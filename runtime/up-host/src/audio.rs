@@ -21,7 +21,8 @@ use up_engine::AudioProcessor;
 /// Requested output configuration (`docs/API.md` §3 `AudioConfig`).
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AudioConfig {
-    /// Desired buffer size in frames (`None` = low-latency default, 256).
+    /// Desired buffer size in frames (`None` = low-latency default,
+    /// [`DEFAULT_BUFFER_FRAMES`]). Ignored on Android (AAudio picks the burst).
     pub buffer_frames: Option<u32>,
     /// Desired sample rate (`None` = device default).
     pub sample_rate: Option<u32>,
@@ -60,8 +61,10 @@ pub struct AudioDeviceInfo {
     pub max_buffer_frames: Option<u32>,
 }
 
-/// Default buffer request when the caller does not specify one.
-pub const DEFAULT_BUFFER_FRAMES: u32 = 256;
+/// Default buffer request when the caller does not specify one: 128 frames
+/// (2.7 ms at 48 kHz per period; ALSA double-buffers, so ~10 ms command →
+/// DAC on PipeWire instead of ~18 ms at 256).
+pub const DEFAULT_BUFFER_FRAMES: u32 = 128;
 /// Largest callback chunk handled in one go (bigger callbacks are split).
 const SCRATCH_FRAMES: usize = 4096;
 
@@ -434,6 +437,11 @@ impl AudioHost {
         };
         let want = cfg.buffer_frames.unwrap_or(DEFAULT_BUFFER_FRAMES);
         let buffer_frames = match chosen.buffer_size() {
+            // AAudio: a fixed request forces `frames_per_data_callback` and a
+            // 2× capacity, which bypasses the burst-aligned fast path. The
+            // default lets AAudio call back once per burst and tune the
+            // buffer on underruns (Oboe's low-latency recipe).
+            _ if cfg!(target_os = "android") => None,
             SupportedBufferSize::Range { min, max } => Some(want.clamp(*min, *max)),
             SupportedBufferSize::Unknown => cfg.buffer_frames,
         };
