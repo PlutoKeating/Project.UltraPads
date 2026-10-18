@@ -166,11 +166,11 @@ class _UpPadState extends State<UpPad> with TickerProviderStateMixin {
   void _onPressChanged() {
     final reduce = FxMotion.reduce(context);
     if (widget.pressed) {
-      _flash.animateTo(
-        1,
-        duration: reduce ? Duration.zero : UpPadTokens.pressAttack,
-        curve: UpPadTokens.pressCurve,
-      );
+      // 按下即全亮：pressAttack（≈1 帧）用动画实现时，控制器要到下一帧才开始走，
+      // 按下后的第一帧几乎看不出变化；直接置 1 让按下当帧就渲染出亮态。
+      _flash
+        ..stop()
+        ..value = 1;
     } else {
       _flash.animateTo(
         0,
