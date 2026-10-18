@@ -100,3 +100,8 @@ release:
 # 站点（website/）测试：安装脚本端到端 + 发布清单
 website-test:
     cd website && npm test
+
+# 曲库入库管线（tools/catalog）的测试：Rust 工具 + Python 管线
+catalog-test:
+    cargo test -p up-catalog-pack
+    cd tools/catalog && python3 -m unittest discover -s tests -t .

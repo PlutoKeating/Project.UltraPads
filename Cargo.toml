@@ -9,6 +9,7 @@ members = [
   "runtime/up-hub",
   "runtime/up-cli",
   "runtime/up-update",
+  "tools/catalog/pack",
   "bridge/up-ffi",
 ]
 

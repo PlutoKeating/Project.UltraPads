@@ -1,0 +1,139 @@
+"""分轨 → 音色组 / pad 布局，并生成 .upkit 目录（kit.json + samples/*.flac + 许可证文件）。
+
+每个乐器一个音色组（bank），一组 12 个 pad，全部是 Loop + Toggle + 按小节量化，同组互斥（exclusive）：
+素材有 8 小节时 = 2 个 4 小节完整乐句（A / B）、4 个 2 小节（八拍）、6 个 1 小节（半八拍）；不足 8 小节则按实际长度缩减。
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import numpy as np
+
+from . import SR, audio, licenses
+from .model import ROLE_COLOR, Song, n_bars
+
+LICENSE_FILE = "LICENSE.txt"
+ATTRIBUTION_FILE = "ATTRIBUTION.txt"
+
+
+def pad_plan(bars: int) -> list[tuple[str, int, int]]:
+    """素材共 `bars` 个小节 → [(标签, 起始小节, 小节数)]，最多 12 个。"""
+    if bars >= 8:
+        return [
+            ("4bar A", 0, 4), ("4bar B", 4, 4),
+            ("2bar A1", 0, 2), ("2bar A2", 2, 2), ("2bar B1", 4, 2), ("2bar B2", 6, 2),
+            ("1bar A1", 0, 1), ("1bar A2", 1, 1), ("1bar A3", 2, 1), ("1bar A4", 3, 1),
+            ("1bar B1", 4, 1), ("1bar B4", 7, 1),
+        ]
+    if bars >= 4:
+        return [
+            ("4bar", 0, 4), ("2bar 1", 0, 2), ("2bar 2", 2, 2),
+            ("1bar 1", 0, 1), ("1bar 2", 1, 1), ("1bar 3", 2, 1), ("1bar 4", 3, 1),
+        ]
+    return [(f"{i + 1}bar", i, 1) for i in range(max(bars, 0))]
+
+
+def kit_uuid(song_id: str) -> str:
+    """由条目 id 确定性派生的 Kit ID（UUIDv8 形态，同一条目每次打包得到同一个 ID，客户端重复下载自动去重）。"""
+    import hashlib
+
+    h = bytearray(hashlib.blake2b(f"ultrapads-catalog:{song_id}".encode(), digest_size=16).digest())
+    h[6] = (h[6] & 0x0F) | 0x80
+    h[8] = (h[8] & 0x3F) | 0x80
+    x = h.hex()
+    return f"urn:uuid:{x[:8]}-{x[8:12]}-{x[12:16]}-{x[16:20]}-{x[20:]}"
+
+
+def license_text(song: Song) -> str:
+    lic = song.license
+    return (
+        f"{song.title} — {song.artist}\n"
+        f"License: {licenses.label_of(lic)} ({lic})\n{licenses.url_of(lic)}\n\n"
+        f"{song.attribution}\n"
+        + ("\nThis kit is a derivative arrangement; adaptations must be shared under the same license (ShareAlike).\n"
+           if licenses.share_alike(lic) else "")
+        + ("\nNon-commercial use only.\n" if not licenses.commercial_ok(lic) else "")
+        + (f"\n{song.extra['notice']}\n" if song.extra.get("notice") else "")
+    )
+
+
+def build_kit_dir(song: Song, stems: dict[str, np.ndarray], out: Path) -> dict:
+    """写 `out/kit.json`、`out/samples/*.flac`、许可证文件；返回条目统计。"""
+    song.validate()
+    if out.exists():
+        for p in sorted(out.rglob("*"), reverse=True):
+            p.unlink() if p.is_file() else p.rmdir()
+    (out / "samples").mkdir(parents=True)
+    pads, total_pad = [], 0
+    first_loop_secs = None
+    for bank, meta in enumerate(song.stems):
+        x = stems[meta.name]
+        bars = n_bars(x, song.bpm, song.offset)
+        plan = pad_plan(bars)
+        if not plan:
+            raise ValueError(f"{song.id}/{meta.name}：不足 1 小节")
+        for index, (label, start, nb) in enumerate(plan):
+            seg = audio.slice_bars(x, song.bpm, start, nb, song.offset * SR)
+            rel = f"samples/{meta.role}{bank + 1}_{label.replace(' ', '_').lower()}.flac"
+            audio.encode_flac(seg, out / rel)
+            flat = bank * 12 + index
+            pads.append({
+                "addr": {"bank": bank, "index": index},
+                "note": 36 + flat,
+                "name": f"{meta.name} {label}",
+                "color": ROLE_COLOR[meta.role],
+                "kind": "loop",
+                "launch": {"mode": "toggle", "quantize": "1bar", "retrigger": "restart"},
+                "exclusive": f"group{bank + 1}",
+                "tempo": {"bpm": song.bpm, "beats": nb * 4, "timeSignature": [4, 4], "stretch": "beats"},
+                "layers": [{"sample": rel}],
+            })
+            total_pad += 1
+            if first_loop_secs is None and nb == 4:
+                first_loop_secs = len(seg) / SR
+    doc = {
+        "id": kit_uuid(song.id),
+        "name": song.title,
+        "description": song.description,
+        "authors": [song.artist],
+        "license": song.license,
+        "genres": song.genres,
+        "tags": song.tags,
+        "tempo": {"bpm": song.bpm, "timeSignature": [4, 4]},
+        "padCount": len(song.stems) * 12,
+        "pads": pads,
+        "themeColor": song.theme_color,
+        "source": {"kind": "catalog", "originalId": song.id, "originalName": song.source_url, "inspiredBy": song.attribution},
+    }
+    (out / "kit.json").write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
+    (out / LICENSE_FILE).write_text(license_text(song), encoding="utf-8")
+    (out / ATTRIBUTION_FILE).write_text(song.attribution + "\n", encoding="utf-8")
+    if song.extra.get("notice_file"):  # 第三方素材（如 SoundFont）要求随附的版权与许可声明原文
+        (out / "NOTICE.txt").write_text(Path(song.extra["notice_file"]).read_text(encoding="utf-8"), encoding="utf-8")
+    return {"pad_count": total_pad, "group_count": len(song.stems), "loop_secs": first_loop_secs or 4 * 4 * 60.0 / song.bpm}
+
+
+def item_json(song: Song, stats: dict) -> dict:
+    """data 服务 admin 接口用的元数据（docs/API.md §7.4；size / sha256 由服务端计算）。"""
+    lic = song.license
+    return {
+        "id": song.id,
+        "title": song.title,
+        "artist": song.artist,
+        "description": song.description,
+        "origin": song.origin,
+        "license": lic,
+        "license_url": licenses.url_of(lic),
+        "attribution": song.attribution,
+        "source_url": song.source_url,
+        "bpm": round(song.bpm),
+        "genres": song.genres,
+        "tags": song.tags,
+        "group_count": stats["group_count"],
+        "pad_count": stats["pad_count"],
+        "duration_secs": round(stats["loop_secs"], 2),
+        "theme_color": song.theme_color,
+        "status": "draft",
+    }

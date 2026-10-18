@@ -1,0 +1,29 @@
+{
+  "_说明": "管线用到的外部资源及其许可证核对记录。fetch 子命令会校验 sha256 与许可证原文，不符直接失败。",
+  "soundfont": {
+    "name": "MuseScore_General.sf2",
+    "version": "0.2.0",
+    "url": "https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/MuseScore_General.sf2",
+    "sha256": "ee51d2c4b1525e70f19a45909c4fd7a2e26d91d115fa89dbf5a6bc413d8b9bf3",
+    "license": "MIT",
+    "license_url": "https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/MuseScore_General_License.md",
+    "license_sha256": "5ad8d737e13c7f01f5b9674872a82a92b4ba253603e8ed14b9db12293550b4b9",
+    "license_must_contain": "shared under the MIT license",
+    "credits": "FluidR3 © 2000-2002, 2008 Frank Wen; FluidR3Mono © 2014-17 Michael Cowgill; MuseScore_General adaptation © 2018-19 S. Christian Collins"
+  },
+  "album": {
+    "name": "AlbumDB: A multitrack dataset of a ten-song album with stereo and immersive 7.1.4 masters",
+    "zenodo_record": 19683001,
+    "doi": "10.5281/zenodo.19683001",
+    "license": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "artist": "Tom McKenzie",
+    "authors": "Thomas McKenzie, Eloi Moliner Juanpere, Alec Wright",
+    "record_url": "https://zenodo.org/records/19683001",
+    "zip_url": "https://zenodo.org/api/records/19683001/files/stems_mixed.zip/content"
+  },
+  "ccmixter": {
+    "api": "https://ccmixter.org/api/query",
+    "note": "无需 key；许可证以每条上传的 license_url 为准，只收白名单内的 CC 许可证"
+  }
+}

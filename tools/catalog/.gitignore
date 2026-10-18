@@ -1,0 +1,5 @@
+# 下载缓存与管线产物不入库
+.cache/
+out/
+__pycache__/
+*.pyc
