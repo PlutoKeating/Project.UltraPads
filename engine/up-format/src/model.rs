@@ -1,23 +1,24 @@
 //! [`KitDoc`]（格式层，完整表达 `.upkit`）↔ [`up_model::KitDoc`]（引擎/FFI/UI 使用的文档）的映射。
 //!
-//! `up_model::KitDoc` 每个 pad 只有一个采样、一个对称 choke 组，没有力度层/轮替/loop 点/
-//! 非对称 choke 等字段；因此：
-//! - 正向 [`to_model`]：取第一个采样层；`choke = choked_by.or(choke_group)`（开闭镲都落在同一组）
-//! - 反向 [`apply_model`]：把编辑结果**合并**到原 `KitDoc` 上，保留模型表达不了的部分
-//!   （其余采样层、轮替、非对称 choke、教程……）；`timeRatio`、`fadeInMs`、`fadeOutMs`
+//! up-model 现在覆盖了格式层的 pad 语义（多采样层/力度层/轮替、loop 点、非对称 choke 与释放方式、
+//! 自截断、重触发方式、细粒度量化、拉伸策略、Kit 描述/主题色/来源），因此两边基本一一映射：
+//! - 正向 [`to_model`]：直接映射；`gain_db` → 线性 `gain`；`up_model::PadDoc::sample` 镜像第一个采样层
+//! - 反向 [`apply_model`]：把编辑结果合并到原 `KitDoc` 上；模型的 `layers` 为权威，若 UI 只改了
+//!   主采样（`sample` 与 `layers[0]` 不一致）则替换为单层；`timeRatio`、`fadeInMs`、`fadeOutMs`
 //!   存进 pad 的扩展字段（`ultrapads-kit.json`）
-//!
-//! 需要 up-model 补的字段见 crate 文档 / 报告。
 
-use up_core::{Bank, ColorRole as MColor, KitId, PadId, PadMode, Quantize as MQuantize, SampleId};
+use up_core::{
+    Bank, ColorRole as MColor, KitId, PadId, PadMode, Quantize as MQuantize,
+    Retrigger as MRetrigger, SampleId,
+};
 use up_model::{
-    JudgeWindow, LoopMeta, SampleRef, TimeSignature, TutorialAction, TutorialChart, TutorialEvent,
-    TutorialLesson, TutorialTarget,
+    ChokeRelease, JudgeWindow, KitSource as MKitSource, LoopMeta, SampleRef, Stretch as MStretch,
+    TimeSignature, TutorialAction, TutorialChart, TutorialEvent, TutorialLesson, TutorialTarget,
 };
 
 use crate::kit::{
-    ColorRole, KitDoc, KitTempo, LaunchMode, LoopTempo, PadAddr, PadColor, PadDoc, PadKind,
-    Quantize, SampleLayer, Stretch,
+    ChokeMode, ColorRole, KitDoc, KitSource, KitTempo, LaunchMode, LoopTempo, PadAddr, PadColor,
+    PadDoc, PadKind, Quantize, Retrigger, SampleLayer, Stretch,
 };
 use crate::smf::Chart;
 use crate::tutorial::{TutorialDoc, TutorialMode};
@@ -38,14 +39,15 @@ pub fn color_to_model(c: &PadColor) -> MColor {
     match c {
         PadColor::Role(r) => match r {
             ColorRole::Blue => MColor::Blue,
-            ColorRole::Green | ColorRole::Lime => MColor::Green,
+            ColorRole::Green => MColor::Green,
+            ColorRole::Lime => MColor::Lime,
             ColorRole::Orange => MColor::Orange,
             ColorRole::Pink => MColor::Pink,
             ColorRole::Aqua => MColor::Cyan,
             ColorRole::Red => MColor::Red,
             ColorRole::Purple => MColor::Purple,
             ColorRole::Yellow => MColor::Yellow,
-            ColorRole::Grey => MColor::Neutral,
+            ColorRole::Grey => MColor::Grey,
         },
         PadColor::Hex(h) => nearest_role(h),
     }
@@ -61,7 +63,8 @@ pub fn color_from_model(c: MColor) -> PadColor {
         MColor::Yellow => ColorRole::Yellow,
         MColor::Red => ColorRole::Red,
         MColor::Cyan => ColorRole::Aqua,
-        MColor::Neutral => ColorRole::Grey,
+        MColor::Lime => ColorRole::Lime,
+        MColor::Grey | MColor::Neutral => ColorRole::Grey,
     })
 }
 
@@ -100,21 +103,117 @@ fn quantize_to_model(q: Quantize) -> Option<MQuantize> {
     match q {
         Quantize::None => Some(MQuantize::None),
         Quantize::Global => None,
-        Quantize::Sixteenth | Quantize::Eighth | Quantize::Quarter | Quantize::Beat => {
-            Some(MQuantize::Beat)
-        }
-        Quantize::Bar | Quantize::TwoBars | Quantize::FourBars => Some(MQuantize::Bar),
+        Quantize::Sixteenth => Some(MQuantize::Sixteenth),
+        Quantize::Eighth => Some(MQuantize::Eighth),
+        // 拍 = 四分音符
+        Quantize::Quarter | Quantize::Beat => Some(MQuantize::Beat),
+        Quantize::Bar => Some(MQuantize::Bar),
+        Quantize::TwoBars => Some(MQuantize::TwoBars),
+        Quantize::FourBars => Some(MQuantize::FourBars),
     }
 }
 
-fn quantize_from_model(q: Option<MQuantize>, kind: PadKind) -> Quantize {
+fn quantize_from_model(q: Option<MQuantize>, kind: PadKind, prev: Quantize) -> Quantize {
     match q {
         Some(MQuantize::None) => Quantize::None,
+        Some(MQuantize::Sixteenth) => Quantize::Sixteenth,
+        Some(MQuantize::Eighth) => Quantize::Eighth,
+        // 保留原文件是 `1/4` 还是 `1beat` 的写法
+        Some(MQuantize::Beat) if prev == Quantize::Quarter => Quantize::Quarter,
         Some(MQuantize::Beat) => Quantize::Beat,
         Some(MQuantize::Bar) => Quantize::Bar,
+        Some(MQuantize::TwoBars) => Quantize::TwoBars,
+        Some(MQuantize::FourBars) => Quantize::FourBars,
         None if kind == PadKind::Loop => Quantize::Global,
         None => Quantize::None,
     }
+}
+
+fn stretch_to_model(s: Stretch) -> MStretch {
+    match s {
+        Stretch::None => MStretch::None,
+        Stretch::Beats => MStretch::Beats,
+        Stretch::Repitch => MStretch::Repitch,
+    }
+}
+
+fn stretch_from_model(s: MStretch) -> Stretch {
+    match s {
+        MStretch::None => Stretch::None,
+        MStretch::Beats => Stretch::Beats,
+        MStretch::Repitch => Stretch::Repitch,
+    }
+}
+
+fn choke_to_model(m: ChokeMode) -> ChokeRelease {
+    match m {
+        ChokeMode::Fast => ChokeRelease::Fast,
+        ChokeMode::Normal => ChokeRelease::Normal,
+        ChokeMode::Time(secs) => ChokeRelease::Time { secs },
+    }
+}
+
+fn choke_from_model(m: ChokeRelease) -> ChokeMode {
+    match m {
+        ChokeRelease::Fast => ChokeMode::Fast,
+        ChokeRelease::Normal => ChokeMode::Normal,
+        ChokeRelease::Time { secs } => ChokeMode::Time(secs),
+    }
+}
+
+fn group_to_model(g: Option<u32>) -> Option<u8> {
+    g.and_then(|g| u8::try_from(g).ok())
+}
+
+fn layer_to_model(l: &SampleLayer) -> up_model::SampleLayer {
+    up_model::SampleLayer {
+        sample: SampleRef {
+            id: SampleId::new(l.sample_id.clone().unwrap_or_default()),
+            path: Some(l.sample.clone()),
+            name: crate::path::file_stem(&l.sample).to_string(),
+            blake3: l.sample_id.clone(),
+            ..Default::default()
+        },
+        lovel: l.lovel,
+        hivel: l.hivel,
+        seq_position: l.seq_position,
+        rand_range: l.rand_range,
+        root_key: l.root_key,
+        start_frame: l.start_frame,
+        end_frame: l.end_frame,
+        loop_start: l.loop_start,
+        loop_end: l.loop_end,
+        transpose: l.transpose,
+        tune_cents: l.tune_cents,
+        volume_db: l.volume_db,
+    }
+}
+
+fn layer_from_model(l: &up_model::SampleLayer) -> SampleLayer {
+    let s = &l.sample;
+    let hash = s
+        .blake3
+        .clone()
+        .or_else(|| (!s.id.as_str().is_empty()).then(|| s.id.as_str().to_string()));
+    let path = s
+        .path
+        .clone()
+        .unwrap_or_else(|| format!("samples/{}.wav", crate::path::slug(&s.name)));
+    let mut out = SampleLayer::new(path);
+    out.sample_id = hash;
+    out.lovel = l.lovel;
+    out.hivel = l.hivel;
+    out.seq_position = l.seq_position;
+    out.rand_range = l.rand_range;
+    out.root_key = l.root_key;
+    out.start_frame = l.start_frame;
+    out.end_frame = l.end_frame;
+    out.loop_start = l.loop_start;
+    out.loop_end = l.loop_end;
+    out.transpose = l.transpose;
+    out.tune_cents = l.tune_cents;
+    out.volume_db = l.volume_db;
+    out
 }
 
 fn ext_f32(p: &PadDoc, key: &str, default: f32) -> f32 {
@@ -139,12 +238,19 @@ pub fn to_model(doc: &KitDoc, tutorial: Option<TutorialChart>) -> up_model::KitD
         tutorial,
         ..Default::default()
     };
+    m.meta.description = doc.description.clone();
+    m.meta.theme_color = doc.theme_color.clone();
     m.meta.author = (!doc.authors.is_empty()).then(|| doc.authors.join(", "));
     m.meta.genre = doc.genres.clone();
     m.meta.tags = doc.tags.clone();
     m.meta.cover = doc.cover.clone();
     m.meta.license = doc.license.clone();
     if let Some(src) = &doc.source {
+        m.meta.source = Some(MKitSource {
+            kind: src.kind.clone(),
+            original_id: src.original_id.clone(),
+            original_name: src.original_name.clone(),
+        });
         if let Some(i) = &src.inspired_by {
             let (artist, title) = match i.split_once(" — ") {
                 Some((a, t)) => (Some(a.to_string()), Some(t.to_string())),
@@ -167,26 +273,24 @@ pub fn to_model(doc: &KitDoc, tutorial: Option<TutorialChart>) -> up_model::KitD
         mp.mode = mode_to_model(p);
         mp.gain = db_to_linear(p.gain_db);
         mp.pan = p.pan;
-        mp.choke_group = p
-            .choked_by
-            .or(p.choke_group)
-            .and_then(|g| u8::try_from(g).ok());
+        mp.choke_group = group_to_model(p.choke_group);
+        mp.choked_by = group_to_model(p.choked_by);
+        mp.choke_release = choke_to_model(p.choke_mode);
+        mp.self_choke = p.self_choke;
+        mp.retrigger = match p.launch.retrigger {
+            Retrigger::Restart => MRetrigger::Restart,
+            Retrigger::Continue => MRetrigger::Continue,
+        };
+        mp.exclusive = p.exclusive.clone();
         mp.color = color_to_model(&p.color);
         mp.quantize = quantize_to_model(p.launch.quantize);
+        mp.seq_length = p.seq_length;
         mp.time_ratio = ext_f32(p, EXT_TIME_RATIO, 1.0).clamp(0.5, 2.0);
         mp.fade_in_ms = ext_f32(p, EXT_FADE_IN, 0.0);
         mp.fade_out_ms = ext_f32(p, EXT_FADE_OUT, 0.0);
+        mp.layers = p.layers.iter().map(layer_to_model).collect();
+        mp.normalize();
         if let Some(l) = p.layers.first() {
-            let id = l.sample_id.clone().unwrap_or_default();
-            mp.sample = Some(SampleRef {
-                id: SampleId::new(id.clone()),
-                path: Some(l.sample.clone()),
-                name: crate::path::file_stem(&l.sample).to_string(),
-                blake3: l.sample_id.clone(),
-                ..Default::default()
-            });
-            mp.start_frame = l.start_frame.unwrap_or(0);
-            mp.end_frame = l.end_frame;
             mp.pitch_semitones =
                 (l.transpose as f32 + l.tune_cents as f32 / 100.0).clamp(-12.0, 12.0);
         }
@@ -195,6 +299,14 @@ pub fn to_model(doc: &KitDoc, tutorial: Option<TutorialChart>) -> up_model::KitD
                 bpm: p.tempo.map(|t| t.bpm),
                 beats: p.tempo.and_then(|t| t.beats),
                 root_note: p.layers.first().and_then(|l| l.root_key),
+                time_signature: p.tempo.map(|t| TimeSignature {
+                    numerator: u32::from(t.time_signature[0]),
+                    denominator: u32::from(t.time_signature[1]),
+                }),
+                stretch: p
+                    .tempo
+                    .map(|t| stretch_to_model(t.stretch))
+                    .unwrap_or_default(),
             });
         }
         m.pads.push(mp);
@@ -215,6 +327,21 @@ pub fn apply_model(base: &mut KitDoc, m: &up_model::KitDoc) {
         bpm,
         time_signature: ts,
     });
+    if m.meta.description.is_some() {
+        base.description = m.meta.description.clone();
+    }
+    if m.meta.theme_color.is_some() {
+        base.theme_color = m.meta.theme_color.clone();
+    }
+    if let Some(src) = &m.meta.source {
+        let inspired = base.source.as_ref().and_then(|s| s.inspired_by.clone());
+        base.source = Some(KitSource {
+            kind: src.kind.clone(),
+            original_id: src.original_id.clone(),
+            original_name: src.original_name.clone(),
+            inspired_by: inspired,
+        });
+    }
     if !m.meta.genre.is_empty() || !base.genres.is_empty() {
         base.genres = m.meta.genre.clone();
     }
@@ -256,14 +383,19 @@ pub fn apply_model(base: &mut KitDoc, m: &up_model::KitDoc) {
         };
         p.kind = kind;
         p.launch.mode = mode;
-        p.launch.quantize = quantize_from_model(mp.quantize, kind);
+        p.launch.quantize = quantize_from_model(mp.quantize, kind, p.launch.quantize);
+        p.launch.retrigger = match mp.retrigger {
+            MRetrigger::Restart => Retrigger::Restart,
+            MRetrigger::Continue => Retrigger::Continue,
+        };
         p.gain_db = linear_to_db(mp.gain);
         p.pan = mp.pan.clamp(-1.0, 1.0);
-        let new_group = mp.choke_group.map(u32::from);
-        if p.choked_by.or(p.choke_group) != new_group {
-            p.choke_group = new_group;
-            p.choked_by = new_group;
-        }
+        p.choke_group = mp.choke_group.map(u32::from);
+        p.choked_by = mp.choked_by.map(u32::from);
+        p.choke_mode = choke_from_model(mp.choke_release);
+        p.self_choke = mp.self_choke;
+        p.exclusive = mp.exclusive.clone();
+        p.seq_length = mp.seq_length;
         p.color = color_from_model(mp.color);
         for (k, v, default) in [
             (EXT_TIME_RATIO, mp.time_ratio, 1.0),
@@ -277,41 +409,55 @@ pub fn apply_model(base: &mut KitDoc, m: &up_model::KitDoc) {
                 p.extra.remove(k);
             }
         }
-        match &mp.sample {
-            None => p.layers.clear(),
-            Some(s) => {
-                let hash = s
-                    .blake3
-                    .clone()
-                    .or_else(|| (!s.id.as_str().is_empty()).then(|| s.id.as_str().to_string()));
-                let path = s
-                    .path
-                    .clone()
-                    .unwrap_or_else(|| format!("samples/{}.wav", crate::path::slug(&s.name)));
-                let same = p.layers.first().is_some_and(|l| {
-                    hash.is_some() && l.sample_id == hash || l.sample == path && hash.is_none()
-                });
-                if !same {
-                    let mut l = SampleLayer::new(path);
-                    l.sample_id = hash;
-                    p.layers = vec![l];
+        // 采样层：`layers` 为权威；UI 只改了主采样时替换为单层。
+        let primary_changed = match (&mp.sample, mp.layers.first()) {
+            (Some(s), Some(l)) => s.id != l.sample.id,
+            (None, Some(_)) => true,
+            _ => false,
+        };
+        let mut layers: Vec<SampleLayer> = if mp.layers.is_empty() || primary_changed {
+            match &mp.sample {
+                None => Vec::new(),
+                Some(s) => {
+                    let mut l = up_model::SampleLayer::new(s.clone());
+                    l.start_frame = (mp.start_frame > 0).then_some(mp.start_frame);
+                    l.end_frame = mp.end_frame.map(|e| e.saturating_sub(1));
+                    if let Some(old) = mp.layers.first() {
+                        l.loop_start = old.loop_start;
+                        l.loop_end = old.loop_end;
+                    }
+                    vec![layer_from_model(&l)]
                 }
-                let l = &mut p.layers[0];
-                l.start_frame = (mp.start_frame > 0).then_some(mp.start_frame);
-                l.end_frame = mp.end_frame;
-                let semis = mp.pitch_semitones.clamp(-12.0, 12.0);
-                l.transpose = semis.trunc() as i32;
-                l.tune_cents = ((semis - semis.trunc()) * 100.0).round() as i32;
             }
+        } else {
+            mp.layers.iter().map(layer_from_model).collect()
+        };
+        if let Some(l) = layers.first_mut() {
+            // 编辑器的主层修剪与音高
+            l.start_frame = (mp.start_frame > 0).then_some(mp.start_frame);
+            l.end_frame = mp.end_frame.map(|e| e.saturating_sub(1));
+            let semis = mp.pitch_semitones.clamp(-12.0, 12.0);
+            l.transpose = semis.trunc() as i32;
+            l.tune_cents = ((semis - semis.trunc()) * 100.0).round() as i32;
         }
+        p.layers = layers;
         if let Some(lm) = mp.loop_meta {
             if let Some(bpm) = lm.bpm {
                 let prev = p.tempo;
                 p.tempo = Some(LoopTempo {
                     bpm,
                     beats: lm.beats,
-                    time_signature: prev.map(|t| t.time_signature).unwrap_or(ts),
-                    stretch: prev.map(|t| t.stretch).unwrap_or(Stretch::None),
+                    time_signature: lm
+                        .time_signature
+                        .and_then(|t| {
+                            Some([
+                                u8::try_from(t.numerator).ok()?,
+                                u8::try_from(t.denominator).ok()?,
+                            ])
+                        })
+                        .or(prev.map(|t| t.time_signature))
+                        .unwrap_or(ts),
+                    stretch: stretch_from_model(lm.stretch),
                 });
             }
             if let (Some(root), Some(l)) = (lm.root_note, p.layers.first_mut()) {
@@ -487,7 +633,10 @@ mod tests {
         let m = to_model(&doc(), None);
         assert_eq!(m.pads.len(), 2);
         let hh = &m.pads[0];
-        assert_eq!(hh.choke_group, Some(3));
+        assert_eq!((hh.choke_group, hh.choked_by), (Some(4), Some(3)));
+        assert_eq!(hh.choke_release, ChokeRelease::Time { secs: 0.03 });
+        assert_eq!(hh.layers.len(), 2, "力度层直接映射");
+        assert_eq!(hh.layers[1].lovel, 101);
         assert!((hh.gain - 0.501).abs() < 0.01);
         assert_eq!(hh.color, MColor::Orange);
         assert_eq!(
@@ -539,7 +688,7 @@ mod tests {
         assert_eq!(merged.name, "Edited");
         assert_eq!(merged.pads.len(), 2);
         let hh = merged.pad(PadAddr::from_flat(2)).unwrap();
-        assert_eq!((hh.choke_group, hh.choked_by), (Some(9), Some(9)));
+        assert_eq!((hh.choke_group, hh.choked_by), (Some(9), Some(3)));
         assert_eq!(hh.layers.len(), 1);
         assert_eq!(hh.layers[0].sample, "samples/mic.wav");
         assert_eq!((hh.layers[0].transpose, hh.layers[0].tune_cents), (-2, -50));

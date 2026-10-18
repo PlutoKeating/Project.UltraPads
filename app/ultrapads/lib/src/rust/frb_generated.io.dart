@@ -3,7 +3,11 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/simple.dart';
+import 'api/engine.dart';
+import 'api/hub.dart';
+import 'api/library.dart';
+import 'api/tracks.dart';
+import 'api/types.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -19,10 +23,285 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw);
+
+  @protected
+  RustStreamSink<EngineEvent> dco_decode_StreamSink_engine_event_Sse(
+    dynamic raw,
+  );
+
+  @protected
+  RustStreamSink<HubPeer> dco_decode_StreamSink_hub_peer_Sse(dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
+  AppDirs dco_decode_app_dirs(dynamic raw);
+
+  @protected
+  AudioConfig dco_decode_audio_config(dynamic raw);
+
+  @protected
+  AudioDeviceInfo dco_decode_audio_device_info(dynamic raw);
+
+  @protected
+  AudioStatus dco_decode_audio_status(dynamic raw);
+
+  @protected
+  Bank dco_decode_bank(dynamic raw);
+
+  @protected
+  bool dco_decode_bool(dynamic raw);
+
+  @protected
+  AppDirs dco_decode_box_autoadd_app_dirs(dynamic raw);
+
+  @protected
+  AudioConfig dco_decode_box_autoadd_audio_config(dynamic raw);
+
+  @protected
+  Bank dco_decode_box_autoadd_bank(dynamic raw);
+
+  @protected
+  ColorRole dco_decode_box_autoadd_color_role(dynamic raw);
+
+  @protected
+  Command dco_decode_box_autoadd_command(dynamic raw);
+
+  @protected
+  double dco_decode_box_autoadd_f_32(dynamic raw);
+
+  @protected
+  double dco_decode_box_autoadd_f_64(dynamic raw);
+
+  @protected
+  HubEvent dco_decode_box_autoadd_hub_event(dynamic raw);
+
+  @protected
+  PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw);
+
+  @protected
+  KitSummary dco_decode_box_autoadd_kit_summary(dynamic raw);
+
+  @protected
+  PadId dco_decode_box_autoadd_pad_id(dynamic raw);
+
+  @protected
+  PadParams dco_decode_box_autoadd_pad_params(dynamic raw);
+
+  @protected
+  Quantize dco_decode_box_autoadd_quantize(dynamic raw);
+
+  @protected
+  TrackInfo dco_decode_box_autoadd_track_info(dynamic raw);
+
+  @protected
+  TransportCmd dco_decode_box_autoadd_transport_cmd(dynamic raw);
+
+  @protected
+  TutorialChart dco_decode_box_autoadd_tutorial_chart(dynamic raw);
+
+  @protected
+  int dco_decode_box_autoadd_u_32(dynamic raw);
+
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+
+  @protected
+  int dco_decode_box_autoadd_u_8(dynamic raw);
+
+  @protected
+  UpError dco_decode_box_autoadd_up_error(dynamic raw);
+
+  @protected
+  ColorRole dco_decode_color_role(dynamic raw);
+
+  @protected
+  Command dco_decode_command(dynamic raw);
+
+  @protected
+  EngineEvent dco_decode_engine_event(dynamic raw);
+
+  @protected
+  EngineInfo dco_decode_engine_info(dynamic raw);
+
+  @protected
+  EngineSnapshot dco_decode_engine_snapshot(dynamic raw);
+
+  @protected
+  ErrorCode dco_decode_error_code(dynamic raw);
+
+  @protected
+  double dco_decode_f_32(dynamic raw);
+
+  @protected
+  double dco_decode_f_64(dynamic raw);
+
+  @protected
+  HubEvent dco_decode_hub_event(dynamic raw);
+
+  @protected
+  HubPeer dco_decode_hub_peer(dynamic raw);
+
+  @protected
+  int dco_decode_i_32(dynamic raw);
+
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw);
+
+  @protected
+  ImportReport dco_decode_import_report(dynamic raw);
+
+  @protected
+  Judgement dco_decode_judgement(dynamic raw);
+
+  @protected
+  KitSort dco_decode_kit_sort(dynamic raw);
+
+  @protected
+  KitSummary dco_decode_kit_summary(dynamic raw);
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
+  List<AudioDeviceInfo> dco_decode_list_audio_device_info(dynamic raw);
+
+  @protected
+  List<KitSummary> dco_decode_list_kit_summary(dynamic raw);
+
+  @protected
+  List<PadSnapshot> dco_decode_list_pad_snapshot(dynamic raw);
+
+  @protected
+  Float32List dco_decode_list_prim_f_32_strict(dynamic raw);
+
+  @protected
+  Float64List dco_decode_list_prim_f_64_strict(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<SampleInfo> dco_decode_list_sample_info(dynamic raw);
+
+  @protected
+  List<TrackInfo> dco_decode_list_track_info(dynamic raw);
+
+  @protected
+  List<TutorialEvent> dco_decode_list_tutorial_event(dynamic raw);
+
+  @protected
+  List<TutorialLesson> dco_decode_list_tutorial_lesson(dynamic raw);
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  Bank? dco_decode_opt_box_autoadd_bank(dynamic raw);
+
+  @protected
+  ColorRole? dco_decode_opt_box_autoadd_color_role(dynamic raw);
+
+  @protected
+  double? dco_decode_opt_box_autoadd_f_32(dynamic raw);
+
+  @protected
+  double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
+
+  @protected
+  PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
+
+  @protected
+  KitSummary? dco_decode_opt_box_autoadd_kit_summary(dynamic raw);
+
+  @protected
+  PadId? dco_decode_opt_box_autoadd_pad_id(dynamic raw);
+
+  @protected
+  Quantize? dco_decode_opt_box_autoadd_quantize(dynamic raw);
+
+  @protected
+  TutorialChart? dco_decode_opt_box_autoadd_tutorial_chart(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_8(dynamic raw);
+
+  @protected
+  Float64List? dco_decode_opt_list_prim_f_64_strict(dynamic raw);
+
+  @protected
+  PadId dco_decode_pad_id(dynamic raw);
+
+  @protected
+  PadMode dco_decode_pad_mode(dynamic raw);
+
+  @protected
+  PadParams dco_decode_pad_params(dynamic raw);
+
+  @protected
+  PadPlayState dco_decode_pad_play_state(dynamic raw);
+
+  @protected
+  PadSnapshot dco_decode_pad_snapshot(dynamic raw);
+
+  @protected
+  PairedDevice dco_decode_paired_device(dynamic raw);
+
+  @protected
+  Quantize dco_decode_quantize(dynamic raw);
+
+  @protected
+  RecorderState dco_decode_recorder_state(dynamic raw);
+
+  @protected
+  Retrigger dco_decode_retrigger(dynamic raw);
+
+  @protected
+  SampleInfo dco_decode_sample_info(dynamic raw);
+
+  @protected
+  SyncReport dco_decode_sync_report(dynamic raw);
+
+  @protected
+  TrackInfo dco_decode_track_info(dynamic raw);
+
+  @protected
+  TransportClock dco_decode_transport_clock(dynamic raw);
+
+  @protected
+  TransportCmd dco_decode_transport_cmd(dynamic raw);
+
+  @protected
+  TransportState dco_decode_transport_state(dynamic raw);
+
+  @protected
+  TutorialAction dco_decode_tutorial_action(dynamic raw);
+
+  @protected
+  TutorialChart dco_decode_tutorial_chart(dynamic raw);
+
+  @protected
+  TutorialEvent dco_decode_tutorial_event(dynamic raw);
+
+  @protected
+  TutorialLesson dco_decode_tutorial_lesson(dynamic raw);
+
+  @protected
+  int dco_decode_u_16(dynamic raw);
+
+  @protected
+  int dco_decode_u_32(dynamic raw);
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -31,10 +310,308 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void dco_decode_unit(dynamic raw);
 
   @protected
+  UpError dco_decode_up_error(dynamic raw);
+
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
+
+  @protected
+  RustStreamSink<EngineEvent> sse_decode_StreamSink_engine_event_Sse(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RustStreamSink<HubPeer> sse_decode_StreamSink_hub_peer_Sse(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  AppDirs sse_decode_app_dirs(SseDeserializer deserializer);
+
+  @protected
+  AudioConfig sse_decode_audio_config(SseDeserializer deserializer);
+
+  @protected
+  AudioDeviceInfo sse_decode_audio_device_info(SseDeserializer deserializer);
+
+  @protected
+  AudioStatus sse_decode_audio_status(SseDeserializer deserializer);
+
+  @protected
+  Bank sse_decode_bank(SseDeserializer deserializer);
+
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  AppDirs sse_decode_box_autoadd_app_dirs(SseDeserializer deserializer);
+
+  @protected
+  AudioConfig sse_decode_box_autoadd_audio_config(SseDeserializer deserializer);
+
+  @protected
+  Bank sse_decode_box_autoadd_bank(SseDeserializer deserializer);
+
+  @protected
+  ColorRole sse_decode_box_autoadd_color_role(SseDeserializer deserializer);
+
+  @protected
+  Command sse_decode_box_autoadd_command(SseDeserializer deserializer);
+
+  @protected
+  double sse_decode_box_autoadd_f_32(SseDeserializer deserializer);
+
+  @protected
+  double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
+  HubEvent sse_decode_box_autoadd_hub_event(SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
+
+  @protected
+  KitSummary sse_decode_box_autoadd_kit_summary(SseDeserializer deserializer);
+
+  @protected
+  PadId sse_decode_box_autoadd_pad_id(SseDeserializer deserializer);
+
+  @protected
+  PadParams sse_decode_box_autoadd_pad_params(SseDeserializer deserializer);
+
+  @protected
+  Quantize sse_decode_box_autoadd_quantize(SseDeserializer deserializer);
+
+  @protected
+  TrackInfo sse_decode_box_autoadd_track_info(SseDeserializer deserializer);
+
+  @protected
+  TransportCmd sse_decode_box_autoadd_transport_cmd(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  TutorialChart sse_decode_box_autoadd_tutorial_chart(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_box_autoadd_u_8(SseDeserializer deserializer);
+
+  @protected
+  UpError sse_decode_box_autoadd_up_error(SseDeserializer deserializer);
+
+  @protected
+  ColorRole sse_decode_color_role(SseDeserializer deserializer);
+
+  @protected
+  Command sse_decode_command(SseDeserializer deserializer);
+
+  @protected
+  EngineEvent sse_decode_engine_event(SseDeserializer deserializer);
+
+  @protected
+  EngineInfo sse_decode_engine_info(SseDeserializer deserializer);
+
+  @protected
+  EngineSnapshot sse_decode_engine_snapshot(SseDeserializer deserializer);
+
+  @protected
+  ErrorCode sse_decode_error_code(SseDeserializer deserializer);
+
+  @protected
+  double sse_decode_f_32(SseDeserializer deserializer);
+
+  @protected
+  double sse_decode_f_64(SseDeserializer deserializer);
+
+  @protected
+  HubEvent sse_decode_hub_event(SseDeserializer deserializer);
+
+  @protected
+  HubPeer sse_decode_hub_peer(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+
+  @protected
+  ImportReport sse_decode_import_report(SseDeserializer deserializer);
+
+  @protected
+  Judgement sse_decode_judgement(SseDeserializer deserializer);
+
+  @protected
+  KitSort sse_decode_kit_sort(SseDeserializer deserializer);
+
+  @protected
+  KitSummary sse_decode_kit_summary(SseDeserializer deserializer);
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
+  List<AudioDeviceInfo> sse_decode_list_audio_device_info(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  List<KitSummary> sse_decode_list_kit_summary(SseDeserializer deserializer);
+
+  @protected
+  List<PadSnapshot> sse_decode_list_pad_snapshot(SseDeserializer deserializer);
+
+  @protected
+  Float32List sse_decode_list_prim_f_32_strict(SseDeserializer deserializer);
+
+  @protected
+  Float64List sse_decode_list_prim_f_64_strict(SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<SampleInfo> sse_decode_list_sample_info(SseDeserializer deserializer);
+
+  @protected
+  List<TrackInfo> sse_decode_list_track_info(SseDeserializer deserializer);
+
+  @protected
+  List<TutorialEvent> sse_decode_list_tutorial_event(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  List<TutorialLesson> sse_decode_list_tutorial_lesson(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  Bank? sse_decode_opt_box_autoadd_bank(SseDeserializer deserializer);
+
+  @protected
+  ColorRole? sse_decode_opt_box_autoadd_color_role(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  double? sse_decode_opt_box_autoadd_f_32(SseDeserializer deserializer);
+
+  @protected
+  double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
+
+  @protected
+  KitSummary? sse_decode_opt_box_autoadd_kit_summary(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PadId? sse_decode_opt_box_autoadd_pad_id(SseDeserializer deserializer);
+
+  @protected
+  Quantize? sse_decode_opt_box_autoadd_quantize(SseDeserializer deserializer);
+
+  @protected
+  TutorialChart? sse_decode_opt_box_autoadd_tutorial_chart(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer);
+
+  @protected
+  Float64List? sse_decode_opt_list_prim_f_64_strict(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  PadId sse_decode_pad_id(SseDeserializer deserializer);
+
+  @protected
+  PadMode sse_decode_pad_mode(SseDeserializer deserializer);
+
+  @protected
+  PadParams sse_decode_pad_params(SseDeserializer deserializer);
+
+  @protected
+  PadPlayState sse_decode_pad_play_state(SseDeserializer deserializer);
+
+  @protected
+  PadSnapshot sse_decode_pad_snapshot(SseDeserializer deserializer);
+
+  @protected
+  PairedDevice sse_decode_paired_device(SseDeserializer deserializer);
+
+  @protected
+  Quantize sse_decode_quantize(SseDeserializer deserializer);
+
+  @protected
+  RecorderState sse_decode_recorder_state(SseDeserializer deserializer);
+
+  @protected
+  Retrigger sse_decode_retrigger(SseDeserializer deserializer);
+
+  @protected
+  SampleInfo sse_decode_sample_info(SseDeserializer deserializer);
+
+  @protected
+  SyncReport sse_decode_sync_report(SseDeserializer deserializer);
+
+  @protected
+  TrackInfo sse_decode_track_info(SseDeserializer deserializer);
+
+  @protected
+  TransportClock sse_decode_transport_clock(SseDeserializer deserializer);
+
+  @protected
+  TransportCmd sse_decode_transport_cmd(SseDeserializer deserializer);
+
+  @protected
+  TransportState sse_decode_transport_state(SseDeserializer deserializer);
+
+  @protected
+  TutorialAction sse_decode_tutorial_action(SseDeserializer deserializer);
+
+  @protected
+  TutorialChart sse_decode_tutorial_chart(SseDeserializer deserializer);
+
+  @protected
+  TutorialEvent sse_decode_tutorial_event(SseDeserializer deserializer);
+
+  @protected
+  TutorialLesson sse_decode_tutorial_lesson(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -43,13 +620,220 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_decode_unit(SseDeserializer deserializer);
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
+  UpError sse_decode_up_error(SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
+  void sse_encode_AnyhowException(
+    AnyhowException self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_StreamSink_engine_event_Sse(
+    RustStreamSink<EngineEvent> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_StreamSink_hub_peer_Sse(
+    RustStreamSink<HubPeer> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_app_dirs(AppDirs self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_audio_config(AudioConfig self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_audio_device_info(
+    AudioDeviceInfo self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_audio_status(AudioStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_bank(Bank self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_app_dirs(AppDirs self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_audio_config(
+    AudioConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_bank(Bank self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_color_role(
+    ColorRole self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_command(Command self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_f_32(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_hub_event(
+    HubEvent self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_i_64(
+    PlatformInt64 self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_kit_summary(
+    KitSummary self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_pad_id(PadId self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_pad_params(
+    PadParams self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_quantize(Quantize self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_track_info(
+    TrackInfo self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_transport_cmd(
+    TransportCmd self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_tutorial_chart(
+    TutorialChart self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_up_error(UpError self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_color_role(ColorRole self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_command(Command self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_engine_event(EngineEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_engine_info(EngineInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_engine_snapshot(
+    EngineSnapshot self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_error_code(ErrorCode self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_f_32(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_hub_event(HubEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_hub_peer(HubPeer self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_import_report(ImportReport self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_judgement(Judgement self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_kit_sort(KitSort self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_kit_summary(KitSummary self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_audio_device_info(
+    List<AudioDeviceInfo> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_kit_summary(
+    List<KitSummary> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_pad_snapshot(
+    List<PadSnapshot> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_prim_f_32_strict(
+    Float32List self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_prim_f_64_strict(
+    Float64List self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_u_8_strict(
@@ -58,16 +842,175 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_sample_info(
+    List<SampleInfo> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_track_info(
+    List<TrackInfo> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_tutorial_event(
+    List<TutorialEvent> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_tutorial_lesson(
+    List<TutorialLesson> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_bank(Bank? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_color_role(
+    ColorRole? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_f_32(double? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_i_64(
+    PlatformInt64? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_kit_summary(
+    KitSummary? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_pad_id(PadId? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_quantize(
+    Quantize? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_tutorial_chart(
+    TutorialChart? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_list_prim_f_64_strict(
+    Float64List? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_pad_id(PadId self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pad_mode(PadMode self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pad_params(PadParams self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pad_play_state(PadPlayState self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pad_snapshot(PadSnapshot self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_paired_device(PairedDevice self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_quantize(Quantize self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_recorder_state(RecorderState self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_retrigger(Retrigger self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sample_info(SampleInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sync_report(SyncReport self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_track_info(TrackInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_transport_clock(
+    TransportClock self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_transport_cmd(TransportCmd self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_transport_state(
+    TransportState self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_tutorial_action(
+    TutorialAction self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_tutorial_chart(TutorialChart self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_tutorial_event(TutorialEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_tutorial_lesson(
+    TutorialLesson self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
+  void sse_encode_up_error(UpError self, SseSerializer serializer);
 }
 
 // Section: wire_class

@@ -1,7 +1,15 @@
 [package]
 name = "up-sampler"
+description = "UltraPads 24-pad sampler: one-shot/loop/gate, quantized launch, choke groups, voice stealing, varispeed"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
+up-core = { workspace = true }
+up-rt = { workspace = true }
+up-dsp = { workspace = true }
+up-transport = { workspace = true }
+
+[dev-dependencies]
+up-rt = { workspace = true }

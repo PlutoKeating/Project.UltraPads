@@ -1,7 +1,12 @@
 [package]
 name = "up-model"
+description = "UltraPads document model: kit, project, session, patterns, arrangement, mixer, MIDI, Link"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
+up-core = { workspace = true }
+up-protocol = { workspace = true }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

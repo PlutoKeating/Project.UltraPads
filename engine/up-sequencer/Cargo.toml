@@ -1,7 +1,10 @@
 [package]
 name = "up-sequencer"
+description = "UltraPads step-sequencer scheduling core"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
+up-core = { workspace = true }
+up-model = { workspace = true }

@@ -1,7 +1,33 @@
 [package]
 name = "up-host"
+description = "UltraPads runtime host: audio devices (cpal), input capture, kit folder loading, track storage, app core"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
+up-core = { workspace = true }
+up-protocol = { workspace = true }
+up-engine = { workspace = true }
+up-codec = { workspace = true }
+up-model = { workspace = true }
+up-recorder = { workspace = true }
+cpal = "0.18"
+blake3 = "1"
+uuid = { version = "1", features = ["v7"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+log = "0.4"
+crossbeam-channel = "0.5"
+arc-swap = "1"
+rtrb = "0.4"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# Same version cpal uses; only to silence ALSA's stderr probe noise.
+alsa = "0.11"
+
+[target.'cfg(target_os = "android")'.dependencies]
+ndk-context = "0.1"
+
+[dev-dependencies]
+up-codec = { workspace = true }

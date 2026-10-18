@@ -15,73 +15,122 @@
 
 ```rust
 pub enum Command {
-    PadDown { pad: PadId, velocity: f32 },
+    PadDown { pad: PadId, velocity: f32 },  // velocity 0..=1，增益 = velocity²
     PadUp { pad: PadId },
     StopAll,
-    SetTempo { bpm: f64 },
-    SetSpeed { ratio: f64 },            // 0.5..=2.0，界面上的 1.0x
-    SetQuantize { q: Quantize },        // None | Beat | Bar
+    SetTempo { bpm: f64 },                  // 20..=400
+    SetSpeed { ratio: f64 },                // 0.5..=2.0；实时变速变调（varispeed），transport 同比缩放
+    SetQuantize { q: Quantize },            // 全局量化，默认 None（与原 App 一致：Loop 按下立即从头播）
     SetPadParams { pad: PadId, params: PadParams },
-    SetMasterGain { gain: f32 },
-    StartRecording, StopRecording,
-    Transport(TransportCmd),            // Play | Stop | Seek(beat)
+    SetMasterGain { gain: f32 },            // 线性 0..=4
+    StartRecording, StopRecording,          // 录制主输出 → TrackSaved
+    Transport(TransportCmd),                // Play | Stop | Seek(beat)
 }
 
-pub enum PadMode { OneShot, Loop, Gate }
+pub enum PadMode { OneShot, Loop, Gate }    // 原 Kit behaviour 200 / 100 / 300
+pub enum Quantize { None, Sixteenth, Eighth, Beat, Bar, TwoBars, FourBars }  // 拍 = 四分音符
+pub enum Retrigger { Restart, Continue }     // 正在播放的 one-shot/gate 再按：重新开始 | 忽略
 
-pub struct PadParams {
+pub struct PadParams {                       // serde 缺省字段取默认值
     pub mode: PadMode,
-    pub gain: f32,
-    pub pan: f32,
-    pub choke_group: Option<u8>,
-    pub color: ColorRole,               // 引用 token 角色，不是 RGB
-    pub sample: Option<SampleId>,
-    pub start_frame: u64, pub end_frame: Option<u64>,
-    pub quantize_override: Option<Quantize>,
+    pub gain: f32,                           // 线性增益 0..=4（不是 dB）
+    pub pan: f32,                            // -1..=1，等功率声像，居中 0 dB
+    pub choke_group: Option<u8>,             // 本 pad 所属组（SFZ group）
+    pub choked_by: Option<u8>,               // 被哪个组截断（SFZ off_by）；None = 同 choke_group（对称互斥）
+    pub choke_release_ms: Option<f32>,       // 被截断时的淡出；None = 5 ms
+    pub self_choke: bool,                    // 默认 true：重触发截断自身旧声部（false = one-shot 可叠加）
+    pub retrigger: Retrigger,
+    pub color: ColorRole,                    // Blue Orange Pink Green Purple Yellow Red Cyan Lime Grey Neutral（token 角色）
+    pub sample: Option<SampleId>,            // 必须已注册（已加载 Kit / 麦克风采样 / library_use_sample）
+    pub start_frame: u64, pub end_frame: Option<u64>,   // end 为开区间
+    pub loop_start: Option<u64>, pub loop_end: Option<u64>, // Loop 模式的循环区（默认 start..end）
+    pub quantize_override: Option<Quantize>, // None = Loop 跟随全局，OneShot/Gate 立即
 }
 
 pub enum PadPlayState { Idle, Pending, Playing, Stopping }
+pub enum RecorderState { Idle, Recording, Saving }
 
 pub enum EngineEvent {
     PadState { pad: PadId, state: PadPlayState },
-    Transport { playing: bool, beat: f64, bpm: f64, bar_len_beats: f64 },
+    Transport { playing: bool, beat: f64, bpm: f64 /*有效 = 基础 × speed*/, bar_len_beats: f64,
+                song_secs: f64 /*= beat × 60 / 基础 bpm*/ },
     Meters { master_peak: [f32; 2], master_rms: [f32; 2], pad_levels: Vec<f32> /*24*/ },
     Recorder { state: RecorderState, elapsed_secs: f64 },
     KitLoaded { kit: KitSummary },
+    TrackSaved { track: TrackInfo },         // 录音完成并入库（新增）
+    TrackPlayback { track: Option<TrackId> },// 作品试听开始 / 结束（新增）
     LibraryChanged,
     Hub(HubEvent),
     Error(UpError),
 }
+
+pub struct TransportClock { playing: bool, beat: f64, song_secs: f64, bpm: f64 /*基础*/, speed: f64 }
+pub struct EngineSnapshot { pads: Vec<PadSnapshot /*24*/>, transport: TransportState, kit: Option<KitSummary>,
+                            master_gain, recorder, recorder_elapsed_secs, sample_rate, active_voices }
+pub struct RenderScript { duration_secs: f64, events: Vec<TimedCommand { at_secs: f64, cmd: Command }> }
 ```
 
-- 事件以约 60Hz 合并推送：Meters 只保留最新值；PadState 和 Transport 变化立即排队。
+行为规则（对齐 `docs/research/compat-*-analysis.md`）：
+- **Loop**：默认不量化，按下立即从头循环，再按停止（≈5 ms 淡出）。量化开启时：`Idle → Pending →`（下一个网格边界，采样级精确）`Playing`；Playing 时再按 → `Stopping`（等边界）→ `Idle`；Pending/等待中的 Stopping 再按可取消。第一个量化 Loop 会从 beat 0 启动 transport，最后一个 Loop 结束后自动停止。
+- **One-shot**：再按从头重触发（旧声部 5 ms 淡出）；**Gate**：松手淡出。
+- **Choke**：触发 pad X（组 g）时，所有 `choked_by.or(choke_group) == g` 的其它 pad 停止（Loop 也关掉，Pending 取消）。
+- **复音**：默认最多 32 个发声声部 + 16 个淡出尾巴；超限时偷取最老的 one-shot/gate（Loop 最后被偷），被偷声部淡出。
+- **速度**：`SetSpeed` 对所有声部做 4 点 Hermite 插值变速变调，transport 同比缩放；原 App 的三档 1.0 / 0.7 / 0.5 是推荐预设。离线 pitch/tempo 接口见 `up_dsp::stretch::OfflineStretcher`（后续接 Signalsmith Stretch）。
+- 事件约 60 Hz 合并：Meters 只保留最新值（无声时不重复发送）；PadState、Transport、Recorder 变化立即排队（控制线程 4 ms 轮询）。
 
-## 3. FFI 面（bridge/up-ffi → Dart `package:up_engine`）
+## 3. FFI 面（bridge/up-ffi → Dart `lib/src/rust/api/*.dart`）
+
+DTO 定义在 `bridge/up-ffi/src/api/types.rs`（与引擎类型一一对应，Dart 侧由 FRB 生成，带数据的枚举用 freezed）。所有函数返回 `Result<T, UpError>`，Dart 中以 `UpError` 异常抛出。
 
 | 函数 | 同步 | 说明 |
 |---|---|---|
-| `init(app_dirs: AppDirs) -> EngineInfo` | | 初始化存储根目录和日志 |
-| `audio_start(cfg: AudioConfig) -> AudioStatus` | | `AudioConfig { buffer_frames: Option<u32>, sample_rate: Option<u32>, output_device: Option<String> }` |
-| `audio_stop()` | | |
-| `audio_devices() -> Vec<AudioDeviceInfo>` | | |
-| `events() -> Stream<EngineEvent>` | | FRB `StreamSink` |
-| `snapshot() -> EngineSnapshot` | ✅ | 全部 pad 状态、transport、当前 kit |
-| `pad_down(bank, index, velocity)` / `pad_up(bank, index)` | ✅ | 热路径 |
-| `send(cmd: Command)` | ✅ | 通用命令 |
-| `library_list_kits() -> Vec<KitSummary>` | | |
-| `library_load_kit(kit: KitId)` | | 解码 + 交给引擎；完成后推送 `KitLoaded` |
-| `library_import(path: String) -> ImportReport` | | 支持原生 Kit 包、SFZ、WAV 文件夹、原 App 素材目录 |
-| `library_export_kit(kit, path, format)` | | |
-| `library_save_kit(kit: KitDoc)` | | 编辑 Kit 后保存 |
-| `sample_waveform(sample, buckets: u32) -> Vec<f32>` | | 峰值概要，供 UI 绘制 |
-| `sampler_record_start(input_device: Option<String>)` / `sampler_record_stop() -> SampleId` | | 麦克风采样 |
-| `tracks_list() -> Vec<TrackInfo>` / `track_play(id)` / `track_stop()` / `track_export(id, path, fmt)` / `track_delete(id)` | | 录音作品 |
-| `tutorial_get(kit) -> Option<TutorialChart>` | | 教程谱 |
-| `hub_start_server(name)` / `hub_stop_server()` | | 桌面 Hub |
-| `hub_discover() -> Stream<HubPeer>` | | mDNS 发现 |
-| `hub_pair(peer, code) -> PairedDevice` | | |
-| `hub_sync(peer) -> SyncReport` | | 增量同步曲库 |
-| `hub_controller_connect(peer)` / `hub_controller_disconnect()` | | 手机变成远端打击垫，之后 `pad_down/up` 改为转发 |
+| `init(app_dirs: AppDirs { data_dir, cache_dir }) -> EngineInfo` | | 创建引擎（48 kHz，`audio_start` 时按设备采样率重建）并打开曲库 `<data_dir>/library`；幂等（热重启后再次调用返回现有实例） |
+| `audio_start(cfg: AudioConfig) -> AudioStatus` | | `AudioConfig { buffer_frames: Option<u32> /*默认 256*/, sample_rate: Option<u32>, output_device: Option<String> /*id 或名称*/ }`；`AudioStatus { running, host, device, sample_rate, channels, buffer_frames, sample_format, output_latency_ms }` |
+| `audio_stop()` / `audio_status() -> AudioStatus` | | |
+| `audio_devices() -> Vec<AudioDeviceInfo>` | | `{ id, name, is_input, is_output, is_default_output, is_default_input, default_sample_rate, max_output_channels, max_input_channels, min/max_buffer_frames }` |
+| `events() -> Stream<EngineEvent>` | | 每次调用一个独立订阅。**建议在应用生命周期内保持一个订阅；取消时不要 `await sub.cancel()`**——FRB 的 `async*` 流要等到下一个事件才完成取消 |
+| `snapshot() -> EngineSnapshot` | ✅ | 无锁读取 |
+| `pad_down(bank, index, velocity)` / `pad_up(bank, index)` | ✅ | 热路径：无锁入队（微秒级） |
+| `send(cmd: Command)` | ✅ | 通用命令（无锁） |
+| `transport_clock() -> TransportClock` | ✅ | 由最近一个音频块外推到“现在”的精确时钟，供教程判定 |
+| `tutorial_judge(expected_secs, actual_secs, speed, perfect_ms, miss_ms) -> Judgement` | ✅ | `Perfect` / `TooFast` / `TooSlow` / `Miss`；窗口为真实时间毫秒 |
+| `tutorial_get(kit: String) -> Option<TutorialChart>` | | 见下方教程格式 |
+| `latency_probe_arm()` / `latency_probe_result() -> Option<[enqueue_to_output_ms, callback_to_playback_ms]>` | ✅ | 实测触摸→出声 |
+| `library_list_kits() -> Vec<KitSummary>` | | 按名称排序 |
+| `library_search_kits(text, genre, favorites_only, sort: KitSort, limit) -> Vec<KitSummary>` | | `KitSort { Name, RecentlyUsed, RecentlyAdded, Favorited }` |
+| `library_genres() -> Vec<String>` / `library_set_favorite(kit, bool) -> KitSummary` / `library_delete_kit(kit)` | | |
+| `library_load_kit(kit: String) -> KitSummary` | | 解码 + 重采样 + 交给引擎（先 StopAll），推送 `KitLoaded`。开发便利：若 `kit` 不是曲库 ID 而是一个文件夹路径，则按"音频文件按名排序 → pad"加载 |
+| `library_import(path) -> ImportReport` | | `.upkit`（ZIP/文件夹）、SFZ、音频文件夹、单个音频文件（入库为样本）、原 App 素材目录；`ImportReport { kind, kits, duplicates, samples, catalog_entries, warnings }` |
+| `library_export_kit(kit, path, format) -> String` | | `format`：`upkit` / `upkit-folder` / `sfz` / `dawproject`；返回写出的路径 |
+| `library_save_kit(kit_json: String) -> KitSummary` | | `kit_json` = `up_model::KitDoc` 的 camelCase JSON（避免在 FFI 镜像整套文档模型） |
+| `library_current_kit_json() -> Option<String>` / `library_kit_json(kit) -> String` | | 当前 / 任意 Kit 的 `KitDoc` JSON（编辑器读取→修改→`library_save_kit`） |
+| `library_list_samples() -> Vec<SampleInfo>` / `library_use_sample(sample)` | | 独立样本（麦克风/导入）；`use` 把样本注册进引擎后即可用 `SetPadParams` 分配 |
+| `sample_waveform(sample, buckets) -> Vec<f32>` | | 峰值概要 0..=1（引擎已加载的样本优先，其次曲库） |
+| `sampler_record_start(input_device: Option<String>)` / `sampler_record_stop() -> String` | | 麦克风采样（最长 30 s）；停止后存入曲库（`Microphone` 样本）并注册进引擎，返回 `SampleId`（BLAKE3） |
+| `tracks_list() -> Vec<TrackInfo>` / `track_play(id)` / `track_stop()` / `track_rename(id, name) -> TrackInfo` / `track_export(id, path, fmt) -> String` / `track_delete(id)` | | 录音作品（曲库 `tracks/`），`fmt`：`wav`（BWF）/ `dawproject`；`TrackInfo.waveform` 为 128 段概要 |
+| `hub_start_server(name)` / `hub_stop_server()` / `hub_discover() -> Stream<HubPeer>` / `hub_pair(peer, code) -> PairedDevice` / `hub_sync(peer) -> SyncReport` / `hub_controller_connect(peer)` / `hub_controller_disconnect()` | | **v0.0.1 暂返回 `ErrorCode::NotImplemented`**，由集成方接到 `runtime/up-hub` |
+
+`KitSummary`（FFI）= 引擎字段 `{ id, name, pad_count, bpm, has_tutorial }` + 曲库字段 `{ description, authors, genres, tags, theme_color, inspired_by, cover_path, favorite, source_kind, last_used_at_ms }`（引擎事件中曲库字段为空）。
+
+**教程格式（`TutorialChart`，时间单位 = 秒，速度 1.0 时的歌曲时间）**
+
+```rust
+pub struct TutorialChart {
+    events: Vec<TutorialEvent>,      // 按 time_secs 排序
+    lessons: Vec<TutorialLesson { events, duration_secs, song_start_secs }>,
+    bpm: Option<f64>,
+    perfect_ms: f64,                 // 默认 80：|误差| ≤ 80 ms → PERFECT
+    miss_ms: f64,                    // 默认 600：超出视为 Miss；其间按早/晚 → TOO FAST / TOO SLOW
+    timed: bool,                     // false = 旧版只规定顺序的教程（步骤相隔 1 s）
+}
+pub struct TutorialEvent { time_secs: f64, pad: Option<PadId>, page_switch: Option<Bank>,
+                           color: Option<ColorRole>, action: TutorialAction /* Tap | LoopToggle */ }
+```
+
+- 来源：原 App 4.x `tutorial.json` 的 `[{time, pad 1..24 | 100/101, color, state}]`（`state 0` → `LoopToggle`），`<id>_lesson.json` → `lessons`；旧版 3.x `sequence` → `timed=false`。
+- 判定：UI 在 `Transport(Play)` 后按下 pad 时读 `transport_clock().song_secs`，与事件 `time_secs` 比较（`tutorial_judge`）。慢速练习时 `SetSpeed { ratio: 0.7 | 0.5 }`：音频变速，`song_secs` 以 `speed × 真实时间` 推进，事件时间无需换算；拖动进度条 = `Transport(Seek(time_secs × bpm / 60))`。
+
+**Android 平台通道**：`MainActivity` 在 `onCreate` 中 `System.loadLibrary("up_ffi")` 并调用 JNI `nativeInit(context)` 初始化 `ndk_context`（cpal/AAudio 需要；Dart 的 `dlopen` 不会触发 `JNI_OnLoad`）。麦克风权限走 **MethodChannel `dev.ultrapads/permissions`**：`recordAudioStatus` → `"granted" | "denied"`，`requestRecordAudio` → `bool`；在 `sampler_record_start` 之前调用。
 
 Dart 侧：`package:up_engine` 导出 `abstract class EngineClient`，提供 `FfiEngineClient`（FRB）和 `MockEngineClient`（UI 开发和 golden test 用）两种实现。
 
@@ -188,7 +237,7 @@ end 16B  tag       HMAC-SHA256(会话密钥, 前面所有字节) 的前 16 字�
 | `list_kits(&KitQuery) -> Vec<KitSummary>` | `library_list_kits` | `KitQuery { text, genre, favorites_only, used_only, sort: Name/RecentlyUsed/RecentlyAdded/Favorited, limit }`；`KitSummary::to_protocol()` 转 `up_protocol::KitSummary` |
 | `genres()` / `recent_kits(n)` / `set_favorite(id, bool)` / `mark_used(id)` / `delete_kit(id)` | | 曲风筛选、最近使用、收藏 |
 | `load_kit_assets(id) -> LoadedKit` / `load_kit_assets_with(id, LoadOptions)` | `library_load_kit` | `LoadedKit { doc: up_format::KitDoc, model: up_model::KitDoc, summary, samples: 包内路径 → LoadedSample { sample_id, file, sample_rate, channels, frames, pcm: Option<DecodedPcm> }, warnings }`；`model` 中 `SampleRef.id` = BLAKE3 = `LoadedSample.sample_id`；`pcm` 为交错 f32；会记为最近使用 |
-| `kit_model(id) -> up_model::KitDoc` / `save_kit_model(&up_model::KitDoc) -> KitSummary` | `library_current_kit_json` / `library_save_kit` | 保存时合并到原 Kit，保留模型表达不了的力度层/轮替/非对称 choke/教程；新采样用 `SampleRef.blake3`（或 `id`）引用曲库样本 |
+| `kit_model(id) -> up_model::KitDoc` / `save_kit_model(&up_model::KitDoc) -> KitSummary` | `library_current_kit_json` / `library_save_kit` | 保存时合并到原 Kit（模型已覆盖多采样层/轮替/loop 点/非对称 choke/细粒度量化，直接映射；教程保留在包内）；新采样用 `SampleRef.blake3`（或 `id`）引用曲库样本 |
 | `kit_doc(id)` / `save_kit(&up_format::KitDoc)` / `kit_package(id)` / `kit_manifest(id)` / `kit_tutorials(id)` | | 完整格式层文档（`.upkit` 无损） |
 | `import(path) -> ImportReport` / `import_zip_bytes(name, bytes)` / `import_fs(&dyn SourceFs, force_upkit)` | `library_import` | 自动识别：原 App 素材（多来源，见下）→ `.upkit`（ZIP/文件夹）→ SFZ → 音频文件夹；单个 `.wav` 作为样本入库。`ImportReport { kind, kits: [ImportedKit { kit_id, name, pad_count, pads_used, duplicate }], samples, catalog_entries, warnings }` |
 | `export_kit(id, dest, ExportFormat)` | `library_export_kit` | `ExportFormat::parse("upkit"/"upkit-folder"/"sfz"/"dawproject")` |

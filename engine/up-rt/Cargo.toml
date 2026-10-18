@@ -1,7 +1,13 @@
 [package]
 name = "up-rt"
+description = "Realtime-safe primitives: lock-free queues, deferred drop, atomic params, allocation checks"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
+rtrb = "0.4"
+crossbeam-queue = "0.3"
+
+[features]
+default = []

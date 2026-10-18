@@ -1,7 +1,20 @@
 [package]
 name = "up-graph"
+description = "UltraPads audio graph abstraction with Firewheel and built-in serial backends"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
+[features]
+default = ["firewheel"]
+# Firewheel graph backend (default). Without it only the built-in serial
+# backend is available.
+firewheel = ["dep:firewheel", "dep:audioadapter-buffers"]
+
 [dependencies]
+up-core = { workspace = true }
+firewheel = { version = "0.14", default-features = false, features = ["std"], optional = true }
+audioadapter-buffers = { version = "5.2", default-features = false, optional = true }
+
+[dev-dependencies]
+up-rt = { workspace = true }

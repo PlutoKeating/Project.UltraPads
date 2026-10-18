@@ -1,14 +1,17 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+//! Realtime-safe DSP primitives. Nothing in this crate allocates in its
+//! `process`/`next` methods.
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+#![forbid(unsafe_code)]
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub mod gain;
+pub mod interp;
+pub mod limiter;
+pub mod meter;
+pub mod ramp;
+pub mod stretch;
+
+pub use gain::{db_to_linear, linear_to_db, pan_gains, velocity_to_gain};
+pub use interp::hermite4;
+pub use limiter::{Limiter, LimiterConfig};
+pub use meter::{PeakMeter, RmsMeter, StereoMeter};
+pub use ramp::{Fade, FadeState, SmoothedValue};

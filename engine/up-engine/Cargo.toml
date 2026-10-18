@@ -1,7 +1,28 @@
 [package]
 name = "up-engine"
+description = "UltraPads engine facade: EngineHandle (control) + AudioProcessor (realtime)"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
+[features]
+default = ["firewheel"]
+firewheel = ["up-graph/firewheel"]
+
 [dependencies]
+up-core = { workspace = true }
+up-protocol = { workspace = true }
+up-rt = { workspace = true }
+up-dsp = { workspace = true }
+up-transport = { workspace = true }
+up-sampler = { workspace = true }
+up-mixer = { workspace = true }
+up-recorder = { workspace = true }
+up-graph = { workspace = true, default-features = false }
+up-codec = { workspace = true }
+crossbeam-channel = "0.5"
+arc-swap = "1"
+log = "0.4"
+
+[dev-dependencies]
+serde_json = "1"

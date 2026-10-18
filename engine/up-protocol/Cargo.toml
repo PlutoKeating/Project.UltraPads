@@ -1,7 +1,13 @@
 [package]
 name = "up-protocol"
+description = "UltraPads engine protocol: commands, events, snapshots"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
+up-core = { workspace = true }
+serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+serde_json = "1"

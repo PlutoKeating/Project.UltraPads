@@ -1,7 +1,12 @@
 [package]
 name = "up-codec"
+description = "UltraPads audio codecs: decode (symphonia), resample (rubato), WAV write (hound), waveform overview"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
+up-core = { workspace = true }
+symphonia = { version = "0.6", default-features = false, features = ["wav", "pcm", "adpcm", "mp3", "ogg", "vorbis", "flac", "isomp4", "aac", "aiff", "caf", "alac", "all-meta"] }
+rubato = "5"
+hound = "3.5"

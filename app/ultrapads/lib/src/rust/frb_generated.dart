@@ -3,7 +3,11 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/simple.dart';
+import 'api/engine.dart';
+import 'api/hub.dart';
+import 'api/library.dart';
+import 'api/tracks.dart';
+import 'api/types.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -55,7 +59,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 
   @override
   Future<void> executeRustInitializers() async {
-    await api.crateApiSimpleInitApp();
+    await api.crateApiEngineInitApp();
   }
 
   @override
@@ -66,21 +70,147 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => -1918914929;
+  int get rustContentHash => 445428180;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
         stem: 'up_ffi',
-        ioDirectory: 'rust/target/release/',
+        ioDirectory: '../../bridge/up-ffi/target/release/',
         webPrefix: 'pkg/',
         wasmBindgenName: 'wasm_bindgen',
       );
 }
 
 abstract class RustLibApi extends BaseApi {
-  String crateApiSimpleGreet({required String name});
+  Future<AudioConfig> crateApiTypesAudioConfigDefault();
 
-  Future<void> crateApiSimpleInitApp();
+  Future<List<AudioDeviceInfo>> crateApiEngineAudioDevices();
+
+  Future<AudioStatus> crateApiEngineAudioStart({required AudioConfig cfg});
+
+  Future<AudioStatus> crateApiEngineAudioStatus();
+
+  Future<void> crateApiEngineAudioStop();
+
+  Stream<EngineEvent> crateApiEngineEvents();
+
+  Future<void> crateApiHubHubControllerConnect({required String peer});
+
+  Future<void> crateApiHubHubControllerDisconnect();
+
+  Stream<HubPeer> crateApiHubHubDiscover();
+
+  Future<PairedDevice> crateApiHubHubPair({
+    required String peer,
+    required String code,
+  });
+
+  Future<void> crateApiHubHubStartServer({required String name});
+
+  Future<void> crateApiHubHubStopServer();
+
+  Future<SyncReport> crateApiHubHubSync({required String peer});
+
+  Future<EngineInfo> crateApiEngineInit({required AppDirs appDirs});
+
+  Future<void> crateApiEngineInitApp();
+
+  Future<KitSummary> crateApiTypesKitSummaryDefault();
+
+  void crateApiEngineLatencyProbeArm();
+
+  Float64List? crateApiEngineLatencyProbeResult();
+
+  Future<String?> crateApiLibraryLibraryCurrentKitJson();
+
+  Future<void> crateApiLibraryLibraryDeleteKit({required String kit});
+
+  Future<String> crateApiLibraryLibraryExportKit({
+    required String kit,
+    required String path,
+    required String format,
+  });
+
+  Future<List<String>> crateApiLibraryLibraryGenres();
+
+  Future<ImportReport> crateApiLibraryLibraryImport({required String path});
+
+  Future<String> crateApiLibraryLibraryKitJson({required String kit});
+
+  Future<List<KitSummary>> crateApiLibraryLibraryListKits();
+
+  Future<List<SampleInfo>> crateApiLibraryLibraryListSamples();
+
+  Future<KitSummary> crateApiLibraryLibraryLoadKit({required String kit});
+
+  Future<KitSummary> crateApiLibraryLibrarySaveKit({required String kitJson});
+
+  Future<List<KitSummary>> crateApiLibraryLibrarySearchKits({
+    String? text,
+    String? genre,
+    required bool favoritesOnly,
+    required KitSort sort,
+    int? limit,
+  });
+
+  Future<KitSummary> crateApiLibraryLibrarySetFavorite({
+    required String kit,
+    required bool favorite,
+  });
+
+  Future<void> crateApiLibraryLibraryUseSample({required String sample});
+
+  void crateApiEnginePadDown({
+    required int bank,
+    required int index,
+    required double velocity,
+  });
+
+  void crateApiEnginePadUp({required int bank, required int index});
+
+  Future<Float32List> crateApiEngineSampleWaveform({
+    required String sample,
+    required int buckets,
+  });
+
+  Future<void> crateApiEngineSamplerRecordStart({String? inputDevice});
+
+  Future<String> crateApiEngineSamplerRecordStop();
+
+  void crateApiEngineSend({required Command cmd});
+
+  EngineSnapshot crateApiEngineSnapshot();
+
+  Future<void> crateApiTracksTrackDelete({required String id});
+
+  Future<String> crateApiTracksTrackExport({
+    required String id,
+    required String path,
+    required String fmt,
+  });
+
+  Future<void> crateApiTracksTrackPlay({required String id});
+
+  Future<TrackInfo> crateApiTracksTrackRename({
+    required String id,
+    required String name,
+  });
+
+  Future<void> crateApiTracksTrackStop();
+
+  Future<List<TrackInfo>> crateApiTracksTracksList();
+
+  TransportClock crateApiEngineTransportClock();
+
+  Future<TutorialChart?> crateApiEngineTutorialGet({required String kit});
+
+  Judgement crateApiEngineTutorialJudge({
+    required double expectedSecs,
+    required double actualSecs,
+    required double speed,
+    required double perfectMs,
+    required double missMs,
+  });
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -92,30 +222,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  String crateApiSimpleGreet({required String name}) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
+  Future<AudioConfig> crateApiTypesAudioConfigDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_String(name, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 1,
+            port: port_,
+          );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_String,
+          decodeSuccessData: sse_decode_audio_config,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiSimpleGreetConstMeta,
-        argValues: [name],
+        constMeta: kCrateApiTypesAudioConfigDefaultConstMeta,
+        argValues: [],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleGreetConstMeta =>
-      const TaskConstMeta(debugName: "greet", argNames: ["name"]);
+  TaskConstMeta get kCrateApiTypesAudioConfigDefaultConstMeta =>
+      const TaskConstMeta(debugName: "audio_config_default", argNames: []);
 
   @override
-  Future<void> crateApiSimpleInitApp() {
+  Future<List<AudioDeviceInfo>> crateApiEngineAudioDevices() {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -128,18 +262,1338 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_list_audio_device_info,
+          decodeErrorData: sse_decode_up_error,
         ),
-        constMeta: kCrateApiSimpleInitAppConstMeta,
+        constMeta: kCrateApiEngineAudioDevicesConstMeta,
         argValues: [],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleInitAppConstMeta =>
+  TaskConstMeta get kCrateApiEngineAudioDevicesConstMeta =>
+      const TaskConstMeta(debugName: "audio_devices", argNames: []);
+
+  @override
+  Future<AudioStatus> crateApiEngineAudioStart({required AudioConfig cfg}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_box_autoadd_audio_config(cfg, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 3,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_audio_status,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineAudioStartConstMeta,
+        argValues: [cfg],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineAudioStartConstMeta =>
+      const TaskConstMeta(debugName: "audio_start", argNames: ["cfg"]);
+
+  @override
+  Future<AudioStatus> crateApiEngineAudioStatus() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 4,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_audio_status,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineAudioStatusConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineAudioStatusConstMeta =>
+      const TaskConstMeta(debugName: "audio_status", argNames: []);
+
+  @override
+  Future<void> crateApiEngineAudioStop() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 5,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineAudioStopConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineAudioStopConstMeta =>
+      const TaskConstMeta(debugName: "audio_stop", argNames: []);
+
+  @override
+  Stream<EngineEvent> crateApiEngineEvents() {
+    final sink = RustStreamSink<EngineEvent>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_StreamSink_engine_event_Sse(sink, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 6,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_up_error,
+          ),
+          constMeta: kCrateApiEngineEventsConstMeta,
+          argValues: [sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiEngineEventsConstMeta =>
+      const TaskConstMeta(debugName: "events", argNames: ["sink"]);
+
+  @override
+  Future<void> crateApiHubHubControllerConnect({required String peer}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(peer, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 7,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiHubHubControllerConnectConstMeta,
+        argValues: [peer],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHubHubControllerConnectConstMeta =>
+      const TaskConstMeta(
+        debugName: "hub_controller_connect",
+        argNames: ["peer"],
+      );
+
+  @override
+  Future<void> crateApiHubHubControllerDisconnect() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 8,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiHubHubControllerDisconnectConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHubHubControllerDisconnectConstMeta =>
+      const TaskConstMeta(debugName: "hub_controller_disconnect", argNames: []);
+
+  @override
+  Stream<HubPeer> crateApiHubHubDiscover() {
+    final sink = RustStreamSink<HubPeer>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_StreamSink_hub_peer_Sse(sink, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 9,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_up_error,
+          ),
+          constMeta: kCrateApiHubHubDiscoverConstMeta,
+          argValues: [sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiHubHubDiscoverConstMeta =>
+      const TaskConstMeta(debugName: "hub_discover", argNames: ["sink"]);
+
+  @override
+  Future<PairedDevice> crateApiHubHubPair({
+    required String peer,
+    required String code,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(peer, serializer);
+          sse_encode_String(code, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 10,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_paired_device,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiHubHubPairConstMeta,
+        argValues: [peer, code],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHubHubPairConstMeta =>
+      const TaskConstMeta(debugName: "hub_pair", argNames: ["peer", "code"]);
+
+  @override
+  Future<void> crateApiHubHubStartServer({required String name}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(name, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 11,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiHubHubStartServerConstMeta,
+        argValues: [name],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHubHubStartServerConstMeta =>
+      const TaskConstMeta(debugName: "hub_start_server", argNames: ["name"]);
+
+  @override
+  Future<void> crateApiHubHubStopServer() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 12,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiHubHubStopServerConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHubHubStopServerConstMeta =>
+      const TaskConstMeta(debugName: "hub_stop_server", argNames: []);
+
+  @override
+  Future<SyncReport> crateApiHubHubSync({required String peer}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(peer, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 13,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_sync_report,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiHubHubSyncConstMeta,
+        argValues: [peer],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiHubHubSyncConstMeta =>
+      const TaskConstMeta(debugName: "hub_sync", argNames: ["peer"]);
+
+  @override
+  Future<EngineInfo> crateApiEngineInit({required AppDirs appDirs}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_box_autoadd_app_dirs(appDirs, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 14,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_engine_info,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineInitConstMeta,
+        argValues: [appDirs],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineInitConstMeta =>
+      const TaskConstMeta(debugName: "init", argNames: ["appDirs"]);
+
+  @override
+  Future<void> crateApiEngineInitApp() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 15,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiEngineInitAppConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineInitAppConstMeta =>
       const TaskConstMeta(debugName: "init_app", argNames: []);
+
+  @override
+  Future<KitSummary> crateApiTypesKitSummaryDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 16,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_kit_summary,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesKitSummaryDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesKitSummaryDefaultConstMeta =>
+      const TaskConstMeta(debugName: "kit_summary_default", argNames: []);
+
+  @override
+  void crateApiEngineLatencyProbeArm() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineLatencyProbeArmConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineLatencyProbeArmConstMeta =>
+      const TaskConstMeta(debugName: "latency_probe_arm", argNames: []);
+
+  @override
+  Float64List? crateApiEngineLatencyProbeResult() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_list_prim_f_64_strict,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineLatencyProbeResultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineLatencyProbeResultConstMeta =>
+      const TaskConstMeta(debugName: "latency_probe_result", argNames: []);
+
+  @override
+  Future<String?> crateApiLibraryLibraryCurrentKitJson() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 19,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_String,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryCurrentKitJsonConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryCurrentKitJsonConstMeta =>
+      const TaskConstMeta(debugName: "library_current_kit_json", argNames: []);
+
+  @override
+  Future<void> crateApiLibraryLibraryDeleteKit({required String kit}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(kit, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 20,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryDeleteKitConstMeta,
+        argValues: [kit],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryDeleteKitConstMeta =>
+      const TaskConstMeta(debugName: "library_delete_kit", argNames: ["kit"]);
+
+  @override
+  Future<String> crateApiLibraryLibraryExportKit({
+    required String kit,
+    required String path,
+    required String format,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(kit, serializer);
+          sse_encode_String(path, serializer);
+          sse_encode_String(format, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 21,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryExportKitConstMeta,
+        argValues: [kit, path, format],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryExportKitConstMeta =>
+      const TaskConstMeta(
+        debugName: "library_export_kit",
+        argNames: ["kit", "path", "format"],
+      );
+
+  @override
+  Future<List<String>> crateApiLibraryLibraryGenres() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 22,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_String,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryGenresConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryGenresConstMeta =>
+      const TaskConstMeta(debugName: "library_genres", argNames: []);
+
+  @override
+  Future<ImportReport> crateApiLibraryLibraryImport({required String path}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(path, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 23,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_import_report,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryImportConstMeta,
+        argValues: [path],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryImportConstMeta =>
+      const TaskConstMeta(debugName: "library_import", argNames: ["path"]);
+
+  @override
+  Future<String> crateApiLibraryLibraryKitJson({required String kit}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(kit, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 24,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryKitJsonConstMeta,
+        argValues: [kit],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryKitJsonConstMeta =>
+      const TaskConstMeta(debugName: "library_kit_json", argNames: ["kit"]);
+
+  @override
+  Future<List<KitSummary>> crateApiLibraryLibraryListKits() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 25,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_kit_summary,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryListKitsConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryListKitsConstMeta =>
+      const TaskConstMeta(debugName: "library_list_kits", argNames: []);
+
+  @override
+  Future<List<SampleInfo>> crateApiLibraryLibraryListSamples() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 26,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_sample_info,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryListSamplesConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryListSamplesConstMeta =>
+      const TaskConstMeta(debugName: "library_list_samples", argNames: []);
+
+  @override
+  Future<KitSummary> crateApiLibraryLibraryLoadKit({required String kit}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(kit, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 27,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_kit_summary,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryLoadKitConstMeta,
+        argValues: [kit],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryLoadKitConstMeta =>
+      const TaskConstMeta(debugName: "library_load_kit", argNames: ["kit"]);
+
+  @override
+  Future<KitSummary> crateApiLibraryLibrarySaveKit({required String kitJson}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(kitJson, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 28,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_kit_summary,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibrarySaveKitConstMeta,
+        argValues: [kitJson],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibrarySaveKitConstMeta =>
+      const TaskConstMeta(debugName: "library_save_kit", argNames: ["kitJson"]);
+
+  @override
+  Future<List<KitSummary>> crateApiLibraryLibrarySearchKits({
+    String? text,
+    String? genre,
+    required bool favoritesOnly,
+    required KitSort sort,
+    int? limit,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_opt_String(text, serializer);
+          sse_encode_opt_String(genre, serializer);
+          sse_encode_bool(favoritesOnly, serializer);
+          sse_encode_kit_sort(sort, serializer);
+          sse_encode_opt_box_autoadd_u_32(limit, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 29,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_kit_summary,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibrarySearchKitsConstMeta,
+        argValues: [text, genre, favoritesOnly, sort, limit],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibrarySearchKitsConstMeta =>
+      const TaskConstMeta(
+        debugName: "library_search_kits",
+        argNames: ["text", "genre", "favoritesOnly", "sort", "limit"],
+      );
+
+  @override
+  Future<KitSummary> crateApiLibraryLibrarySetFavorite({
+    required String kit,
+    required bool favorite,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(kit, serializer);
+          sse_encode_bool(favorite, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 30,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_kit_summary,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibrarySetFavoriteConstMeta,
+        argValues: [kit, favorite],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibrarySetFavoriteConstMeta =>
+      const TaskConstMeta(
+        debugName: "library_set_favorite",
+        argNames: ["kit", "favorite"],
+      );
+
+  @override
+  Future<void> crateApiLibraryLibraryUseSample({required String sample}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(sample, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 31,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiLibraryLibraryUseSampleConstMeta,
+        argValues: [sample],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiLibraryLibraryUseSampleConstMeta =>
+      const TaskConstMeta(
+        debugName: "library_use_sample",
+        argNames: ["sample"],
+      );
+
+  @override
+  void crateApiEnginePadDown({
+    required int bank,
+    required int index,
+    required double velocity,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_u_8(bank, serializer);
+          sse_encode_u_8(index, serializer);
+          sse_encode_f_32(velocity, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEnginePadDownConstMeta,
+        argValues: [bank, index, velocity],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEnginePadDownConstMeta => const TaskConstMeta(
+    debugName: "pad_down",
+    argNames: ["bank", "index", "velocity"],
+  );
+
+  @override
+  void crateApiEnginePadUp({required int bank, required int index}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_u_8(bank, serializer);
+          sse_encode_u_8(index, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEnginePadUpConstMeta,
+        argValues: [bank, index],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEnginePadUpConstMeta =>
+      const TaskConstMeta(debugName: "pad_up", argNames: ["bank", "index"]);
+
+  @override
+  Future<Float32List> crateApiEngineSampleWaveform({
+    required String sample,
+    required int buckets,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(sample, serializer);
+          sse_encode_u_32(buckets, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 34,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_f_32_strict,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineSampleWaveformConstMeta,
+        argValues: [sample, buckets],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineSampleWaveformConstMeta =>
+      const TaskConstMeta(
+        debugName: "sample_waveform",
+        argNames: ["sample", "buckets"],
+      );
+
+  @override
+  Future<void> crateApiEngineSamplerRecordStart({String? inputDevice}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_opt_String(inputDevice, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 35,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineSamplerRecordStartConstMeta,
+        argValues: [inputDevice],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineSamplerRecordStartConstMeta =>
+      const TaskConstMeta(
+        debugName: "sampler_record_start",
+        argNames: ["inputDevice"],
+      );
+
+  @override
+  Future<String> crateApiEngineSamplerRecordStop() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 36,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineSamplerRecordStopConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineSamplerRecordStopConstMeta =>
+      const TaskConstMeta(debugName: "sampler_record_stop", argNames: []);
+
+  @override
+  void crateApiEngineSend({required Command cmd}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_box_autoadd_command(cmd, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 37)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineSendConstMeta,
+        argValues: [cmd],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineSendConstMeta =>
+      const TaskConstMeta(debugName: "send", argNames: ["cmd"]);
+
+  @override
+  EngineSnapshot crateApiEngineSnapshot() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 38)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_engine_snapshot,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineSnapshotConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineSnapshotConstMeta =>
+      const TaskConstMeta(debugName: "snapshot", argNames: []);
+
+  @override
+  Future<void> crateApiTracksTrackDelete({required String id}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(id, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 39,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiTracksTrackDeleteConstMeta,
+        argValues: [id],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTracksTrackDeleteConstMeta =>
+      const TaskConstMeta(debugName: "track_delete", argNames: ["id"]);
+
+  @override
+  Future<String> crateApiTracksTrackExport({
+    required String id,
+    required String path,
+    required String fmt,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(id, serializer);
+          sse_encode_String(path, serializer);
+          sse_encode_String(fmt, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 40,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiTracksTrackExportConstMeta,
+        argValues: [id, path, fmt],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTracksTrackExportConstMeta => const TaskConstMeta(
+    debugName: "track_export",
+    argNames: ["id", "path", "fmt"],
+  );
+
+  @override
+  Future<void> crateApiTracksTrackPlay({required String id}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(id, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 41,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiTracksTrackPlayConstMeta,
+        argValues: [id],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTracksTrackPlayConstMeta =>
+      const TaskConstMeta(debugName: "track_play", argNames: ["id"]);
+
+  @override
+  Future<TrackInfo> crateApiTracksTrackRename({
+    required String id,
+    required String name,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(id, serializer);
+          sse_encode_String(name, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 42,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_track_info,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiTracksTrackRenameConstMeta,
+        argValues: [id, name],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTracksTrackRenameConstMeta =>
+      const TaskConstMeta(debugName: "track_rename", argNames: ["id", "name"]);
+
+  @override
+  Future<void> crateApiTracksTrackStop() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 43,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiTracksTrackStopConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTracksTrackStopConstMeta =>
+      const TaskConstMeta(debugName: "track_stop", argNames: []);
+
+  @override
+  Future<List<TrackInfo>> crateApiTracksTracksList() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 44,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_track_info,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiTracksTracksListConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTracksTracksListConstMeta =>
+      const TaskConstMeta(debugName: "tracks_list", argNames: []);
+
+  @override
+  TransportClock crateApiEngineTransportClock() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 45)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_transport_clock,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineTransportClockConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineTransportClockConstMeta =>
+      const TaskConstMeta(debugName: "transport_clock", argNames: []);
+
+  @override
+  Future<TutorialChart?> crateApiEngineTutorialGet({required String kit}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(kit, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 46,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_box_autoadd_tutorial_chart,
+          decodeErrorData: sse_decode_up_error,
+        ),
+        constMeta: kCrateApiEngineTutorialGetConstMeta,
+        argValues: [kit],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineTutorialGetConstMeta =>
+      const TaskConstMeta(debugName: "tutorial_get", argNames: ["kit"]);
+
+  @override
+  Judgement crateApiEngineTutorialJudge({
+    required double expectedSecs,
+    required double actualSecs,
+    required double speed,
+    required double perfectMs,
+    required double missMs,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_f_64(expectedSecs, serializer);
+          sse_encode_f_64(actualSecs, serializer);
+          sse_encode_f_64(speed, serializer);
+          sse_encode_f_64(perfectMs, serializer);
+          sse_encode_f_64(missMs, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 47)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_judgement,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiEngineTutorialJudgeConstMeta,
+        argValues: [expectedSecs, actualSecs, speed, perfectMs, missMs],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiEngineTutorialJudgeConstMeta =>
+      const TaskConstMeta(
+        debugName: "tutorial_judge",
+        argNames: [
+          "expectedSecs",
+          "actualSecs",
+          "speed",
+          "perfectMs",
+          "missMs",
+        ],
+      );
+
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AnyhowException(raw as String);
+  }
+
+  @protected
+  RustStreamSink<EngineEvent> dco_decode_StreamSink_engine_event_Sse(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
+  RustStreamSink<HubPeer> dco_decode_StreamSink_hub_peer_Sse(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
 
   @protected
   String dco_decode_String(dynamic raw) {
@@ -148,9 +1602,862 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AppDirs dco_decode_app_dirs(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return AppDirs(
+      dataDir: dco_decode_String(arr[0]),
+      cacheDir: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  AudioConfig dco_decode_audio_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return AudioConfig(
+      bufferFrames: dco_decode_opt_box_autoadd_u_32(arr[0]),
+      sampleRate: dco_decode_opt_box_autoadd_u_32(arr[1]),
+      outputDevice: dco_decode_opt_String(arr[2]),
+    );
+  }
+
+  @protected
+  AudioDeviceInfo dco_decode_audio_device_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 11)
+      throw Exception('unexpected arr length: expect 11 but see ${arr.length}');
+    return AudioDeviceInfo(
+      id: dco_decode_String(arr[0]),
+      name: dco_decode_String(arr[1]),
+      isInput: dco_decode_bool(arr[2]),
+      isOutput: dco_decode_bool(arr[3]),
+      isDefaultOutput: dco_decode_bool(arr[4]),
+      isDefaultInput: dco_decode_bool(arr[5]),
+      defaultSampleRate: dco_decode_opt_box_autoadd_u_32(arr[6]),
+      maxOutputChannels: dco_decode_u_16(arr[7]),
+      maxInputChannels: dco_decode_u_16(arr[8]),
+      minBufferFrames: dco_decode_opt_box_autoadd_u_32(arr[9]),
+      maxBufferFrames: dco_decode_opt_box_autoadd_u_32(arr[10]),
+    );
+  }
+
+  @protected
+  AudioStatus dco_decode_audio_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return AudioStatus(
+      running: dco_decode_bool(arr[0]),
+      host: dco_decode_String(arr[1]),
+      device: dco_decode_String(arr[2]),
+      sampleRate: dco_decode_u_32(arr[3]),
+      channels: dco_decode_u_16(arr[4]),
+      bufferFrames: dco_decode_opt_box_autoadd_u_32(arr[5]),
+      sampleFormat: dco_decode_String(arr[6]),
+      outputLatencyMs: dco_decode_opt_box_autoadd_f_64(arr[7]),
+    );
+  }
+
+  @protected
+  Bank dco_decode_bank(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Bank.values[raw as int];
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  AppDirs dco_decode_box_autoadd_app_dirs(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_app_dirs(raw);
+  }
+
+  @protected
+  AudioConfig dco_decode_box_autoadd_audio_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_audio_config(raw);
+  }
+
+  @protected
+  Bank dco_decode_box_autoadd_bank(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_bank(raw);
+  }
+
+  @protected
+  ColorRole dco_decode_box_autoadd_color_role(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_color_role(raw);
+  }
+
+  @protected
+  Command dco_decode_box_autoadd_command(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_command(raw);
+  }
+
+  @protected
+  double dco_decode_box_autoadd_f_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as double;
+  }
+
+  @protected
+  double dco_decode_box_autoadd_f_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as double;
+  }
+
+  @protected
+  HubEvent dco_decode_box_autoadd_hub_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_hub_event(raw);
+  }
+
+  @protected
+  PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_i_64(raw);
+  }
+
+  @protected
+  KitSummary dco_decode_box_autoadd_kit_summary(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_kit_summary(raw);
+  }
+
+  @protected
+  PadId dco_decode_box_autoadd_pad_id(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_pad_id(raw);
+  }
+
+  @protected
+  PadParams dco_decode_box_autoadd_pad_params(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_pad_params(raw);
+  }
+
+  @protected
+  Quantize dco_decode_box_autoadd_quantize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_quantize(raw);
+  }
+
+  @protected
+  TrackInfo dco_decode_box_autoadd_track_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_track_info(raw);
+  }
+
+  @protected
+  TransportCmd dco_decode_box_autoadd_transport_cmd(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_transport_cmd(raw);
+  }
+
+  @protected
+  TutorialChart dco_decode_box_autoadd_tutorial_chart(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_tutorial_chart(raw);
+  }
+
+  @protected
+  int dco_decode_box_autoadd_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_u_64(raw);
+  }
+
+  @protected
+  int dco_decode_box_autoadd_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  UpError dco_decode_box_autoadd_up_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_up_error(raw);
+  }
+
+  @protected
+  ColorRole dco_decode_color_role(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ColorRole.values[raw as int];
+  }
+
+  @protected
+  Command dco_decode_command(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return Command_PadDown(
+          pad: dco_decode_box_autoadd_pad_id(raw[1]),
+          velocity: dco_decode_f_32(raw[2]),
+        );
+      case 1:
+        return Command_PadUp(pad: dco_decode_box_autoadd_pad_id(raw[1]));
+      case 2:
+        return Command_StopAll();
+      case 3:
+        return Command_SetTempo(bpm: dco_decode_f_64(raw[1]));
+      case 4:
+        return Command_SetSpeed(ratio: dco_decode_f_64(raw[1]));
+      case 5:
+        return Command_SetQuantize(q: dco_decode_quantize(raw[1]));
+      case 6:
+        return Command_SetPadParams(
+          pad: dco_decode_box_autoadd_pad_id(raw[1]),
+          params: dco_decode_box_autoadd_pad_params(raw[2]),
+        );
+      case 7:
+        return Command_SetMasterGain(gain: dco_decode_f_32(raw[1]));
+      case 8:
+        return Command_StartRecording();
+      case 9:
+        return Command_StopRecording();
+      case 10:
+        return Command_Transport(dco_decode_box_autoadd_transport_cmd(raw[1]));
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  EngineEvent dco_decode_engine_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return EngineEvent_PadState(
+          pad: dco_decode_box_autoadd_pad_id(raw[1]),
+          state: dco_decode_pad_play_state(raw[2]),
+        );
+      case 1:
+        return EngineEvent_Transport(
+          playing: dco_decode_bool(raw[1]),
+          beat: dco_decode_f_64(raw[2]),
+          bpm: dco_decode_f_64(raw[3]),
+          barLenBeats: dco_decode_f_64(raw[4]),
+          songSecs: dco_decode_f_64(raw[5]),
+        );
+      case 2:
+        return EngineEvent_Meters(
+          masterPeak: dco_decode_list_prim_f_32_strict(raw[1]),
+          masterRms: dco_decode_list_prim_f_32_strict(raw[2]),
+          padLevels: dco_decode_list_prim_f_32_strict(raw[3]),
+        );
+      case 3:
+        return EngineEvent_Recorder(
+          state: dco_decode_recorder_state(raw[1]),
+          elapsedSecs: dco_decode_f_64(raw[2]),
+        );
+      case 4:
+        return EngineEvent_KitLoaded(
+          kit: dco_decode_box_autoadd_kit_summary(raw[1]),
+        );
+      case 5:
+        return EngineEvent_TrackSaved(
+          track: dco_decode_box_autoadd_track_info(raw[1]),
+        );
+      case 6:
+        return EngineEvent_TrackPlayback(track: dco_decode_opt_String(raw[1]));
+      case 7:
+        return EngineEvent_LibraryChanged();
+      case 8:
+        return EngineEvent_Hub(dco_decode_box_autoadd_hub_event(raw[1]));
+      case 9:
+        return EngineEvent_Error(dco_decode_box_autoadd_up_error(raw[1]));
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  EngineInfo dco_decode_engine_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return EngineInfo(
+      version: dco_decode_String(arr[0]),
+      sampleRate: dco_decode_u_32(arr[1]),
+      graphBackend: dco_decode_String(arr[2]),
+      platform: dco_decode_String(arr[3]),
+      dataDir: dco_decode_String(arr[4]),
+    );
+  }
+
+  @protected
+  EngineSnapshot dco_decode_engine_snapshot(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return EngineSnapshot(
+      pads: dco_decode_list_pad_snapshot(arr[0]),
+      transport: dco_decode_transport_state(arr[1]),
+      kit: dco_decode_opt_box_autoadd_kit_summary(arr[2]),
+      masterGain: dco_decode_f_32(arr[3]),
+      recorder: dco_decode_recorder_state(arr[4]),
+      recorderElapsedSecs: dco_decode_f_64(arr[5]),
+      sampleRate: dco_decode_u_32(arr[6]),
+      activeVoices: dco_decode_u_32(arr[7]),
+    );
+  }
+
+  @protected
+  ErrorCode dco_decode_error_code(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ErrorCode.values[raw as int];
+  }
+
+  @protected
+  double dco_decode_f_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as double;
+  }
+
+  @protected
+  double dco_decode_f_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as double;
+  }
+
+  @protected
+  HubEvent dco_decode_hub_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return HubEvent_ServerStarted(port: dco_decode_u_16(raw[1]));
+      case 1:
+        return HubEvent_ServerStopped();
+      case 2:
+        return HubEvent_PeerDiscovered(
+          id: dco_decode_String(raw[1]),
+          name: dco_decode_String(raw[2]),
+        );
+      case 3:
+        return HubEvent_PeerLost(id: dco_decode_String(raw[1]));
+      case 4:
+        return HubEvent_Paired(
+          id: dco_decode_String(raw[1]),
+          name: dco_decode_String(raw[2]),
+        );
+      case 5:
+        return HubEvent_SyncProgress(
+          peer: dco_decode_String(raw[1]),
+          done: dco_decode_u_64(raw[2]),
+          total: dco_decode_u_64(raw[3]),
+        );
+      case 6:
+        return HubEvent_ControllerConnected(peer: dco_decode_String(raw[1]));
+      case 7:
+        return HubEvent_ControllerDisconnected();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  HubPeer dco_decode_hub_peer(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return HubPeer(
+      id: dco_decode_String(arr[0]),
+      name: dco_decode_String(arr[1]),
+      address: dco_decode_String(arr[2]),
+      port: dco_decode_u_16(arr[3]),
+      paired: dco_decode_bool(arr[4]),
+    );
+  }
+
+  @protected
+  int dco_decode_i_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeI64(raw);
+  }
+
+  @protected
+  ImportReport dco_decode_import_report(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return ImportReport(
+      kind: dco_decode_String(arr[0]),
+      kits: dco_decode_list_kit_summary(arr[1]),
+      duplicates: dco_decode_u_32(arr[2]),
+      samples: dco_decode_list_String(arr[3]),
+      catalogEntries: dco_decode_u_32(arr[4]),
+      warnings: dco_decode_list_String(arr[5]),
+    );
+  }
+
+  @protected
+  Judgement dco_decode_judgement(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Judgement.values[raw as int];
+  }
+
+  @protected
+  KitSort dco_decode_kit_sort(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return KitSort.values[raw as int];
+  }
+
+  @protected
+  KitSummary dco_decode_kit_summary(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 15)
+      throw Exception('unexpected arr length: expect 15 but see ${arr.length}');
+    return KitSummary(
+      id: dco_decode_String(arr[0]),
+      name: dco_decode_String(arr[1]),
+      padCount: dco_decode_u_32(arr[2]),
+      bpm: dco_decode_opt_box_autoadd_f_64(arr[3]),
+      hasTutorial: dco_decode_bool(arr[4]),
+      description: dco_decode_opt_String(arr[5]),
+      authors: dco_decode_list_String(arr[6]),
+      genres: dco_decode_list_String(arr[7]),
+      tags: dco_decode_list_String(arr[8]),
+      themeColor: dco_decode_opt_String(arr[9]),
+      inspiredBy: dco_decode_opt_String(arr[10]),
+      coverPath: dco_decode_opt_String(arr[11]),
+      favorite: dco_decode_bool(arr[12]),
+      sourceKind: dco_decode_String(arr[13]),
+      lastUsedAtMs: dco_decode_opt_box_autoadd_i_64(arr[14]),
+    );
+  }
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
+  }
+
+  @protected
+  List<AudioDeviceInfo> dco_decode_list_audio_device_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_audio_device_info).toList();
+  }
+
+  @protected
+  List<KitSummary> dco_decode_list_kit_summary(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_kit_summary).toList();
+  }
+
+  @protected
+  List<PadSnapshot> dco_decode_list_pad_snapshot(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_pad_snapshot).toList();
+  }
+
+  @protected
+  Float32List dco_decode_list_prim_f_32_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as Float32List;
+  }
+
+  @protected
+  Float64List dco_decode_list_prim_f_64_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as Float64List;
+  }
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<SampleInfo> dco_decode_list_sample_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_sample_info).toList();
+  }
+
+  @protected
+  List<TrackInfo> dco_decode_list_track_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_track_info).toList();
+  }
+
+  @protected
+  List<TutorialEvent> dco_decode_list_tutorial_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_tutorial_event).toList();
+  }
+
+  @protected
+  List<TutorialLesson> dco_decode_list_tutorial_lesson(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_tutorial_lesson).toList();
+  }
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  Bank? dco_decode_opt_box_autoadd_bank(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_bank(raw);
+  }
+
+  @protected
+  ColorRole? dco_decode_opt_box_autoadd_color_role(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_color_role(raw);
+  }
+
+  @protected
+  double? dco_decode_opt_box_autoadd_f_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_f_32(raw);
+  }
+
+  @protected
+  double? dco_decode_opt_box_autoadd_f_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_f_64(raw);
+  }
+
+  @protected
+  PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_i_64(raw);
+  }
+
+  @protected
+  KitSummary? dco_decode_opt_box_autoadd_kit_summary(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_kit_summary(raw);
+  }
+
+  @protected
+  PadId? dco_decode_opt_box_autoadd_pad_id(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_pad_id(raw);
+  }
+
+  @protected
+  Quantize? dco_decode_opt_box_autoadd_quantize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_quantize(raw);
+  }
+
+  @protected
+  TutorialChart? dco_decode_opt_box_autoadd_tutorial_chart(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_tutorial_chart(raw);
+  }
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_32(raw);
+  }
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_64(raw);
+  }
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_8(raw);
+  }
+
+  @protected
+  Float64List? dco_decode_opt_list_prim_f_64_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_list_prim_f_64_strict(raw);
+  }
+
+  @protected
+  PadId dco_decode_pad_id(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return PadId(bank: dco_decode_u_8(arr[0]), index: dco_decode_u_8(arr[1]));
+  }
+
+  @protected
+  PadMode dco_decode_pad_mode(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PadMode.values[raw as int];
+  }
+
+  @protected
+  PadParams dco_decode_pad_params(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 15)
+      throw Exception('unexpected arr length: expect 15 but see ${arr.length}');
+    return PadParams(
+      mode: dco_decode_pad_mode(arr[0]),
+      gain: dco_decode_f_32(arr[1]),
+      pan: dco_decode_f_32(arr[2]),
+      chokeGroup: dco_decode_opt_box_autoadd_u_8(arr[3]),
+      chokedBy: dco_decode_opt_box_autoadd_u_8(arr[4]),
+      chokeReleaseMs: dco_decode_opt_box_autoadd_f_32(arr[5]),
+      selfChoke: dco_decode_bool(arr[6]),
+      retrigger: dco_decode_retrigger(arr[7]),
+      color: dco_decode_color_role(arr[8]),
+      sample: dco_decode_opt_String(arr[9]),
+      startFrame: dco_decode_u_64(arr[10]),
+      endFrame: dco_decode_opt_box_autoadd_u_64(arr[11]),
+      loopStart: dco_decode_opt_box_autoadd_u_64(arr[12]),
+      loopEnd: dco_decode_opt_box_autoadd_u_64(arr[13]),
+      quantizeOverride: dco_decode_opt_box_autoadd_quantize(arr[14]),
+    );
+  }
+
+  @protected
+  PadPlayState dco_decode_pad_play_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PadPlayState.values[raw as int];
+  }
+
+  @protected
+  PadSnapshot dco_decode_pad_snapshot(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return PadSnapshot(
+      pad: dco_decode_pad_id(arr[0]),
+      state: dco_decode_pad_play_state(arr[1]),
+      params: dco_decode_pad_params(arr[2]),
+      sampleSecs: dco_decode_f_64(arr[3]),
+    );
+  }
+
+  @protected
+  PairedDevice dco_decode_paired_device(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return PairedDevice(
+      id: dco_decode_String(arr[0]),
+      name: dco_decode_String(arr[1]),
+      pairedUnixMs: dco_decode_i_64(arr[2]),
+    );
+  }
+
+  @protected
+  Quantize dco_decode_quantize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Quantize.values[raw as int];
+  }
+
+  @protected
+  RecorderState dco_decode_recorder_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return RecorderState.values[raw as int];
+  }
+
+  @protected
+  Retrigger dco_decode_retrigger(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Retrigger.values[raw as int];
+  }
+
+  @protected
+  SampleInfo dco_decode_sample_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return SampleInfo(
+      id: dco_decode_String(arr[0]),
+      name: dco_decode_String(arr[1]),
+      origin: dco_decode_String(arr[2]),
+      sampleRate: dco_decode_u_32(arr[3]),
+      channels: dco_decode_u_16(arr[4]),
+      durationSecs: dco_decode_f_64(arr[5]),
+      createdUnixMs: dco_decode_i_64(arr[6]),
+    );
+  }
+
+  @protected
+  SyncReport dco_decode_sync_report(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return SyncReport(
+      pulled: dco_decode_u_32(arr[0]),
+      pushed: dco_decode_u_32(arr[1]),
+      conflicts: dco_decode_u_32(arr[2]),
+      bytes: dco_decode_u_64(arr[3]),
+    );
+  }
+
+  @protected
+  TrackInfo dco_decode_track_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return TrackInfo(
+      id: dco_decode_String(arr[0]),
+      name: dco_decode_String(arr[1]),
+      createdUnixMs: dco_decode_i_64(arr[2]),
+      durationSecs: dco_decode_f_64(arr[3]),
+      sampleRate: dco_decode_u_32(arr[4]),
+      channels: dco_decode_u_16(arr[5]),
+      waveform: dco_decode_list_prim_f_32_strict(arr[6]),
+    );
+  }
+
+  @protected
+  TransportClock dco_decode_transport_clock(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return TransportClock(
+      playing: dco_decode_bool(arr[0]),
+      beat: dco_decode_f_64(arr[1]),
+      songSecs: dco_decode_f_64(arr[2]),
+      bpm: dco_decode_f_64(arr[3]),
+      speed: dco_decode_f_64(arr[4]),
+    );
+  }
+
+  @protected
+  TransportCmd dco_decode_transport_cmd(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return TransportCmd_Play();
+      case 1:
+        return TransportCmd_Stop();
+      case 2:
+        return TransportCmd_Seek(dco_decode_f_64(raw[1]));
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  TransportState dco_decode_transport_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return TransportState(
+      playing: dco_decode_bool(arr[0]),
+      beat: dco_decode_f_64(arr[1]),
+      songSecs: dco_decode_f_64(arr[2]),
+      bpm: dco_decode_f_64(arr[3]),
+      speed: dco_decode_f_64(arr[4]),
+      beatsPerBar: dco_decode_u_32(arr[5]),
+      beatUnit: dco_decode_u_32(arr[6]),
+      quantize: dco_decode_quantize(arr[7]),
+    );
+  }
+
+  @protected
+  TutorialAction dco_decode_tutorial_action(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return TutorialAction.values[raw as int];
+  }
+
+  @protected
+  TutorialChart dco_decode_tutorial_chart(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return TutorialChart(
+      events: dco_decode_list_tutorial_event(arr[0]),
+      lessons: dco_decode_list_tutorial_lesson(arr[1]),
+      bpm: dco_decode_opt_box_autoadd_f_64(arr[2]),
+      perfectMs: dco_decode_f_64(arr[3]),
+      missMs: dco_decode_f_64(arr[4]),
+      timed: dco_decode_bool(arr[5]),
+    );
+  }
+
+  @protected
+  TutorialEvent dco_decode_tutorial_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return TutorialEvent(
+      timeSecs: dco_decode_f_64(arr[0]),
+      pad: dco_decode_opt_box_autoadd_pad_id(arr[1]),
+      pageSwitch: dco_decode_opt_box_autoadd_bank(arr[2]),
+      color: dco_decode_opt_box_autoadd_color_role(arr[3]),
+      action: dco_decode_tutorial_action(arr[4]),
+    );
+  }
+
+  @protected
+  TutorialLesson dco_decode_tutorial_lesson(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return TutorialLesson(
+      events: dco_decode_list_tutorial_event(arr[0]),
+      durationSecs: dco_decode_f_64(arr[1]),
+      songStartSecs: dco_decode_f_64(arr[2]),
+    );
+  }
+
+  @protected
+  int dco_decode_u_16(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  int dco_decode_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -166,6 +2473,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  UpError dco_decode_up_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return UpError(
+      code: dco_decode_error_code(arr[0]),
+      message: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_String(deserializer);
+    return AnyhowException(inner);
+  }
+
+  @protected
+  RustStreamSink<EngineEvent> sse_decode_StreamSink_engine_event_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
+  RustStreamSink<HubPeer> sse_decode_StreamSink_hub_peer_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
@@ -173,10 +2515,1109 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AppDirs sse_decode_app_dirs(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_dataDir = sse_decode_String(deserializer);
+    var var_cacheDir = sse_decode_String(deserializer);
+    return AppDirs(dataDir: var_dataDir, cacheDir: var_cacheDir);
+  }
+
+  @protected
+  AudioConfig sse_decode_audio_config(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_bufferFrames = sse_decode_opt_box_autoadd_u_32(deserializer);
+    var var_sampleRate = sse_decode_opt_box_autoadd_u_32(deserializer);
+    var var_outputDevice = sse_decode_opt_String(deserializer);
+    return AudioConfig(
+      bufferFrames: var_bufferFrames,
+      sampleRate: var_sampleRate,
+      outputDevice: var_outputDevice,
+    );
+  }
+
+  @protected
+  AudioDeviceInfo sse_decode_audio_device_info(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_isInput = sse_decode_bool(deserializer);
+    var var_isOutput = sse_decode_bool(deserializer);
+    var var_isDefaultOutput = sse_decode_bool(deserializer);
+    var var_isDefaultInput = sse_decode_bool(deserializer);
+    var var_defaultSampleRate = sse_decode_opt_box_autoadd_u_32(deserializer);
+    var var_maxOutputChannels = sse_decode_u_16(deserializer);
+    var var_maxInputChannels = sse_decode_u_16(deserializer);
+    var var_minBufferFrames = sse_decode_opt_box_autoadd_u_32(deserializer);
+    var var_maxBufferFrames = sse_decode_opt_box_autoadd_u_32(deserializer);
+    return AudioDeviceInfo(
+      id: var_id,
+      name: var_name,
+      isInput: var_isInput,
+      isOutput: var_isOutput,
+      isDefaultOutput: var_isDefaultOutput,
+      isDefaultInput: var_isDefaultInput,
+      defaultSampleRate: var_defaultSampleRate,
+      maxOutputChannels: var_maxOutputChannels,
+      maxInputChannels: var_maxInputChannels,
+      minBufferFrames: var_minBufferFrames,
+      maxBufferFrames: var_maxBufferFrames,
+    );
+  }
+
+  @protected
+  AudioStatus sse_decode_audio_status(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_running = sse_decode_bool(deserializer);
+    var var_host = sse_decode_String(deserializer);
+    var var_device = sse_decode_String(deserializer);
+    var var_sampleRate = sse_decode_u_32(deserializer);
+    var var_channels = sse_decode_u_16(deserializer);
+    var var_bufferFrames = sse_decode_opt_box_autoadd_u_32(deserializer);
+    var var_sampleFormat = sse_decode_String(deserializer);
+    var var_outputLatencyMs = sse_decode_opt_box_autoadd_f_64(deserializer);
+    return AudioStatus(
+      running: var_running,
+      host: var_host,
+      device: var_device,
+      sampleRate: var_sampleRate,
+      channels: var_channels,
+      bufferFrames: var_bufferFrames,
+      sampleFormat: var_sampleFormat,
+      outputLatencyMs: var_outputLatencyMs,
+    );
+  }
+
+  @protected
+  Bank sse_decode_bank(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return Bank.values[inner];
+  }
+
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  AppDirs sse_decode_box_autoadd_app_dirs(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_app_dirs(deserializer));
+  }
+
+  @protected
+  AudioConfig sse_decode_box_autoadd_audio_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_audio_config(deserializer));
+  }
+
+  @protected
+  Bank sse_decode_box_autoadd_bank(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_bank(deserializer));
+  }
+
+  @protected
+  ColorRole sse_decode_box_autoadd_color_role(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_color_role(deserializer));
+  }
+
+  @protected
+  Command sse_decode_box_autoadd_command(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_command(deserializer));
+  }
+
+  @protected
+  double sse_decode_box_autoadd_f_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_f_32(deserializer));
+  }
+
+  @protected
+  double sse_decode_box_autoadd_f_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_f_64(deserializer));
+  }
+
+  @protected
+  HubEvent sse_decode_box_autoadd_hub_event(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_hub_event(deserializer));
+  }
+
+  @protected
+  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_i_64(deserializer));
+  }
+
+  @protected
+  KitSummary sse_decode_box_autoadd_kit_summary(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_kit_summary(deserializer));
+  }
+
+  @protected
+  PadId sse_decode_box_autoadd_pad_id(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_pad_id(deserializer));
+  }
+
+  @protected
+  PadParams sse_decode_box_autoadd_pad_params(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_pad_params(deserializer));
+  }
+
+  @protected
+  Quantize sse_decode_box_autoadd_quantize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_quantize(deserializer));
+  }
+
+  @protected
+  TrackInfo sse_decode_box_autoadd_track_info(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_track_info(deserializer));
+  }
+
+  @protected
+  TransportCmd sse_decode_box_autoadd_transport_cmd(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_transport_cmd(deserializer));
+  }
+
+  @protected
+  TutorialChart sse_decode_box_autoadd_tutorial_chart(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_tutorial_chart(deserializer));
+  }
+
+  @protected
+  int sse_decode_box_autoadd_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_32(deserializer));
+  }
+
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_64(deserializer));
+  }
+
+  @protected
+  int sse_decode_box_autoadd_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_8(deserializer));
+  }
+
+  @protected
+  UpError sse_decode_box_autoadd_up_error(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_up_error(deserializer));
+  }
+
+  @protected
+  ColorRole sse_decode_color_role(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return ColorRole.values[inner];
+  }
+
+  @protected
+  Command sse_decode_command(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_pad = sse_decode_box_autoadd_pad_id(deserializer);
+        var var_velocity = sse_decode_f_32(deserializer);
+        return Command_PadDown(pad: var_pad, velocity: var_velocity);
+      case 1:
+        var var_pad = sse_decode_box_autoadd_pad_id(deserializer);
+        return Command_PadUp(pad: var_pad);
+      case 2:
+        return Command_StopAll();
+      case 3:
+        var var_bpm = sse_decode_f_64(deserializer);
+        return Command_SetTempo(bpm: var_bpm);
+      case 4:
+        var var_ratio = sse_decode_f_64(deserializer);
+        return Command_SetSpeed(ratio: var_ratio);
+      case 5:
+        var var_q = sse_decode_quantize(deserializer);
+        return Command_SetQuantize(q: var_q);
+      case 6:
+        var var_pad = sse_decode_box_autoadd_pad_id(deserializer);
+        var var_params = sse_decode_box_autoadd_pad_params(deserializer);
+        return Command_SetPadParams(pad: var_pad, params: var_params);
+      case 7:
+        var var_gain = sse_decode_f_32(deserializer);
+        return Command_SetMasterGain(gain: var_gain);
+      case 8:
+        return Command_StartRecording();
+      case 9:
+        return Command_StopRecording();
+      case 10:
+        var var_field0 = sse_decode_box_autoadd_transport_cmd(deserializer);
+        return Command_Transport(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  EngineEvent sse_decode_engine_event(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_pad = sse_decode_box_autoadd_pad_id(deserializer);
+        var var_state = sse_decode_pad_play_state(deserializer);
+        return EngineEvent_PadState(pad: var_pad, state: var_state);
+      case 1:
+        var var_playing = sse_decode_bool(deserializer);
+        var var_beat = sse_decode_f_64(deserializer);
+        var var_bpm = sse_decode_f_64(deserializer);
+        var var_barLenBeats = sse_decode_f_64(deserializer);
+        var var_songSecs = sse_decode_f_64(deserializer);
+        return EngineEvent_Transport(
+          playing: var_playing,
+          beat: var_beat,
+          bpm: var_bpm,
+          barLenBeats: var_barLenBeats,
+          songSecs: var_songSecs,
+        );
+      case 2:
+        var var_masterPeak = sse_decode_list_prim_f_32_strict(deserializer);
+        var var_masterRms = sse_decode_list_prim_f_32_strict(deserializer);
+        var var_padLevels = sse_decode_list_prim_f_32_strict(deserializer);
+        return EngineEvent_Meters(
+          masterPeak: var_masterPeak,
+          masterRms: var_masterRms,
+          padLevels: var_padLevels,
+        );
+      case 3:
+        var var_state = sse_decode_recorder_state(deserializer);
+        var var_elapsedSecs = sse_decode_f_64(deserializer);
+        return EngineEvent_Recorder(
+          state: var_state,
+          elapsedSecs: var_elapsedSecs,
+        );
+      case 4:
+        var var_kit = sse_decode_box_autoadd_kit_summary(deserializer);
+        return EngineEvent_KitLoaded(kit: var_kit);
+      case 5:
+        var var_track = sse_decode_box_autoadd_track_info(deserializer);
+        return EngineEvent_TrackSaved(track: var_track);
+      case 6:
+        var var_track = sse_decode_opt_String(deserializer);
+        return EngineEvent_TrackPlayback(track: var_track);
+      case 7:
+        return EngineEvent_LibraryChanged();
+      case 8:
+        var var_field0 = sse_decode_box_autoadd_hub_event(deserializer);
+        return EngineEvent_Hub(var_field0);
+      case 9:
+        var var_field0 = sse_decode_box_autoadd_up_error(deserializer);
+        return EngineEvent_Error(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  EngineInfo sse_decode_engine_info(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_version = sse_decode_String(deserializer);
+    var var_sampleRate = sse_decode_u_32(deserializer);
+    var var_graphBackend = sse_decode_String(deserializer);
+    var var_platform = sse_decode_String(deserializer);
+    var var_dataDir = sse_decode_String(deserializer);
+    return EngineInfo(
+      version: var_version,
+      sampleRate: var_sampleRate,
+      graphBackend: var_graphBackend,
+      platform: var_platform,
+      dataDir: var_dataDir,
+    );
+  }
+
+  @protected
+  EngineSnapshot sse_decode_engine_snapshot(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_pads = sse_decode_list_pad_snapshot(deserializer);
+    var var_transport = sse_decode_transport_state(deserializer);
+    var var_kit = sse_decode_opt_box_autoadd_kit_summary(deserializer);
+    var var_masterGain = sse_decode_f_32(deserializer);
+    var var_recorder = sse_decode_recorder_state(deserializer);
+    var var_recorderElapsedSecs = sse_decode_f_64(deserializer);
+    var var_sampleRate = sse_decode_u_32(deserializer);
+    var var_activeVoices = sse_decode_u_32(deserializer);
+    return EngineSnapshot(
+      pads: var_pads,
+      transport: var_transport,
+      kit: var_kit,
+      masterGain: var_masterGain,
+      recorder: var_recorder,
+      recorderElapsedSecs: var_recorderElapsedSecs,
+      sampleRate: var_sampleRate,
+      activeVoices: var_activeVoices,
+    );
+  }
+
+  @protected
+  ErrorCode sse_decode_error_code(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return ErrorCode.values[inner];
+  }
+
+  @protected
+  double sse_decode_f_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getFloat32();
+  }
+
+  @protected
+  double sse_decode_f_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getFloat64();
+  }
+
+  @protected
+  HubEvent sse_decode_hub_event(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_port = sse_decode_u_16(deserializer);
+        return HubEvent_ServerStarted(port: var_port);
+      case 1:
+        return HubEvent_ServerStopped();
+      case 2:
+        var var_id = sse_decode_String(deserializer);
+        var var_name = sse_decode_String(deserializer);
+        return HubEvent_PeerDiscovered(id: var_id, name: var_name);
+      case 3:
+        var var_id = sse_decode_String(deserializer);
+        return HubEvent_PeerLost(id: var_id);
+      case 4:
+        var var_id = sse_decode_String(deserializer);
+        var var_name = sse_decode_String(deserializer);
+        return HubEvent_Paired(id: var_id, name: var_name);
+      case 5:
+        var var_peer = sse_decode_String(deserializer);
+        var var_done = sse_decode_u_64(deserializer);
+        var var_total = sse_decode_u_64(deserializer);
+        return HubEvent_SyncProgress(
+          peer: var_peer,
+          done: var_done,
+          total: var_total,
+        );
+      case 6:
+        var var_peer = sse_decode_String(deserializer);
+        return HubEvent_ControllerConnected(peer: var_peer);
+      case 7:
+        return HubEvent_ControllerDisconnected();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  HubPeer sse_decode_hub_peer(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_address = sse_decode_String(deserializer);
+    var var_port = sse_decode_u_16(deserializer);
+    var var_paired = sse_decode_bool(deserializer);
+    return HubPeer(
+      id: var_id,
+      name: var_name,
+      address: var_address,
+      port: var_port,
+      paired: var_paired,
+    );
+  }
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getInt32();
+  }
+
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getPlatformInt64();
+  }
+
+  @protected
+  ImportReport sse_decode_import_report(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_kind = sse_decode_String(deserializer);
+    var var_kits = sse_decode_list_kit_summary(deserializer);
+    var var_duplicates = sse_decode_u_32(deserializer);
+    var var_samples = sse_decode_list_String(deserializer);
+    var var_catalogEntries = sse_decode_u_32(deserializer);
+    var var_warnings = sse_decode_list_String(deserializer);
+    return ImportReport(
+      kind: var_kind,
+      kits: var_kits,
+      duplicates: var_duplicates,
+      samples: var_samples,
+      catalogEntries: var_catalogEntries,
+      warnings: var_warnings,
+    );
+  }
+
+  @protected
+  Judgement sse_decode_judgement(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return Judgement.values[inner];
+  }
+
+  @protected
+  KitSort sse_decode_kit_sort(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return KitSort.values[inner];
+  }
+
+  @protected
+  KitSummary sse_decode_kit_summary(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_padCount = sse_decode_u_32(deserializer);
+    var var_bpm = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_hasTutorial = sse_decode_bool(deserializer);
+    var var_description = sse_decode_opt_String(deserializer);
+    var var_authors = sse_decode_list_String(deserializer);
+    var var_genres = sse_decode_list_String(deserializer);
+    var var_tags = sse_decode_list_String(deserializer);
+    var var_themeColor = sse_decode_opt_String(deserializer);
+    var var_inspiredBy = sse_decode_opt_String(deserializer);
+    var var_coverPath = sse_decode_opt_String(deserializer);
+    var var_favorite = sse_decode_bool(deserializer);
+    var var_sourceKind = sse_decode_String(deserializer);
+    var var_lastUsedAtMs = sse_decode_opt_box_autoadd_i_64(deserializer);
+    return KitSummary(
+      id: var_id,
+      name: var_name,
+      padCount: var_padCount,
+      bpm: var_bpm,
+      hasTutorial: var_hasTutorial,
+      description: var_description,
+      authors: var_authors,
+      genres: var_genres,
+      tags: var_tags,
+      themeColor: var_themeColor,
+      inspiredBy: var_inspiredBy,
+      coverPath: var_coverPath,
+      favorite: var_favorite,
+      sourceKind: var_sourceKind,
+      lastUsedAtMs: var_lastUsedAtMs,
+    );
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<AudioDeviceInfo> sse_decode_list_audio_device_info(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <AudioDeviceInfo>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_audio_device_info(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<KitSummary> sse_decode_list_kit_summary(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <KitSummary>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_kit_summary(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<PadSnapshot> sse_decode_list_pad_snapshot(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <PadSnapshot>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_pad_snapshot(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  Float32List sse_decode_list_prim_f_32_strict(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getFloat32List(len_);
+  }
+
+  @protected
+  Float64List sse_decode_list_prim_f_64_strict(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getFloat64List(len_);
+  }
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<SampleInfo> sse_decode_list_sample_info(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <SampleInfo>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_sample_info(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<TrackInfo> sse_decode_list_track_info(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <TrackInfo>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_track_info(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<TutorialEvent> sse_decode_list_tutorial_event(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <TutorialEvent>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_tutorial_event(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<TutorialLesson> sse_decode_list_tutorial_lesson(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <TutorialLesson>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_tutorial_lesson(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  Bank? sse_decode_opt_box_autoadd_bank(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_bank(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  ColorRole? sse_decode_opt_box_autoadd_color_role(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_color_role(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  double? sse_decode_opt_box_autoadd_f_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_f_32(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_f_64(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_i_64(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  KitSummary? sse_decode_opt_box_autoadd_kit_summary(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_kit_summary(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PadId? sse_decode_opt_box_autoadd_pad_id(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_pad_id(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  Quantize? sse_decode_opt_box_autoadd_quantize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_quantize(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  TutorialChart? sse_decode_opt_box_autoadd_tutorial_chart(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_tutorial_chart(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_32(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_64(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_8(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  Float64List? sse_decode_opt_list_prim_f_64_strict(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_list_prim_f_64_strict(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PadId sse_decode_pad_id(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_bank = sse_decode_u_8(deserializer);
+    var var_index = sse_decode_u_8(deserializer);
+    return PadId(bank: var_bank, index: var_index);
+  }
+
+  @protected
+  PadMode sse_decode_pad_mode(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return PadMode.values[inner];
+  }
+
+  @protected
+  PadParams sse_decode_pad_params(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_mode = sse_decode_pad_mode(deserializer);
+    var var_gain = sse_decode_f_32(deserializer);
+    var var_pan = sse_decode_f_32(deserializer);
+    var var_chokeGroup = sse_decode_opt_box_autoadd_u_8(deserializer);
+    var var_chokedBy = sse_decode_opt_box_autoadd_u_8(deserializer);
+    var var_chokeReleaseMs = sse_decode_opt_box_autoadd_f_32(deserializer);
+    var var_selfChoke = sse_decode_bool(deserializer);
+    var var_retrigger = sse_decode_retrigger(deserializer);
+    var var_color = sse_decode_color_role(deserializer);
+    var var_sample = sse_decode_opt_String(deserializer);
+    var var_startFrame = sse_decode_u_64(deserializer);
+    var var_endFrame = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_loopStart = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_loopEnd = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_quantizeOverride = sse_decode_opt_box_autoadd_quantize(
+      deserializer,
+    );
+    return PadParams(
+      mode: var_mode,
+      gain: var_gain,
+      pan: var_pan,
+      chokeGroup: var_chokeGroup,
+      chokedBy: var_chokedBy,
+      chokeReleaseMs: var_chokeReleaseMs,
+      selfChoke: var_selfChoke,
+      retrigger: var_retrigger,
+      color: var_color,
+      sample: var_sample,
+      startFrame: var_startFrame,
+      endFrame: var_endFrame,
+      loopStart: var_loopStart,
+      loopEnd: var_loopEnd,
+      quantizeOverride: var_quantizeOverride,
+    );
+  }
+
+  @protected
+  PadPlayState sse_decode_pad_play_state(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return PadPlayState.values[inner];
+  }
+
+  @protected
+  PadSnapshot sse_decode_pad_snapshot(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_pad = sse_decode_pad_id(deserializer);
+    var var_state = sse_decode_pad_play_state(deserializer);
+    var var_params = sse_decode_pad_params(deserializer);
+    var var_sampleSecs = sse_decode_f_64(deserializer);
+    return PadSnapshot(
+      pad: var_pad,
+      state: var_state,
+      params: var_params,
+      sampleSecs: var_sampleSecs,
+    );
+  }
+
+  @protected
+  PairedDevice sse_decode_paired_device(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_pairedUnixMs = sse_decode_i_64(deserializer);
+    return PairedDevice(
+      id: var_id,
+      name: var_name,
+      pairedUnixMs: var_pairedUnixMs,
+    );
+  }
+
+  @protected
+  Quantize sse_decode_quantize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return Quantize.values[inner];
+  }
+
+  @protected
+  RecorderState sse_decode_recorder_state(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return RecorderState.values[inner];
+  }
+
+  @protected
+  Retrigger sse_decode_retrigger(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return Retrigger.values[inner];
+  }
+
+  @protected
+  SampleInfo sse_decode_sample_info(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_origin = sse_decode_String(deserializer);
+    var var_sampleRate = sse_decode_u_32(deserializer);
+    var var_channels = sse_decode_u_16(deserializer);
+    var var_durationSecs = sse_decode_f_64(deserializer);
+    var var_createdUnixMs = sse_decode_i_64(deserializer);
+    return SampleInfo(
+      id: var_id,
+      name: var_name,
+      origin: var_origin,
+      sampleRate: var_sampleRate,
+      channels: var_channels,
+      durationSecs: var_durationSecs,
+      createdUnixMs: var_createdUnixMs,
+    );
+  }
+
+  @protected
+  SyncReport sse_decode_sync_report(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_pulled = sse_decode_u_32(deserializer);
+    var var_pushed = sse_decode_u_32(deserializer);
+    var var_conflicts = sse_decode_u_32(deserializer);
+    var var_bytes = sse_decode_u_64(deserializer);
+    return SyncReport(
+      pulled: var_pulled,
+      pushed: var_pushed,
+      conflicts: var_conflicts,
+      bytes: var_bytes,
+    );
+  }
+
+  @protected
+  TrackInfo sse_decode_track_info(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_createdUnixMs = sse_decode_i_64(deserializer);
+    var var_durationSecs = sse_decode_f_64(deserializer);
+    var var_sampleRate = sse_decode_u_32(deserializer);
+    var var_channels = sse_decode_u_16(deserializer);
+    var var_waveform = sse_decode_list_prim_f_32_strict(deserializer);
+    return TrackInfo(
+      id: var_id,
+      name: var_name,
+      createdUnixMs: var_createdUnixMs,
+      durationSecs: var_durationSecs,
+      sampleRate: var_sampleRate,
+      channels: var_channels,
+      waveform: var_waveform,
+    );
+  }
+
+  @protected
+  TransportClock sse_decode_transport_clock(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_playing = sse_decode_bool(deserializer);
+    var var_beat = sse_decode_f_64(deserializer);
+    var var_songSecs = sse_decode_f_64(deserializer);
+    var var_bpm = sse_decode_f_64(deserializer);
+    var var_speed = sse_decode_f_64(deserializer);
+    return TransportClock(
+      playing: var_playing,
+      beat: var_beat,
+      songSecs: var_songSecs,
+      bpm: var_bpm,
+      speed: var_speed,
+    );
+  }
+
+  @protected
+  TransportCmd sse_decode_transport_cmd(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return TransportCmd_Play();
+      case 1:
+        return TransportCmd_Stop();
+      case 2:
+        var var_field0 = sse_decode_f_64(deserializer);
+        return TransportCmd_Seek(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  TransportState sse_decode_transport_state(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_playing = sse_decode_bool(deserializer);
+    var var_beat = sse_decode_f_64(deserializer);
+    var var_songSecs = sse_decode_f_64(deserializer);
+    var var_bpm = sse_decode_f_64(deserializer);
+    var var_speed = sse_decode_f_64(deserializer);
+    var var_beatsPerBar = sse_decode_u_32(deserializer);
+    var var_beatUnit = sse_decode_u_32(deserializer);
+    var var_quantize = sse_decode_quantize(deserializer);
+    return TransportState(
+      playing: var_playing,
+      beat: var_beat,
+      songSecs: var_songSecs,
+      bpm: var_bpm,
+      speed: var_speed,
+      beatsPerBar: var_beatsPerBar,
+      beatUnit: var_beatUnit,
+      quantize: var_quantize,
+    );
+  }
+
+  @protected
+  TutorialAction sse_decode_tutorial_action(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return TutorialAction.values[inner];
+  }
+
+  @protected
+  TutorialChart sse_decode_tutorial_chart(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_events = sse_decode_list_tutorial_event(deserializer);
+    var var_lessons = sse_decode_list_tutorial_lesson(deserializer);
+    var var_bpm = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_perfectMs = sse_decode_f_64(deserializer);
+    var var_missMs = sse_decode_f_64(deserializer);
+    var var_timed = sse_decode_bool(deserializer);
+    return TutorialChart(
+      events: var_events,
+      lessons: var_lessons,
+      bpm: var_bpm,
+      perfectMs: var_perfectMs,
+      missMs: var_missMs,
+      timed: var_timed,
+    );
+  }
+
+  @protected
+  TutorialEvent sse_decode_tutorial_event(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_timeSecs = sse_decode_f_64(deserializer);
+    var var_pad = sse_decode_opt_box_autoadd_pad_id(deserializer);
+    var var_pageSwitch = sse_decode_opt_box_autoadd_bank(deserializer);
+    var var_color = sse_decode_opt_box_autoadd_color_role(deserializer);
+    var var_action = sse_decode_tutorial_action(deserializer);
+    return TutorialEvent(
+      timeSecs: var_timeSecs,
+      pad: var_pad,
+      pageSwitch: var_pageSwitch,
+      color: var_color,
+      action: var_action,
+    );
+  }
+
+  @protected
+  TutorialLesson sse_decode_tutorial_lesson(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_events = sse_decode_list_tutorial_event(deserializer);
+    var var_durationSecs = sse_decode_f_64(deserializer);
+    var var_songStartSecs = sse_decode_f_64(deserializer);
+    return TutorialLesson(
+      events: var_events,
+      durationSecs: var_durationSecs,
+      songStartSecs: var_songStartSecs,
+    );
+  }
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint16();
+  }
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint32();
+  }
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -191,21 +3632,582 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
+  UpError sse_decode_up_error(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
+    var var_code = sse_decode_error_code(deserializer);
+    var var_message = sse_decode_String(deserializer);
+    return UpError(code: var_code, message: var_message);
   }
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
+  void sse_encode_AnyhowException(
+    AnyhowException self,
+    SseSerializer serializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
+    sse_encode_String(self.message, serializer);
+  }
+
+  @protected
+  void sse_encode_StreamSink_engine_event_Sse(
+    RustStreamSink<EngineEvent> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_engine_event,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_StreamSink_hub_peer_Sse(
+    RustStreamSink<HubPeer> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_hub_peer,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
   }
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_app_dirs(AppDirs self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.dataDir, serializer);
+    sse_encode_String(self.cacheDir, serializer);
+  }
+
+  @protected
+  void sse_encode_audio_config(AudioConfig self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_u_32(self.bufferFrames, serializer);
+    sse_encode_opt_box_autoadd_u_32(self.sampleRate, serializer);
+    sse_encode_opt_String(self.outputDevice, serializer);
+  }
+
+  @protected
+  void sse_encode_audio_device_info(
+    AudioDeviceInfo self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_bool(self.isInput, serializer);
+    sse_encode_bool(self.isOutput, serializer);
+    sse_encode_bool(self.isDefaultOutput, serializer);
+    sse_encode_bool(self.isDefaultInput, serializer);
+    sse_encode_opt_box_autoadd_u_32(self.defaultSampleRate, serializer);
+    sse_encode_u_16(self.maxOutputChannels, serializer);
+    sse_encode_u_16(self.maxInputChannels, serializer);
+    sse_encode_opt_box_autoadd_u_32(self.minBufferFrames, serializer);
+    sse_encode_opt_box_autoadd_u_32(self.maxBufferFrames, serializer);
+  }
+
+  @protected
+  void sse_encode_audio_status(AudioStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.running, serializer);
+    sse_encode_String(self.host, serializer);
+    sse_encode_String(self.device, serializer);
+    sse_encode_u_32(self.sampleRate, serializer);
+    sse_encode_u_16(self.channels, serializer);
+    sse_encode_opt_box_autoadd_u_32(self.bufferFrames, serializer);
+    sse_encode_String(self.sampleFormat, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.outputLatencyMs, serializer);
+  }
+
+  @protected
+  void sse_encode_bank(Bank self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_app_dirs(AppDirs self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_app_dirs(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_audio_config(
+    AudioConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_audio_config(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_bank(Bank self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bank(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_color_role(
+    ColorRole self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_color_role(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_command(Command self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_command(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_f_32(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_32(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_hub_event(
+    HubEvent self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_hub_event(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_i_64(
+    PlatformInt64 self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_64(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_kit_summary(
+    KitSummary self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_kit_summary(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_pad_id(PadId self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pad_id(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_pad_params(
+    PadParams self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pad_params(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_quantize(
+    Quantize self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_quantize(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_track_info(
+    TrackInfo self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_track_info(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_transport_cmd(
+    TransportCmd self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_transport_cmd(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_tutorial_chart(
+    TutorialChart self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_tutorial_chart(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_32(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_up_error(UpError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_up_error(self, serializer);
+  }
+
+  @protected
+  void sse_encode_color_role(ColorRole self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_command(Command self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case Command_PadDown(pad: final pad, velocity: final velocity):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_pad_id(pad, serializer);
+        sse_encode_f_32(velocity, serializer);
+      case Command_PadUp(pad: final pad):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_pad_id(pad, serializer);
+      case Command_StopAll():
+        sse_encode_i_32(2, serializer);
+      case Command_SetTempo(bpm: final bpm):
+        sse_encode_i_32(3, serializer);
+        sse_encode_f_64(bpm, serializer);
+      case Command_SetSpeed(ratio: final ratio):
+        sse_encode_i_32(4, serializer);
+        sse_encode_f_64(ratio, serializer);
+      case Command_SetQuantize(q: final q):
+        sse_encode_i_32(5, serializer);
+        sse_encode_quantize(q, serializer);
+      case Command_SetPadParams(pad: final pad, params: final params):
+        sse_encode_i_32(6, serializer);
+        sse_encode_box_autoadd_pad_id(pad, serializer);
+        sse_encode_box_autoadd_pad_params(params, serializer);
+      case Command_SetMasterGain(gain: final gain):
+        sse_encode_i_32(7, serializer);
+        sse_encode_f_32(gain, serializer);
+      case Command_StartRecording():
+        sse_encode_i_32(8, serializer);
+      case Command_StopRecording():
+        sse_encode_i_32(9, serializer);
+      case Command_Transport(field0: final field0):
+        sse_encode_i_32(10, serializer);
+        sse_encode_box_autoadd_transport_cmd(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_engine_event(EngineEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case EngineEvent_PadState(pad: final pad, state: final state):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_pad_id(pad, serializer);
+        sse_encode_pad_play_state(state, serializer);
+      case EngineEvent_Transport(
+        playing: final playing,
+        beat: final beat,
+        bpm: final bpm,
+        barLenBeats: final barLenBeats,
+        songSecs: final songSecs,
+      ):
+        sse_encode_i_32(1, serializer);
+        sse_encode_bool(playing, serializer);
+        sse_encode_f_64(beat, serializer);
+        sse_encode_f_64(bpm, serializer);
+        sse_encode_f_64(barLenBeats, serializer);
+        sse_encode_f_64(songSecs, serializer);
+      case EngineEvent_Meters(
+        masterPeak: final masterPeak,
+        masterRms: final masterRms,
+        padLevels: final padLevels,
+      ):
+        sse_encode_i_32(2, serializer);
+        sse_encode_list_prim_f_32_strict(masterPeak, serializer);
+        sse_encode_list_prim_f_32_strict(masterRms, serializer);
+        sse_encode_list_prim_f_32_strict(padLevels, serializer);
+      case EngineEvent_Recorder(
+        state: final state,
+        elapsedSecs: final elapsedSecs,
+      ):
+        sse_encode_i_32(3, serializer);
+        sse_encode_recorder_state(state, serializer);
+        sse_encode_f_64(elapsedSecs, serializer);
+      case EngineEvent_KitLoaded(kit: final kit):
+        sse_encode_i_32(4, serializer);
+        sse_encode_box_autoadd_kit_summary(kit, serializer);
+      case EngineEvent_TrackSaved(track: final track):
+        sse_encode_i_32(5, serializer);
+        sse_encode_box_autoadd_track_info(track, serializer);
+      case EngineEvent_TrackPlayback(track: final track):
+        sse_encode_i_32(6, serializer);
+        sse_encode_opt_String(track, serializer);
+      case EngineEvent_LibraryChanged():
+        sse_encode_i_32(7, serializer);
+      case EngineEvent_Hub(field0: final field0):
+        sse_encode_i_32(8, serializer);
+        sse_encode_box_autoadd_hub_event(field0, serializer);
+      case EngineEvent_Error(field0: final field0):
+        sse_encode_i_32(9, serializer);
+        sse_encode_box_autoadd_up_error(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_engine_info(EngineInfo self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.version, serializer);
+    sse_encode_u_32(self.sampleRate, serializer);
+    sse_encode_String(self.graphBackend, serializer);
+    sse_encode_String(self.platform, serializer);
+    sse_encode_String(self.dataDir, serializer);
+  }
+
+  @protected
+  void sse_encode_engine_snapshot(
+    EngineSnapshot self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_pad_snapshot(self.pads, serializer);
+    sse_encode_transport_state(self.transport, serializer);
+    sse_encode_opt_box_autoadd_kit_summary(self.kit, serializer);
+    sse_encode_f_32(self.masterGain, serializer);
+    sse_encode_recorder_state(self.recorder, serializer);
+    sse_encode_f_64(self.recorderElapsedSecs, serializer);
+    sse_encode_u_32(self.sampleRate, serializer);
+    sse_encode_u_32(self.activeVoices, serializer);
+  }
+
+  @protected
+  void sse_encode_error_code(ErrorCode self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_f_32(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putFloat32(self);
+  }
+
+  @protected
+  void sse_encode_f_64(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putFloat64(self);
+  }
+
+  @protected
+  void sse_encode_hub_event(HubEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case HubEvent_ServerStarted(port: final port):
+        sse_encode_i_32(0, serializer);
+        sse_encode_u_16(port, serializer);
+      case HubEvent_ServerStopped():
+        sse_encode_i_32(1, serializer);
+      case HubEvent_PeerDiscovered(id: final id, name: final name):
+        sse_encode_i_32(2, serializer);
+        sse_encode_String(id, serializer);
+        sse_encode_String(name, serializer);
+      case HubEvent_PeerLost(id: final id):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(id, serializer);
+      case HubEvent_Paired(id: final id, name: final name):
+        sse_encode_i_32(4, serializer);
+        sse_encode_String(id, serializer);
+        sse_encode_String(name, serializer);
+      case HubEvent_SyncProgress(
+        peer: final peer,
+        done: final done,
+        total: final total,
+      ):
+        sse_encode_i_32(5, serializer);
+        sse_encode_String(peer, serializer);
+        sse_encode_u_64(done, serializer);
+        sse_encode_u_64(total, serializer);
+      case HubEvent_ControllerConnected(peer: final peer):
+        sse_encode_i_32(6, serializer);
+        sse_encode_String(peer, serializer);
+      case HubEvent_ControllerDisconnected():
+        sse_encode_i_32(7, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_hub_peer(HubPeer self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_String(self.address, serializer);
+    sse_encode_u_16(self.port, serializer);
+    sse_encode_bool(self.paired, serializer);
+  }
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putInt32(self);
+  }
+
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putPlatformInt64(self);
+  }
+
+  @protected
+  void sse_encode_import_report(ImportReport self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.kind, serializer);
+    sse_encode_list_kit_summary(self.kits, serializer);
+    sse_encode_u_32(self.duplicates, serializer);
+    sse_encode_list_String(self.samples, serializer);
+    sse_encode_u_32(self.catalogEntries, serializer);
+    sse_encode_list_String(self.warnings, serializer);
+  }
+
+  @protected
+  void sse_encode_judgement(Judgement self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_kit_sort(KitSort self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_kit_summary(KitSummary self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_u_32(self.padCount, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.bpm, serializer);
+    sse_encode_bool(self.hasTutorial, serializer);
+    sse_encode_opt_String(self.description, serializer);
+    sse_encode_list_String(self.authors, serializer);
+    sse_encode_list_String(self.genres, serializer);
+    sse_encode_list_String(self.tags, serializer);
+    sse_encode_opt_String(self.themeColor, serializer);
+    sse_encode_opt_String(self.inspiredBy, serializer);
+    sse_encode_opt_String(self.coverPath, serializer);
+    sse_encode_bool(self.favorite, serializer);
+    sse_encode_String(self.sourceKind, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.lastUsedAtMs, serializer);
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_audio_device_info(
+    List<AudioDeviceInfo> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_audio_device_info(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_kit_summary(
+    List<KitSummary> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_kit_summary(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_pad_snapshot(
+    List<PadSnapshot> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_pad_snapshot(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_prim_f_32_strict(
+    Float32List self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putFloat32List(self);
+  }
+
+  @protected
+  void sse_encode_list_prim_f_64_strict(
+    Float64List self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putFloat64List(self);
   }
 
   @protected
@@ -216,6 +4218,424 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_list_sample_info(
+    List<SampleInfo> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_sample_info(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_track_info(
+    List<TrackInfo> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_track_info(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_tutorial_event(
+    List<TutorialEvent> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_tutorial_event(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_tutorial_lesson(
+    List<TutorialLesson> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_tutorial_lesson(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_String(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_bank(Bank? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_bank(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_color_role(
+    ColorRole? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_color_role(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_f_32(double? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_f_32(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_f_64(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_i_64(
+    PlatformInt64? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_i_64(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_kit_summary(
+    KitSummary? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_kit_summary(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_pad_id(
+    PadId? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_pad_id(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_quantize(
+    Quantize? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_quantize(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_tutorial_chart(
+    TutorialChart? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_tutorial_chart(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_32(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_64(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_8(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_list_prim_f_64_strict(
+    Float64List? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_list_prim_f_64_strict(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_pad_id(PadId self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8(self.bank, serializer);
+    sse_encode_u_8(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_pad_mode(PadMode self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_pad_params(PadParams self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pad_mode(self.mode, serializer);
+    sse_encode_f_32(self.gain, serializer);
+    sse_encode_f_32(self.pan, serializer);
+    sse_encode_opt_box_autoadd_u_8(self.chokeGroup, serializer);
+    sse_encode_opt_box_autoadd_u_8(self.chokedBy, serializer);
+    sse_encode_opt_box_autoadd_f_32(self.chokeReleaseMs, serializer);
+    sse_encode_bool(self.selfChoke, serializer);
+    sse_encode_retrigger(self.retrigger, serializer);
+    sse_encode_color_role(self.color, serializer);
+    sse_encode_opt_String(self.sample, serializer);
+    sse_encode_u_64(self.startFrame, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.endFrame, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.loopStart, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.loopEnd, serializer);
+    sse_encode_opt_box_autoadd_quantize(self.quantizeOverride, serializer);
+  }
+
+  @protected
+  void sse_encode_pad_play_state(PadPlayState self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_pad_snapshot(PadSnapshot self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pad_id(self.pad, serializer);
+    sse_encode_pad_play_state(self.state, serializer);
+    sse_encode_pad_params(self.params, serializer);
+    sse_encode_f_64(self.sampleSecs, serializer);
+  }
+
+  @protected
+  void sse_encode_paired_device(PairedDevice self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_i_64(self.pairedUnixMs, serializer);
+  }
+
+  @protected
+  void sse_encode_quantize(Quantize self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_recorder_state(RecorderState self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_retrigger(Retrigger self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_sample_info(SampleInfo self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_String(self.origin, serializer);
+    sse_encode_u_32(self.sampleRate, serializer);
+    sse_encode_u_16(self.channels, serializer);
+    sse_encode_f_64(self.durationSecs, serializer);
+    sse_encode_i_64(self.createdUnixMs, serializer);
+  }
+
+  @protected
+  void sse_encode_sync_report(SyncReport self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_32(self.pulled, serializer);
+    sse_encode_u_32(self.pushed, serializer);
+    sse_encode_u_32(self.conflicts, serializer);
+    sse_encode_u_64(self.bytes, serializer);
+  }
+
+  @protected
+  void sse_encode_track_info(TrackInfo self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_i_64(self.createdUnixMs, serializer);
+    sse_encode_f_64(self.durationSecs, serializer);
+    sse_encode_u_32(self.sampleRate, serializer);
+    sse_encode_u_16(self.channels, serializer);
+    sse_encode_list_prim_f_32_strict(self.waveform, serializer);
+  }
+
+  @protected
+  void sse_encode_transport_clock(
+    TransportClock self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.playing, serializer);
+    sse_encode_f_64(self.beat, serializer);
+    sse_encode_f_64(self.songSecs, serializer);
+    sse_encode_f_64(self.bpm, serializer);
+    sse_encode_f_64(self.speed, serializer);
+  }
+
+  @protected
+  void sse_encode_transport_cmd(TransportCmd self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case TransportCmd_Play():
+        sse_encode_i_32(0, serializer);
+      case TransportCmd_Stop():
+        sse_encode_i_32(1, serializer);
+      case TransportCmd_Seek(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_f_64(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_transport_state(
+    TransportState self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.playing, serializer);
+    sse_encode_f_64(self.beat, serializer);
+    sse_encode_f_64(self.songSecs, serializer);
+    sse_encode_f_64(self.bpm, serializer);
+    sse_encode_f_64(self.speed, serializer);
+    sse_encode_u_32(self.beatsPerBar, serializer);
+    sse_encode_u_32(self.beatUnit, serializer);
+    sse_encode_quantize(self.quantize, serializer);
+  }
+
+  @protected
+  void sse_encode_tutorial_action(
+    TutorialAction self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_tutorial_chart(TutorialChart self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_tutorial_event(self.events, serializer);
+    sse_encode_list_tutorial_lesson(self.lessons, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.bpm, serializer);
+    sse_encode_f_64(self.perfectMs, serializer);
+    sse_encode_f_64(self.missMs, serializer);
+    sse_encode_bool(self.timed, serializer);
+  }
+
+  @protected
+  void sse_encode_tutorial_event(TutorialEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.timeSecs, serializer);
+    sse_encode_opt_box_autoadd_pad_id(self.pad, serializer);
+    sse_encode_opt_box_autoadd_bank(self.pageSwitch, serializer);
+    sse_encode_opt_box_autoadd_color_role(self.color, serializer);
+    sse_encode_tutorial_action(self.action, serializer);
+  }
+
+  @protected
+  void sse_encode_tutorial_lesson(
+    TutorialLesson self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_tutorial_event(self.events, serializer);
+    sse_encode_f_64(self.durationSecs, serializer);
+    sse_encode_f_64(self.songStartSecs, serializer);
+  }
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint16(self);
+  }
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint32(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
@@ -230,14 +4650,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
+  void sse_encode_up_error(UpError self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
-  }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
+    sse_encode_error_code(self.code, serializer);
+    sse_encode_String(self.message, serializer);
   }
 }

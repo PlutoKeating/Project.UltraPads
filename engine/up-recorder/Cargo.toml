@@ -1,7 +1,11 @@
 [package]
 name = "up-recorder"
+description = "UltraPads recorder: lock-free audio capture ring and take finalisation"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
+up-core = { workspace = true }
+up-rt = { workspace = true }
+up-codec = { workspace = true }

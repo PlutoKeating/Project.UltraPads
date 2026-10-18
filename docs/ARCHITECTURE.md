@@ -38,9 +38,12 @@
 
 | 线程 | 职责 | 约束 |
 |---|---|---|
-| 音频线程（设备回调） | `Engine::process(out, in)`：消费命令队列 → 调度 → 渲染 → 写电平/录音环形缓冲 | 不分配、不加锁、不做系统调用；命令走 `rtrb` SPSC |
-| 控制线程（Rust 后台） | 解码、重采样、加载 Kit、生成波形概要、写录音文件、Hub 网络 | 资源准备好后以 `Arc` 送进音频线程；旧资源由回收队列在控制线程释放 |
-| UI 线程（Dart） | 指针事件 → `pad_down/pad_up`（FRB `sync`，只往队列推命令，微秒级）；订阅事件流驱动动画 | UI 按下态立即生效，不等音频回调 |
+| 音频线程（设备回调） | `AudioProcessor::process(out, channels)`：图依次执行 Sampler（消费命令 → 量化调度 → 渲染 24 路 pad 总线 + 试听）→ Mixer（pad 电平）→ Master（增益平滑、限幅、电平、录音环形缓冲） | 不分配、不加锁、不做系统调用；测试用计数分配器证明零分配（`up_rt::alloc_check`） |
+| 引擎控制线程（`up-engine-control`） | 拥有音频图（Firewheel context 非 `Send`）；4 ms 轮询事件环、回收被替换的 `Arc<Sample>`、约 60 Hz 合并 Meters、维护快照（`ArcSwap`）、收尾录音（交给 runtime 写盘） | 可分配；不做文件 I/O（engine 层无 I/O） |
+| 运行基座线程（`up-host`） | cpal 输出/输入流各占一个宿主线程（stream 非 `Send`）；解码、重采样、Kit 加载、录音落盘、事件总线转发 | 资源准备好后以 `Arc` 送进音频线程 |
+| UI 线程（Dart） | 指针事件 → `pad_down/pad_up`（FRB `sync`，只往无锁队列推命令，微秒级）；订阅事件流驱动动画 | UI 按下态立即生效，不等音频回调 |
+
+队列：控制/UI → 音频为**多生产者**（UI、Hub、控制线程），使用无锁有界 `crossbeam_queue::ArrayQueue`（rtrb 是 SPSC，无法多生产者）；音频 → 控制（事件、回收、录音 PCM）使用 rtrb SPSC。停止设备时回调把 `AudioProcessor` 经 SPSC 槽交还，引擎可在 stop/start 之间保持。音频图见 ADR-0003。
 
 ## 3. 引擎为唯一事实源
 
@@ -103,3 +106,11 @@
 - 导入安全：ZIP 条目路径规范化（拒绝绝对路径/`..`/盘符/符号链接）、条目数/单文件/总大小/压缩比限额、manifest 哈希校验后才入库；写文件一律"临时文件 → fsync → rename"。
 - 所有导入的音频在入库时统一为 WAV（Ogg/MP3/FLAC 等经 up-codec 解码转码），引擎只需解析 WAV。
 - 示例 Kit：`content/kits/*.upkit` 由 `cargo run -p up-library --example kitgen -- content/kits` 用代码合成生成（CC0-1.0）。原 App 素材只在被忽略的 `private-assets/` 中导入到用户自己的数据目录，永不入库。
+
+## 9. 音频引擎实现要点（engine/*、runtime/up-host、runtime/up-cli）
+
+- **量化**：transport 以拍（四分音符）计位置，有效速度 = bpm × speed；`next_boundary(beat, grid)` 求下一个网格点，换算为块内帧偏移，Pending 的 Loop 在该偏移处采样级精确起播（浮点误差 1e-6 帧内吸附）。
+- **声部**：每 pad 一个主声部（`self_choke=false` 时 one-shot 可叠加），停止/截断/偷取都转为 5 ms（或 `choke_release_ms`）淡出尾巴；上限 `max_voices`（默认 32）+ 16 个尾巴槽。
+- **采样**：加载时 symphonia 解码（WAV/MP3/Ogg Vorbis/FLAC/AAC-M4A/ALAC/AIFF/CAF）→ rubato FFT 重采样到设备采样率；设备采样率变化时引擎重建并按原始音频重新重采样当前 Kit。
+- **录音**：Master 限幅后的立体声写入 rtrb 环形缓冲 → 控制线程汇总为 `Take`（时长 + 128 段波形）→ runtime 写 WAV（FFI 下存入曲库 `tracks/`）→ `TrackSaved` 事件。
+- **CLI**：`up-cli devices | render --kit-dir <dir> --events <json> --out <wav> | play --kit-dir <dir> --pad A0 | latency-probe | inspect <wav>`（`cargo run -p up-cli -- …`）。
