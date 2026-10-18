@@ -2,7 +2,7 @@
   "pad": {
     "palette": {
       "$type": "color",
-      "$description": "Ordered pad colour roles; Kits store a role index (wraps modulo the palette length), never RGB. Roles 0-3 = Kit config colours rosa / amarelo / verde / azul(_loop) (pink / orange / green / blue, IPA 4.7.0). Roles 4-7 are UltraPads extensions (store-screenshot neon hues). Each role: core (gradient stop 0 / radial centre), mid (0.5 / flat body), edge (1 / rim), glow, pressed (colour of the press / loop flash layer).",
+      "$description": "Ordered pad colour roles; Kits store a role index (wraps modulo the palette length), never RGB. Roles 0-3 = Kit config colours rosa / amarelo / verde / azul(_loop) (pink / orange / green / blue, IPA). Roles 4-7 are UltraPads extensions (store-screenshot neon hues). Each role: core (gradient stop 0 / radial centre), mid (0.5 / flat body), edge (1 / rim), glow, pressed (colour of the press / loop flash layer).",
       "0": {
         "core": {
           "$value": "{color.pad.pink.highlight}"

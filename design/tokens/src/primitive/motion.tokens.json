@@ -2,7 +2,7 @@
   "motion": {
     "duration": {
       "$type": "duration",
-      "$description": "IPA 4.7.0 FairyGUI Transition times unless noted (APK 3.7.6 values kept only where 4.7.0 has no equivalent).",
+      "$description": "IPA transition times unless noted (APK values kept only where IPA has no equivalent).",
       "instant": {
         "$value": {
           "value": 0,

@@ -1,5 +1,5 @@
 {
-  "$description": "Primitive colour palette. Raw values only; UI code reads semantic tokens. Sources, in priority order: IPA = Ref 4.7.0 FairyGUI packages / skin bitmaps (docs/research/compat-ipa-4.7.0-analysis.md); APK = v3.7.6 colors.xml / Lottie (compat-apk-analysis.md); SHOT = store screenshots; UP = UltraPads design extension.",
+  "$description": "Primitive colour palette. Raw values only; UI code reads semantic tokens. Sources, in priority order: IPA = reference design data (UI layout packages / skin bitmaps); APK = older reference build (colors.xml / Lottie); SHOT = store screenshots; UP = UltraPads design extension.",
   "color": {
     "$type": "color",
     "base": {
@@ -427,7 +427,7 @@
       }
     },
     "ui": {
-      "$description": "IPA 4.7.0 UI surfaces and literals.",
+      "$description": "IPA UI surfaces and literals.",
       "bgPads": {
         "$value": "#242B2E",
         "$description": "IPA perform page, nav bars, skin panel, kit preview modal"
@@ -538,7 +538,7 @@
       }
     },
     "pad": {
-      "$description": "IPA 4.7.0 pad colours. base = skin tint value; highlight = Default bitmap top highlight; edge = Default bitmap rim; pressed = pale tint used by tint-swap skins (Crazy/Circle/LGBT).",
+      "$description": "IPA pad colours. base = skin tint value; highlight = Default bitmap top highlight; edge = Default bitmap rim; pressed = pale tint used by tint-swap skins (Crazy/Circle/LGBT).",
       "blue": {
         "base": {
           "$value": "#00CBF7"
@@ -603,7 +603,7 @@
       }
     },
     "skin": {
-      "$description": "IPA 4.7.0 per-skin pad colours (FairyGUI tints + bitmap samples).",
+      "$description": "IPA per-skin pad colours (skin tints + bitmap samples).",
       "circle": {
         "blue": {
           "$value": "#04C9E2"

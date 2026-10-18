@@ -2,13 +2,13 @@
   "font": {
     "family": {
       "$type": "fontFamily",
-      "$description": "IPA 4.7.0 ships Open Sans (OFL, bundled in up_tokens) and aliases the old Uni Sans names onto it. Uni Sans (commercial, APK 3.7.6) stays available as an optional skin font injected from private-assets.",
+      "$description": "IPA ships Open Sans (OFL, bundled in up_tokens) and aliases the old Uni Sans names onto it. Uni Sans (commercial, APK) stays available as an optional skin font injected from private-assets.",
       "regular": { "$value": ["Open Sans"], "$description": "IPA OpenSans-Regular (alias Uni Sans / UniSansRegular)" },
       "heavy": { "$value": ["Open Sans"], "$description": "IPA OpenSans-ExtraBold (alias UniSansHeavy)" },
       "light": { "$value": ["Open Sans"], "$description": "IPA OpenSans-Light (alias UniSansThin)" },
-      "uniSansRegular": { "$value": ["Uni Sans"], "$description": "Optional private skin font (APK 3.7.6)" },
-      "uniSansHeavy": { "$value": ["Uni Sans Heavy"], "$description": "Optional private skin font (APK 3.7.6)" },
-      "uniSansThin": { "$value": ["Uni Sans Thin"], "$description": "Optional private skin font (APK 3.7.6)" }
+      "uniSansRegular": { "$value": ["Uni Sans"], "$description": "Optional private skin font (APK)" },
+      "uniSansHeavy": { "$value": ["Uni Sans Heavy"], "$description": "Optional private skin font (APK)" },
+      "uniSansThin": { "$value": ["Uni Sans Thin"], "$description": "Optional private skin font (APK)" }
     },
     "weight": {
       "$type": "fontWeight",

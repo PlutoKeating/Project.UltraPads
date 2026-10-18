@@ -1,5 +1,5 @@
 {
-  "$description": "Component layer: theme-independent geometry / motion / glow recipes (IPA 4.7.0 FairyGUI px / 2 unless noted). Colours are NOT allowed here.",
+  "$description": "Component layer: theme-independent geometry / motion / glow recipes (IPA layout px / 2 unless noted). Colours are NOT allowed here.",
   "pad": {
     "gap": {
       "$type": "dimension",

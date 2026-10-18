@@ -156,7 +156,7 @@ for (const t of themes.slice(1)) {
 writeFileSync(join(OUT.dart, 'themes.g.dart'), themeRegistryFile(themes));
 writeFileSync(join(OUT.json, 'figma-variables.json'), figmaFile(themes, collected));
 
-// skin presets (semantic overrides of the original app's skins)
+// skin presets (semantic overrides of the built-in skin list)
 let skins = [];
 try {
   skins = loadSkins(join(SRC, 'skins'), collected[themes[0].id], themes.map((t) => t.id));

@@ -1730,17 +1730,17 @@ abstract final class UpFontFamilies {
   /// Token: `font.family.light`
   static const List<String> light = <String>['Open Sans'];
 
-  /// Optional private skin font (APK 3.7.6)
+  /// Optional private skin font (APK)
   ///
   /// Token: `font.family.uniSansRegular`
   static const List<String> uniSansRegular = <String>['Uni Sans'];
 
-  /// Optional private skin font (APK 3.7.6)
+  /// Optional private skin font (APK)
   ///
   /// Token: `font.family.uniSansHeavy`
   static const List<String> uniSansHeavy = <String>['Uni Sans Heavy'];
 
-  /// Optional private skin font (APK 3.7.6)
+  /// Optional private skin font (APK)
   ///
   /// Token: `font.family.uniSansThin`
   static const List<String> uniSansThin = <String>['Uni Sans Thin'];

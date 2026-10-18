@@ -68,7 +68,7 @@ export function skinsDartFile(skins) {
   return `${DART_HEADER}
 import '../runtime/skin_preset.dart';
 
-/// Original Ref 4.7.0 skins as semantic-override presets
+/// Built-in skin presets as semantic overrides
 /// (design/tokens/src/skins/*.skin.json).
 abstract final class UpSkinPresets {
   static const List<UpSkinPreset> all = <UpSkinPreset>[
