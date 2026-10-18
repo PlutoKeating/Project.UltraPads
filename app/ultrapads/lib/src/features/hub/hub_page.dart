@@ -322,31 +322,6 @@ class _HubPageState extends ConsumerState<HubPage> {
                 ref.read(hubViewProvider.notifier).newPairingCode(),
           ),
         ),
-        UpText(
-          l10n.hubLocalAddresses,
-          role: UpTextRole.label,
-          color: c.textPrimary,
-        ),
-        UpText(
-          l10n.hubAddressHint,
-          role: UpTextRole.caption,
-          color: c.textMuted,
-          maxLines: 2,
-        ),
-        for (final a in server.addresses)
-          UpListItem(
-            title: a,
-            icon: Icons.lan_rounded,
-            trailing: Icon(Icons.copy_rounded, color: c.textMuted),
-            onTap: () => Clipboard.setData(ClipboardData(text: a)),
-          ),
-        if (server.id.isNotEmpty)
-          UpText(
-            l10n.hubDeviceId(server.id),
-            role: UpTextRole.caption,
-            color: c.textMuted,
-            maxLines: 2,
-          ),
         for (final MapEntry(value: name) in hub.remoteControllers.entries)
           _Banner(
             icon: Icons.cast_connected_rounded,
@@ -377,6 +352,33 @@ class _HubPageState extends ConsumerState<HubPage> {
             onPressed: () => _revoke(d),
           ),
         ),
+      if (server.running) ...[
+        UpText(
+          l10n.hubLocalAddresses,
+          role: UpTextRole.label,
+          color: c.textPrimary,
+        ),
+        UpText(
+          l10n.hubAddressHint,
+          role: UpTextRole.caption,
+          color: c.textMuted,
+          maxLines: 2,
+        ),
+        for (final a in server.addresses)
+          UpListItem(
+            title: a,
+            icon: Icons.lan_rounded,
+            trailing: Icon(Icons.copy_rounded, color: c.textMuted),
+            onTap: () => Clipboard.setData(ClipboardData(text: a)),
+          ),
+        if (server.id.isNotEmpty)
+          UpText(
+            l10n.hubDeviceId(server.id),
+            role: UpTextRole.caption,
+            color: c.textMuted,
+            maxLines: 2,
+          ),
+      ],
     ]);
   }
 

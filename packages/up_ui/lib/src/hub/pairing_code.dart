@@ -82,33 +82,37 @@ class _PairingCodeInputState extends State<PairingCodeInput> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: UpSpacing.sm,
-            children: [
-              for (var i = 0; i < widget.length; i++)
-                AnimatedContainer(
-                  duration: UpMotion.duration(context, UpDurations.xfast),
-                  width: UpSizes.controlLg,
-                  height: UpSizes.controlXl,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: c.inputBackground,
-                    borderRadius: BorderRadius.circular(UpRadii.lg),
-                    border: Border.all(
-                      color: i == text.length && _focus.hasFocus
-                          ? c.focusRing
-                          : c.borderDefault,
-                      width: c.focusRingWidth,
+          // 窄屏（对话框内）等比缩小，不溢出。
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: UpSpacing.sm,
+              children: [
+                for (var i = 0; i < widget.length; i++)
+                  AnimatedContainer(
+                    duration: UpMotion.duration(context, UpDurations.xfast),
+                    width: UpSizes.controlLg,
+                    height: UpSizes.controlXl,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: c.inputBackground,
+                      borderRadius: BorderRadius.circular(UpRadii.lg),
+                      border: Border.all(
+                        color: i == text.length && _focus.hasFocus
+                            ? c.focusRing
+                            : c.borderDefault,
+                        width: c.focusRingWidth,
+                      ),
+                    ),
+                    child: UpText(
+                      i < text.length ? text[i] : '',
+                      role: UpTextRole.display,
+                      color: c.inputForeground,
                     ),
                   ),
-                  child: UpText(
-                    i < text.length ? text[i] : '',
-                    role: UpTextRole.display,
-                    color: c.inputForeground,
-                  ),
-                ),
-            ],
+              ],
+            ),
           ),
           Positioned.fill(
             child: Opacity(
