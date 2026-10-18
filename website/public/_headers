@@ -6,4 +6,6 @@
   Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=300
 /icon.svg
-  Cache-Control: public, max-age=86400
+  Cache-Control: no-cache
+/apple-touch-icon.png
+  Cache-Control: no-cache
