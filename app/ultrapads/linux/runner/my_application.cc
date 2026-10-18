@@ -1,5 +1,7 @@
 #include "my_application.h"
 
+#include <cstdio>
+
 #include <flutter_linux/flutter_linux.h>
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
@@ -52,7 +54,18 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "ultrapads");
   }
 
-  gtk_window_set_default_size(window, 1280, 720);
+  // 默认窗口 1280×720；开发 / 截图可用环境变量覆盖，例如
+  // ULTRAPADS_WINDOW_SIZE=414x736（手机画布）。
+  gint width = 1280, height = 720;
+  const gchar* size_env = g_getenv("ULTRAPADS_WINDOW_SIZE");
+  if (size_env != nullptr) {
+    gint w = 0, h = 0;
+    if (sscanf(size_env, "%dx%d", &w, &h) == 2 && w > 0 && h > 0) {
+      width = w;
+      height = h;
+    }
+  }
+  gtk_window_set_default_size(window, width, height);
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   fl_dart_project_set_dart_entrypoint_arguments(

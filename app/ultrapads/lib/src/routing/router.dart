@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -61,9 +64,13 @@ CustomTransitionPage<T> sheetPage<T>(GoRouterState s, Widget child) =>
 /// `--dart-define=UP_GALLERY=true`：启动直接进入设计画廊。
 const bool galleryFlag = bool.fromEnvironment('UP_GALLERY');
 
-/// `--dart-define=UP_ROUTE=/kits`：开发 / 截图用，启动直接打开某个路由
-/// （仍遵守引导重定向）。
-const String routeFlag = String.fromEnvironment('UP_ROUTE');
+/// 开发 / 截图用：启动直接打开某个路由（仍遵守引导重定向）。
+/// `--dart-define=UP_ROUTE=/kits`，或桌面运行时的环境变量 `ULTRAPADS_ROUTE`。
+String get routeFlag {
+  const defined = String.fromEnvironment('UP_ROUTE');
+  if (defined.isNotEmpty || kIsWeb) return defined;
+  return Platform.environment['ULTRAPADS_ROUTE'] ?? '';
+}
 
 final routerProvider = Provider<GoRouter>((ref) {
   final onboarded = ValueNotifier(ref.read(settingsProvider).onboarded);
@@ -72,10 +79,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     (_, v) => onboarded.value = v,
   );
   ref.onDispose(onboarded.dispose);
+  final route = routeFlag;
   return GoRouter(
     initialLocation: galleryFlag
         ? Routes.gallery
-        : (routeFlag.isNotEmpty ? routeFlag : Routes.perform),
+        : (route.isNotEmpty ? route : Routes.perform),
     refreshListenable: onboarded,
     redirect: (context, state) {
       if (state.matchedLocation == Routes.gallery) return null;

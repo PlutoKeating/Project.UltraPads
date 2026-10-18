@@ -76,6 +76,12 @@ set_target_properties(${BINARY_NAME}
 # them to the application.
 include(flutter/generated_plugins.cmake)
 
+# rive_common 内置的 SheenBidi 在 release（NDEBUG）下有只被 assert 使用的变量和函数，
+# 新版 clang 配合 APPLY_STANDARD_SETTINGS 的 -Werror 会报错；只对该插件放宽。
+if(TARGET rive_common_plugin)
+  target_compile_options(rive_common_plugin PRIVATE -Wno-unused-variable -Wno-unused-function -Wno-unused-but-set-variable)
+endif()
+
 
 # === Installation ===
 # By default, "installing" just makes a relocatable bundle in the build
