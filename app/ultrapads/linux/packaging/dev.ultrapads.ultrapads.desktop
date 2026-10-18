@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=UltraPads
+GenericName=Launchpad
+GenericName[zh_CN]=打击垫
+Comment=Play and create music with pads
+Comment[zh_CN]=打击垫演奏与音乐创作
+Exec=ultrapads
+Icon=dev.ultrapads.ultrapads
+Terminal=false
+Categories=AudioVideo;Audio;Music;
+Keywords=launchpad;pads;music;sampler;drum;
+StartupWMClass=dev.ultrapads.ultrapads

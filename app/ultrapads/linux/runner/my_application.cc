@@ -47,12 +47,14 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "ultrapads");
+    gtk_header_bar_set_title(header_bar, "UltraPads");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
-    gtk_window_set_title(window, "ultrapads");
+    gtk_window_set_title(window, "UltraPads");
   }
+  // 图标由安装脚本放进 XDG 图标主题（与 .desktop / Wayland app_id 同名）。
+  gtk_window_set_icon_name(window, APPLICATION_ID);
 
   // 默认窗口 1280×720；开发 / 截图可用环境变量覆盖，例如
   // ULTRAPADS_WINDOW_SIZE=414x736（手机画布）。
