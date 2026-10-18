@@ -4,6 +4,8 @@ abstract final class Routes {
   static const onboarding = '/onboarding';
   static const kits = '/kits';
   static String kit(String id) => '/kits/${Uri.encodeComponent(id)}';
+  static const catalog = '/catalog';
+  static String catalogItem(String id) => '/catalog/${Uri.encodeComponent(id)}';
   static const editor = '/edit';
   static const micSampler = '/edit/mic';
   static const tracks = '/tracks';

@@ -8,6 +8,7 @@ import 'package:up_fx/up_fx.dart';
 import 'package:up_tokens/up_tokens.dart';
 
 import '../features/design_gallery/design_gallery_page.dart';
+import '../features/catalog/catalog_detail_page.dart';
 import '../features/editor/editor_page.dart';
 import '../features/hub/hub_page.dart';
 import '../features/library/kit_detail_page.dart';
@@ -115,6 +116,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ),
         ],
+      ),
+      GoRoute(
+        path: '${Routes.catalog}/:id',
+        pageBuilder: (c, s) => pushPage(
+          s,
+          WideBody(
+            gutter: UpTheme.of(c).colors.surfacePads,
+            child: CatalogDetailPage(itemId: s.pathParameters['id']!),
+          ),
+        ),
       ),
       GoRoute(
         path: Routes.editor,

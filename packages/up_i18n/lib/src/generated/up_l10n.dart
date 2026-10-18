@@ -2963,6 +2963,426 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'{name} is unavailable — using the system output'**
   String settingsOutputDeviceFallback(String name);
+
+  /// No description provided for @navCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Official'**
+  String get navCatalog;
+
+  /// No description provided for @libraryCatalogSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search official songs'**
+  String get libraryCatalogSearchHint;
+
+  /// No description provided for @libraryCatalogFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get libraryCatalogFilters;
+
+  /// No description provided for @libraryCatalogFilterLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'License'**
+  String get libraryCatalogFilterLicense;
+
+  /// No description provided for @libraryCatalogFilterGenre.
+  ///
+  /// In en, this message translates to:
+  /// **'Genre'**
+  String get libraryCatalogFilterGenre;
+
+  /// No description provided for @libraryCatalogFilterBpm.
+  ///
+  /// In en, this message translates to:
+  /// **'Tempo'**
+  String get libraryCatalogFilterBpm;
+
+  /// No description provided for @libraryCatalogBpmRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{min}–{max} BPM'**
+  String libraryCatalogBpmRange(int min, int max);
+
+  /// No description provided for @libraryCatalogBpmAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any tempo'**
+  String get libraryCatalogBpmAny;
+
+  /// No description provided for @libraryCatalogSortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get libraryCatalogSortNewest;
+
+  /// No description provided for @libraryCatalogSortBpm.
+  ///
+  /// In en, this message translates to:
+  /// **'BPM'**
+  String get libraryCatalogSortBpm;
+
+  /// No description provided for @libraryCatalogSortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A–Z'**
+  String get libraryCatalogSortTitle;
+
+  /// No description provided for @libraryCatalogClearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get libraryCatalogClearFilters;
+
+  /// No description provided for @libraryCatalogFavoritesOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get libraryCatalogFavoritesOnly;
+
+  /// No description provided for @libraryCatalogRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently played'**
+  String get libraryCatalogRecent;
+
+  /// No description provided for @libraryCatalogTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No songs} =1{1 song} other{{count} songs}}'**
+  String libraryCatalogTotal(int count);
+
+  /// No description provided for @libraryCatalogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No songs match these filters.'**
+  String get libraryCatalogEmpty;
+
+  /// No description provided for @libraryCatalogEmptyFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the heart on a song to keep it here.'**
+  String get libraryCatalogEmptyFavorites;
+
+  /// No description provided for @libraryCatalogLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t reach the official catalog.'**
+  String get libraryCatalogLoadFailed;
+
+  /// No description provided for @libraryCatalogLoadFailedOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re offline. Check your connection and try again.'**
+  String get libraryCatalogLoadFailedOffline;
+
+  /// No description provided for @libraryCatalogDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get libraryCatalogDownload;
+
+  /// No description provided for @libraryCatalogDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded'**
+  String get libraryCatalogDownloaded;
+
+  /// No description provided for @libraryCatalogUpdateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get libraryCatalogUpdateAvailable;
+
+  /// No description provided for @libraryCatalogPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get libraryCatalogPlay;
+
+  /// No description provided for @libraryCatalogDownloadingPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading {percent}%'**
+  String libraryCatalogDownloadingPercent(int percent);
+
+  /// No description provided for @libraryCatalogDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Download failed. Try again.'**
+  String get libraryCatalogDownloadFailed;
+
+  /// No description provided for @libraryCatalogDownloadCorrupt.
+  ///
+  /// In en, this message translates to:
+  /// **'The file didn’t pass verification. Try again.'**
+  String get libraryCatalogDownloadCorrupt;
+
+  /// No description provided for @libraryCatalogDownloadNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This song is no longer available.'**
+  String get libraryCatalogDownloadNotFound;
+
+  /// No description provided for @libraryCatalogImportedToast.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is ready to play'**
+  String libraryCatalogImportedToast(String name);
+
+  /// No description provided for @libraryCatalogAddFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get libraryCatalogAddFavorite;
+
+  /// No description provided for @libraryCatalogRemoveFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get libraryCatalogRemoveFavorite;
+
+  /// No description provided for @libraryCatalogByArtist.
+  ///
+  /// In en, this message translates to:
+  /// **'by {artist}'**
+  String libraryCatalogByArtist(String artist);
+
+  /// No description provided for @libraryCatalogDetailCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'Credits'**
+  String get libraryCatalogDetailCredits;
+
+  /// No description provided for @libraryCatalogDetailLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'License'**
+  String get libraryCatalogDetailLicense;
+
+  /// No description provided for @libraryCatalogDetailSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get libraryCatalogDetailSource;
+
+  /// No description provided for @libraryCatalogDetailOpenSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Open source page'**
+  String get libraryCatalogDetailOpenSource;
+
+  /// No description provided for @libraryCatalogDetailOpenLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the license'**
+  String get libraryCatalogDetailOpenLicense;
+
+  /// No description provided for @libraryCatalogDetailGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 bank} other{{count} banks}}'**
+  String libraryCatalogDetailGroups(int count);
+
+  /// No description provided for @libraryCatalogDetailPads.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pads'**
+  String libraryCatalogDetailPads(int count);
+
+  /// No description provided for @libraryCatalogDetailLoop.
+  ///
+  /// In en, this message translates to:
+  /// **'{secs}s loop'**
+  String libraryCatalogDetailLoop(String secs);
+
+  /// No description provided for @libraryCatalogDetailSizeMb.
+  ///
+  /// In en, this message translates to:
+  /// **'{mb} MB'**
+  String libraryCatalogDetailSizeMb(String mb);
+
+  /// No description provided for @libraryCatalogOriginAlbum.
+  ///
+  /// In en, this message translates to:
+  /// **'Multitrack album'**
+  String get libraryCatalogOriginAlbum;
+
+  /// No description provided for @libraryCatalogOriginOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Community'**
+  String get libraryCatalogOriginOnline;
+
+  /// No description provided for @libraryCatalogOriginSynth.
+  ///
+  /// In en, this message translates to:
+  /// **'Original synthesis'**
+  String get libraryCatalogOriginSynth;
+
+  /// No description provided for @libraryCatalogOriginUgc.
+  ///
+  /// In en, this message translates to:
+  /// **'Community upload'**
+  String get libraryCatalogOriginUgc;
+
+  /// No description provided for @libraryCatalogNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This song isn’t in the catalog anymore.'**
+  String get libraryCatalogNotFound;
+
+  /// No description provided for @libraryLicenseCc0Hint.
+  ///
+  /// In en, this message translates to:
+  /// **'CC0: public domain. Free to use, no credit needed.'**
+  String get libraryLicenseCc0Hint;
+
+  /// No description provided for @libraryLicensePdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Public domain: free to use, no credit needed.'**
+  String get libraryLicensePdHint;
+
+  /// No description provided for @libraryLicenseByHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Attribution: credit the creator when you share or publish.'**
+  String get libraryLicenseByHint;
+
+  /// No description provided for @libraryLicenseSaHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Share-alike: works built on this must use the same license.'**
+  String get libraryLicenseSaHint;
+
+  /// No description provided for @libraryLicenseNcHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-commercial: not for commercial use.'**
+  String get libraryLicenseNcHint;
+
+  /// No description provided for @settingsAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsAccountTitle;
+
+  /// No description provided for @settingsAccountSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get settingsAccountSignIn;
+
+  /// No description provided for @settingsAccountSignInHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep favorites and recently played in sync across your devices.'**
+  String get settingsAccountSignInHint;
+
+  /// No description provided for @settingsAccountSigningIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish signing in in your browser…'**
+  String get settingsAccountSigningIn;
+
+  /// No description provided for @settingsAccountSignInCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel sign-in'**
+  String get settingsAccountSignInCancel;
+
+  /// No description provided for @settingsAccountSignedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as {account}'**
+  String settingsAccountSignedInAs(String account);
+
+  /// No description provided for @settingsAccountSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get settingsAccountSignOut;
+
+  /// No description provided for @settingsAccountManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage account'**
+  String get settingsAccountManage;
+
+  /// No description provided for @settingsAccountSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in didn’t complete. Try again.'**
+  String get settingsAccountSignInFailed;
+
+  /// No description provided for @settingsAccountNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in isn’t available in this build.'**
+  String get settingsAccountNotConfigured;
+
+  /// No description provided for @settingsAccountSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing…'**
+  String get settingsAccountSyncing;
+
+  /// No description provided for @settingsAccountPendingSync.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 change waiting to sync} other{{count} changes waiting to sync}}'**
+  String settingsAccountPendingSync(int count);
+
+  /// No description provided for @settingsAccountSignedOutToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed out'**
+  String get settingsAccountSignedOutToast;
+
+  /// No description provided for @settingsAccountSignedInToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in'**
+  String get settingsAccountSignedInToast;
+
+  /// No description provided for @settingsAccountLoopbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in'**
+  String get settingsAccountLoopbackTitle;
+
+  /// No description provided for @settingsAccountLoopbackBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can close this tab and go back to UltraPads.'**
+  String get settingsAccountLoopbackBody;
+
+  /// No description provided for @shareExportCreditsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This recording uses licensed material'**
+  String get shareExportCreditsTitle;
+
+  /// No description provided for @shareExportCreditsNc.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-commercial use only.'**
+  String get shareExportCreditsNc;
+
+  /// No description provided for @shareExportCreditsSa.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your work under the same license.'**
+  String get shareExportCreditsSa;
+
+  /// No description provided for @shareExportCreditsShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Credits:\n{credits}'**
+  String shareExportCreditsShareText(String credits);
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

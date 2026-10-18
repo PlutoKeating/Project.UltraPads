@@ -29,7 +29,8 @@ lib/
    ├─ assets/private_assets.dart  私有素材清单解析（见 §6）
    ├─ engine/                engine_bootstrap.dart（UP_ENGINE=mock|ffi）、ffi_engine_client.dart
    ├─ library/first_run.dart 首次启动：导入内置 Kit（CC0 资源 / 注入的私有素材包 Kit）并加载默认 Kit
-   ├─ config/app_links.dart  外部链接（assets/config/links.json：下载页；页面不写 URL）
+   ├─ config/app_links.dart  外部链接与服务地址（assets/config/links.json：下载页、官方站点 siteBase、账号 idIssuer / idClientId；页面不写 URL）
+   ├─ account/               PlutoKeating 账号：auth_models（令牌 / 资料 / OIDC 配置）、auth_flow（Android 用 flutter_appauth，桌面用回环 + oauth2）、token_store（0600 文件）、account_state（登录 / 退出 / 刷新）
    ├─ dev/dev_hooks.dart     开发/验证环境变量（ULTRAPADS_HUB_AUTOSTART、ULTRAPADS_LOG_EVENTS、ULTRAPADS_UPDATE_SELFTEST）
    ├─ update/                应用内更新：update_controller.dart（状态机）、apk_installer.dart（Android 安装通道）
    ├─ routing/               routes.dart（路径常量）、router.dart（go_router + 转场）
@@ -37,7 +38,9 @@ lib/
    ├─ rust/                  FRB 生成代码（不要手改）
    └─ features/
       ├─ perform/            演奏页、功能按钮行、键盘映射、引擎→PadData 映射
-      ├─ library/            曲库（KITS / FEED / PROFILE）、Kit 预览、曲风
+      ├─ library/            曲库（KITS / FEED / 官方曲库 / PROFILE）、Kit 预览、曲风
+      ├─ catalog/            官方曲库：目录客户端、列表 / 筛选 / 下载 / 云端收藏状态、详情页、署名（见 §12）
+      ├─ account/            设置页账号区块（登录 / 退出）
       ├─ editor/             编辑 Kit（LOAD SOUND、EDIT PAD、EDIT FILE 裁剪）、采样选择器
       ├─ recorder/           麦克风采样页、保存录音面板、分享
       ├─ tracks/             我的录音（TRACK 卡）
@@ -54,8 +57,9 @@ lib/
 |---|---|---|---|
 | `/` | `PerformPage` 演奏页 | — | 参考设计 `ScreenPads/Main` |
 | `/onboarding` | `OnboardingPage` | 无 | 参考设计 Walkthrough + CategoryPreference（试用页不做） |
-| `/kits` | `LibraryPage`（KITS / FEED / PROFILE + 搜索） | 底部滑入 `sheet.enter` | 参考设计 `MenuScene` |
+| `/kits` | `LibraryPage`（KITS / FEED / 官方曲库 / PROFILE + 搜索） | 底部滑入 `sheet.enter` | 参考设计 `MenuScene` |
 | `/kits/:id` | `KitDetailPage` Kit 预览 | 右侧推入 `page.push` | 参考设计 `modalUnlockKit`（去掉解锁/付费） |
+| `/catalog/:id` | `CatalogDetailPage` 官方曲库条目详情（署名、许可证、下载 / 演奏） | 右侧推入 | 新增（docs/API.md §7） |
 | `/edit` | `EditorPage` 编辑 Kit | 底部滑入 | 参考设计 `CreateKit/Main` |
 | `/edit/mic` | `MicSamplerPage` 麦克风采样（返回 `SampleInfo`） | 推入 | 参考设计 mic 面板 |
 | `/tracks` | `TracksPage` 我的录音 | 推入 | 参考设计 PROFILE → 我的录音 |
@@ -118,6 +122,10 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 | `kitLoadProvider` / `favoritesProvider` | 加载中的 Kit；收藏（本机偏好） | UI / prefs |
 | `settingsProvider` / `upThemeProvider` / `localeControllerProvider` | 皮肤、自定义皮肤、动画开关、音频偏好、自动检查更新、语言 | SharedPreferences |
 | `updateProvider` | 应用内更新阶段（检查 / 可更新 / 下载进度 / 待重启或待安装 / 失败） | `update_*`（§11） |
+| `accountProvider` | 账号状态（加载中 / 未登录 / 登录中 / 已登录 + 邮箱），`accessToken()` 按需静默刷新 | 令牌文件 + OIDC（§12） |
+| `catalogListProvider` / `catalogFacetsProvider` / `catalogItemProvider` | 目录分页列表与筛选、facets、单个条目 | `/api/catalog`（§12） |
+| `catalogDownloadProvider` / `catalogRecordsProvider` | 进行中的下载进度；已下载条目记录（署名来源） | 目录下载 + 引擎导入 / prefs |
+| `cloudStateProvider` | 官方曲库收藏、最近使用、待同步队列 | prefs + `/api/me/*` |
 
 规则：业务变更一律经 `EngineClient`（命令或异步函数）；Provider 只做投影。
 `tryEngine` / `tryEngineDo` 把 `EngineNotImplemented` 转成 null / false，页面据此显示
@@ -220,6 +228,8 @@ Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径
 - `test/update_test.dart`：更新状态机（Linux 装入并重启、Android 申请「安装未知应用」后安装、手动安装不下载、Mock 不自动检查）与设置页「软件更新」。
 - `test/first_run_test.dart`（默认 Kit 顺序、打包的 CC0 Kit 与 `content/kits` 一致、空曲库导入）、
   `layout_test.dart`、`first_guide_test.dart`、`image_skin_test.dart`。
+- `test/catalog_client_test.dart` / `catalog_state_test.dart` / `catalog_test.dart`：目录客户端（查询参数、分页、sha256 校验、取消、账号数据）、列表 / 下载 / 云端收藏状态、官方曲库页与详情页（筛选、搜索防抖、下载 → 演奏、署名提示）与设置页账号区块；假服务见 `test/catalog_fixtures.dart`（`FakeSite`，按 docs/API.md §7 行为）。
+- `test/account_test.dart`：令牌文件（0600）、登录 / 退出 / 恢复、并发刷新只发一次、`invalid_grant` 退出、桌面回环登录（真实 127.0.0.1 监听 + 假 IdP，核对 PKCE / state / 无密钥）。
 - golden 位于 `test/goldens/`，字体由 `test/flutter_test_config.dart` 加载（Open Sans + Material Icons）。
 
 ## 11. 应用内更新（`lib/src/update/`，接口见 `docs/API.md` §6）
@@ -234,3 +244,16 @@ Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径
   未允许「安装未知应用」时先打开该设置页并提示再点一次「安装」。
 - 测试替换：`apkInstallerProvider`、`appExitProvider`；`MockEngineClient(appVersion:, availableUpdate:)` 模拟有新版本与下载。
 
+## 12. 官方曲库与账号（`features/catalog/`、`account/`，接口见 `docs/API.md` §7，决策见 ADR-0005）
+
+- **站点地址**：`assets/config/links.json` 的 `siteBase`（可用 `--dart-define=UP_SITE=<url>` 覆盖，联调本地 Worker）；`idIssuer` / `idClientId`（`ultrapads-app`）。页面里不写 URL。启动时配置还在读 asset，所以目录与登录都先 `await appLinksProvider.future`（`awaitCatalogClient`）。
+- **曲库页**（`LibraryPage` 第三个 Tab「官方曲库」，第一次选中才构建并联网）：搜索（防抖）、收藏 / 排序 / 许可证 / 曲风 / 速度筛选芯片（选项来自 `/api/catalog/facets`）、分页（滚到距底部 400 px 预取；首页没填满视口时自动补页）、下拉刷新、离线 / 空结果状态。条目卡 = `KitCard` + 许可证徽标（CC0 / BY / BY-SA / BY-NC…，SA / NC 用醒目样式，长按显示说明）+ 收藏心形。
+- **详情页**（`/catalog/:id`）：署名原文、许可证说明、来源与许可证链接；下载 → 进度 / 取消 → 校验 `sha256`（`CatalogClient.download` 边收边算，不符删除文件并报 `hash_mismatch`）→ `engine.libraryImport`（引擎转 WAV 入库）→ 「演奏」加载 Kit。已下载记录（`catalogRecordsProvider`，prefs `catalog.records`）含条目元数据与导入得到的 Kit 名，目录里 `sha256` 变了则显示「更新」。
+- **云端收藏 / 最近使用**（`CloudStateController`）：本地先生效并持久化；每个改动进待发队列（prefs `catalog.pending`），登录且联网时按序送达，失败留队、404 条目丢弃；登录后 / 启动恢复登录后拉取 `/api/me/state` 与本地取并集（待发的取消收藏优先）。`UltraPadsApp` 常驻监听它，所以不必打开曲库页也会同步。
+- **账号**（`account/`）：OIDC 授权码 + PKCE，签发方 `https://id.plutokeating.beer/`（Hydra），公共客户端 `ultrapads-app`。
+  - Android / iOS / macOS：`flutter_appauth`（Custom Tabs），回调 `com.plutokeating.ultrapads://callback`（`build.gradle.kts` 的 `appAuthRedirectScheme`）。
+  - **Linux 等桌面**：flutter_appauth 没有 Linux 实现，改走 RFC 8252 回环方案——`LoopbackAuthFlow` 在 `127.0.0.1` 随机端口起一次性 HTTP 监听，系统浏览器（`url_launcher`）打开授权页，回调后用 `oauth2` 包换令牌（PKCE S256 + 随机 `state`，无客户端密钥；5 分钟超时，可取消）。Hydra 对回环地址允许任意端口，`clients.json` 登记 `http://127.0.0.1/callback`。
+  - 刷新（两个平台共用）：`refreshTokens` 向 token 端点 POST `refresh_token`；并发只刷一次；`invalid_grant` 退出登录，仅网络错误则沿用旧令牌。ID 令牌里没有邮箱时问一次 userinfo。
+  - **令牌存储**：应用私有目录里的 `account.json`，权限 0600，写入走「临时文件 → rename」（`FileTokenStore`）。不用 flutter_secure_storage：它的 Linux 实现依赖 libsecret 与桌面 keyring，会给发布包新增系统库依赖，无 keyring 的环境读写还会失败。代价是令牌只受文件系统权限与应用沙盒保护（Android 沙盒内他人不可读），不是硬件密钥库。
+- **署名与导出**：保存 / 分享录音时，若当前 Kit 来自需署名的目录条目（非 CC0 / PD），保存面板显示署名与限制（NC：仅限非商业；SA：以相同许可证分享），分享文字附上署名（`features/catalog/credits.dart`，按录音的 `kitName` 匹配已下载记录）。**未做**：写入 WAV `bext` 元数据——应用分享的是 FLAC，署名走分享文字。
+- **测试替换**：`catalogHttpClientProvider`、`catalogDownloadDirProvider`、`tokenStoreProvider`、`authFlowProvider`、`authHttpClientProvider`；`test/harness.dart` 的 `pumpApp` 默认全部换成假实现（`FakeSite`、`FakeAuthFlow`、内存令牌、临时目录）。

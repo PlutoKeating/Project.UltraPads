@@ -1734,4 +1734,270 @@ class UpL10nEn extends UpL10n {
   String settingsOutputDeviceFallback(String name) {
     return '$name is unavailable — using the system output';
   }
+
+  @override
+  String get navCatalog => 'Official';
+
+  @override
+  String get libraryCatalogSearchHint => 'Search official songs';
+
+  @override
+  String get libraryCatalogFilters => 'Filters';
+
+  @override
+  String get libraryCatalogFilterLicense => 'License';
+
+  @override
+  String get libraryCatalogFilterGenre => 'Genre';
+
+  @override
+  String get libraryCatalogFilterBpm => 'Tempo';
+
+  @override
+  String libraryCatalogBpmRange(int min, int max) {
+    return '$min–$max BPM';
+  }
+
+  @override
+  String get libraryCatalogBpmAny => 'Any tempo';
+
+  @override
+  String get libraryCatalogSortNewest => 'Newest';
+
+  @override
+  String get libraryCatalogSortBpm => 'BPM';
+
+  @override
+  String get libraryCatalogSortTitle => 'A–Z';
+
+  @override
+  String get libraryCatalogClearFilters => 'Clear filters';
+
+  @override
+  String get libraryCatalogFavoritesOnly => 'Favorites';
+
+  @override
+  String get libraryCatalogRecent => 'Recently played';
+
+  @override
+  String libraryCatalogTotal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs',
+      one: '1 song',
+      zero: 'No songs',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryCatalogEmpty => 'No songs match these filters.';
+
+  @override
+  String get libraryCatalogEmptyFavorites =>
+      'Tap the heart on a song to keep it here.';
+
+  @override
+  String get libraryCatalogLoadFailed => 'Couldn’t reach the official catalog.';
+
+  @override
+  String get libraryCatalogLoadFailedOffline =>
+      'You’re offline. Check your connection and try again.';
+
+  @override
+  String get libraryCatalogDownload => 'Download';
+
+  @override
+  String get libraryCatalogDownloaded => 'Downloaded';
+
+  @override
+  String get libraryCatalogUpdateAvailable => 'Update';
+
+  @override
+  String get libraryCatalogPlay => 'Play';
+
+  @override
+  String libraryCatalogDownloadingPercent(int percent) {
+    return 'Downloading $percent%';
+  }
+
+  @override
+  String get libraryCatalogDownloadFailed => 'Download failed. Try again.';
+
+  @override
+  String get libraryCatalogDownloadCorrupt =>
+      'The file didn’t pass verification. Try again.';
+
+  @override
+  String get libraryCatalogDownloadNotFound =>
+      'This song is no longer available.';
+
+  @override
+  String libraryCatalogImportedToast(String name) {
+    return '$name is ready to play';
+  }
+
+  @override
+  String get libraryCatalogAddFavorite => 'Add to favorites';
+
+  @override
+  String get libraryCatalogRemoveFavorite => 'Remove from favorites';
+
+  @override
+  String libraryCatalogByArtist(String artist) {
+    return 'by $artist';
+  }
+
+  @override
+  String get libraryCatalogDetailCredits => 'Credits';
+
+  @override
+  String get libraryCatalogDetailLicense => 'License';
+
+  @override
+  String get libraryCatalogDetailSource => 'Source';
+
+  @override
+  String get libraryCatalogDetailOpenSource => 'Open source page';
+
+  @override
+  String get libraryCatalogDetailOpenLicense => 'Read the license';
+
+  @override
+  String libraryCatalogDetailGroups(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count banks',
+      one: '1 bank',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String libraryCatalogDetailPads(int count) {
+    return '$count pads';
+  }
+
+  @override
+  String libraryCatalogDetailLoop(String secs) {
+    return '${secs}s loop';
+  }
+
+  @override
+  String libraryCatalogDetailSizeMb(String mb) {
+    return '$mb MB';
+  }
+
+  @override
+  String get libraryCatalogOriginAlbum => 'Multitrack album';
+
+  @override
+  String get libraryCatalogOriginOnline => 'Community';
+
+  @override
+  String get libraryCatalogOriginSynth => 'Original synthesis';
+
+  @override
+  String get libraryCatalogOriginUgc => 'Community upload';
+
+  @override
+  String get libraryCatalogNotFound =>
+      'This song isn’t in the catalog anymore.';
+
+  @override
+  String get libraryLicenseCc0Hint =>
+      'CC0: public domain. Free to use, no credit needed.';
+
+  @override
+  String get libraryLicensePdHint =>
+      'Public domain: free to use, no credit needed.';
+
+  @override
+  String get libraryLicenseByHint =>
+      'Attribution: credit the creator when you share or publish.';
+
+  @override
+  String get libraryLicenseSaHint =>
+      'Share-alike: works built on this must use the same license.';
+
+  @override
+  String get libraryLicenseNcHint => 'Non-commercial: not for commercial use.';
+
+  @override
+  String get settingsAccountTitle => 'Account';
+
+  @override
+  String get settingsAccountSignIn => 'Sign in';
+
+  @override
+  String get settingsAccountSignInHint =>
+      'Keep favorites and recently played in sync across your devices.';
+
+  @override
+  String get settingsAccountSigningIn => 'Finish signing in in your browser…';
+
+  @override
+  String get settingsAccountSignInCancel => 'Cancel sign-in';
+
+  @override
+  String settingsAccountSignedInAs(String account) {
+    return 'Signed in as $account';
+  }
+
+  @override
+  String get settingsAccountSignOut => 'Sign out';
+
+  @override
+  String get settingsAccountManage => 'Manage account';
+
+  @override
+  String get settingsAccountSignInFailed =>
+      'Sign-in didn’t complete. Try again.';
+
+  @override
+  String get settingsAccountNotConfigured =>
+      'Sign-in isn’t available in this build.';
+
+  @override
+  String get settingsAccountSyncing => 'Syncing…';
+
+  @override
+  String settingsAccountPendingSync(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes waiting to sync',
+      one: '1 change waiting to sync',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsAccountSignedOutToast => 'Signed out';
+
+  @override
+  String get settingsAccountSignedInToast => 'Signed in';
+
+  @override
+  String get settingsAccountLoopbackTitle => 'Signed in';
+
+  @override
+  String get settingsAccountLoopbackBody =>
+      'You can close this tab and go back to UltraPads.';
+
+  @override
+  String get shareExportCreditsTitle => 'This recording uses licensed material';
+
+  @override
+  String get shareExportCreditsNc => 'Non-commercial use only.';
+
+  @override
+  String get shareExportCreditsSa => 'Share your work under the same license.';
+
+  @override
+  String shareExportCreditsShareText(String credits) {
+    return 'Credits:\n$credits';
+  }
 }

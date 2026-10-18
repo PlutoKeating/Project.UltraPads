@@ -12,6 +12,7 @@ import 'package:up_ui/up_ui.dart';
 import '../../routing/routes.dart';
 import '../../state/engine_state.dart';
 import '../../state/settings_state.dart';
+import '../account/account_section.dart';
 import '../skins/skins_sheet.dart';
 import 'update_section.dart';
 
@@ -263,6 +264,8 @@ class SettingsPage extends ConsumerWidget {
                       onTap: () => locales.setLocale(loc),
                     ),
                   ],
+                  header(l10n.settingsAccountTitle),
+                  const AccountSection(),
                   header(l10n.hubTitle),
                   UpListItem(
                     icon: Icons.devices_rounded,

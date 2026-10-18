@@ -44,6 +44,9 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // PlutoKeating 账号登录（flutter_appauth）的回调：com.plutokeating.ultrapads://callback，
+        // 与 Kaiming 的 ultrapads-app 客户端登记的 redirect_uri 一致。
+        manifestPlaceholders["appAuthRedirectScheme"] = "com.plutokeating.ultrapads"
     }
 
     signingConfigs {

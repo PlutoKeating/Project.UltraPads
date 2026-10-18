@@ -1702,4 +1702,244 @@ class UpL10nZh extends UpL10n {
   String settingsOutputDeviceFallback(String name) {
     return '$name 不可用，已使用系统默认输出';
   }
+
+  @override
+  String get navCatalog => '官方曲库';
+
+  @override
+  String get libraryCatalogSearchHint => '搜索官方曲目';
+
+  @override
+  String get libraryCatalogFilters => '筛选';
+
+  @override
+  String get libraryCatalogFilterLicense => '许可证';
+
+  @override
+  String get libraryCatalogFilterGenre => '曲风';
+
+  @override
+  String get libraryCatalogFilterBpm => '速度';
+
+  @override
+  String libraryCatalogBpmRange(int min, int max) {
+    return '速度 $min–$max';
+  }
+
+  @override
+  String get libraryCatalogBpmAny => '不限速度';
+
+  @override
+  String get libraryCatalogSortNewest => '最新';
+
+  @override
+  String get libraryCatalogSortBpm => '速度';
+
+  @override
+  String get libraryCatalogSortTitle => '按名称';
+
+  @override
+  String get libraryCatalogClearFilters => '清除筛选';
+
+  @override
+  String get libraryCatalogFavoritesOnly => '收藏';
+
+  @override
+  String get libraryCatalogRecent => '最近使用';
+
+  @override
+  String libraryCatalogTotal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '共 $count 首',
+      zero: '暂无曲目',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get libraryCatalogEmpty => '没有符合条件的曲目。';
+
+  @override
+  String get libraryCatalogEmptyFavorites => '在曲目上点心形即可收藏到这里。';
+
+  @override
+  String get libraryCatalogLoadFailed => '无法连接官方曲库。';
+
+  @override
+  String get libraryCatalogLoadFailedOffline => '当前没有网络，请检查连接后重试。';
+
+  @override
+  String get libraryCatalogDownload => '下载';
+
+  @override
+  String get libraryCatalogDownloaded => '已下载';
+
+  @override
+  String get libraryCatalogUpdateAvailable => '更新';
+
+  @override
+  String get libraryCatalogPlay => '演奏';
+
+  @override
+  String libraryCatalogDownloadingPercent(int percent) {
+    return '下载中 $percent%';
+  }
+
+  @override
+  String get libraryCatalogDownloadFailed => '下载失败，请重试。';
+
+  @override
+  String get libraryCatalogDownloadCorrupt => '文件校验未通过，请重试。';
+
+  @override
+  String get libraryCatalogDownloadNotFound => '这首曲目已下架。';
+
+  @override
+  String libraryCatalogImportedToast(String name) {
+    return '$name 已可演奏';
+  }
+
+  @override
+  String get libraryCatalogAddFavorite => '加入收藏';
+
+  @override
+  String get libraryCatalogRemoveFavorite => '取消收藏';
+
+  @override
+  String libraryCatalogByArtist(String artist) {
+    return '$artist 出品';
+  }
+
+  @override
+  String get libraryCatalogDetailCredits => '署名';
+
+  @override
+  String get libraryCatalogDetailLicense => '许可证';
+
+  @override
+  String get libraryCatalogDetailSource => '来源';
+
+  @override
+  String get libraryCatalogDetailOpenSource => '打开来源页面';
+
+  @override
+  String get libraryCatalogDetailOpenLicense => '查看许可证';
+
+  @override
+  String libraryCatalogDetailGroups(int count) {
+    return '$count 个音色组';
+  }
+
+  @override
+  String libraryCatalogDetailPads(int count) {
+    return '$count 个 pad';
+  }
+
+  @override
+  String libraryCatalogDetailLoop(String secs) {
+    return '$secs 秒循环';
+  }
+
+  @override
+  String libraryCatalogDetailSizeMb(String mb) {
+    return '约 $mb MB';
+  }
+
+  @override
+  String get libraryCatalogOriginAlbum => '分轨专辑';
+
+  @override
+  String get libraryCatalogOriginOnline => '社区作品';
+
+  @override
+  String get libraryCatalogOriginSynth => '原创合成';
+
+  @override
+  String get libraryCatalogOriginUgc => '用户上传';
+
+  @override
+  String get libraryCatalogNotFound => '目录里已没有这首曲目。';
+
+  @override
+  String get libraryLicenseCc0Hint => 'CC0：公有领域，可自由使用，无需署名。';
+
+  @override
+  String get libraryLicensePdHint => '公有领域：可自由使用，无需署名。';
+
+  @override
+  String get libraryLicenseByHint => '署名：分享或发布时需要注明作者。';
+
+  @override
+  String get libraryLicenseSaHint => '相同方式共享：基于它的作品需使用相同许可证。';
+
+  @override
+  String get libraryLicenseNcHint => '非商业：不可用于商业用途。';
+
+  @override
+  String get settingsAccountTitle => '账号';
+
+  @override
+  String get settingsAccountSignIn => '登录';
+
+  @override
+  String get settingsAccountSignInHint => '登录后，收藏和最近使用会在你的设备间同步。';
+
+  @override
+  String get settingsAccountSigningIn => '请在浏览器中完成登录…';
+
+  @override
+  String get settingsAccountSignInCancel => '取消登录';
+
+  @override
+  String settingsAccountSignedInAs(String account) {
+    return '已登录：$account';
+  }
+
+  @override
+  String get settingsAccountSignOut => '退出登录';
+
+  @override
+  String get settingsAccountManage => '管理账号';
+
+  @override
+  String get settingsAccountSignInFailed => '登录没有完成，请重试。';
+
+  @override
+  String get settingsAccountNotConfigured => '当前版本未提供登录。';
+
+  @override
+  String get settingsAccountSyncing => '同步中…';
+
+  @override
+  String settingsAccountPendingSync(int count) {
+    return '$count 项改动等待同步';
+  }
+
+  @override
+  String get settingsAccountSignedOutToast => '已退出登录';
+
+  @override
+  String get settingsAccountSignedInToast => '登录成功';
+
+  @override
+  String get settingsAccountLoopbackTitle => '登录成功';
+
+  @override
+  String get settingsAccountLoopbackBody => '可以关闭此页面，回到 UltraPads。';
+
+  @override
+  String get shareExportCreditsTitle => '这段录音使用了需要署名的素材';
+
+  @override
+  String get shareExportCreditsNc => '仅限非商业使用。';
+
+  @override
+  String get shareExportCreditsSa => '请以相同许可证分享你的作品。';
+
+  @override
+  String shareExportCreditsShareText(String credits) {
+    return '署名：\n$credits';
+  }
 }

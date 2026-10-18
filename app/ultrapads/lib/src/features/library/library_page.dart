@@ -10,6 +10,7 @@ import 'package:up_ui/up_ui.dart';
 import '../../routing/routes.dart';
 import '../../state/engine_state.dart';
 import '../../state/library_state.dart';
+import '../catalog/catalog_tab.dart';
 import 'genres.dart';
 
 /// 曲库（参考设计 `MenuScene`）：顶部导航（✕ / 标题 / 🔍），KITS / FEED / PROFILE 三个 Tab。
@@ -22,6 +23,10 @@ class LibraryPage extends ConsumerStatefulWidget {
 
 class _LibraryPageState extends ConsumerState<LibraryPage> {
   int _tab = 0;
+
+  /// 已经打开过的 Tab。官方曲库 Tab 第一次被选中才构建（构建即联网加载目录），
+  /// 其余 Tab 保持原有的一次性构建。
+  final _visited = <int>{0};
   bool _searching = false;
   final _query = TextEditingController();
 
@@ -35,7 +40,12 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final c = UpTheme.of(context).colors;
-    final titles = [l10n.navKits, l10n.navFeed, l10n.navProfile];
+    final titles = [
+      l10n.navKits,
+      l10n.navFeed,
+      l10n.navCatalog,
+      l10n.navProfile,
+    ];
     return Scaffold(
       backgroundColor: c.surfacePage,
       body: SafeArea(
@@ -77,19 +87,33 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
                   ? KitList(query: _query.text)
                   : IndexedStack(
                       index: _tab,
-                      children: const [KitsTab(), FeedTab(), ProfileTab()],
+                      children: [
+                        const KitsTab(),
+                        const FeedTab(),
+                        _visited.contains(2)
+                            ? const CatalogTab()
+                            : const SizedBox.shrink(),
+                        const ProfileTab(),
+                      ],
                     ),
             ),
             if (!_searching)
               UpTabBar(
                 index: _tab,
-                onChanged: (i) => setState(() => _tab = i),
+                onChanged: (i) => setState(() {
+                  _tab = i;
+                  _visited.add(i);
+                }),
                 items: [
                   UpTabItem(
                     icon: Icons.library_music_rounded,
                     label: l10n.navKits,
                   ),
                   UpTabItem(icon: Icons.whatshot_rounded, label: l10n.navFeed),
+                  UpTabItem(
+                    icon: Icons.cloud_download_rounded,
+                    label: l10n.navCatalog,
+                  ),
                   UpTabItem(icon: Icons.person_rounded, label: l10n.navProfile),
                 ],
               ),

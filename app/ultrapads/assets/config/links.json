@@ -1,4 +1,8 @@
 {
-  "$comment": "外部链接配置（设置页「软件更新」的下载页）。页面里不写 URL。",
-  "downloadPage": "https://ultrapads.plutokeating.beer"
+  "$comment": "外部链接与服务地址配置（页面里不写 URL）。siteBase 是官方曲库目录接口所在站点；idIssuer / idClientId 是 PlutoKeating 账号（OIDC）。可用 --dart-define=UP_SITE=<url> 覆盖 siteBase。",
+  "downloadPage": "https://ultrapads.plutokeating.beer",
+  "siteBase": "https://ultrapads.plutokeating.beer",
+  "idIssuer": "https://id.plutokeating.beer/",
+  "idClientId": "ultrapads-app",
+  "idSettingsPage": "https://id.plutokeating.beer/settings"
 }

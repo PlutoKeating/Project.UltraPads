@@ -10,6 +10,8 @@ import 'package:up_tokens/up_tokens.dart';
 import 'package:up_ui/up_ui.dart';
 
 import '../../state/engine_state.dart';
+import '../catalog/catalog_state.dart';
+import '../catalog/credits.dart';
 
 /// 录音结束后的保存面板（参考设计 `Recorder/Main`：文件名 + `.flac` 后缀 + 时长 + 播放；
 /// Save / Save and share / Cancel）。
@@ -86,6 +88,9 @@ class _SaveRecordingSheetState extends ConsumerState<SaveRecordingSheet> {
                   )
                   .value ??
               const [];
+    final credits = creditable(
+      ref.watch(catalogAttributionsProvider(widget.track.kitName)),
+    );
     final playback = ref.watch(trackPlaybackProvider).value;
     final progress =
         playback != null &&
@@ -140,6 +145,8 @@ class _SaveRecordingSheetState extends ConsumerState<SaveRecordingSheet> {
                   );
                 },
               ),
+              if (credits.isNotEmpty)
+                _CreditsNotice(text: creditsText(l10n, credits)),
               UpButton(label: l10n.commonSave, expand: true, onPressed: _save),
               UpButton(
                 label: l10n.recordSaveAndShare,
@@ -174,6 +181,19 @@ Future<void> shareTrack(
   String name,
 ) async {
   final l10n = context.l10n;
+  final kitName =
+      ref
+          .read(tracksProvider)
+          .value
+          ?.where((t) => t.id == trackId)
+          .map((t) => t.kitName)
+          .firstOrNull ??
+      '';
+  final credits = creditable(ref.read(catalogAttributionsProvider(kitName)));
+  final message = credits.isEmpty
+      ? l10n.shareRecordingMessage(name)
+      : '${l10n.shareRecordingMessage(name)}\n\n'
+            '${l10n.shareExportCreditsShareText(creditsText(l10n, credits))}';
   final dir = await getTemporaryDirectory();
   final path = '${dir.path}${Platform.pathSeparator}$name.flac';
   final ok = await tryEngineDo(
@@ -185,12 +205,51 @@ Future<void> shareTrack(
     return;
   }
   if (!File(path).existsSync()) {
-    await SharePlus.instance.share(
-      ShareParams(text: l10n.shareRecordingMessage(name)),
-    );
+    await SharePlus.instance.share(ShareParams(text: message));
     return;
   }
   await SharePlus.instance.share(
-    ShareParams(files: [XFile(path)], text: l10n.shareRecordingMessage(name)),
+    ShareParams(files: [XFile(path)], text: message),
   );
+}
+
+/// 录音用了需要署名 / 带限制的目录素材时的提示（保存面板里）。
+class _CreditsNotice extends StatelessWidget {
+  const _CreditsNotice({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = UpTheme.of(context).colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: UpSpacing.xs,
+      children: [
+        Row(
+          spacing: UpSpacing.sm,
+          children: [
+            Icon(
+              Icons.info_rounded,
+              color: c.statusWarning,
+              size: UpSizes.iconMd,
+            ),
+            Expanded(
+              child: UpText(
+                context.l10n.shareExportCreditsTitle,
+                role: UpTextRole.titleSm,
+                color: c.textPrimary,
+                maxLines: 2,
+              ),
+            ),
+          ],
+        ),
+        UpText(
+          text,
+          role: UpTextRole.bodySm,
+          color: c.textSecondary,
+          maxLines: 8,
+        ),
+      ],
+    );
+  }
 }

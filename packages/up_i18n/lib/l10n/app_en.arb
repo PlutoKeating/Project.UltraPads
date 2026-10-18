@@ -1648,5 +1648,220 @@
         "type": "String"
       }
     }
+  },
+  "navCatalog": "Official",
+  "@navCatalog": {},
+  "libraryCatalogSearchHint": "Search official songs",
+  "@libraryCatalogSearchHint": {},
+  "libraryCatalogFilters": "Filters",
+  "@libraryCatalogFilters": {},
+  "libraryCatalogFilterLicense": "License",
+  "@libraryCatalogFilterLicense": {},
+  "libraryCatalogFilterGenre": "Genre",
+  "@libraryCatalogFilterGenre": {},
+  "libraryCatalogFilterBpm": "Tempo",
+  "@libraryCatalogFilterBpm": {},
+  "libraryCatalogBpmRange": "{min}–{max} BPM",
+  "@libraryCatalogBpmRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryCatalogBpmAny": "Any tempo",
+  "@libraryCatalogBpmAny": {},
+  "libraryCatalogSortNewest": "Newest",
+  "@libraryCatalogSortNewest": {},
+  "libraryCatalogSortBpm": "BPM",
+  "@libraryCatalogSortBpm": {},
+  "libraryCatalogSortTitle": "A–Z",
+  "@libraryCatalogSortTitle": {},
+  "libraryCatalogClearFilters": "Clear filters",
+  "@libraryCatalogClearFilters": {},
+  "libraryCatalogFavoritesOnly": "Favorites",
+  "@libraryCatalogFavoritesOnly": {},
+  "libraryCatalogRecent": "Recently played",
+  "@libraryCatalogRecent": {},
+  "libraryCatalogTotal": "{count, plural, =0{No songs} =1{1 song} other{{count} songs}}",
+  "@libraryCatalogTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryCatalogEmpty": "No songs match these filters.",
+  "@libraryCatalogEmpty": {},
+  "libraryCatalogEmptyFavorites": "Tap the heart on a song to keep it here.",
+  "@libraryCatalogEmptyFavorites": {},
+  "libraryCatalogLoadFailed": "Couldn’t reach the official catalog.",
+  "@libraryCatalogLoadFailed": {},
+  "libraryCatalogLoadFailedOffline": "You’re offline. Check your connection and try again.",
+  "@libraryCatalogLoadFailedOffline": {},
+  "libraryCatalogDownload": "Download",
+  "@libraryCatalogDownload": {},
+  "libraryCatalogDownloaded": "Downloaded",
+  "@libraryCatalogDownloaded": {},
+  "libraryCatalogUpdateAvailable": "Update",
+  "@libraryCatalogUpdateAvailable": {},
+  "libraryCatalogPlay": "Play",
+  "@libraryCatalogPlay": {},
+  "libraryCatalogDownloadingPercent": "Downloading {percent}%",
+  "@libraryCatalogDownloadingPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryCatalogDownloadFailed": "Download failed. Try again.",
+  "@libraryCatalogDownloadFailed": {},
+  "libraryCatalogDownloadCorrupt": "The file didn’t pass verification. Try again.",
+  "@libraryCatalogDownloadCorrupt": {},
+  "libraryCatalogDownloadNotFound": "This song is no longer available.",
+  "@libraryCatalogDownloadNotFound": {},
+  "libraryCatalogImportedToast": "{name} is ready to play",
+  "@libraryCatalogImportedToast": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryCatalogAddFavorite": "Add to favorites",
+  "@libraryCatalogAddFavorite": {},
+  "libraryCatalogRemoveFavorite": "Remove from favorites",
+  "@libraryCatalogRemoveFavorite": {},
+  "libraryCatalogByArtist": "by {artist}",
+  "@libraryCatalogByArtist": {
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryCatalogDetailCredits": "Credits",
+  "@libraryCatalogDetailCredits": {},
+  "libraryCatalogDetailLicense": "License",
+  "@libraryCatalogDetailLicense": {},
+  "libraryCatalogDetailSource": "Source",
+  "@libraryCatalogDetailSource": {},
+  "libraryCatalogDetailOpenSource": "Open source page",
+  "@libraryCatalogDetailOpenSource": {},
+  "libraryCatalogDetailOpenLicense": "Read the license",
+  "@libraryCatalogDetailOpenLicense": {},
+  "libraryCatalogDetailGroups": "{count, plural, =1{1 bank} other{{count} banks}}",
+  "@libraryCatalogDetailGroups": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryCatalogDetailPads": "{count} pads",
+  "@libraryCatalogDetailPads": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryCatalogDetailLoop": "{secs}s loop",
+  "@libraryCatalogDetailLoop": {
+    "placeholders": {
+      "secs": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryCatalogDetailSizeMb": "{mb} MB",
+  "@libraryCatalogDetailSizeMb": {
+    "placeholders": {
+      "mb": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryCatalogOriginAlbum": "Multitrack album",
+  "@libraryCatalogOriginAlbum": {},
+  "libraryCatalogOriginOnline": "Community",
+  "@libraryCatalogOriginOnline": {},
+  "libraryCatalogOriginSynth": "Original synthesis",
+  "@libraryCatalogOriginSynth": {},
+  "libraryCatalogOriginUgc": "Community upload",
+  "@libraryCatalogOriginUgc": {},
+  "libraryCatalogNotFound": "This song isn’t in the catalog anymore.",
+  "@libraryCatalogNotFound": {},
+  "libraryLicenseCc0Hint": "CC0: public domain. Free to use, no credit needed.",
+  "@libraryLicenseCc0Hint": {},
+  "libraryLicensePdHint": "Public domain: free to use, no credit needed.",
+  "@libraryLicensePdHint": {},
+  "libraryLicenseByHint": "Attribution: credit the creator when you share or publish.",
+  "@libraryLicenseByHint": {},
+  "libraryLicenseSaHint": "Share-alike: works built on this must use the same license.",
+  "@libraryLicenseSaHint": {},
+  "libraryLicenseNcHint": "Non-commercial: not for commercial use.",
+  "@libraryLicenseNcHint": {},
+  "settingsAccountTitle": "Account",
+  "@settingsAccountTitle": {},
+  "settingsAccountSignIn": "Sign in",
+  "@settingsAccountSignIn": {},
+  "settingsAccountSignInHint": "Keep favorites and recently played in sync across your devices.",
+  "@settingsAccountSignInHint": {},
+  "settingsAccountSigningIn": "Finish signing in in your browser…",
+  "@settingsAccountSigningIn": {},
+  "settingsAccountSignInCancel": "Cancel sign-in",
+  "@settingsAccountSignInCancel": {},
+  "settingsAccountSignedInAs": "Signed in as {account}",
+  "@settingsAccountSignedInAs": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAccountSignOut": "Sign out",
+  "@settingsAccountSignOut": {},
+  "settingsAccountManage": "Manage account",
+  "@settingsAccountManage": {},
+  "settingsAccountSignInFailed": "Sign-in didn’t complete. Try again.",
+  "@settingsAccountSignInFailed": {},
+  "settingsAccountNotConfigured": "Sign-in isn’t available in this build.",
+  "@settingsAccountNotConfigured": {},
+  "settingsAccountSyncing": "Syncing…",
+  "@settingsAccountSyncing": {},
+  "settingsAccountPendingSync": "{count, plural, =1{1 change waiting to sync} other{{count} changes waiting to sync}}",
+  "@settingsAccountPendingSync": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAccountSignedOutToast": "Signed out",
+  "@settingsAccountSignedOutToast": {},
+  "settingsAccountSignedInToast": "Signed in",
+  "@settingsAccountSignedInToast": {},
+  "settingsAccountLoopbackTitle": "Signed in",
+  "@settingsAccountLoopbackTitle": {},
+  "settingsAccountLoopbackBody": "You can close this tab and go back to UltraPads.",
+  "@settingsAccountLoopbackBody": {},
+  "shareExportCreditsTitle": "This recording uses licensed material",
+  "@shareExportCreditsTitle": {},
+  "shareExportCreditsNc": "Non-commercial use only.",
+  "@shareExportCreditsNc": {},
+  "shareExportCreditsSa": "Share your work under the same license.",
+  "@shareExportCreditsSa": {},
+  "shareExportCreditsShareText": "Credits:\n{credits}",
+  "@shareExportCreditsShareText": {
+    "placeholders": {
+      "credits": {
+        "type": "String"
+      }
+    }
   }
 }

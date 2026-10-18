@@ -17,6 +17,7 @@ just run-linux                 # Linux + FFI 引擎（加载失败自动回退 M
 | `--dart-define=UP_ENGINE=mock` | 使用内存模拟引擎（UI 开发、演示） |
 | `--dart-define=UP_ENGINE=ffi`（默认） | 使用 Rust 引擎（`lib/src/rust/` 绑定） |
 | `--dart-define=UP_GALLERY=true` | 启动直接进入设计画廊 `/dev/gallery` |
+| `--dart-define=UP_SITE=<url>` | 覆盖官方站点地址（官方曲库 / 账号数据接口），联调本地 Worker 时用 |
 
 设计画廊也可从「设置 → 开发者 → 设计画廊」进入：token 浏览、全部组件状态、3 个主题 + 16 套
 内置皮肤预设实时切换、动效演示。
@@ -39,6 +40,7 @@ just run-linux                 # Linux + FFI 引擎（加载失败自动回退 M
 ```bash
 flutter test                         # 页面 widget test + golden（MockEngineClient）
 flutter test --update-goldens        # token 变化后重新生成 golden
+# 官方曲库 / 账号的测试全部走假服务（test/catalog_fixtures.dart），不需要网络
 dart run tools/lint/no_hardcode.dart # 仓库根：硬编码检查（必须零违规）
 ```
 
