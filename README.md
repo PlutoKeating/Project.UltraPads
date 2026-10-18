@@ -169,7 +169,7 @@ docs/          架构、API、需求、ADR、调研
 
 ## 当前状态
 
-当前版本 v0.1.0（更新记录见 [`CHANGELOG.md`](CHANGELOG.md)）。v0.0.1 的已知限制见 [`docs/research/v0.0.1-verification.md`](docs/research/v0.0.1-verification.md#6-已知问题)，主要有：
+当前版本 v0.2.0（更新记录见 [`CHANGELOG.md`](CHANGELOG.md)）。v0.0.1 的已知限制见 [`docs/research/v0.0.1-verification.md`](docs/research/v0.0.1-verification.md#6-已知问题)，主要有：
 
 - 只在模拟器上验证过，还没有真机延迟数据。
 - 作品播放没有实时进度条。
