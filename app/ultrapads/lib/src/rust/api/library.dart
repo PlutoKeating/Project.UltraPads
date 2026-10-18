@@ -51,13 +51,13 @@ Future<KitSummary> libraryLoadKit({required String kit}) =>
     RustLib.instance.api.crateApiLibraryLibraryLoadKit(kit: kit);
 
 /// Import a `.upkit` (ZIP or folder), SFZ, audio folder, single audio file
-/// (stored as a sample) or the original app's asset folder.
+/// (stored as a sample) or a private asset pack folder.
 Future<ImportReport> libraryImport({required String path}) =>
     RustLib.instance.api.crateApiLibraryLibraryImport(path: path);
 
 /// Import from in-memory bytes (`.upkit`/ZIP, e.g. a kit bundled as an app
 /// asset). `name` is the file name: a `.upkit` suffix forces the upkit
-/// reader, anything else is auto-detected (also the original app's assets).
+/// reader, anything else is auto-detected (also private asset packs).
 Future<ImportReport> libraryImportBytes({
   required String name,
   required List<int> bytes,

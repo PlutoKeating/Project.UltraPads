@@ -12,7 +12,7 @@ import '../../state/library_state.dart';
 import '../perform/pad_mapping.dart';
 import 'genres.dart';
 
-/// Kit 预览（4.7.0 `modalUnlockKit` 去掉解锁/付费按钮）：大封面、INSPIRED BY、
+/// Kit 预览（参考设计 `modalUnlockKit` 去掉解锁/付费按钮）：大封面、INSPIRED BY、
 /// 歌名、曲风 / BPM、pad 配色预览、LET'S PLAY。
 class KitDetailPage extends ConsumerWidget {
   const KitDetailPage({super.key, required this.kitId});

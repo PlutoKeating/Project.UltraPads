@@ -113,7 +113,7 @@ pub fn library_load_kit(kit: String) -> R<KitSummary> {
 }
 
 /// Import a `.upkit` (ZIP or folder), SFZ, audio folder, single audio file
-/// (stored as a sample) or the original app's asset folder.
+/// (stored as a sample) or a private asset pack folder.
 pub fn library_import(path: String) -> R<ImportReport> {
     let lib = state::library()?;
     let rep = lib.import(Path::new(&path)).map_err(lib_err)?;
@@ -155,7 +155,7 @@ fn report(lib: &up_library::Library, rep: &up_library::ImportReport) -> R<Import
 
 /// Import from in-memory bytes (`.upkit`/ZIP, e.g. a kit bundled as an app
 /// asset). `name` is the file name: a `.upkit` suffix forces the upkit
-/// reader, anything else is auto-detected (also the original app's assets).
+/// reader, anything else is auto-detected (also private asset packs).
 pub fn library_import_bytes(name: String, bytes: Vec<u8>) -> R<ImportReport> {
     let lib = state::library()?;
     let rep = lib.import_zip_bytes(&name, &bytes).map_err(lib_err)?;

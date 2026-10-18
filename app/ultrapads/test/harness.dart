@@ -20,7 +20,7 @@ final AppLinks _links = AppLinks.fromJson(
   jsonDecode(File(AppLinks.asset).readAsStringSync()) as Map<String, dynamic>,
 );
 
-/// 手机尺寸（4.7.0 设计画布 828×1472 ÷ 2）。
+/// 手机尺寸（参考设计画布 828×1472 ÷ 2）。
 const phone = Size(414, 736);
 
 class AppHarness {

@@ -762,7 +762,7 @@ pub fn kit_from_parts(
         }
     }
 
-    // 5. 颜色缺省：loop 蓝色，其余按 choke 组轮换（与原 App 的列配色习惯一致）
+    // 5. 颜色缺省：loop 蓝色，其余按 choke 组轮换（与参考设计的列配色习惯一致）
     let json_colored: BTreeSet<u8> = json
         .map(|j| {
             j.pads

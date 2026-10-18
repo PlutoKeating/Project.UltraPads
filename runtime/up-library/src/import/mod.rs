@@ -1,7 +1,7 @@
-//! 导入器：`.upkit`（ZIP/文件夹）、SFZ（含相对路径采样）、WAV 文件夹、原 App 素材（可插拔多来源）、单个 WAV。
+//! 导入器：`.upkit`（ZIP/文件夹）、SFZ（含相对路径采样）、WAV 文件夹、私有素材包（可插拔多来源）、单个 WAV。
 //!
 //! 入口 [`Library::import`] 自动识别输入类型。识别顺序（文件夹/ZIP）：
-//! 1. 原 App 素材（[`compat::CompatSource`] 逐个探测）
+//! 1. 私有素材包（[`compat::CompatSource`] 逐个探测）
 //! 2. `.upkit`（根目录或唯一顶层子目录中有 `manifest.json` / `ultrapads-kit.json` / `kit.sfz`）
 //! 3. SFZ（每个 `.sfz` 导入为一个 Kit）
 //! 4. WAV 文件夹
@@ -30,7 +30,7 @@ pub enum ImportKind {
     Upkit,
     Sfz,
     WavFolder,
-    /// 原 App 素材；值为来源 ID（如 `compat-android`）。
+    /// 私有素材包；值为来源 ID（如 `compat-android`）。
     Compat(String),
     Sample,
 }
@@ -55,7 +55,7 @@ pub struct ImportReport {
     pub kits: Vec<ImportedKit>,
     /// 新入库的独立样本 ID。
     pub samples: Vec<String>,
-    /// 合并进曲库目录的外部目录条目数（原 App list.json）。
+    /// 合并进曲库目录的外部目录条目数（私有素材包 list.json）。
     pub catalog_entries: usize,
     pub warnings: Vec<Warning>,
 }

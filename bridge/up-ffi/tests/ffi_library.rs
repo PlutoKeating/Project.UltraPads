@@ -116,7 +116,7 @@ fn library_flow_through_ffi() {
     let _ = std::fs::remove_dir_all(&tmp);
 }
 
-/// Local-only check with the original app's assets (never committed):
+/// Local-only check with the private asset pack (never committed):
 /// `cargo test -p up_ffi -- --ignored private_assets`
 #[test]
 #[ignore = "needs private-assets/compat-ios (not in the repo)"]

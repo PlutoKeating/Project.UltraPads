@@ -9,9 +9,9 @@ import 'package:up_ui/up_ui.dart';
 
 import 'harness.dart';
 
-/// 宽屏 / 平板布局（4.7.0 fixed_height）：网格按高度等比、水平居中。
+/// 宽屏 / 平板布局（参考设计 fixed_height）：网格按高度等比、水平居中。
 void main() {
-  test('grid aspect comes from the 4.7.0 cell geometry', () {
+  test('grid aspect comes from the reference cell geometry', () {
     expect(PerformLayout.gridAspect, closeTo(404.5 / 518, 1e-9));
   });
 

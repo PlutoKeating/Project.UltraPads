@@ -38,7 +38,7 @@ pub struct CompatScan {
     pub warnings: Vec<Warning>,
 }
 
-/// 原 App 素材来源。
+/// 私有素材包来源。
 pub trait CompatSource: Send + Sync {
     /// 来源 ID（同时是 KitSource.kind 与目录条目的 source）。
     fn id(&self) -> &'static str;

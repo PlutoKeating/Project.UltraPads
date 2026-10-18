@@ -10,7 +10,7 @@ class UpTabItem {
   final String label;
 }
 
-/// 底部 TabBar（4.7.0 `BaseTabBar`：顶部 10% 白线，选中图标底下一个粉色圆）。
+/// 底部 TabBar（参考设计 `BaseTabBar`：顶部 10% 白线，选中图标底下一个粉色圆）。
 class UpTabBar extends StatelessWidget {
   const UpTabBar({
     super.key,

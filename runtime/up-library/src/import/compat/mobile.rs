@@ -28,17 +28,17 @@ use crate::error::Result;
 use crate::fsutil;
 use crate::index::{Catalog, CatalogCategory, CatalogEntry, CatalogStatus};
 
-/// 原 App 素材的内容许可证标记（私有研究，禁止分发）。
+/// 私有素材包的内容许可证标记（私有研究，禁止分发）。
 pub const PRIVATE_LICENSE: &str = "LicenseRef-Private-Assets";
 
 const MAX_CONFIG_BYTES: u64 = 256 * 1024;
-/// 原 App 的固定布局：A/B 两组共 24 个 pad（与 UltraPads 自己的组数上限无关）。
+/// 私有素材包的固定布局：A/B 两组共 24 个 pad（与 UltraPads 自己的组数上限无关）。
 const COMPAT_PADS: u8 = 24;
 const MAX_CATALOG_BYTES: u64 = 64 * 1024 * 1024;
 
-/// 旧版 APK 3.x。
+/// Android 格式。
 pub struct AndroidSource;
-/// 新版 IPA 4.x。
+/// iOS 格式。
 pub struct IosSource;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -206,7 +206,7 @@ pub fn parse_config(bytes: &[u8]) -> Option<KitConfig> {
     Some(KitConfig { pads, preset })
 }
 
-/// 原 App 颜色名 → 调色板角色。
+/// 私有素材包颜色名 → 调色板角色。
 pub fn color_role(name: &str) -> Option<ColorRole> {
     match name.trim().to_ascii_lowercase().as_str() {
         "azul" | "azul_loop" | "blue" => Some(ColorRole::Blue),
@@ -665,7 +665,7 @@ fn run(
             Some(x) => x,
             None => continue,
         };
-        // 确定性 ID：同一原 App Kit 在不同设备上导入得到同一个 ID（多设备同步不重复）。
+        // 确定性 ID：同一私有素材包 Kit 在不同设备上导入得到同一个 ID（多设备同步不重复）。
         doc.id = fsutil::stable_id(&format!(
             "{}:{}",
             flavor.id(),

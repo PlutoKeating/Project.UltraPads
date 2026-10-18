@@ -59,7 +59,7 @@ const PARTIAL_DIR: &str = ".partial";
 /// 打开曲库的选项。
 pub struct LibraryOptions {
     pub limits: ImportLimits,
-    /// 原 App 素材导入器（可插拔，多来源）。默认包含所有内置来源。
+    /// 私有素材包导入器（可插拔，多来源）。默认包含所有内置来源。
     pub compat_sources: Vec<Box<dyn CompatSource>>,
 }
 

@@ -501,7 +501,7 @@ fn chart_events(doc: &KitDoc, chart: &Chart) -> Vec<TutorialEvent> {
             time_secs: f64::from(n.tick) * secs_per_tick,
             target,
             color,
-            // 导入器约定：velocity 64 = 原 App 的 state 0（开启 loop）
+            // 导入器约定：velocity 64 = 私有素材包的 state 0（开启 loop）
             action: if n.velocity == 64 {
                 TutorialAction::LoopToggle
             } else {

@@ -62,7 +62,7 @@ class PadLottieSkin {
   final bool playWhole;
 }
 
-/// Pad 的位图皮肤（4.7.0 image 类皮肤：Christmas / Pets / Muertos / Halloween
+/// Pad 的位图皮肤（image 类皮肤：Christmas / Pets / Muertos / Halloween
 /// 等整张 pad 插画）。只有注入了私有素材时由应用传入；返回 null 的角色仍用
 /// token 程序化绘制。
 @immutable
@@ -122,7 +122,7 @@ class UpPad extends StatefulWidget {
   /// 自定义 loop 图标（私有素材）；为空时用 Material 图标。
   final Widget? loopIcon;
 
-  /// 教程「填满」进度 0..1（4.7.0：颜色层从底部向上填，填满时按下判 PERFECT）。
+  /// 教程「填满」进度 0..1（参考设计：颜色层从底部向上填，填满时按下判 PERFECT）。
   final double? fill;
 
   @override

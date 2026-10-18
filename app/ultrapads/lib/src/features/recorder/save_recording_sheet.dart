@@ -11,7 +11,7 @@ import 'package:up_ui/up_ui.dart';
 
 import '../../state/engine_state.dart';
 
-/// 录音结束后的保存面板（4.7.0 `Recorder/Main`：文件名 + `.flac` 后缀 + 时长 + 播放；
+/// 录音结束后的保存面板（参考设计 `Recorder/Main`：文件名 + `.flac` 后缀 + 时长 + 播放；
 /// Save / Save and share / Cancel）。
 Future<void> showSaveRecordingSheet(BuildContext context, TrackInfo track) =>
     showUpSheet<void>(

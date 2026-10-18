@@ -32,7 +32,7 @@ class _DesignGalleryPageState extends ConsumerState<DesignGalleryPage> {
   late int _tab = widget.initialTab;
   late String? _skin = widget.initialSkin;
 
-  /// 画廊可预览的全部皮肤 id：内置主题 + 4.7.0 预设 + 自定义。
+  /// 画廊可预览的全部皮肤 id：内置主题 + 内置预设 + 自定义。
   List<String> _skinIds(AppSettings s) => [
     ...UpThemes.ids,
     for (final p in [

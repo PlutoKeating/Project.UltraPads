@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ultrapads/src/assets/private_assets.dart';
 import 'package:ultrapads/src/features/perform/pad_mapping.dart';
 
-/// image 类皮肤：只有注入了 4.7.0 位图时才用位图，否则保持 token 绘制。
+/// image 类皮肤：只有注入了私有素材包位图时才用位图，否则保持 token 绘制。
 void main() {
   // 只是清单键名（不含任何素材内容）。
   const pkg = 'ios/skin/padChristmas/Skin_padChristmas__';

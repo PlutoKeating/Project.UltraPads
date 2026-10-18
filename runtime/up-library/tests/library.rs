@@ -1,4 +1,4 @@
-//! up-library 集成测试：.upkit 往返、恶意 ZIP、WAV 文件夹、SFZ、示例 Kit、原 App 素材（假数据）、
+//! up-library 集成测试：.upkit 往返、恶意 ZIP、WAV 文件夹、SFZ、示例 Kit、私有素材包（假数据）、
 //! 收藏/搜索、保存编辑、样本与录音作品、导出。
 
 use std::io::Write;
@@ -516,7 +516,7 @@ fn save_kit_with_mic_sample_and_tracks() {
 }
 
 // ---------------------------------------------------------------------------
-// 原 App 素材（测试用代码构造的同结构假数据；不复制任何私有素材）
+// 私有素材包（测试用代码构造的同结构假数据；不复制任何私有素材）
 // ---------------------------------------------------------------------------
 
 fn fake_config() -> Vec<u8> {
@@ -720,7 +720,7 @@ fn compat_ios_fake_catalog_lessons_and_timed_tutorial_parsing() {
     );
 }
 
-/// 用真实的原 App 素材跑一次（私有素材不在仓库中；存在时手动运行：
+/// 用真实的私有素材包跑一次（私有素材不在仓库中；存在时手动运行：
 /// `cargo test -p up-library -- --ignored real_`）。
 #[test]
 #[ignore = "需要 private-assets/compat-android（不入库的私有素材）"]

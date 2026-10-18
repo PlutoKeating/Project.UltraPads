@@ -216,7 +216,7 @@ class TopBarTileButton extends StatelessWidget {
   }
 }
 
-/// 4.7.0 `btnYoutube`：视频教程入口（[TopBarTileButton] 的一种）。
+/// 参考设计 `btnYoutube`：视频教程入口（[TopBarTileButton] 的一种）。
 class VideoTutorialButton extends StatelessWidget {
   const VideoTutorialButton({
     super.key,

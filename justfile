@@ -66,7 +66,7 @@ cli *ARGS:
 bundle-kits:
     cp content/kits/*.upkit {{app}}/assets/kits/
 
-# 把 private-assets/ 的 UI 素材与 4.7.0 内置 Kit 注入应用（不入库；缺失时用开源占位）
+# 把 private-assets/ 的 UI 素材与私有素材包内置 Kit 注入应用（不入库；缺失时用开源占位）
 inject-assets:
     dart run tools/assets/inject_private_assets.dart
 

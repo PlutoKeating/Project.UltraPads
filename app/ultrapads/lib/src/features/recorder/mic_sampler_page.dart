@@ -14,7 +14,7 @@ import 'package:up_ui/up_ui.dart';
 
 import '../../state/engine_state.dart';
 
-/// 麦克风采样（4.7.0：大红录音按钮 170×170，录音时 0.6 s 脉冲；波形预览；SAVE）。
+/// 麦克风采样（参考设计：大红录音按钮 170×170，录音时 0.6 s 脉冲；波形预览；SAVE）。
 /// 返回 [SampleInfo]（`context.pop(sample)`）。
 class MicSamplerPage extends ConsumerStatefulWidget {
   const MicSamplerPage({super.key});

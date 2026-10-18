@@ -17,10 +17,10 @@ const String bundledKitsDir = 'assets/kits/';
 /// CC0 starter Kit 的固定 ID（`content/kits/ultrapads-starter.upkit` manifest）。
 const String starterKitId = '0192f0c0-5a17-7000-8000-00000000c0de';
 
-/// 原版 4.7.0 默认 Kit 的名字。
+/// 私有素材包默认 Kit 的名字。
 const String originalDefaultKitName = 'sunset';
 
-/// 默认加载顺序：原版 Sunset（已注入私有素材时）→ CC0 starter → 第一个。
+/// 默认加载顺序：私有素材包的 Sunset（已注入私有素材时）→ CC0 starter → 第一个。
 KitSummary? pickDefaultKit(List<KitSummary> kits) {
   if (kits.isEmpty) return null;
   for (final k in kits) {
@@ -35,7 +35,7 @@ KitSummary? pickDefaultKit(List<KitSummary> kits) {
 /// 首次启动：
 /// 1. 曲库为空时导入打包的 CC0 Kit（`library_import_bytes`）；
 /// 2. 注入了私有素材（`just inject-assets`）且这批素材还没导入过时，把
-///    `privateKits` 还原成原目录结构（临时目录），交给原 App 素材导入器
+///    `privateKits` 还原成原目录结构（临时目录），交给私有素材包导入器
 ///    （`library_import`，6 个内置 Kit + 目录 + 教程）；桌面也可以用
 ///    [privateKitsDirFlag] 直接导入 private-assets 目录；
 /// 3. 引擎还没有 Kit 时按 [pickDefaultKit] 加载默认 Kit。

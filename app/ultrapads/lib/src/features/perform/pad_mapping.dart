@@ -5,7 +5,7 @@ import 'package:up_ui/up_ui.dart';
 import '../../assets/private_assets.dart';
 import '../../state/settings_state.dart';
 
-/// 4.7.0 image 类皮肤（整张 pad 插画）在注入素材中的包名。
+/// image 类皮肤（整张 pad 插画）在注入素材中的包名。
 const Map<String, String> _imageSkinPackages = {
   'christmas': 'padChristmas',
   'pets': 'padPets',
@@ -13,7 +13,7 @@ const Map<String, String> _imageSkinPackages = {
   'halloween': 'padHalloween',
 };
 
-/// 调色板下标 → 原 App 位图的颜色名（4.7.0 只有 pink/orange/green/blue，
+/// 调色板下标 → 私有素材包位图的颜色名（参考设计只有 pink/orange/green/blue，
 /// Halloween 多一个 purple；扩展角色按色相就近）。
 const List<String> _bitmapColors = [
   'pink',
@@ -26,7 +26,7 @@ const List<String> _bitmapColors = [
   'purple',
 ];
 
-/// 当前皮肤是 image 类预设且注入了 4.7.0 皮肤位图时，返回位图皮肤；
+/// 当前皮肤是 image 类预设且注入了私有素材包皮肤位图时，返回位图皮肤；
 /// 否则 null（保持 token 程序化绘制）。[skinId] 为设置中的皮肤 id。
 PadImageSkin? imageSkinFor(PrivateAssets assets, String skinId) {
   if (!skinId.startsWith(presetPrefix)) return null;

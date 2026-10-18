@@ -4,7 +4,7 @@ import 'package:up_i18n/up_i18n.dart';
 import 'package:up_tokens/up_tokens.dart';
 import 'package:up_ui/up_ui.dart';
 
-/// 演奏页功能按钮行（4.7.0 `navButtons` / `navMoreButtons` 的位置）：
+/// 演奏页功能按钮行（参考设计 `navButtons` / `navMoreButtons` 的位置）：
 /// 默认显示「音色组 A B C… | ⋮」，点 ⋮ 后整行横移切换到
 /// 录音 / 皮肤 / 编辑 / 分享 / 返回（设置入口在顶栏右上角）。
 class PerformToolbar extends StatelessWidget {
@@ -114,7 +114,7 @@ class PerformToolbar extends StatelessWidget {
       color: c.surfaceSunken,
       padding: const EdgeInsets.symmetric(horizontal: UpTopBarTokens.paddingX),
       child: ClipRect(
-        // 4.7.0：整行横移切换（收起 0.3 s CircIn，展开 0.3 s CircOut）。
+        // 参考设计：整行横移切换（收起 0.3 s CircIn，展开 0.3 s CircOut）。
         child: Stack(
           children: [
             Positioned.fill(

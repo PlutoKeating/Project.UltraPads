@@ -5,7 +5,7 @@ import 'package:ultrapads/src/state/settings_state.dart';
 
 import 'harness.dart';
 
-/// 演奏页首次引导（4.7.0 FirstGuide）。
+/// 演奏页首次引导（参考设计 FirstGuide）。
 void main() {
   testWidgets('first guide: 4 steps, golden, done persists', (t) async {
     final h = await pumpApp(t, prefs: {'firstGuideSeen': false});

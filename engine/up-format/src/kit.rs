@@ -63,8 +63,8 @@ pub enum PadColor {
     Hex(String),
 }
 
-/// pad 调色板角色。前四个与原 App 的四种 pad 色一致（blue/green/orange/pink），
-/// 后面的取自原 App 编辑器 8 色色板。
+/// pad 调色板角色。前四个与参考设计的四种 pad 色一致（blue/green/orange/pink），
+/// 后面的取自参考设计编辑器 8 色色板。
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum ColorRole {
@@ -490,7 +490,7 @@ pub struct KitSource {
     pub original_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub original_name: Option<String>,
-    /// 灵感来源（原 App 的 authorName / musicName）。
+    /// 灵感来源（私有素材包的 authorName / musicName）。
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inspired_by: Option<String>,
 }

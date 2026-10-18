@@ -9,7 +9,7 @@ import '../../assets/private_assets.dart';
 import '../../routing/routes.dart';
 import '../../state/settings_state.dart';
 
-/// 皮肤显示名：4.7.0 预设（`UpSkinPreset.nameKey`）或内置主题；未知 id 显示 id 本身。
+/// 皮肤显示名：内置预设（`UpSkinPreset.nameKey`）或内置主题；未知 id 显示 id 本身。
 String skinName(BuildContext context, String id) {
   final l10n = context.l10n;
   final presetId = id.startsWith(presetPrefix)
@@ -48,7 +48,7 @@ String presetName(UpL10n l10n, String key) => switch (key) {
   _ => key,
 };
 
-/// 私有缩略图（4.7.0 `ScreenPads__img_skins_*` / `ScreenPads__skin_*`）。
+/// 私有缩略图（参考设计 `ScreenPads__img_skins_*` / `ScreenPads__skin_*`）。
 ImageProvider? skinThumbnail(PrivateAssets assets, String id) {
   final presetId = id.startsWith(presetPrefix)
       ? id.substring(presetPrefix.length)
@@ -76,7 +76,7 @@ ImageProvider? skinThumbnail(PrivateAssets assets, String id) {
   return file == null ? null : assets.image(assets.key('ios/ui/$file'));
 }
 
-/// 皮肤面板：从底部滑入（4.7.0 `modalSkins`，0.4 s QuadOut），横向列表。
+/// 皮肤面板：从底部滑入（参考设计 `modalSkins`，0.4 s QuadOut），横向列表。
 Future<void> showSkinsSheet(BuildContext context) =>
     showUpSheet<void>(context, builder: (_) => const SkinsSheet());
 

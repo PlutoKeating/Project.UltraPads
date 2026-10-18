@@ -313,7 +313,7 @@ final class KitSummary {
   /// 可选的封面资源键（相对素材清单），缺失时 UI 用渐变占位。
   final String? coverAsset;
 
-  /// Kit 自带的视频教程链接（原 App 目录的 videoUrl）；null 时演奏页按配置搜索。
+  /// Kit 自带的视频教程链接（私有素材包目录的 videoUrl）；null 时演奏页按配置搜索。
   final String? videoUrl;
 
   bool get hasBankB => groupCount > 1;
@@ -512,7 +512,7 @@ final class TrackInfo {
 
 enum ExportFormat { wav, flac, upkit, sfz }
 
-/// 教程步骤类型（4.7.0 `tutorial.json` 的 color/state 语义）。
+/// 教程步骤类型（参考设计 `tutorial.json` 的 color/state 语义）。
 enum TutorialStepKind {
   /// 普通敲击（one-shot）。
   tap,
@@ -529,7 +529,7 @@ enum TutorialStepKind {
 
 /// 教程一步：在 [timeSecs] 时刻要按下的 pad；[page] 非空表示这一步要切到该页（0=A,1=B）。
 ///
-/// 4.7.0 的教程是**时间轴**格式：每步有时间点，pad 提前 `tutorial.fill` 时长开始
+/// 参考设计的教程是**时间轴**格式：每步有时间点，pad 提前 `tutorial.fill` 时长开始
 /// 「填满」，在填满那一刻按下判定 PERFECT，早按 TOO FAST，晚按 TOO SLOW。
 /// [timeSecs] 为 null 时退化为旧版（APK）的无时间顺序模式。
 final class TutorialStep {

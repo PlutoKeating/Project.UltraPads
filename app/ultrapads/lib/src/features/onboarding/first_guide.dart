@@ -14,7 +14,7 @@ class FirstGuideStep {
   final Rect Function(Rect target)? hole;
 }
 
-/// 演奏页首次引导浮层（4.7.0 FirstGuide）：
+/// 演奏页首次引导浮层（参考设计 FirstGuide）：
 /// - `componentHighlight`：70% 黑遮罩（`surface.scrim`）挖出目标的洞；
 /// - `componentHandFirstOpen`：手指 1.0 s QuadIn 上移（`tutorial.hand*`），循环；
 /// - `modalTextBoxFirstOpen`：白色气泡（`feedback.bubble`，`tutorial.bubbleWidth`）；

@@ -12,7 +12,7 @@ import '../../state/engine_state.dart';
 import '../../state/library_state.dart';
 import 'genres.dart';
 
-/// 曲库（4.7.0 `MenuScene`）：顶部导航（✕ / 标题 / 🔍），KITS / FEED / PROFILE 三个 Tab。
+/// 曲库（参考设计 `MenuScene`）：顶部导航（✕ / 标题 / 🔍），KITS / FEED / PROFILE 三个 Tab。
 class LibraryPage extends ConsumerStatefulWidget {
   const LibraryPage({super.key});
 

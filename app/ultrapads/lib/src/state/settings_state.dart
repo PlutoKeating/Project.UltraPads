@@ -64,7 +64,7 @@ class AppSettings {
   /// 使用 APK 经典 Lottie pad 动画（需要注入 APK 素材）。
   final bool classicPads;
 
-  /// 演奏页首次引导（4.7.0 FirstGuide）已完成或跳过。
+  /// 演奏页首次引导（参考设计 FirstGuide）已完成或跳过。
   final bool firstGuideSeen;
 
   /// 启动后自动检查新版本（只发一次 GET /api/version，不上报设备信息）。
@@ -201,10 +201,10 @@ final settingsProvider = NotifierProvider<SettingsController, AppSettings>(
   SettingsController.new,
 );
 
-/// 4.7.0 皮肤预设在设置中的 id 前缀（`preset-default` …）。
+/// 内置皮肤预设在设置中的 id 前缀（`preset-default` …）。
 const presetPrefix = 'preset-';
 
-/// 当前皮肤对应的 UpTheme：自定义皮肤 → 4.7.0 预设 → 内置主题。
+/// 当前皮肤对应的 UpTheme：自定义皮肤 → 内置预设 → 内置主题。
 final upThemeProvider = Provider<UpTheme>((ref) {
   final s = ref.watch(settingsProvider);
   for (final skin in s.customSkins) {

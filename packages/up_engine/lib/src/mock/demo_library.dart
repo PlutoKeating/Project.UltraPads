@@ -106,7 +106,7 @@ abstract final class DemoLibrary {
   ];
 
   /// 配色布局：与内置 Kit「Sunset」一致——中列（pad 2/5/8/11）是蓝色 Loop，
-  /// 同列同 choke 组；4.7.0 约定「蓝色 = Loop」。
+  /// 同列同 choke 组；参考设计约定「蓝色 = Loop」。
   static const _palette = [
     ColorRole.orange, ColorRole.blue, ColorRole.pink, //
     ColorRole.green, ColorRole.blue, ColorRole.orange,

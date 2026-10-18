@@ -37,7 +37,7 @@ class PrivateAssets {
   final List<String> priority;
   final Map<String, String> entries;
 
-  /// 原 App 内置 Kit：原目录结构中的相对路径（相对 compat-ios 根）→ 资源路径。
+  /// 私有素材包内置 Kit：原目录结构中的相对路径（相对 compat-ios 根）→ 资源路径。
   /// 首次启动还原成目录后交给曲库导入器（见 `library/first_run.dart`）。
   final Map<String, String> privateKits;
 

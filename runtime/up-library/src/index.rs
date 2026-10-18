@@ -135,7 +135,7 @@ pub enum CatalogStatus {
     Downloaded { kit_id: String },
 }
 
-/// 外部目录（如原 App 的 `list.json`）中的一个 Kit 条目。
+/// 外部目录（如私有素材包的 `list.json`）中的一个 Kit 条目。
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CatalogEntry {
@@ -183,7 +183,7 @@ pub struct CatalogCategory {
     pub source: String,
     pub name: String,
     pub order: i64,
-    /// 原始类型码（原 App：100 = 大卡片，1/2/3 = feed 样式…）。
+    /// 原始类型码（私有素材包：100 = 大卡片，1/2/3 = feed 样式…）。
     pub kind: i64,
     /// 父分组（如 GENRES）。
     #[serde(default, skip_serializing_if = "Option::is_none")]

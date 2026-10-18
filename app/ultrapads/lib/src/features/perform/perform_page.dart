@@ -43,7 +43,7 @@ _PerformView _performView(EngineView v) => (
   controllerMode: v.controllerMode,
 );
 
-/// 演奏页（启动页），布局以 App Store 4.7.0（`ScreenPads/Main`）为准：
+/// 演奏页（启动页），布局以参考设计（`ScreenPads/Main`）为准：
 ///
 /// ```
 /// [♫ SONGS] KIT <名称>                     [速度 1.0（教程模式）]
@@ -204,7 +204,7 @@ class _PerformPageState extends ConsumerState<PerformPage> {
     );
   }
 
-  // 首次引导（4.7.0 FirstGuide）的目标。
+  // 首次引导（参考设计 FirstGuide）的目标。
   final _gridKey = GlobalKey(debugLabel: 'guide-grid');
   final _groupsKey = GlobalKey(debugLabel: 'guide-groups');
   final _moreKey = GlobalKey(debugLabel: 'guide-more');
@@ -269,17 +269,7 @@ class _PerformPageState extends ConsumerState<PerformPage> {
       onKeyEvent: _onKey,
       child: Stack(
         children: [
-          _scaffold(
-            context,
-            c,
-            l10n,
-            view,
-            row,
-            pads,
-            bank,
-            settings,
-            assets,
-          ),
+          _scaffold(context, c, l10n, view, row, pads, bank, settings, assets),
           // 首次引导：完成 / 跳过后写入设置。
           if (!settings.firstGuideSeen)
             Positioned.fill(
@@ -325,7 +315,7 @@ class _PerformPageState extends ConsumerState<PerformPage> {
                     ),
                     titleWidget: _KitTitle(name: view.kit?.name),
                     trailing: [
-                      // 顶栏最右：设置入口（4.7.0 btnYoutube 的位置）。
+                      // 顶栏最右：设置入口（参考设计 btnYoutube 的位置）。
                       TopBarTileButton(
                         key: const ValueKey('perform-settings'),
                         icon: Icons.settings_rounded,
@@ -339,9 +329,7 @@ class _PerformPageState extends ConsumerState<PerformPage> {
                     height: UpTopBarTokens.bankButtonSize,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(child: row),
-                      ],
+                      children: [Expanded(child: row)],
                     ),
                   ),
                   if (view.controllerMode) const _ControllerBanner(),
@@ -353,7 +341,7 @@ class _PerformPageState extends ConsumerState<PerformPage> {
                         UpPadGridTokens.pageInset,
                         UpPadGridTokens.marginBottom,
                       ),
-                      // 宽屏：按 4.7.0 fixed_height 等比计算网格尺寸并居中（PerformLayout）。
+                      // 宽屏：按参考设计 fixed_height 等比计算网格尺寸并居中（PerformLayout）。
                       child: LayoutBuilder(
                         builder: (context, box) => Center(
                           child: SizedBox.fromSize(
@@ -368,7 +356,7 @@ class _PerformPageState extends ConsumerState<PerformPage> {
                               lottie: settings.classicPads
                                   ? classicLottieSkin(assets)
                                   : null,
-                              // image 类皮肤：注入了 4.7.0 位图时用位图。
+                              // image 类皮肤：注入了私有素材包位图时用位图。
                               image: imageSkinFor(assets, settings.skinId),
                             ),
                           ),

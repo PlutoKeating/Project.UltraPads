@@ -10,7 +10,7 @@ import '../../state/settings_state.dart';
 import '../library/genres.dart';
 import '../perform/pad_mapping.dart';
 
-/// 首次启动引导（4.7.0：Walkthrough + 音乐风格选择 CategoryPreference；
+/// 首次启动引导（参考设计：Walkthrough + 音乐风格选择 CategoryPreference；
 /// 付费试用页不做）。品牌渐变背景，每页一个由真实组件拼成的插图。
 class OnboardingPage extends ConsumerStatefulWidget {
   const OnboardingPage({super.key});
@@ -25,7 +25,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
   int _page = 0;
   final Set<String> _genres = {};
 
-  /// 未选择风格时 NEXT 按钮左右抖动（4.7.0：±20 px，每段 0.1 s）。
+  /// 未选择风格时 NEXT 按钮左右抖动（参考设计：±20 px，每段 0.1 s）。
   late final AnimationController _shake = AnimationController(
     vsync: this,
     duration: UpDurations.fast * 4,

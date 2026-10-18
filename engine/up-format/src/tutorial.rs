@@ -2,7 +2,7 @@
 //!
 //! 两种模式：
 //! - `timed`：按小节/时间的教程（规格 §6.2），谱面时刻来自 `chart.mid`
-//! - `sequence`：只规定按键顺序、不计时（原 App 的教程），每一步列出要同时按下的 pad 音符
+//! - `sequence`：只规定按键顺序、不计时（私有素材包的教程），每一步列出要同时按下的 pad 音符
 //!
 //! JSON Schema 见 `content/schema/tutorial-1.schema.json`。
 

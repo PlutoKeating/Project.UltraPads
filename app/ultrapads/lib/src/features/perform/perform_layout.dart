@@ -3,9 +3,9 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:up_tokens/up_tokens.dart';
 
-/// 演奏页的宽屏 / 平板布局（4.7.0 `fixed_height` 适配）。
+/// 演奏页的宽屏 / 平板布局（参考设计 `fixed_height` 适配）。
 ///
-/// 4.7.0 的设计画布是 414×736 pt，以高度为准等比缩放：pad 区（x 9..819、
+/// 参考设计画布是 414×736 pt，以高度为准等比缩放：pad 区（x 9..819、
 /// y 286..1321 px）的宽高比固定，屏幕更宽时（iPad、桌面横屏）pad 网格按高度算出
 /// 宽度、水平居中，而不是被拉宽成扁 pad；手机（比画布更窄或相同）时网格占满宽度，
 /// 与原来一致。顶栏和功能行与网格同宽（整列居中），A/B 按钮始终在网格右上角。

@@ -12,7 +12,7 @@ import '../../state/engine_state.dart';
 import '../perform/pad_mapping.dart';
 import 'sample_pickers.dart';
 
-/// 编辑 Kit（4.7.0 `CreateKit/Main`）：
+/// 编辑 Kit（参考设计 `CreateKit/Main`）：
 /// 顶栏（✕ / 标题 / SAVE）→ A/B 迷你 pad 面板（选 pad）→
 /// 底部面板：LOAD SOUND（5 个来源）| EDIT PAD（颜色、Loop、分组、音量、裁剪、复制、清空）。
 class EditorPage extends ConsumerStatefulWidget {
@@ -226,7 +226,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
   }
 
   void _clone() {
-    // 复制到下一个空 pad（4.7.0 CLONE）。
+    // 复制到下一个空 pad（参考设计 CLONE）。
     final target = _doc!.pads.indexWhere((p) => p.isEmpty);
     if (target < 0) return;
     final from = _pad;
@@ -257,7 +257,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
         if (!didPop) _close();
       },
       child: Scaffold(
-        // 4.7.0：编辑 Kit 整页粉色底（#EE4286 → primitive swatch.mediumPink）。
+        // 参考设计：编辑 Kit 整页粉色底（#EE4286 → primitive swatch.mediumPink）。
         backgroundColor: UpPrimitiveColors.swatchMediumPink,
         body: SafeArea(
           child: doc == null
@@ -682,7 +682,7 @@ class _EditPadPanel extends StatelessWidget {
                   ),
                 ),
         ),
-        // 4.7.0 EDIT PAD：PITCH ±（半音，引擎以播放速率实时实现）。
+        // 参考设计 EDIT PAD：PITCH ±（半音，引擎以播放速率实时实现）。
         stepper(
           l10n.kitEditorPitch,
           l10n.kitEditorPitchValue(_signed(params.pitch.round())),
