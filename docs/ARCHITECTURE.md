@@ -144,7 +144,7 @@ tag vX.Y.Z ──► .github/workflows/release.yml ──► GitHub Release（ta
 ultrapads.plutokeating.beer（website/，Cloudflare Worker，推送 main 由 Workers Builds 自动部署）
   /install        安装脚本（静态）
   /api/version    读 GitHub 最新正式版 → 版本清单（边缘缓存 5 min + 7 天陈旧副本）
-  /dl/<tag>/<f>   镜像下载，按 GitHub 的 sha256 核对后边缘缓存
+  /dl/<tag>/<f>   镜像下载，按 GitHub 的 sha256 核对后边缘缓存（缓存键含 sha256）
         ▲                         ▲
    curl … | bash             runtime/up-update（FFI update_*）← 设置「软件更新」/ 启动静默检查
 ```

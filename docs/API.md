@@ -345,7 +345,7 @@ GitHub Release `vX.Y.Z`（正式版，非预发布）中的资产：`ultrapads-X
 |---|---|
 | `GET /api/version` | 最新正式版清单（JSON，见下）。`?tag=vX.Y.Z` 指定版本；没有该版本 `404`；GitHub 不可用且没有缓存副本 `502` |
 | `GET /api/version?format=sh&platform=<平台键>[&tag=…]` | 纯文本，每行 `KEY=value`：`UP_VERSION`、`UP_TAG`、`UP_NAME`、`UP_SIZE`、`UP_SHA256`、`UP_URL`、`UP_FALLBACK_URL`。值只含 `[A-Za-z0-9._:/+-]`；安装脚本逐行按前缀读取，不 `eval`。该平台没有包 `404`，平台键不对 `400` |
-| `GET /dl/<tag>/<文件名>` | 镜像 `github.com/…/releases/download/<tag>/<文件名>`，只限 §6.1 的文件名；与 GitHub 的 sha256 核对，通过才边缘缓存 7 天（不符时流出错、不缓存）。响应头 `X-Digest: sha256:<hex>` |
+| `GET /dl/<tag>/<文件名>` | 镜像 `github.com/…/releases/download/<tag>/<文件名>`，只限 §6.1 的文件名；与 GitHub 的 sha256 核对，通过才边缘缓存 7 天（缓存键含该 sha256，附件被替换后旧副本自动失效；不符时流出错、不缓存）。响应头 `X-Digest: sha256:<hex>` |
 | `GET /dl/latest/<平台键>` | `302` 到最新正式版该平台的 `/dl/` 地址 |
 | `GET /install` | 安装脚本（`text/plain`） |
 

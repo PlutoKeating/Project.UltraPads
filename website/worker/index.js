@@ -6,7 +6,7 @@
 //       上游结果在边缘缓存 5 分钟，另存 7 天的陈旧副本：GitHub 限流或连不上时顶上（X-Upstream: stale）。
 //   GET /dl/<tag>/<文件名>
 //       GitHub Release 资产的镜像（GitHub 在不少网络里连不上）。只镜像本仓库、符合命名的文件；
-//       与 GitHub 记录的 sha256（digest）核对，通过才在边缘缓存 7 天（按 tag 不可变），不符则让下载出错。
+//       与 GitHub 记录的 sha256（digest）核对，通过才在边缘缓存 7 天（缓存键含 sha256，附件替换后自动失效），不符则让下载出错。
 //   GET /dl/latest/<平台>
 //       302 到最新正式版对应平台的 /dl/ 地址（落地页的下载按钮，页面脚本跑不起来时也能用）。
 //
@@ -148,9 +148,6 @@ async function download(url, request, env, ctx) {
   }
   const head = request.method === "HEAD";
   const cache = cacheOf();
-  const key = new Request(`${url.origin}/dl/${tag}/${asset}`);
-  const hit = await cache.match(key);
-  if (hit) return withBody(hit, head);
 
   const rel = await fetchRelease(url.origin, tag, env, ctx);
   if (rel.status === "missing") return text(404, `no such release: ${tag}\n`);
@@ -163,6 +160,12 @@ async function download(url, request, env, ctx) {
     if (!m) return text(502, `GitHub has no sha256 for ${asset}; not mirroring\n`);
     expected = m[1];
     if (typeof a.size === "number") size = a.size;
+  }
+  // 缓存键带上 GitHub 记录的 sha256：同一 tag 的附件被替换后旧副本自动失效，不会与新清单对不上
+  const key = expected ? new Request(`${url.origin}/dl/${tag}/${asset}?sha256=${expected}`) : null;
+  if (key) {
+    const hit = await cache.match(key);
+    if (hit) return withBody(hit, head);
   }
 
   let res;
