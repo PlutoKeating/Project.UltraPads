@@ -2777,6 +2777,12 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'The guide will show on the perform screen'**
   String get settingsReplayGuideDone;
+
+  /// No description provided for @settingsBufferSizeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System default'**
+  String get settingsBufferSizeSystem;
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

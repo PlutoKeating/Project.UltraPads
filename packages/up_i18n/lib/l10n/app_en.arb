@@ -1520,5 +1520,7 @@
   "settingsReplayGuide": "Show the first-run guide again",
   "@settingsReplayGuide": {},
   "settingsReplayGuideDone": "The guide will show on the perform screen",
-  "@settingsReplayGuideDone": {}
+  "@settingsReplayGuideDone": {},
+  "settingsBufferSizeSystem": "System default",
+  "@settingsBufferSizeSystem": {}
 }

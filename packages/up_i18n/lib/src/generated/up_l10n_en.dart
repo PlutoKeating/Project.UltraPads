@@ -1615,4 +1615,7 @@ class UpL10nEn extends UpL10n {
   @override
   String get settingsReplayGuideDone =>
       'The guide will show on the perform screen';
+
+  @override
+  String get settingsBufferSizeSystem => 'System default';
 }

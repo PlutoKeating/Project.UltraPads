@@ -445,5 +445,6 @@
   "tutorialFirstGuideSongs": "点 SONGS 打开曲库，挑选更多 Kit。",
   "tutorialFirstGuideDone": "开始演奏",
   "settingsReplayGuide": "重新显示新手引导",
-  "settingsReplayGuideDone": "回到演奏页即可看到引导"
+  "settingsReplayGuideDone": "回到演奏页即可看到引导",
+  "settingsBufferSizeSystem": "系统默认"
 }

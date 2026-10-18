@@ -1587,4 +1587,7 @@ class UpL10nZh extends UpL10n {
 
   @override
   String get settingsReplayGuideDone => '回到演奏页即可看到引导';
+
+  @override
+  String get settingsBufferSizeSystem => '系统默认';
 }

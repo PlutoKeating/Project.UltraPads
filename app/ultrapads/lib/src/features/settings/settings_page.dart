@@ -123,8 +123,13 @@ class SettingsPage extends ConsumerWidget {
                   UpListItem(
                     icon: Icons.tune_rounded,
                     title: l10n.settingsBufferSize,
+                    // 后端没有固定缓冲（如 AAudio 默认）时 bufferFrames 为 0。
                     subtitle: rate == null
                         ? null
+                        : (settings.bufferFrames ??
+                                  status.value!.bufferFrames) ==
+                              0
+                        ? l10n.settingsBufferSizeSystem
                         : l10n.settingsBufferSizeValue(
                             settings.bufferFrames ?? status.value!.bufferFrames,
                             (settings.bufferFrames ??

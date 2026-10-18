@@ -75,16 +75,17 @@ class _SaveRecordingSheetState extends ConsumerState<SaveRecordingSheet> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final c = UpTheme.of(context).colors;
-    final peaks =
-        ref
-            .watch(
-              waveformProvider((
-                sample: 'track:${widget.track.id}',
-                buckets: UpWaveformTokens.height.toInt(),
-              )),
-            )
-            .value ??
-        const [];
+    final peaks = widget.track.waveform.isNotEmpty
+        ? widget.track.waveform
+        : ref
+                  .watch(
+                    waveformProvider((
+                      sample: 'track:${widget.track.id}',
+                      buckets: UpWaveformTokens.height.toInt(),
+                    )),
+                  )
+                  .value ??
+              const [];
     final playback = ref.watch(trackPlaybackProvider).value;
     final progress =
         playback != null &&
