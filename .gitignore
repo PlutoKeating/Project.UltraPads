@@ -47,3 +47,39 @@ node_modules/
 
 # 各代理/本地隔离构建目录
 /target/
+
+# --- 原 App 安装包、逆向/解包产物：任何位置都不得入库 ---
+*.ipa
+*.apk
+*.aab
+*.xapk
+*.apks
+*.dex
+*.fui
+Assets.car
+**/jadx*/
+**/decompiled/
+**/unpacked/
+**/figma-snapshots/
+**/screenshots/
+
+# --- 密钥、证书、凭据 ---
+*.pem
+*.p12
+*.p8
+*.pfx
+*.key
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+**/secrets.*
+*.secret
+.netrc
+
+# --- 本地运行数据（Hub 设备身份、受信列表、曲库数据库） ---
+**/ultrapads-data/
+**/hub/identity*
+**/hub/trusted*
+*.db
+*.sqlite
+*.sqlite3
