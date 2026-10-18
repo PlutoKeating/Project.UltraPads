@@ -42,6 +42,8 @@ endif()
 function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_features(${TARGET} PUBLIC cxx_std_14)
   target_compile_options(${TARGET} PRIVATE -Wall -Werror)
+  # rive_common 自带的 HarfBuzz 在新版 clang 上触发 -Wnontrivial-memcall（第三方代码，非本项目）。
+  target_compile_options(${TARGET} PRIVATE -Wno-unknown-warning-option -Wno-nontrivial-memcall)
   target_compile_options(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>")
   target_compile_definitions(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:NDEBUG>")
 endfunction()

@@ -396,5 +396,22 @@
   "kitEditorReplaceTitle": "替换这个声音？",
   "recordSaveAndShare": "保存并分享",
   "onboardingNext": "下一步",
-  "onboardingChooseStyleBody": "选择你喜欢的风格，我们会为你推荐合适的 Kit"
+  "onboardingChooseStyleBody": "选择你喜欢的风格，我们会为你推荐合适的 Kit",
+  "settingsDeveloper": "开发者",
+  "settingsDesignGallery": "设计画廊",
+  "settingsGalleryTokens": "设计 Token",
+  "settingsGalleryComponents": "组件",
+  "settingsGallerySkins": "主题与皮肤",
+  "settingsGalleryMotion": "动效",
+  "settingsGalleryPrimitive": "基础色",
+  "settingsGallerySemantic": "语义色",
+  "settingsGalleryRadii": "圆角",
+  "settingsGallerySpacing": "间距",
+  "settingsGalleryTypography": "字体角色",
+  "settingsGalleryGlow": "光晕与阴影",
+  "settingsGalleryDurations": "时长与曲线",
+  "settingsGalleryReplay": "重播",
+  "settingsGalleryStates": "状态",
+  "settingsGalleryDisabled": "禁用",
+  "settingsGalleryPressed": "按下"
 }

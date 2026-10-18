@@ -2478,6 +2478,108 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'Pick the styles you like and we\'ll start you off with the right kits'**
   String get onboardingChooseStyleBody;
+
+  /// Settings section for developer tools.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer'**
+  String get settingsDeveloper;
+
+  /// In-app Storybook-style gallery of tokens and components.
+  ///
+  /// In en, this message translates to:
+  /// **'Design gallery'**
+  String get settingsDesignGallery;
+
+  /// Gallery tab: token browser.
+  ///
+  /// In en, this message translates to:
+  /// **'Tokens'**
+  String get settingsGalleryTokens;
+
+  /// Gallery tab: component states.
+  ///
+  /// In en, this message translates to:
+  /// **'Components'**
+  String get settingsGalleryComponents;
+
+  /// Gallery tab: theme and skin presets.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes & skins'**
+  String get settingsGallerySkins;
+
+  /// Gallery tab: motion demos.
+  ///
+  /// In en, this message translates to:
+  /// **'Motion'**
+  String get settingsGalleryMotion;
+
+  /// Token browser: primitive colour group.
+  ///
+  /// In en, this message translates to:
+  /// **'Primitive colors'**
+  String get settingsGalleryPrimitive;
+
+  /// Token browser: semantic colours of the current theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Semantic colors'**
+  String get settingsGallerySemantic;
+
+  /// Token browser: radius scale.
+  ///
+  /// In en, this message translates to:
+  /// **'Corner radius'**
+  String get settingsGalleryRadii;
+
+  /// Token browser: spacing scale.
+  ///
+  /// In en, this message translates to:
+  /// **'Spacing'**
+  String get settingsGallerySpacing;
+
+  /// Token browser: text roles.
+  ///
+  /// In en, this message translates to:
+  /// **'Typography'**
+  String get settingsGalleryTypography;
+
+  /// Token browser: glow recipes.
+  ///
+  /// In en, this message translates to:
+  /// **'Glow & shadow'**
+  String get settingsGalleryGlow;
+
+  /// Token browser: motion durations and easing curves.
+  ///
+  /// In en, this message translates to:
+  /// **'Durations & curves'**
+  String get settingsGalleryDurations;
+
+  /// Replay a motion demo.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay'**
+  String get settingsGalleryReplay;
+
+  /// Component state variants heading.
+  ///
+  /// In en, this message translates to:
+  /// **'States'**
+  String get settingsGalleryStates;
+
+  /// Component state: disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get settingsGalleryDisabled;
+
+  /// Component state: pressed.
+  ///
+  /// In en, this message translates to:
+  /// **'Pressed'**
+  String get settingsGalleryPressed;
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

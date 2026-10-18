@@ -1,39 +1,17 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# up_fx
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+动效与光效。所有时长、曲线、颜色、尺寸由调用方从 `up_tokens` 传入，本包不含魔法数。
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+| 模块 | 内容 |
+|---|---|
+| `SegmentedLottie` | pad 按下分段播放（按下 0→split，松手 split→1，Launchpad 整段），循环模式；资源缺失 / 关闭动画 / 减少动效时显示 fallback |
+| `NeonGlow` | 霓虹 bloom（`shaders/neon_bloom.frag`），低端回退 `BoxShadow`（token 光晕配方） |
+| `PressRipple` | 按下波纹（`shaders/press_ripple.frag`），回退为淡出圆 |
+| `LoopBreathe` | Loop 描边呼吸 + 流光（`shaders/loop_breathe.frag`），回退为透明度呼吸描边 |
+| `FxShaders` | `FragmentProgram` 预加载与缓存，失败返回 null |
+| `FxScope` / `FxTier` | 设备分级：full（shader）/ lite（BoxShadow，Web 和测试）/ minimal（减少动效）；「动画 Pad」开关 |
+| `FxMotion` | `MediaQuery.disableAnimations` 适配：时长归零、曲线线性 |
+| `SpringSpec` / `SpringScale` | 由 token（stiffness / damping / mass）构造的弹簧与弹簧缩放 |
+| `RiveAssetView` | 加载 `.riv`（可选状态机），缺失时 fallback（rive 0.13，纯 Dart 渲染） |
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
-```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+着色器在 `pubspec.yaml` 的 `flutter.shaders` 中声明。

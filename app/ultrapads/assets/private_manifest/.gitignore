@@ -1,0 +1,5 @@
+# 私有素材注入目标（tools/assets/inject_private_assets.dart）。
+# 只有占位清单和本文件入库，其它注入文件一律忽略。
+*
+!.gitignore
+!manifest.json

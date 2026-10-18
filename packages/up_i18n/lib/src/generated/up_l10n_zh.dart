@@ -1416,4 +1416,55 @@ class UpL10nZh extends UpL10n {
 
   @override
   String get onboardingChooseStyleBody => '选择你喜欢的风格，我们会为你推荐合适的 Kit';
+
+  @override
+  String get settingsDeveloper => '开发者';
+
+  @override
+  String get settingsDesignGallery => '设计画廊';
+
+  @override
+  String get settingsGalleryTokens => '设计 Token';
+
+  @override
+  String get settingsGalleryComponents => '组件';
+
+  @override
+  String get settingsGallerySkins => '主题与皮肤';
+
+  @override
+  String get settingsGalleryMotion => '动效';
+
+  @override
+  String get settingsGalleryPrimitive => '基础色';
+
+  @override
+  String get settingsGallerySemantic => '语义色';
+
+  @override
+  String get settingsGalleryRadii => '圆角';
+
+  @override
+  String get settingsGallerySpacing => '间距';
+
+  @override
+  String get settingsGalleryTypography => '字体角色';
+
+  @override
+  String get settingsGalleryGlow => '光晕与阴影';
+
+  @override
+  String get settingsGalleryDurations => '时长与曲线';
+
+  @override
+  String get settingsGalleryReplay => '重播';
+
+  @override
+  String get settingsGalleryStates => '状态';
+
+  @override
+  String get settingsGalleryDisabled => '禁用';
+
+  @override
+  String get settingsGalleryPressed => '按下';
 }

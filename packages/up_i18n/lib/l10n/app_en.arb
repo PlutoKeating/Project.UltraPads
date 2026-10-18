@@ -1317,5 +1317,73 @@
   "onboardingChooseStyleBody": "Pick the styles you like and we'll start you off with the right kits",
   "@onboardingChooseStyleBody": {
     "description": "Category preference page body."
+  },
+  "settingsDeveloper": "Developer",
+  "@settingsDeveloper": {
+    "description": "Settings section for developer tools."
+  },
+  "settingsDesignGallery": "Design gallery",
+  "@settingsDesignGallery": {
+    "description": "In-app Storybook-style gallery of tokens and components."
+  },
+  "settingsGalleryTokens": "Tokens",
+  "@settingsGalleryTokens": {
+    "description": "Gallery tab: token browser."
+  },
+  "settingsGalleryComponents": "Components",
+  "@settingsGalleryComponents": {
+    "description": "Gallery tab: component states."
+  },
+  "settingsGallerySkins": "Themes & skins",
+  "@settingsGallerySkins": {
+    "description": "Gallery tab: theme and skin presets."
+  },
+  "settingsGalleryMotion": "Motion",
+  "@settingsGalleryMotion": {
+    "description": "Gallery tab: motion demos."
+  },
+  "settingsGalleryPrimitive": "Primitive colors",
+  "@settingsGalleryPrimitive": {
+    "description": "Token browser: primitive colour group."
+  },
+  "settingsGallerySemantic": "Semantic colors",
+  "@settingsGallerySemantic": {
+    "description": "Token browser: semantic colours of the current theme."
+  },
+  "settingsGalleryRadii": "Corner radius",
+  "@settingsGalleryRadii": {
+    "description": "Token browser: radius scale."
+  },
+  "settingsGallerySpacing": "Spacing",
+  "@settingsGallerySpacing": {
+    "description": "Token browser: spacing scale."
+  },
+  "settingsGalleryTypography": "Typography",
+  "@settingsGalleryTypography": {
+    "description": "Token browser: text roles."
+  },
+  "settingsGalleryGlow": "Glow & shadow",
+  "@settingsGalleryGlow": {
+    "description": "Token browser: glow recipes."
+  },
+  "settingsGalleryDurations": "Durations & curves",
+  "@settingsGalleryDurations": {
+    "description": "Token browser: motion durations and easing curves."
+  },
+  "settingsGalleryReplay": "Replay",
+  "@settingsGalleryReplay": {
+    "description": "Replay a motion demo."
+  },
+  "settingsGalleryStates": "States",
+  "@settingsGalleryStates": {
+    "description": "Component state variants heading."
+  },
+  "settingsGalleryDisabled": "Disabled",
+  "@settingsGalleryDisabled": {
+    "description": "Component state: disabled."
+  },
+  "settingsGalleryPressed": "Pressed",
+  "@settingsGalleryPressed": {
+    "description": "Component state: pressed."
   }
 }

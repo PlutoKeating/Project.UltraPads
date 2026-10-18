@@ -1,39 +1,20 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# up_engine
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+UI 访问引擎的唯一接口（纯 Dart，库代码不依赖 Flutter / FRB）。
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+- `EngineClient`（`lib/src/engine_client.dart`）：`docs/API.md` §3 的全部能力——音频、事件流、快照、
+  pad 热路径（`padDown` / `padUp` / `send` / `snapshot` 为同步）、曲库、编辑 Kit、采样、作品、教程、Hub。
+  未实现的能力抛 `EngineNotImplemented`。
+- 数据类（`models.dart`）：`PadId`、`PadParams`、`ColorRole`（顺序 = token 调色板下标）、`KitSummary`、
+  `KitDoc`、`TutorialChart`（时间轴步骤 + 判定窗口）、`TrackInfo`、Hub 类型…
+- 协议（`protocol.dart`）：`Command`（sealed）与 `EngineEvent`（sealed）。
+- `MockEngineClient`：内存模拟——pad 状态机（one-shot / loop / gate、choke、量化 Pending）、走带、电平、
+  录音 → 作品、曲库 / 导入 / 保存、时间轴教程、Hub（发现、6 位码配对、同步进度、控制器模式）。
+  `realtime: false` 时由 `advance()` 驱动时钟，测试可确定性复现。
+- `DemoLibrary`：确定性演示数据（只有名字和参数，没有素材）。
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+FFI 实现在应用里：`app/ultrapads/lib/src/engine/ffi_engine_client.dart`。
 
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```bash
+flutter test   # 状态机、量化、choke、录音、控制器模式、配对校验
 ```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.

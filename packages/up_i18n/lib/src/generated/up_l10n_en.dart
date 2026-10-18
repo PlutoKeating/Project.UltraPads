@@ -1440,4 +1440,55 @@ class UpL10nEn extends UpL10n {
   @override
   String get onboardingChooseStyleBody =>
       'Pick the styles you like and we\'ll start you off with the right kits';
+
+  @override
+  String get settingsDeveloper => 'Developer';
+
+  @override
+  String get settingsDesignGallery => 'Design gallery';
+
+  @override
+  String get settingsGalleryTokens => 'Tokens';
+
+  @override
+  String get settingsGalleryComponents => 'Components';
+
+  @override
+  String get settingsGallerySkins => 'Themes & skins';
+
+  @override
+  String get settingsGalleryMotion => 'Motion';
+
+  @override
+  String get settingsGalleryPrimitive => 'Primitive colors';
+
+  @override
+  String get settingsGallerySemantic => 'Semantic colors';
+
+  @override
+  String get settingsGalleryRadii => 'Corner radius';
+
+  @override
+  String get settingsGallerySpacing => 'Spacing';
+
+  @override
+  String get settingsGalleryTypography => 'Typography';
+
+  @override
+  String get settingsGalleryGlow => 'Glow & shadow';
+
+  @override
+  String get settingsGalleryDurations => 'Durations & curves';
+
+  @override
+  String get settingsGalleryReplay => 'Replay';
+
+  @override
+  String get settingsGalleryStates => 'States';
+
+  @override
+  String get settingsGalleryDisabled => 'Disabled';
+
+  @override
+  String get settingsGalleryPressed => 'Pressed';
 }
