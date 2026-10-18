@@ -1,0 +1,45 @@
+# 更新记录
+
+格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
+
+## [0.0.1] - 2026-10-18
+
+首个可用版本：在 **Linux x64** 与 **Android**（API 26+，模拟器验证）上构建、运行并验证。验证记录见
+`docs/research/v0.0.1-verification.md`。代码以 Apache-2.0 公开开源；原 App 素材不随仓库分发。
+
+### 引擎与运行基座（Rust）
+
+- 实时采样引擎：Firewheel 音频图（Serial 参考后端）、24 pad + 试听声部、One-shot / Loop / Gate、
+  choke（含非对称 `choked_by`）、量化启动、32 声部 + 16 尾巴的偷取策略，音频线程零分配零锁。
+- 实时变速 `SetSpeed`（0.5–2.0，varispeed，transport 同比缩放）与 pad 实时 **pitch**（半音 ±12，播放速率实现，与 speed 相乘）。
+- 试听声部：作品播放（可循环）、编辑器 `sample_preview`（任意区段，不占用 pad）。
+- 录音（主输出 → WAV → 曲库作品，128 段波形）、麦克风采样、教程判定（`transport_clock` + `tutorial_judge`）、延迟探针。
+- cpal 音频基座：Linux ALSA、Android AAudio（修复 AAudio 默认伪设备 `aaudio:-1` 无法打开）。
+- 曲库 up-library：`.upkit`（SFZ + JSON 旁挂）、SFZ、WAV 文件夹、原 App 素材导入器（APK 3.x / IPA 4.x，含目录与计时教程）、
+  DAWproject 导出、内容寻址存储；`library_import_bytes` 从内存导入；同一个包在多台设备导入得到相同 ID 与 manifest（同步不重复、不冲突）。
+- 个人 Hub up-hub：mDNS 发现、6 位配对码 + SPAKE2、双向 TLS 公钥钉扎、版本向量清单增量同步（可续传）、UDP 控制器（HMAC、双发去重、防挂音）；
+  FFI 覆盖服务、配对码（含 `hub_pairing_code`）、受信设备与撤销、发现 / 手动地址、同步进度、控制器与本地发声开关。
+- `up-cli`：设备列表、离线渲染、单 pad 播放、延迟探针、WAV 检查。
+
+### 应用（Flutter）
+
+- 按 Ref 4.7.0 复刻的演奏页、教程（时间轴、PERFECT / TOO FAST / TOO SLOW / MISS）、曲库（KITS / FEED / PROFILE）、
+  编辑 Kit（LOAD SOUND、EDIT PAD 含 PITCH ±、EDIT FILE 裁剪与试听）、录音与作品（循环播放、导出、分享）、皮肤（3 主题 + 16 套预设 + 自定义）、设置、引导、设计画廊。
+- 速度控件：教程模式下速度按钮正下方的 1.0 / 0.7 / 0.5 下拉框，引擎实时变速并同比缩放教程时间轴。
+- 首次启动：导入打包的 CC0 示例 Kit；注入了私有素材时导入 4.7.0 的 6 个内置 Kit；默认加载原版 Sunset → CC0 Starter。
+- 首次引导浮层（4.7.0 FirstGuide）、视频教程入口（YouTube / BiliBili，链接在 `assets/config/links.json`）、平板 / 桌面宽屏布局、
+  image 类皮肤在注入后使用原版位图、pad 渐变抖动着色器（消除 Android 同心淡环）。
+- 多设备页：桌面显示配对码、本机地址、受信设备与撤销、远端控制器；手机发现 / 手动输入地址、配对、同步进度、控制器模式（演奏页状态条，可退出）、本机同时发声。
+- `EngineClient` 契约与 `MockEngineClient` 覆盖全部 FFI；`ColorRole` 与引擎同名同序，`ColorRole.paletteIndex` 为调色板映射的唯一定义。
+- 设计系统：W3C DTCG token → Dart / CSS，i18n（zh / en），`no_hardcode` lint 零违规。
+- 开发 / 验证：`UP_ENGINE`、`UP_GALLERY`、`UP_ROUTE` / `ULTRAPADS_ROUTE`、`UP_PRIVATE_KITS`、`ULTRAPADS_WINDOW_SIZE`、
+  `ULTRAPADS_HUB_AUTOSTART` / `UP_HUB_AUTOSTART`、`ULTRAPADS_LOG_EVENTS` / `UP_LOG_EVENTS`。
+
+### 构建
+
+- Android release 开启 R8：新增 keep 规则，修复 shared_preferences / path_provider（经 package:jni 调用）启动即崩溃。
+- Linux release：放宽 rive_common 插件的 unused 告警（新版 clang + `-Werror`）。
+
+### 已知限制
+
+见 `docs/research/v0.0.1-verification.md`「已知问题」。
