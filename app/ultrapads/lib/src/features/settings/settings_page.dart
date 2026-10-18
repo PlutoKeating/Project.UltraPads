@@ -39,7 +39,11 @@ class SettingsPage extends ConsumerWidget {
     final status = ref.watch(_audioStatusProvider);
     final devices =
         ref.watch(_devicesProvider).value ?? const <AudioDeviceInfo>[];
-    final rate = status.value?.sampleRate;
+    // 音频未运行（启动失败）时没有采样率：缓冲档位不显示毫秒数。
+    final rate = switch (status.value?.sampleRate) {
+      final r? when r > 0 => r,
+      _ => null,
+    };
     final buffer = _systemBuffer
         ? 0
         : settings.bufferFrames ?? status.value?.bufferFrames;
@@ -97,10 +101,22 @@ class SettingsPage extends ConsumerWidget {
                   UpListItem(
                     icon: Icons.speaker_rounded,
                     title: l10n.settingsOutputDevice,
-                    subtitle:
-                        settings.outputDevice ??
-                        status.value?.device ??
-                        l10n.commonUnknown,
+                    subtitle: switch (settings.outputDevice) {
+                      null => status.value?.device ?? l10n.commonUnknown,
+                      final id => () {
+                        final name =
+                            devices
+                                .where((d) => d.id == id)
+                                .map((d) => d.name)
+                                .firstOrNull ??
+                            id;
+                        // 选的设备打不开时引擎回退到系统默认输出（up-host audio_start）
+                        final st = status.value;
+                        return st != null && st.running && st.device != name
+                            ? l10n.settingsOutputDeviceFallback(name)
+                            : name;
+                      }(),
+                    },
                     onTap: devices.isEmpty
                         ? null
                         : () async {
@@ -109,6 +125,15 @@ class SettingsPage extends ConsumerWidget {
                               builder: (ctx) => UpSheet(
                                 title: l10n.settingsOutputDevice,
                                 children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: UpPageTokens.paddingX,
+                                    ),
+                                    child: UpListItem(
+                                      title: l10n.settingsOutputDeviceSystem,
+                                      onTap: () => Navigator.pop(ctx, ''),
+                                    ),
+                                  ),
                                   for (final d in devices.where(
                                     (d) => !d.isInput,
                                   ))
@@ -125,7 +150,7 @@ class SettingsPage extends ConsumerWidget {
                               ),
                             );
                             if (id == null) return;
-                            ctrl.setOutputDevice(id);
+                            ctrl.setOutputDevice(id.isEmpty ? null : id);
                             await restartAudio();
                           },
                   ),
@@ -180,11 +205,14 @@ class SettingsPage extends ConsumerWidget {
                   UpListItem(
                     icon: Icons.timer_rounded,
                     title: l10n.settingsLatency,
-                    subtitle: status.value == null
-                        ? l10n.errorEngineUnsupported
-                        : l10n.settingsLatencyValue(
-                            status.value!.latencyMs.round(),
-                          ),
+                    subtitle: switch (status.value) {
+                      null => l10n.errorEngineUnsupported,
+                      final st when !st.running || !st.latencyMs.isFinite =>
+                        l10n.settingsAudioStopped,
+                      final st => l10n.settingsLatencyValue(
+                        st.latencyMs.round(),
+                      ),
+                    },
                   ),
                   header(l10n.settingsAppearance),
                   UpListItem(

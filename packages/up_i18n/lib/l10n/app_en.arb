@@ -1638,5 +1638,15 @@
         "type": "int"
       }
     }
+  },
+  "settingsOutputDeviceSystem": "Follow the system",
+  "@settingsOutputDeviceSystem": {},
+  "settingsOutputDeviceFallback": "{name} is unavailable — using the system output",
+  "@settingsOutputDeviceFallback": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

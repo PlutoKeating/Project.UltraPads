@@ -1726,4 +1726,12 @@ class UpL10nEn extends UpL10n {
   String kitEditorDeleteGroupBody(int count) {
     return 'Its $count pads are removed and the groups after it move up.';
   }
+
+  @override
+  String get settingsOutputDeviceSystem => 'Follow the system';
+
+  @override
+  String settingsOutputDeviceFallback(String name) {
+    return '$name is unavailable — using the system output';
+  }
 }

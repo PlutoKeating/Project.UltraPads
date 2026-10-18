@@ -423,9 +423,14 @@ class FfiEngineClient implements EngineClient {
     host: s.host,
     channels: s.channels,
     sampleFormat: s.sampleFormat,
+    // 音频未运行时采样率为 0：不要算出 NaN（设置页会 round() 它）。
     latencyMs:
         s.outputLatencyMs ??
-        ((s.bufferFrames ?? 0) / s.sampleRate * Duration.millisecondsPerSecond),
+        (s.sampleRate > 0
+            ? (s.bufferFrames ?? 0) /
+                  s.sampleRate *
+                  Duration.millisecondsPerSecond
+            : 0),
   );
 
   @override

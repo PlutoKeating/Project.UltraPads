@@ -1695,4 +1695,12 @@ class UpL10nZh extends UpL10n {
   String kitEditorDeleteGroupBody(int count) {
     return '这一组的 $count 个 pad 会一并删除，后面的组依次前移。';
   }
+
+  @override
+  String get settingsOutputDeviceSystem => '跟随系统';
+
+  @override
+  String settingsOutputDeviceFallback(String name) {
+    return '$name 不可用，已使用系统默认输出';
+  }
 }

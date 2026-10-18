@@ -2951,6 +2951,18 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'Its {count} pads are removed and the groups after it move up.'**
   String kitEditorDeleteGroupBody(int count);
+
+  /// No description provided for @settingsOutputDeviceSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the system'**
+  String get settingsOutputDeviceSystem;
+
+  /// No description provided for @settingsOutputDeviceFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is unavailable — using the system output'**
+  String settingsOutputDeviceFallback(String name);
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

@@ -474,5 +474,7 @@
   "kitEditorMoveGroupRight": "把音色组 {name} 右移",
   "kitEditorDeleteGroup": "删除音色组 {name}",
   "kitEditorDeleteGroupTitle": "删除音色组 {name}？",
-  "kitEditorDeleteGroupBody": "这一组的 {count} 个 pad 会一并删除，后面的组依次前移。"
+  "kitEditorDeleteGroupBody": "这一组的 {count} 个 pad 会一并删除，后面的组依次前移。",
+  "settingsOutputDeviceSystem": "跟随系统",
+  "settingsOutputDeviceFallback": "{name} 不可用，已使用系统默认输出"
 }

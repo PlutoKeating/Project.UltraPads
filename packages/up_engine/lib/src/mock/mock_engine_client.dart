@@ -199,8 +199,15 @@ class MockEngineClient implements EngineClient {
   Future<EngineInfo> init(AppDirs dirs) async =>
       const EngineInfo(version: '0.0.1-mock', backend: 'mock');
 
+  bool _audioRunning = true;
+
   @override
-  Future<AudioStatus> audioStart(AudioConfig cfg) async => AudioStatus(
+  Future<AudioStatus> audioStart(AudioConfig cfg) async {
+    _audioRunning = true;
+    return _startedStatus(cfg);
+  }
+
+  AudioStatus _startedStatus(AudioConfig cfg) => AudioStatus(
     running: true,
     sampleRate: cfg.sampleRate ?? 48000,
     bufferFrames: cfg.bufferFrames ?? 128,
@@ -209,16 +216,19 @@ class MockEngineClient implements EngineClient {
   );
 
   @override
-  Future<void> audioStop() async {}
+  Future<void> audioStop() async => _audioRunning = false;
 
+  /// 与 FFI 一致：未运行时没有采样率 / 缓冲（0）。
   @override
-  Future<AudioStatus> audioStatus() async => const AudioStatus(
-    running: true,
-    device: 'mock-out',
-    host: 'mock',
-    sampleFormat: 'f32',
-    latencyMs: 256 / 48000 * 1000,
-  );
+  Future<AudioStatus> audioStatus() async => _audioRunning
+      ? const AudioStatus(
+          running: true,
+          device: 'mock-out',
+          host: 'mock',
+          sampleFormat: 'f32',
+          latencyMs: 256 / 48000 * 1000,
+        )
+      : const AudioStatus(running: false, sampleRate: 0, bufferFrames: 0);
 
   @override
   Future<List<AudioDeviceInfo>> audioDevices() async => const [
