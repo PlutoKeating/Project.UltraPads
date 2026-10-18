@@ -105,6 +105,66 @@ void main() {
     expect(key.currentState!.pressedPads, isEmpty);
   });
 
+  testWidgets('sliding across pads triggers each pad it touches', (t) async {
+    final downs = <(int, int)>[];
+    final ups = <(int, int)>[];
+    final key = GlobalKey<PadGridState>();
+    await t.pumpWidget(
+      harness(
+        PadGrid(
+          key: key,
+          pads: demoPads(),
+          bank: 0,
+          onPadDown: (b, i) => downs.add((b, i)),
+          onPadUp: (b, i) => ups.add((b, i)),
+        ),
+        size: const Size(300, 400),
+      ),
+    );
+    final origin = t.getTopLeft(find.byType(PadGrid));
+    final g = await t.startGesture(origin + const Offset(40, 40));
+    await g.moveTo(origin + const Offset(60, 50)); // 同一个 pad 内移动：不重复触发
+    await g.moveTo(origin + const Offset(150, 50)); // 滑进 pad 1
+    await g.moveTo(origin + const Offset(250, 50)); // 滑进 pad 2
+    await t.pump();
+    expect(downs, [(0, 0), (0, 1), (0, 2)]);
+    expect(ups, [(0, 0), (0, 1)]);
+    expect(key.currentState!.pressedPads, {2});
+    await g.moveTo(origin + const Offset(250, 150)); // 滑进 pad 5
+    await g.up();
+    await t.pump();
+    expect(downs.last, (0, 5));
+    expect(ups, [(0, 0), (0, 1), (0, 2), (0, 5)]);
+    expect(key.currentState!.pressedPads, isEmpty);
+  });
+
+  testWidgets(
+    'a touch that starts on an empty pad triggers the pad it slides into',
+    (t) async {
+      final downs = <(int, int)>[];
+      await t.pumpWidget(
+        harness(
+          PadGrid(
+            pads: demoPads(),
+            bank: 0,
+            onPadDown: (b, i) => downs.add((b, i)),
+            onPadUp: (_, _) {},
+          ),
+          size: const Size(300, 400),
+        ),
+      );
+      final origin = t.getTopLeft(find.byType(PadGrid));
+      final g = await t.startGesture(
+        origin + const Offset(250, 350),
+      ); // pad 11 为空
+      await t.pump();
+      expect(downs, isEmpty);
+      await g.moveTo(origin + const Offset(150, 350)); // 滑进 pad 10
+      await g.up();
+      expect(downs, [(0, 10)]);
+    },
+  );
+
   testWidgets('empty pad ignores touches; bank B maps to bank 1', (t) async {
     final downs = <(int, int)>[];
     await t.pumpWidget(

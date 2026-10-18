@@ -11,7 +11,8 @@ typedef PadPointerCallback = void Function(int bank, int index);
 /// 3×4 Pad 网格，A/B 两页，带翻页动画。
 ///
 /// 触摸用 [Listener] 读取原始指针（不进手势竞技场，零延迟），多点触控：
-/// 每个指针在按下时命中一个 pad，抬起/取消时释放同一个 pad。
+/// 触摸到即触发——按下落在 pad 上或手指滑进 pad 都立即回调 [onPadDown]，
+/// 滑出 / 抬起 / 取消时对该 pad 回调 [onPadUp]；在缝隙按下后滑进 pad 同样触发。
 /// 回调是同步的——调用方应直接调用引擎的同步 `pad_down/pad_up`。
 /// 按下态在本组件内**立即**显示，发声状态（[PadData.state]）以引擎为准。
 class PadGrid extends StatefulWidget {
@@ -77,8 +78,9 @@ class PadGridState extends State<PadGrid> with SingleTickerProviderStateMixin {
     upperBound: (PadGrid.banks - 1).toDouble(),
   );
 
-  /// pointer → 平铺下标
+  /// pointer → 正在触摸的平铺下标（[_none] = 在网格内但不在任何 pad 上，例如缝隙）
   final Map<int, int> _pointers = {};
+  static const _none = -1;
 
   /// 平铺下标 → 按下位置（pad 本地坐标）
   final Map<int, Offset> _pressed = {};
@@ -107,7 +109,7 @@ class PadGridState extends State<PadGrid> with SingleTickerProviderStateMixin {
   }
 
   void _releaseAll() {
-    final held = _pointers.values.toSet();
+    final held = _pointers.values.where((f) => f != _none).toSet();
     _pointers.clear();
     _pressed.clear();
     for (final flat in held) {
@@ -131,21 +133,49 @@ class PadGridState extends State<PadGrid> with SingleTickerProviderStateMixin {
     return (flat, origin);
   }
 
+  /// 触摸到即触发：按下落在 pad 上、或手指滑进 pad，都立刻发声（每次触碰都重触发）。
   void _down(PointerDownEvent e) {
     if (!widget.enabled || !isPadPointer(e)) return;
-    final hit = _hit(e.localPosition);
-    if (hit == null) return;
-    final (flat, origin) = hit;
-    if (widget.pads[flat].isEmpty) return;
-    _pointers[e.pointer] = flat;
-    // 先回调（同步进引擎队列），再刷新视觉
-    widget.onPadDown(flat ~/ PadGrid.perBank, flat % PadGrid.perBank);
-    setState(() => _pressed[flat] = origin);
+    _pointers[e.pointer] = _none;
+    _touch(e.pointer, e.localPosition);
+  }
+
+  void _move(PointerMoveEvent e) {
+    if (!widget.enabled || !_pointers.containsKey(e.pointer)) return;
+    if (!isPadPointer(e)) return;
+    _touch(e.pointer, e.localPosition);
   }
 
   void _up(PointerEvent e) {
     final flat = _pointers.remove(e.pointer);
     if (flat == null) return;
+    _leave(flat);
+  }
+
+  /// 指针在 `local` 处：离开上一个 pad（松开）并进入新的 pad（立即触发）。
+  void _touch(int pointer, Offset local) {
+    final hit = _hit(local);
+    final flat = hit == null || widget.pads[hit.$1].isEmpty ? _none : hit.$1;
+    final previous = _pointers[pointer] ?? _none;
+    if (flat == previous) return;
+    _pointers[pointer] = flat;
+    // 先回调（同步进引擎队列），再刷新视觉
+    if (previous != _none) {
+      widget.onPadUp(previous ~/ PadGrid.perBank, previous % PadGrid.perBank);
+    }
+    if (flat != _none) {
+      widget.onPadDown(flat ~/ PadGrid.perBank, flat % PadGrid.perBank);
+    }
+    setState(() {
+      if (previous != _none && !_pointers.containsValue(previous)) {
+        _pressed.remove(previous);
+      }
+      if (flat != _none) _pressed[flat] = hit!.$2;
+    });
+  }
+
+  void _leave(int flat) {
+    if (flat == _none) return;
     widget.onPadUp(flat ~/ PadGrid.perBank, flat % PadGrid.perBank);
     if (!_pointers.containsValue(flat)) {
       setState(() => _pressed.remove(flat));
@@ -166,6 +196,7 @@ class PadGridState extends State<PadGrid> with SingleTickerProviderStateMixin {
         return Listener(
           behavior: HitTestBehavior.opaque,
           onPointerDown: _down,
+          onPointerMove: _move,
           onPointerUp: _up,
           onPointerCancel: _up,
           child: ClipRect(
