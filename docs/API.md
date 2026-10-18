@@ -426,7 +426,7 @@ Dart：`EngineClient.appVersion` / `updateCheck` / `updateDownload` / `updateCan
   "artist": "UltraPads",
   "description": "…",
   "origin": "synth",                   // album | online | synth | ugc（ugc 暂未开放）
-  "license": "CC0-1.0",                // CC0-1.0 | CC-BY-4.0 | CC-BY-3.0 | CC-BY-SA-4.0 | CC-BY-SA-3.0 | CC-BY-NC-4.0 | CC-BY-NC-SA-4.0 | PD
+  "license": "CC0-1.0",                // CC0-1.0 | CC-BY-4.0 | CC-BY-3.0 | CC-BY-SA-4.0 | CC-BY-SA-3.0 | CC-BY-NC-4.0 | CC-BY-NC-SA-4.0 | CC-BY-NC-3.0 | CC-BY-NC-SA-3.0 | PD
   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
   "attribution": "“Dusk Run” by UltraPads, CC0 1.0",   // 应用内与 Kit 元数据里原样展示
   "source_url": "https://…",

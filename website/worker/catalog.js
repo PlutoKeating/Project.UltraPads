@@ -6,7 +6,7 @@ import { cors, json, jsonError } from "./http.js";
 import { UpstreamError, dataFetch } from "./data.js";
 
 const ID = /^[a-z0-9][a-z0-9-]{2,63}$/;
-const LICENSES = new Set(["CC0-1.0", "CC-BY-4.0", "CC-BY-3.0", "CC-BY-SA-4.0", "CC-BY-SA-3.0", "CC-BY-NC-4.0", "CC-BY-NC-SA-4.0", "PD"]);
+const LICENSES = new Set(["CC0-1.0", "CC-BY-4.0", "CC-BY-3.0", "CC-BY-SA-4.0", "CC-BY-SA-3.0", "CC-BY-NC-4.0", "CC-BY-NC-SA-4.0", "CC-BY-NC-3.0", "CC-BY-NC-SA-3.0", "PD"]);
 const ORIGINS = new Set(["album", "online", "synth", "ugc"]);
 const SORTS = new Set(["new", "bpm", "title"]);
 const LIST_TTL = 60;

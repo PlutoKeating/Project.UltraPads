@@ -21,6 +21,8 @@ export const LICENSES: Record<string, string> = {
   "CC-BY-SA-3.0": "https://creativecommons.org/licenses/by-sa/3.0/",
   "CC-BY-NC-4.0": "https://creativecommons.org/licenses/by-nc/4.0/",
   "CC-BY-NC-SA-4.0": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "CC-BY-NC-3.0": "https://creativecommons.org/licenses/by-nc/3.0/",
+  "CC-BY-NC-SA-3.0": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
   PD: "https://creativecommons.org/publicdomain/mark/1.0/",
 };
 export const KEEP_RECENT = 100;
