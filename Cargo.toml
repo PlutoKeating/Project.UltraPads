@@ -13,7 +13,7 @@ members = [
 version = "0.0.1"
 edition = "2024"
 license = "Apache-2.0"
-repository = "https://github.com/PlutoKeating/UltraPads"
+repository = "https://github.com/PlutoKeating/Project.UltraPads"
 rust-version = "1.85"
 
 [workspace.dependencies]
