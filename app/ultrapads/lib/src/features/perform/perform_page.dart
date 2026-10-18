@@ -1,18 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:up_engine/up_engine.dart';
 import 'package:up_i18n/up_i18n.dart';
 import 'package:up_tokens/up_tokens.dart';
 import 'package:up_ui/up_ui.dart';
 
-import '../../config/app_links.dart';
 import '../../assets/private_assets.dart';
 import '../../routing/routes.dart';
 import '../../state/engine_state.dart';
@@ -21,8 +18,6 @@ import '../../state/settings_state.dart';
 import '../../update/update_controller.dart';
 import '../recorder/save_recording_sheet.dart';
 import '../skins/skins_sheet.dart';
-import '../tutorial/tutorial_feedback.dart';
-import '../tutorial/tutorial_timing.dart';
 import '../onboarding/first_guide.dart';
 import 'keyboard_map.dart';
 import 'pad_mapping.dart';
@@ -65,15 +60,12 @@ class PerformPage extends ConsumerStatefulWidget {
   ConsumerState<PerformPage> createState() => _PerformPageState();
 }
 
-class _PerformPageState extends ConsumerState<PerformPage>
-    with SingleTickerProviderStateMixin {
+class _PerformPageState extends ConsumerState<PerformPage> {
   final _focus = FocusNode(debugLabel: 'perform-keyboard');
   final Map<PhysicalKeyboardKey, int> _heldKeys = {};
   final Set<int> _keyPressed = {};
   final Set<String> _reported = {};
   StreamSubscription<EngineEvent>? _events;
-  late final Ticker _ticker = createTicker(_onTick);
-  Duration _lastTick = Duration.zero;
   bool _toolsExpanded = false;
 
   @override
@@ -100,7 +92,6 @@ class _PerformPageState extends ConsumerState<PerformPage>
 
   @override
   void dispose() {
-    _ticker.dispose();
     _events?.cancel();
     _focus.dispose();
     super.dispose();
@@ -113,7 +104,6 @@ class _PerformPageState extends ConsumerState<PerformPage>
     final l10n = context.l10n;
     switch (e) {
       case KitLoadedEvent():
-        ref.read(tutorialProvider.notifier).stop();
         showUpToast(context, l10n.performKitLoaded);
       case ErrorEvent(:final error):
         final key = error is EngineNotImplemented
@@ -134,61 +124,23 @@ class _PerformPageState extends ConsumerState<PerformPage>
     }
   }
 
-  // ------------------------------------------------------------ tutorial
-
-  void _onTick(Duration now) {
-    final dt = (now - _lastTick).inMicroseconds / 1e6;
-    _lastTick = now;
-    final t = ref.read(tutorialProvider.notifier);
-    t.tick(dt, ref.read(bankProvider));
-    final s = ref.read(tutorialProvider);
-    if (s == null) {
-      _ticker.stop();
-    } else if (s.completed) {
-      _ticker.stop();
-      showUpToast(context, context.l10n.tutorialComplete);
-    }
-  }
-
-  Future<void> _toggleTutorial() async {
-    final l10n = context.l10n;
-    final tutorial = ref.read(tutorialProvider.notifier);
-    if (ref.read(tutorialProvider) != null) {
-      tutorial.stop();
-      return;
-    }
-    final kit = ref.read(engineViewProvider).kit;
-    if (kit == null) return;
-    final chart = await tryEngine(() => _engine.tutorialGet(kit.id));
-    if (!mounted) return;
-    if (chart == null) {
-      showUpToast(context, l10n.tutorialUnavailable);
-      return;
-    }
-    tutorial.start(chart);
-    tutorial.settle(ref.read(bankProvider));
-    if (chart.timed) {
-      _lastTick = Duration.zero;
-      if (!_ticker.isActive) _ticker.start();
-    }
-  }
-
   // ---------------------------------------------------------------- pads
 
   void _padDown(int bank, int index) {
     final id = PadId(bank, index);
     _engine.padDown(id); // 同步 FFI：只推命令进无锁队列，UI 不等回执
-    ref.read(tutorialProvider.notifier).onPad(id.flat, bank);
   }
 
   void _padUp(int bank, int index) => _engine.padUp(PadId(bank, index));
 
-  void _switchBank() {
-    ref.read(bankProvider.notifier).toggle();
-    final b = ref.read(bankProvider);
-    ref.read(tutorialProvider.notifier)
-      ..onBank(b)
-      ..settle(b);
+  /// 切换音色组：已触发的声音（包括 Loop）继续播放，只影响接下来触摸的 pad。
+  void _selectGroup(int group) => ref.read(bankProvider.notifier).set(group);
+
+  /// 键盘 Tab：依次切到下一组。
+  void _nextGroup() {
+    final v = ref.read(engineViewProvider);
+    final count = groupCountOf(v.kit, v.pads);
+    _selectGroup((ref.read(bankProvider) + 1) % count);
   }
 
   // ------------------------------------------------------------ keyboard
@@ -223,7 +175,7 @@ class _PerformPageState extends ConsumerState<PerformPage>
     }
     if (e is! KeyDownEvent) return KeyEventResult.ignored;
     if (key == PadKeyboardMap.switchBank) {
-      _switchBank();
+      _nextGroup();
     } else if (key == PadKeyboardMap.stopAll) {
       _engine.send(const StopAllCmd());
     } else if (key == PadKeyboardMap.record) {
@@ -252,11 +204,9 @@ class _PerformPageState extends ConsumerState<PerformPage>
     );
   }
 
-  final _speedKey = GlobalKey(debugLabel: 'speed-pill');
-
   // 首次引导（4.7.0 FirstGuide）的目标。
   final _gridKey = GlobalKey(debugLabel: 'guide-grid');
-  final _learnKey = GlobalKey(debugLabel: 'guide-learn');
+  final _groupsKey = GlobalKey(debugLabel: 'guide-groups');
   final _moreKey = GlobalKey(debugLabel: 'guide-more');
   final _songsKey = GlobalKey(debugLabel: 'guide-songs');
 
@@ -274,35 +224,10 @@ class _PerformPageState extends ConsumerState<PerformPage>
           (r.height - (PadGrid.rows - 1) * UpPadTokens.gap) / PadGrid.rows,
         ),
       ),
-      FirstGuideStep(target: _learnKey, text: l10n.tutorialFirstGuideLearn),
+      FirstGuideStep(target: _groupsKey, text: l10n.performFirstGuideGroups),
       FirstGuideStep(target: _moreKey, text: l10n.tutorialFirstGuideMore),
       FirstGuideStep(target: _songsKey, text: l10n.tutorialFirstGuideSongs),
     ];
-  }
-
-  /// 视频教程（外部浏览器 / App 打开；链接来自 assets/config/links.json）。
-  Future<void> _openVideo(Uri uri) async {
-    final l10n = context.l10n;
-    var ok = false;
-    try {
-      ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } catch (_) {
-      ok = false;
-    }
-    if (!ok && mounted) showUpToast(context, l10n.performVideoOpenFailed);
-  }
-
-  /// 速度（4.7.0 只在教程模式出现）：引擎 SetSpeed 实时变速播放，
-  /// 教程时间轴同比缩放（见 TutorialController.setSpeed）。
-  Future<void> _pickSpeed() async {
-    final s = ref.read(tutorialProvider);
-    if (s == null) return;
-    final v = await showSpeedModal(
-      context,
-      current: s.speed,
-      anchor: _speedKey.currentContext,
-    );
-    if (v != null) ref.read(tutorialProvider.notifier).setSpeed(v);
   }
 
   // ---------------------------------------------------------------- build
@@ -315,80 +240,28 @@ class _PerformPageState extends ConsumerState<PerformPage>
     ref.listen(updateProvider, _onUpdate);
     final view = ref.watch(engineViewProvider.select(_performView));
     final bank = ref.watch(bankProvider);
-    final tutorial = ref.watch(tutorialProvider);
     final settings = ref.watch(settingsProvider);
     final assets = ref.watch(privateAssetsProvider);
-    final videoUri = ref
-        .watch(appLinksProvider)
-        .value
-        ?.videoFor(
-          languageCode: Localizations.localeOf(context).languageCode,
-          kitName: view.kit?.name,
-          kitVideoUrl: view.kit?.videoUrl,
-        );
-
     final pads = padDataFrom(view.pads, view.padStates);
-    final hasBankB =
-        view.kit?.hasBankB ??
-        view.pads.skip(PadId.padsPerBank).any((p) => !p.isEmpty);
+    final groupCount = groupCountOf(view.kit, view.pads);
     final recording = view.recorder == RecorderState.recording;
 
-    // 教程：填充中的 pad 高亮，其余暗化；需要翻页时 A/B 按钮反色提示。
-    final fillSecs = TutorialTiming.fill.inMicroseconds / 1e6;
-    final tActive = tutorial != null && !tutorial.completed;
-    final fills = tActive ? tutorial.fills(fillSecs) : const <int, double>{};
-    final needBank = tActive ? tutorial.requiredBank(fillSecs) : null;
-    final bankHint = needBank != null && needBank != bank;
-    final dimmed = tActive
-        ? {
-            for (var i = 0; i < PadId.total; i++)
-              if (!fills.containsKey(i) && !pads[i].isEmpty) i,
-          }
-        : const <int>{};
-
-    final bankButton = hasBankB
-        ? BankButton(
-            label: bank == 0 ? l10n.performBankA : l10n.performBankB,
-            hint: bankHint,
-            semanticLabel: l10n.performSwitchBank(
-              bank == 0 ? l10n.performBankB : l10n.performBankA,
-            ),
-            onPressed: _switchBank,
-          )
-        : null;
-
-    final Widget row;
-    if (tutorial != null) {
-      row = TutorialToolbar(
-        key: const ValueKey('tutorial'),
-        session: tutorial,
-        onPlayPause: () {
-          ref.read(tutorialProvider.notifier).togglePlay();
-          _lastTick = Duration.zero;
-          if (!_ticker.isActive && tutorial.timed) _ticker.start();
-        },
-        onSeek: (f) => ref.read(tutorialProvider.notifier).seekFraction(f),
-        onExit: () => ref.read(tutorialProvider.notifier).stop(),
-      );
-    } else {
-      row = PerformToolbar(
-        key: const ValueKey('tools'),
-        expanded: _toolsExpanded,
-        recording: recording,
-        recordElapsed: view.recordElapsed,
-        hasKit: view.kit != null,
-        hasTutorial: view.kit?.hasTutorial ?? false,
-        onExpand: (v) => setState(() => _toolsExpanded = v),
-        onTutorial: _toggleTutorial,
-        onRecord: _toggleRecord,
-        onSkins: () => showSkinsSheet(context),
-        onEdit: () => context.push(Routes.editor),
-        onShare: _shareKit,
-        onSettings: () => context.push(Routes.settings),
-        learnKey: _learnKey,
-        moreKey: _moreKey,
-      );
-    }
+    final row = PerformToolbar(
+      expanded: _toolsExpanded,
+      recording: recording,
+      recordElapsed: view.recordElapsed,
+      hasKit: view.kit != null,
+      groupCount: groupCount,
+      group: bank.clamp(0, groupCount - 1),
+      onGroup: _selectGroup,
+      onExpand: (v) => setState(() => _toolsExpanded = v),
+      onRecord: _toggleRecord,
+      onSkins: () => showSkinsSheet(context),
+      onEdit: () => context.push(Routes.editor),
+      onShare: _shareKit,
+      groupsKey: _groupsKey,
+      moreKey: _moreKey,
+    );
 
     return Focus(
       focusNode: _focus,
@@ -401,19 +274,14 @@ class _PerformPageState extends ConsumerState<PerformPage>
             c,
             l10n,
             view,
-            tutorial,
             row,
-            bankButton,
             pads,
             bank,
-            dimmed,
-            fills,
             settings,
             assets,
-            videoUri,
           ),
-          // 首次引导：只在普通演奏模式下显示，完成 / 跳过后写入设置。
-          if (!settings.firstGuideSeen && tutorial == null)
+          // 首次引导：完成 / 跳过后写入设置。
+          if (!settings.firstGuideSeen)
             Positioned.fill(
               child: FirstGuideOverlay(
                 steps: _guideSteps(context),
@@ -431,16 +299,11 @@ class _PerformPageState extends ConsumerState<PerformPage>
     UpSemantic c,
     UpL10n l10n,
     _PerformView view,
-    TutorialSession? tutorial,
     Widget row,
-    Widget? bankButton,
     List<PadData> pads,
     int bank,
-    Set<int> dimmed,
-    Map<int, double> fills,
     AppSettings settings,
     PrivateAssets assets,
-    Uri? videoUri,
   ) {
     return Scaffold(
       backgroundColor: c.surfacePads,
@@ -462,19 +325,14 @@ class _PerformPageState extends ConsumerState<PerformPage>
                     ),
                     titleWidget: _KitTitle(name: view.kit?.name),
                     trailing: [
-                      if (tutorial != null)
-                        SpeedPill(
-                          key: _speedKey,
-                          label: l10n.performSpeedValue(tutorial.speed),
-                          onTap: _pickSpeed,
-                        ),
-                      // 4.7.0 btnYoutube：顶栏最右（教程模式时速度按钮在它左边）。
-                      if (videoUri != null)
-                        VideoTutorialButton(
-                          label: l10n.performVideoPlatform,
-                          semanticLabel: l10n.performVideoTutorial,
-                          onTap: () => _openVideo(videoUri),
-                        ),
+                      // 顶栏最右：设置入口（4.7.0 btnYoutube 的位置）。
+                      TopBarTileButton(
+                        key: const ValueKey('perform-settings'),
+                        icon: Icons.settings_rounded,
+                        label: l10n.navSettings,
+                        semanticLabel: l10n.navSettings,
+                        onTap: () => context.push(Routes.settings),
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -482,16 +340,7 @@ class _PerformPageState extends ConsumerState<PerformPage>
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Expanded(
-                          child: AnimatedSwitcher(
-                            duration: UpMotion.duration(
-                              context,
-                              UpDurations.medium,
-                            ),
-                            child: row,
-                          ),
-                        ),
-                        ?bankButton,
+                        Expanded(child: row),
                       ],
                     ),
                   ),
@@ -510,30 +359,17 @@ class _PerformPageState extends ConsumerState<PerformPage>
                           child: SizedBox.fromSize(
                             key: _gridKey,
                             size: PerformLayout.gridSize(box.biggest),
-                            child: Stack(
-                              children: [
-                                PadGrid(
-                                  pads: pads,
-                                  bank: bank,
-                                  onPadDown: _padDown,
-                                  onPadUp: _padUp,
-                                  dimmed: dimmed,
-                                  fills: fills,
-                                  externallyPressed: _keyPressed,
-                                  lottie: settings.classicPads
-                                      ? classicLottieSkin(assets)
-                                      : null,
-                                  // image 类皮肤：注入了 4.7.0 位图时用位图。
-                                  image: imageSkinFor(assets, settings.skinId),
-                                ),
-                                if (tutorial != null)
-                                  Positioned.fill(
-                                    child: TutorialFeedbackLayer(
-                                      feedback: tutorial.feedback,
-                                      bank: bank,
-                                    ),
-                                  ),
-                              ],
+                            child: PadGrid(
+                              pads: pads,
+                              bank: bank,
+                              onPadDown: _padDown,
+                              onPadUp: _padUp,
+                              externallyPressed: _keyPressed,
+                              lottie: settings.classicPads
+                                  ? classicLottieSkin(assets)
+                                  : null,
+                              // image 类皮肤：注入了 4.7.0 位图时用位图。
+                              image: imageSkinFor(assets, settings.skinId),
                             ),
                           ),
                         ),
@@ -550,35 +386,17 @@ class _PerformPageState extends ConsumerState<PerformPage>
   }
 }
 
-/// 「KIT」(Regular) + Kit 名 (ExtraBold)。
+/// 顶栏标题：直接显示歌曲（Kit）名。
 class _KitTitle extends StatelessWidget {
   const _KitTitle({this.name});
   final String? name;
 
   @override
-  Widget build(BuildContext context) {
-    final c = UpTheme.of(context).colors;
-    final l10n = context.l10n;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: UpSpacing.xs,
-      children: [
-        if (name != null)
-          UpText(
-            l10n.libraryKitBadge,
-            role: UpTextRole.body,
-            color: c.textPrimary,
-          ),
-        Flexible(
-          child: UpText(
-            name ?? l10n.performNoKit,
-            role: UpTextRole.title,
-            color: c.textPrimary,
-          ),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => UpText(
+    name ?? context.l10n.performNoKit,
+    role: UpTextRole.title,
+    color: UpTheme.of(context).colors.textPrimary,
+  );
 }
 
 class _ControllerBanner extends ConsumerWidget {

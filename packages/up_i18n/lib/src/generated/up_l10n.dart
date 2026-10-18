@@ -2897,6 +2897,18 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'This copy wasn\'t installed with the install script, so it can\'t update itself. Get the new version from the download page.'**
   String get settingsUpdateManualHint;
+
+  /// No description provided for @performSoundGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound group {name}'**
+  String performSoundGroup(String name);
+
+  /// No description provided for @performFirstGuideGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Each song can have several sound groups — tap A, B… to switch. Sounds already playing keep going.'**
+  String get performFirstGuideGroups;
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

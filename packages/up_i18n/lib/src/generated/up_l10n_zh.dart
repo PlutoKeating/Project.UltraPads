@@ -1656,4 +1656,12 @@ class UpL10nZh extends UpL10n {
 
   @override
   String get settingsUpdateManualHint => '当前副本不是用安装脚本安装的，无法自动更新，请从下载页获取新版本。';
+
+  @override
+  String performSoundGroup(String name) {
+    return '音色组 $name';
+  }
+
+  @override
+  String get performFirstGuideGroups => '一首歌可以有多组音色，点 A、B… 切换；已经在播放的声音不会中断。';
 }

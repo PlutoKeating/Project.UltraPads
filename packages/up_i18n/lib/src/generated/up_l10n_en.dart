@@ -1686,4 +1686,13 @@ class UpL10nEn extends UpL10n {
   @override
   String get settingsUpdateManualHint =>
       'This copy wasn\'t installed with the install script, so it can\'t update itself. Get the new version from the download page.';
+
+  @override
+  String performSoundGroup(String name) {
+    return 'Sound group $name';
+  }
+
+  @override
+  String get performFirstGuideGroups =>
+      'Each song can have several sound groups — tap A, B… to switch. Sounds already playing keep going.';
 }

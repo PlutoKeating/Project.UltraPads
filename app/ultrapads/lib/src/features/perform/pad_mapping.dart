@@ -100,3 +100,14 @@ PadLottieSkin? classicLottieSkin(PrivateAssets assets) {
         assets.key('apk/lottie/normal_${color(role)}.json'),
   );
 }
+
+/// 当前歌曲的音色组数（每组 [PadId.padsPerBank] 个 pad）：引擎给出的组数优先，
+/// 否则按最后一个非空 pad 所在的组推断；没有 Kit 时为 1。
+int groupCountOf(KitSummary? kit, List<PadParams> pads) {
+  if (kit?.hasBankB ?? false) return 2;
+  var last = 0;
+  for (var i = 0; i < pads.length; i++) {
+    if (!pads[i].isEmpty) last = i ~/ PadId.padsPerBank;
+  }
+  return last + 1;
+}

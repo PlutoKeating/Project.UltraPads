@@ -1584,5 +1584,15 @@
   "settingsUpdateDownloadPage": "Download page",
   "@settingsUpdateDownloadPage": {},
   "settingsUpdateManualHint": "This copy wasn't installed with the install script, so it can't update itself. Get the new version from the download page.",
-  "@settingsUpdateManualHint": {}
+  "@settingsUpdateManualHint": {},
+  "performSoundGroup": "Sound group {name}",
+  "@performSoundGroup": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "performFirstGuideGroups": "Each song can have several sound groups — tap A, B… to switch. Sounds already playing keep going.",
+  "@performFirstGuideGroups": {}
 }

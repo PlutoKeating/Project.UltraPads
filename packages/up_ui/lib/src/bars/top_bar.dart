@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:up_tokens/up_tokens.dart';
 
+import '../basics/up_chip.dart';
 import '../util.dart';
 
 /// 演奏页 / 子页顶栏（toolbar 56）。
@@ -172,16 +173,17 @@ class SpeedPill extends StatelessWidget {
   }
 }
 
-/// 演奏页顶栏右侧的视频教程按钮（4.7.0 `btnYoutube` 142×88 px @(662,21)；
-/// 中文区为 BiliBili）。[label] 是平台名（由 i18n 传入）。
-class VideoTutorialButton extends StatelessWidget {
-  const VideoTutorialButton({
+/// 顶栏右侧的「图标 + 文字」方块按钮（设置入口、视频教程等）。
+class TopBarTileButton extends StatelessWidget {
+  const TopBarTileButton({
     super.key,
+    required this.icon,
     required this.label,
     required this.semanticLabel,
     this.onTap,
   });
 
+  final IconData icon;
   final String label;
   final String semanticLabel;
   final VoidCallback? onTap;
@@ -204,15 +206,87 @@ class VideoTutorialButton extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.smart_display_rounded,
-                size: UpSizes.iconSm,
-                color: c.accentPrimary,
-              ),
+              Icon(icon, size: UpSizes.iconSm, color: c.accentPrimary),
               UpText(label, role: UpTextRole.caption, color: c.textPrimary),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// 4.7.0 `btnYoutube`：视频教程入口（[TopBarTileButton] 的一种）。
+class VideoTutorialButton extends StatelessWidget {
+  const VideoTutorialButton({
+    super.key,
+    required this.label,
+    required this.semanticLabel,
+    this.onTap,
+  });
+
+  final String label;
+  final String semanticLabel;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => TopBarTileButton(
+    icon: Icons.smart_display_rounded,
+    label: label,
+    semanticLabel: semanticLabel,
+    onTap: onTap,
+  );
+}
+
+/// 音色组切换条：一首歌有 [count] 组（每组 12 个 pad），组名 A、B、C…；
+/// 点击即切换，正在播放的声音不受影响（由调用方决定）。[hint] 中的组反色提示。
+class PadGroupSwitcher extends StatelessWidget {
+  const PadGroupSwitcher({
+    super.key,
+    required this.count,
+    required this.selected,
+    required this.onSelect,
+    this.hint = const {},
+    this.semanticLabelOf,
+  });
+
+  final int count;
+  final int selected;
+  final ValueChanged<int> onSelect;
+  final Set<int> hint;
+
+  /// 读屏文案（例如「音色组 B」）。
+  final String Function(String name)? semanticLabelOf;
+
+  /// 组名：0 → A，1 → B …（超过 26 组时 AA、AB…）。
+  static String nameOf(int group) {
+    final letter = String.fromCharCode(0x41 + group % 26);
+    return group < 26 ? letter : '${nameOf(group ~/ 26 - 1)}$letter';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        spacing: UpTopBarTokens.gap,
+        children: [
+          for (var g = 0; g < count; g++)
+            Semantics(
+              selected: g == selected,
+              label: semanticLabelOf?.call(nameOf(g)),
+              child: UpChip(
+                key: ValueKey('group-$g'),
+                label: nameOf(g),
+                variant: g == selected
+                    ? UpChipVariant.selected
+                    : hint.contains(g)
+                    ? UpChipVariant.hint
+                    : UpChipVariant.normal,
+                onTap: () => onSelect(g),
+              ),
+            ),
+        ],
       ),
     );
   }

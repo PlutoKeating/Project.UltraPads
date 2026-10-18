@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ultrapads/src/features/recorder/save_recording_sheet.dart';
+import 'package:ultrapads/src/features/settings/settings_page.dart';
 import 'package:ultrapads/src/routing/router.dart';
 import 'package:ultrapads/src/routing/routes.dart';
 import 'package:ultrapads/src/state/engine_state.dart';
@@ -65,39 +66,40 @@ void main() {
     expect(h.container.read(settingsProvider).skinId, startsWith(presetPrefix));
   });
 
-  testWidgets('tutorial: timed fills, judgement, speed modal', (t) async {
-    final h = await pumpApp(t);
-    await t.tap(
-      find.text('LEARN TO PLAY').evaluate().isEmpty
-          ? find.text('Learn to play')
-          : find.text('LEARN TO PLAY'),
-    );
-    await t.pump();
-    await t.pump(const Duration(milliseconds: 600));
-    final session = h.container.read(tutorialProvider);
-    expect(session, isNotNull);
-    expect(session!.timed, isTrue);
-    await shot(t, 'perform_tutorial');
-    // 速度框
-    await t.tap(find.byType(SpeedPill));
+  testWidgets('top bar: song title only, settings entry top right', (t) async {
+    await pumpApp(t);
+    expect(find.text('KIT'), findsNothing);
+    expect(find.byKey(const ValueKey('perform-settings')), findsOneWidget);
+    await t.tap(find.byKey(const ValueKey('perform-settings')));
     await settle(t);
-    await t.tap(find.byKey(const ValueKey('speed-0.7')));
-    await settle(t);
-    expect(h.container.read(tutorialProvider)!.speed, 0.7);
-    // 引擎实时变速（SetSpeed），退出教程时恢复 1.0。
-    expect(h.engine.snapshot().transport.speed, 0.7);
-    h.container.read(tutorialProvider.notifier).stop();
-    expect(h.engine.snapshot().transport.speed, 1.0);
+    expect(find.byType(SettingsPage), findsOneWidget);
   });
 
-  testWidgets('A/B bank button toggles page (two-bank kit)', (t) async {
+  testWidgets('sound groups: switcher replaces A/B, sounds keep playing', (
+    t,
+  ) async {
     final h = await pumpApp(t);
     unawaited(h.engine.libraryLoadKit('demo:best-hip-hop'));
     await settle(t);
-    expect(find.byType(BankButton), findsOneWidget);
-    await t.tap(find.byType(BankButton));
+    expect(find.byKey(const ValueKey('group-0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('group-1')), findsOneWidget);
+    expect(find.byType(BankButton), findsNothing);
+    // A 组的 loop 在切到 B 组后继续播放
+    final grid = find.byType(PadGrid);
+    final origin = t.getTopLeft(grid);
+    final size = t.getSize(grid);
+    final g = await t.startGesture(
+      origin + Offset(size.width / 2, size.height / 8),
+    );
+    await g.up();
+    await t.pump();
+    final before = h.engine.snapshot().stateOf(const PadId(0, 1));
+    await t.tap(find.byKey(const ValueKey('group-1')));
     await settle(t);
     expect(h.container.read(bankProvider), 1);
+    expect(h.engine.snapshot().stateOf(const PadId(0, 1)), before);
+    h.engine.send(const StopAllCmd());
+    await t.pump();
   });
 
   testWidgets('keyboard maps keys to pads', (t) async {

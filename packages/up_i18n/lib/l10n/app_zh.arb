@@ -465,5 +465,7 @@
   "settingsUpdateFailed": "更新失败",
   "settingsUpdateReleaseNotes": "更新内容",
   "settingsUpdateDownloadPage": "下载页",
-  "settingsUpdateManualHint": "当前副本不是用安装脚本安装的，无法自动更新，请从下载页获取新版本。"
+  "settingsUpdateManualHint": "当前副本不是用安装脚本安装的，无法自动更新，请从下载页获取新版本。",
+  "performSoundGroup": "音色组 {name}",
+  "performFirstGuideGroups": "一首歌可以有多组音色，点 A、B… 切换；已经在播放的声音不会中断。"
 }

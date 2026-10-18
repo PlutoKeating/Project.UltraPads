@@ -3,7 +3,6 @@ import 'package:up_i18n/up_i18n.dart';
 import 'package:up_tokens/up_tokens.dart';
 import 'package:up_ui/up_ui.dart';
 
-import '../perform/perform_toolbar.dart';
 import '../skins/skins_sheet.dart';
 import 'component_gallery.dart';
 import 'token_browser.dart';
@@ -21,7 +20,6 @@ class _MotionGalleryState extends State<MotionGallery> {
   bool _pressed = false;
   int _bank = 0;
   bool _recording = false;
-  double _speed = 1;
 
   String _ms(Duration d) => '${d.inMilliseconds} ms';
 
@@ -112,7 +110,7 @@ class _MotionGalleryState extends State<MotionGallery> {
         ),
         caption('bankSwitch ${_ms(UpPadGridTokens.bankSwitch)} quadOut'),
         GallerySection(
-          title: '${l10n.performSkins} · ${l10n.performSpeed(_speed)}',
+          title: l10n.performSkins,
         ),
         Wrap(
           spacing: UpSpacing.md,
@@ -123,18 +121,10 @@ class _MotionGalleryState extends State<MotionGallery> {
               variant: UpButtonVariant.secondary,
               onPressed: () => showSkinsSheet(context),
             ),
-            UpButton(
-              label: l10n.performSpeed(_speed),
-              variant: UpButtonVariant.secondary,
-              onPressed: () async {
-                final v = await showSpeedModal(context, current: _speed);
-                if (v != null) setState(() => _speed = v);
-              },
-            ),
           ],
         ),
         caption(
-          'sheet ${_ms(UpSheetTokens.enter)} · speed in ${_ms(UpModalTokens.speedIn)} / out ${_ms(UpModalTokens.speedOut)}',
+          'sheet ${_ms(UpSheetTokens.enter)}',
         ),
         GallerySection(title: l10n.performRecord),
         Row(
