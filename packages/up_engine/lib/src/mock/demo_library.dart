@@ -159,6 +159,7 @@ abstract final class DemoLibrary {
       genre: genre,
       bpm: bpm,
       padCount: banks * PadId.padsPerBank,
+      groupCount: banks,
       hasTutorial: tutorial,
       isNew: isNew,
       isFeatured: featured,

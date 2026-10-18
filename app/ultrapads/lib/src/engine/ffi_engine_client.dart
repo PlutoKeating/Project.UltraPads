@@ -213,7 +213,8 @@ class FfiEngineClient implements EngineClient {
     song: k.description ?? '',
     genre: k.genres.isEmpty ? '' : k.genres.first.toLowerCase(),
     bpm: k.bpm ?? TransportState().bpm,
-    padCount: k.padCount > PadId.padsPerBank ? PadId.total : PadId.padsPerBank,
+    padCount: k.groupCount * PadId.padsPerBank,
+    groupCount: k.groupCount.clamp(1, PadId.banks),
     hasTutorial: k.hasTutorial,
     downloaded: true,
     source: switch (k.sourceKind) {
@@ -689,6 +690,7 @@ class FfiEngineClient implements EngineClient {
       pads: pads,
       bpm: (json['bpm'] as num?)?.toDouble() ?? TransportState().bpm,
       genre: genres.isEmpty ? '' : '${genres.first}'.toLowerCase(),
+      groupCount: (json['groupCount'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -742,7 +744,9 @@ class FfiEngineClient implements EngineClient {
       }
       pads.add(out);
     }
-    json['pads'] = pads;
+    json
+      ..['pads'] = pads
+      ..['groupCount'] = doc.groupCount;
     return json;
   }
 

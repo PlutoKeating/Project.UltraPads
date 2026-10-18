@@ -1594,5 +1594,49 @@
     }
   },
   "performFirstGuideGroups": "Each song can have several sound groups — tap A, B… to switch. Sounds already playing keep going.",
-  "@performFirstGuideGroups": {}
+  "@performFirstGuideGroups": {},
+  "kitEditorGroups": "Sound groups",
+  "@kitEditorGroups": {},
+  "kitEditorAddGroup": "Add a sound group",
+  "@kitEditorAddGroup": {},
+  "kitEditorMoveGroupLeft": "Move group {name} left",
+  "@kitEditorMoveGroupLeft": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "kitEditorMoveGroupRight": "Move group {name} right",
+  "@kitEditorMoveGroupRight": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "kitEditorDeleteGroup": "Delete group {name}",
+  "@kitEditorDeleteGroup": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "kitEditorDeleteGroupTitle": "Delete sound group {name}?",
+  "@kitEditorDeleteGroupTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "kitEditorDeleteGroupBody": "Its {count} pads are removed and the groups after it move up.",
+  "@kitEditorDeleteGroupBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

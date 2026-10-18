@@ -29,6 +29,9 @@ class _EditorPageState extends ConsumerState<EditorPage> {
   int _selected = 0;
   int _tab = 0;
 
+  /// 当前显示的音色组（0 = A）。
+  int _group = 0;
+
   /// 裁剪视图打开的 pad。
   bool _trimming = false;
 
@@ -125,14 +128,80 @@ class _EditorPageState extends ConsumerState<EditorPage> {
 
   Future<void> _save() async {
     final l10n = context.l10n;
-    final ok = await tryEngineDo(() => _engine.librarySaveKit(_doc!));
+    final doc = _doc!;
+    final ok = await tryEngineDo(() => _engine.librarySaveKit(doc));
     if (!mounted) return;
     if (!ok) {
       showUpToast(context, l10n.errorEngineUnsupported);
       return;
     }
+    // 组数变了（新增 / 删除组）且编辑的是当前 Kit：重新加载，演奏页的组切换条随之更新。
+    final current = _engine.snapshot().kit;
+    if (current?.id == doc.id && current?.groupCount != doc.groupCount) {
+      await tryEngine(() => _engine.libraryLoadKit(doc.id));
+      if (!mounted) return;
+    }
     setState(() => _dirty = false);
     showUpToast(context, l10n.kitEditorSaved);
+  }
+
+  // ------------------------------------------------------------- groups
+
+  void _selectGroup(int g) => setState(() {
+    _group = g;
+    _selected = g * PadId.padsPerBank + _selected % PadId.padsPerBank;
+    _trimming = false;
+  });
+
+  /// 组结构变化后：编辑的是当前 Kit 时，把全部 pad 参数同步给引擎（实时生效）。
+  void _applyGroups(KitDoc next, int group) {
+    setState(() {
+      _doc = next;
+      _dirty = true;
+      _group = group.clamp(0, next.groupCount - 1);
+      _selected = _group * PadId.padsPerBank + _selected % PadId.padsPerBank;
+      _trimming = false;
+    });
+    if (_engine.snapshot().kit?.id == next.id) {
+      for (var i = 0; i < PadId.total; i++) {
+        _engine.send(SetPadParamsCmd(PadId.flat(i), next.pads[i]));
+      }
+    }
+  }
+
+  void _addGroup() {
+    final doc = _doc!;
+    if (!doc.canAddGroup) return;
+    _applyGroups(doc.addGroup(), doc.groupCount);
+  }
+
+  void _moveGroup(int delta) {
+    final to = _group + delta;
+    if (to < 0 || to >= _doc!.groupCount) return;
+    _applyGroups(_doc!.moveGroup(_group, to), to);
+  }
+
+  Future<void> _removeGroup() async {
+    final l10n = context.l10n;
+    final doc = _doc!;
+    if (doc.groupCount <= 1) return;
+    final used = [
+      for (var i = 0; i < PadId.padsPerBank; i++)
+        if (!doc.pads[_group * PadId.padsPerBank + i].isEmpty) i,
+    ].length;
+    if (used > 0) {
+      final name = PadId.groupName(_group);
+      final ok = await showUpConfirm(
+        context,
+        title: l10n.kitEditorDeleteGroupTitle(name),
+        message: l10n.kitEditorDeleteGroupBody(used),
+        confirm: l10n.commonDelete,
+        cancel: l10n.commonCancel,
+        danger: true,
+      );
+      if (!ok || !mounted) return;
+    }
+    _applyGroups(_doc!.removeGroup(_group), _group);
   }
 
   Future<void> _close() async {
@@ -226,6 +295,11 @@ class _EditorPageState extends ConsumerState<EditorPage> {
                       padding: const EdgeInsets.all(UpPageTokens.paddingX),
                       child: _MiniPads(
                         doc: doc,
+                        group: _group,
+                        onGroup: _selectGroup,
+                        onAddGroup: _addGroup,
+                        onMoveGroup: _moveGroup,
+                        onRemoveGroup: _removeGroup,
                         selected: _selected,
                         onSelect: (i) => setState(() {
                           _selected = i;
@@ -301,15 +375,26 @@ class _EditorPageState extends ConsumerState<EditorPage> {
   }
 }
 
-/// A / B 两个迷你 pad 面板，点选 pad；双击试听。
+/// 编辑 Kit 的 pad 区：左侧是当前音色组的 12 个迷你 pad（点选；双击试听），
+/// 右侧是组切换（A B C… + 新增）与当前组的左移 / 右移 / 删除。
 class _MiniPads extends StatelessWidget {
   const _MiniPads({
     required this.doc,
+    required this.group,
+    required this.onGroup,
+    required this.onAddGroup,
+    required this.onMoveGroup,
+    required this.onRemoveGroup,
     required this.selected,
     required this.onSelect,
     required this.onAudition,
   });
   final KitDoc doc;
+  final int group;
+  final ValueChanged<int> onGroup;
+  final VoidCallback onAddGroup;
+  final ValueChanged<int> onMoveGroup;
+  final VoidCallback onRemoveGroup;
   final int selected;
   final ValueChanged<int> onSelect;
   final ValueChanged<int> onAudition;
@@ -322,53 +407,109 @@ class _MiniPads extends StatelessWidget {
       doc.pads,
       List.filled(PadId.total, PadPlayState.idle),
     );
-    Widget panel(int bank) => Expanded(
-      child: Column(
-        spacing: UpSpacing.xs,
-        children: [
-          UpText(
-            bank == 0 ? l10n.performBankA : l10n.performBankB,
-            role: UpTextRole.label,
-            color: c.textOnAccent,
-          ),
-          AspectRatio(
-            aspectRatio: PadId.columns / PadId.rows,
-            child: Container(
-              padding: const EdgeInsets.all(UpSpacing.sm),
-              decoration: BoxDecoration(
-                color: c.surfaceDim,
-                borderRadius: BorderRadius.circular(UpRadii.lg),
+    final base = group * PadId.padsPerBank;
+    final name = PadId.groupName(group);
+    final grid = AspectRatio(
+      aspectRatio: PadId.columns / PadId.rows,
+      child: Container(
+        padding: const EdgeInsets.all(UpSpacing.sm),
+        decoration: BoxDecoration(
+          color: c.surfaceDim,
+          borderRadius: BorderRadius.circular(UpRadii.lg),
+        ),
+        child: GridView.count(
+          crossAxisCount: PadId.columns,
+          mainAxisSpacing: UpSpacing.xs,
+          crossAxisSpacing: UpSpacing.xs,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            for (var i = 0; i < PadId.padsPerBank; i++)
+              Semantics(
+                button: true,
+                selected: selected == base + i,
+                label: l10n.performPadLabel(i + 1),
+                child: GestureDetector(
+                  onTap: () => onSelect(base + i),
+                  onDoubleTap: () => onAudition(base + i),
+                  child: UpPad(
+                    data: data[base + i],
+                    selected: selected == base + i,
+                    showLabel: true,
+                  ),
+                ),
               ),
-              child: GridView.count(
-                crossAxisCount: PadId.columns,
-                mainAxisSpacing: UpSpacing.xs,
-                crossAxisSpacing: UpSpacing.xs,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  for (var i = 0; i < PadId.padsPerBank; i++)
-                    Semantics(
-                      button: true,
-                      selected: selected == bank * PadId.padsPerBank + i,
-                      label: l10n.performPadLabel(i + 1),
-                      child: GestureDetector(
-                        onTap: () => onSelect(bank * PadId.padsPerBank + i),
-                        onDoubleTap: () =>
-                            onAudition(bank * PadId.padsPerBank + i),
-                        child: UpPad(
-                          data: data[bank * PadId.padsPerBank + i],
-                          selected: selected == bank * PadId.padsPerBank + i,
-                          showLabel: true,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
-    return Row(spacing: UpSpacing.lg, children: [panel(0), panel(1)]);
+    final controls = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: UpSpacing.sm,
+      children: [
+        UpText(
+          l10n.kitEditorGroups,
+          role: UpTextRole.label,
+          color: c.textOnAccent,
+        ),
+        Wrap(
+          spacing: UpSpacing.xs,
+          runSpacing: UpSpacing.xs,
+          children: [
+            for (var g = 0; g < doc.groupCount; g++)
+              Semantics(
+                selected: g == group,
+                label: l10n.performSoundGroup(PadId.groupName(g)),
+                child: UpChip(
+                  key: ValueKey('editor-group-$g'),
+                  label: PadId.groupName(g),
+                  variant: g == group
+                      ? UpChipVariant.selected
+                      : UpChipVariant.normal,
+                  onTap: () => onGroup(g),
+                ),
+              ),
+            if (doc.canAddGroup)
+              UpIconButton(
+                key: const ValueKey('editor-add-group'),
+                icon: Icons.add_rounded,
+                semanticLabel: l10n.kitEditorAddGroup,
+                onPressed: onAddGroup,
+              ),
+          ],
+        ),
+        Row(
+          spacing: UpSpacing.xs,
+          children: [
+            UpIconButton(
+              icon: Icons.chevron_left_rounded,
+              semanticLabel: l10n.kitEditorMoveGroupLeft(name),
+              onPressed: group > 0 ? () => onMoveGroup(-1) : null,
+            ),
+            UpIconButton(
+              icon: Icons.chevron_right_rounded,
+              semanticLabel: l10n.kitEditorMoveGroupRight(name),
+              onPressed: group < doc.groupCount - 1
+                  ? () => onMoveGroup(1)
+                  : null,
+            ),
+            UpIconButton(
+              key: const ValueKey('editor-delete-group'),
+              icon: Icons.delete_outline_rounded,
+              semanticLabel: l10n.kitEditorDeleteGroup(name),
+              onPressed: doc.groupCount > 1 ? onRemoveGroup : null,
+            ),
+          ],
+        ),
+      ],
+    );
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: UpSpacing.lg,
+      children: [
+        Expanded(child: grid),
+        Expanded(child: controls),
+      ],
+    );
   }
 }
 

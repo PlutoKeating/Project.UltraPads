@@ -458,10 +458,8 @@ class MockEngineClient implements EngineClient {
           genre: kit.genre,
           bpm: kit.bpm,
           source: KitSource.user,
-          padCount:
-              kit.pads.lastIndexWhere((p) => !p.isEmpty) + 1 > PadId.padsPerBank
-              ? PadId.total
-              : PadId.padsPerBank,
+          padCount: kit.groupCount * PadId.padsPerBank,
+          groupCount: kit.groupCount,
         );
     _kits[kit.id] = DemoKit(
       summary,

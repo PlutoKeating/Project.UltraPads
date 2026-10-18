@@ -14,7 +14,6 @@ class BankController extends Notifier<int> {
     return 0;
   }
 
-  void toggle() => state = state == 0 ? 1 : 0;
   void set(int bank) => state = bank;
 }
 

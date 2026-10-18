@@ -1695,4 +1695,35 @@ class UpL10nEn extends UpL10n {
   @override
   String get performFirstGuideGroups =>
       'Each song can have several sound groups — tap A, B… to switch. Sounds already playing keep going.';
+
+  @override
+  String get kitEditorGroups => 'Sound groups';
+
+  @override
+  String get kitEditorAddGroup => 'Add a sound group';
+
+  @override
+  String kitEditorMoveGroupLeft(String name) {
+    return 'Move group $name left';
+  }
+
+  @override
+  String kitEditorMoveGroupRight(String name) {
+    return 'Move group $name right';
+  }
+
+  @override
+  String kitEditorDeleteGroup(String name) {
+    return 'Delete group $name';
+  }
+
+  @override
+  String kitEditorDeleteGroupTitle(String name) {
+    return 'Delete sound group $name?';
+  }
+
+  @override
+  String kitEditorDeleteGroupBody(int count) {
+    return 'Its $count pads are removed and the groups after it move up.';
+  }
 }

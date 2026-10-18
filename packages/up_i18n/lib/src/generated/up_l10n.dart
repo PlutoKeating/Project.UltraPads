@@ -2909,6 +2909,48 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'Each song can have several sound groups — tap A, B… to switch. Sounds already playing keep going.'**
   String get performFirstGuideGroups;
+
+  /// No description provided for @kitEditorGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound groups'**
+  String get kitEditorGroups;
+
+  /// No description provided for @kitEditorAddGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a sound group'**
+  String get kitEditorAddGroup;
+
+  /// No description provided for @kitEditorMoveGroupLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Move group {name} left'**
+  String kitEditorMoveGroupLeft(String name);
+
+  /// No description provided for @kitEditorMoveGroupRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Move group {name} right'**
+  String kitEditorMoveGroupRight(String name);
+
+  /// No description provided for @kitEditorDeleteGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete group {name}'**
+  String kitEditorDeleteGroup(String name);
+
+  /// No description provided for @kitEditorDeleteGroupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete sound group {name}?'**
+  String kitEditorDeleteGroupTitle(String name);
+
+  /// No description provided for @kitEditorDeleteGroupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Its {count} pads are removed and the groups after it move up.'**
+  String kitEditorDeleteGroupBody(int count);
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

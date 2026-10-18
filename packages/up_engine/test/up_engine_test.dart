@@ -23,7 +23,45 @@ void main() {
     expect(PadId.flat(13), const PadId(1, 1));
     expect(const PadId(0, 4).row, 1);
     expect(const PadId(0, 4).column, 1);
-    expect(PadId.all.length, 24);
+    expect(PadId.all.length, PadId.banks * PadId.padsPerBank);
+    expect(const PadId(2, 0).toString(), 'PadId(C1)');
+  });
+
+  test('KitDoc sound groups: add, remove (later groups shift), move', () {
+    PadParams p(String s) => PadParams(sample: s);
+    final pads = List<PadParams>.filled(PadId.total, PadParams.empty);
+    pads[const PadId(0, 0).flat] = p('a');
+    pads[const PadId(1, 0).flat] = p('b');
+    var doc = KitDoc(id: 'k', name: 'K', pads: pads);
+    expect(doc.groupCount, 2, reason: 'derived from the pads');
+
+    doc = doc.addGroup();
+    expect(doc.groupCount, 3, reason: 'empty group C is kept');
+    doc = doc.withPad(const PadId(2, 5), p('c'));
+
+    final moved = doc.moveGroup(2, 0);
+    expect(moved.pad(const PadId(0, 5)).sample, 'c');
+    expect(moved.pad(const PadId(1, 0)).sample, 'a');
+    expect(moved.pad(const PadId(2, 0)).sample, 'b');
+
+    final removed = doc.removeGroup(0);
+    expect(removed.groupCount, 2);
+    expect(removed.pad(const PadId(0, 0)).sample, 'b');
+    expect(removed.pad(const PadId(1, 5)).sample, 'c');
+    expect(removed.pad(const PadId(2, 5)).isEmpty, isTrue);
+
+    final single = KitDoc(
+      id: 'k',
+      name: 'K',
+      pads: List.filled(PadId.total, PadParams.empty),
+    );
+    expect(single.removeGroup(0).groupCount, 1, reason: 'at least one group');
+    var full = single;
+    for (var i = 0; i < PadId.banks + 2; i++) {
+      full = full.addGroup();
+    }
+    expect(full.groupCount, PadId.banks);
+    expect(full.canAddGroup, isFalse);
   });
 
   test('one-shot plays then returns to idle', () async {

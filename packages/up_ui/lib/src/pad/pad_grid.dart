@@ -32,15 +32,17 @@ class PadGrid extends StatefulWidget {
     this.enabled = true,
     this.externallyPressed = const {},
     this.fills = const {},
-  }) : assert(pads.length == columns * rows * banks);
+  }) : assert(pads.length > 0 && pads.length % (columns * rows) == 0);
 
   static const int columns = UpPadGridTokens.columns;
   static const int rows = UpPadGridTokens.rows;
-  static const int banks = UpPadGridTokens.banks;
   static const int perBank = columns * rows;
 
-  /// 24 个 pad（平铺：bank*12 + index）。
+  /// 全部音色组的 pad（平铺：bank*12 + index），长度是 12 的倍数。
   final List<PadData> pads;
+
+  /// 音色组（页）数。
+  int get bankCount => pads.length ~/ perBank;
 
   /// 当前页（0 = A，1 = B）。
   final int bank;
@@ -75,7 +77,8 @@ class PadGridState extends State<PadGrid> with SingleTickerProviderStateMixin {
   late final AnimationController _page = AnimationController(
     vsync: this,
     value: widget.bank.toDouble(),
-    upperBound: (PadGrid.banks - 1).toDouble(),
+    // 组数在一个网格的生命周期内不变（应用里始终传入引擎上限数量的 pad）。
+    upperBound: (widget.bankCount - 1).toDouble(),
   );
 
   /// pointer → 正在触摸的平铺下标（[_none] = 在网格内但不在任何 pad 上，例如缝隙）
@@ -204,7 +207,7 @@ class PadGridState extends State<PadGrid> with SingleTickerProviderStateMixin {
               animation: _page,
               builder: (context, _) => Stack(
                 children: [
-                  for (var b = 0; b < PadGrid.banks; b++)
+                  for (var b = 0; b < widget.bankCount; b++)
                     if ((b - _page.value).abs() < 1)
                       Positioned(
                         left: (b - _page.value) * (w + gap),

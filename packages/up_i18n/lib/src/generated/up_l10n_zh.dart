@@ -1664,4 +1664,35 @@ class UpL10nZh extends UpL10n {
 
   @override
   String get performFirstGuideGroups => '一首歌可以有多组音色，点 A、B… 切换；已经在播放的声音不会中断。';
+
+  @override
+  String get kitEditorGroups => '音色组';
+
+  @override
+  String get kitEditorAddGroup => '新增音色组';
+
+  @override
+  String kitEditorMoveGroupLeft(String name) {
+    return '把音色组 $name 左移';
+  }
+
+  @override
+  String kitEditorMoveGroupRight(String name) {
+    return '把音色组 $name 右移';
+  }
+
+  @override
+  String kitEditorDeleteGroup(String name) {
+    return '删除音色组 $name';
+  }
+
+  @override
+  String kitEditorDeleteGroupTitle(String name) {
+    return '删除音色组 $name？';
+  }
+
+  @override
+  String kitEditorDeleteGroupBody(int count) {
+    return '这一组的 $count 个 pad 会一并删除，后面的组依次前移。';
+  }
 }

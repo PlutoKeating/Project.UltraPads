@@ -12,11 +12,13 @@ final class PadId implements Comparable<PadId> {
     : assert(bank >= 0 && bank < banks),
       assert(index >= 0 && index < padsPerBank);
 
-  /// 由平铺下标 0..23 构造。
+  /// 由平铺下标 0..[total) 构造。
   factory PadId.flat(int flat) =>
       PadId(flat ~/ padsPerBank, flat % padsPerBank);
 
-  static const int banks = 2;
+  /// 音色组上限（A–G，与引擎 `up_core::BANK_COUNT` 一致）；一首歌实际的组数见
+  /// [KitSummary.groupCount]。
+  static const int banks = 7;
   static const int padsPerBank = 12;
   static const int total = banks * padsPerBank;
   static const int columns = 3;
@@ -29,7 +31,7 @@ final class PadId implements Comparable<PadId> {
   int get row => index ~/ columns;
   int get column => index % columns;
 
-  /// 全部 24 个 pad，按平铺顺序。
+  /// 全部 [total] 个 pad，按平铺顺序。
   static final List<PadId> all = List.unmodifiable(
     List.generate(total, PadId.flat),
   );
@@ -45,7 +47,10 @@ final class PadId implements Comparable<PadId> {
   int compareTo(PadId other) => flat.compareTo(other.flat);
 
   @override
-  String toString() => 'PadId(${bank == 0 ? 'A' : 'B'}${index + 1})';
+  String toString() => 'PadId(${groupName(bank)}${index + 1})';
+
+  /// 音色组名：0 → A，1 → B …
+  static String groupName(int group) => String.fromCharCode(0x41 + group);
 }
 
 enum PadMode { oneShot, loop, gate }
@@ -273,6 +278,7 @@ final class KitSummary {
     this.genre = '',
     this.bpm = 120,
     this.padCount = 12,
+    this.groupCount = 1,
     this.hasTutorial = false,
     this.isNew = false,
     this.isFeatured = false,
@@ -294,6 +300,9 @@ final class KitSummary {
   final String genre;
   final double bpm;
   final int padCount;
+
+  /// 音色组数（A、B、C…，每组 12 个 pad），至少 1。
+  final int groupCount;
   final bool hasTutorial;
   final bool isNew;
   final bool isFeatured;
@@ -307,7 +316,7 @@ final class KitSummary {
   /// Kit 自带的视频教程链接（原 App 目录的 videoUrl）；null 时演奏页按配置搜索。
   final String? videoUrl;
 
-  bool get hasBankB => padCount > PadId.padsPerBank;
+  bool get hasBankB => groupCount > 1;
 
   KitSummary copyWith({bool? downloaded, String? name}) => KitSummary(
     id: id,
@@ -317,6 +326,7 @@ final class KitSummary {
     genre: genre,
     bpm: bpm,
     padCount: padCount,
+    groupCount: groupCount,
     hasTutorial: hasTutorial,
     isNew: isNew,
     isFeatured: isFeatured,
@@ -336,8 +346,10 @@ final class KitDoc {
     required List<PadParams> pads,
     this.bpm = 120,
     this.genre = '',
+    int groupCount = 0,
   }) : assert(pads.length == PadId.total),
-       pads = List.unmodifiable(pads);
+       pads = List.unmodifiable(pads),
+       groupCount = _groups(pads, groupCount);
 
   final String id;
   final String name;
@@ -345,12 +357,23 @@ final class KitDoc {
   final String genre;
   final List<PadParams> pads;
 
+  /// 音色组数（A、B…）：显式组数与有声音的 pad 用到的组取较大者，1..[PadId.banks]。
+  final int groupCount;
+
+  static int _groups(List<PadParams> pads, int explicit) {
+    var used = 1;
+    for (var i = 0; i < pads.length; i++) {
+      if (!pads[i].isEmpty) used = i ~/ PadId.padsPerBank + 1;
+    }
+    return (explicit > used ? explicit : used).clamp(1, PadId.banks);
+  }
+
   PadParams pad(PadId id) => pads[id.flat];
 
   KitDoc withPad(PadId id, PadParams params) {
     final next = List<PadParams>.of(pads);
     next[id.flat] = params;
-    return KitDoc(id: this.id, name: name, pads: next, bpm: bpm, genre: genre);
+    return _with(next, groupCount);
   }
 
   KitDoc copyWith({String? name, double? bpm, String? genre}) => KitDoc(
@@ -359,7 +382,63 @@ final class KitDoc {
     pads: pads,
     bpm: bpm ?? this.bpm,
     genre: genre ?? this.genre,
+    groupCount: groupCount,
   );
+
+  KitDoc _with(List<PadParams> next, int groups) => KitDoc(
+    id: id,
+    name: name,
+    pads: next,
+    bpm: bpm,
+    genre: genre,
+    groupCount: groups,
+  );
+
+  bool get canAddGroup => groupCount < PadId.banks;
+
+  /// 末尾新增一个空组。
+  KitDoc addGroup() => canAddGroup ? _with(pads, groupCount + 1) : this;
+
+  /// 删除第 [group] 组（连同它的 pad），后面的组前移；至少保留一组。
+  KitDoc removeGroup(int group) {
+    if (groupCount <= 1 || group < 0 || group >= groupCount) return this;
+    final next = List<PadParams>.filled(PadId.total, PadParams.empty);
+    for (var g = 0, to = 0; g < groupCount; g++) {
+      if (g == group) continue;
+      _copyGroup(pads, g, next, to++);
+    }
+    return _with(next, groupCount - 1);
+  }
+
+  /// 把第 [from] 组移到第 [to] 组的位置（其它组顺次移动）。
+  KitDoc moveGroup(int from, int to) {
+    if (from == to ||
+        from < 0 ||
+        to < 0 ||
+        from >= groupCount ||
+        to >= groupCount) {
+      return this;
+    }
+    final order = List<int>.generate(groupCount, (g) => g)
+      ..removeAt(from)
+      ..insert(to, from);
+    final next = List<PadParams>.filled(PadId.total, PadParams.empty);
+    for (var i = 0; i < order.length; i++) {
+      _copyGroup(pads, order[i], next, i);
+    }
+    return _with(next, groupCount);
+  }
+
+  static void _copyGroup(
+    List<PadParams> src,
+    int from,
+    List<PadParams> dst,
+    int to,
+  ) {
+    for (var i = 0; i < PadId.padsPerBank; i++) {
+      dst[to * PadId.padsPerBank + i] = src[from * PadId.padsPerBank + i];
+    }
+  }
 }
 
 final class SampleInfo {
