@@ -4172,7 +4172,7 @@ checksum = "8ecb6da28b8a351d773b68d5825ac39017e680750f980f3a1a85cd8dd28a47c1"
 
 [[package]]
 name = "up-catalog-pack"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "clap",
  "rustysynth",
@@ -4186,7 +4186,7 @@ dependencies = [
 
 [[package]]
 name = "up-cli"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "clap",
  "env_logger",
@@ -4201,7 +4201,7 @@ dependencies = [
 
 [[package]]
 name = "up-codec"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "hound",
  "rubato",
@@ -4211,7 +4211,7 @@ dependencies = [
 
 [[package]]
 name = "up-core"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -4220,14 +4220,14 @@ dependencies = [
 
 [[package]]
 name = "up-dsp"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "up-core",
 ]
 
 [[package]]
 name = "up-engine"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "arc-swap",
  "crossbeam-channel",
@@ -4247,7 +4247,7 @@ dependencies = [
 
 [[package]]
 name = "up-format"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "blake3",
  "jsonschema",
@@ -4261,7 +4261,7 @@ dependencies = [
 
 [[package]]
 name = "up-graph"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "audioadapter-buffers",
  "firewheel",
@@ -4271,7 +4271,7 @@ dependencies = [
 
 [[package]]
 name = "up-host"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "alsa",
  "arc-swap",
@@ -4294,7 +4294,7 @@ dependencies = [
 
 [[package]]
 name = "up-hub"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "async-trait",
  "axum",
@@ -4327,7 +4327,7 @@ dependencies = [
 
 [[package]]
 name = "up-library"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "async-trait",
  "blake3",
@@ -4350,7 +4350,7 @@ dependencies = [
 
 [[package]]
 name = "up-mixer"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "up-core",
  "up-dsp",
@@ -4359,7 +4359,7 @@ dependencies = [
 
 [[package]]
 name = "up-model"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -4369,7 +4369,7 @@ dependencies = [
 
 [[package]]
 name = "up-protocol"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -4378,7 +4378,7 @@ dependencies = [
 
 [[package]]
 name = "up-recorder"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "up-codec",
  "up-core",
@@ -4387,7 +4387,7 @@ dependencies = [
 
 [[package]]
 name = "up-rt"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "crossbeam-queue",
  "rtrb",
@@ -4395,7 +4395,7 @@ dependencies = [
 
 [[package]]
 name = "up-sampler"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "up-core",
  "up-dsp",
@@ -4405,7 +4405,7 @@ dependencies = [
 
 [[package]]
 name = "up-sequencer"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "up-core",
  "up-model",
@@ -4413,14 +4413,14 @@ dependencies = [
 
 [[package]]
 name = "up-transport"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "up-core",
 ]
 
 [[package]]
 name = "up-update"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "flate2",
  "log",
@@ -4435,7 +4435,7 @@ dependencies = [
 
 [[package]]
 name = "up_ffi"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "arc-swap",
  "async-trait",

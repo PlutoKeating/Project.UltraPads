@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-18
+
+新增**官方曲库**：应用内浏览、搜索并按需下载大量现成曲目，用来直接做单曲即兴重排；登录 PlutoKeating 账号后云端同步收藏。
+
+### 新增
+
+- 官方曲库（曲库页第三个 Tab）：按许可证、曲风、BPM 筛选与排序，查看署名与来源，下载后一键载入演奏。首批 65 首：原创 CC0 合成曲 40 首（house / hiphop / lofi / trap / dnb / funk / disco / synthwave / ambient / chiptune）、AlbumDB 真实分轨 4 首（CC BY 4.0）、ccMixter 多轨 21 首（CC BY / CC BY-NC）。每首都按乐器分音色组、按小节切好循环，默认按小节量化，打开就能玩。
+- 逐条许可证标注：CC0 / BY / SA / NC 徽标和提示；保存、分享录音时若用了需署名的素材，附上署名。
+- PlutoKeating 账号登录（设置页）：Android 用系统授权页，Linux 桌面用系统浏览器 + 本机回环。登录后云端同步收藏、最近使用与下载记录；不登录也能浏览和下载。
+- 服务端：官网 Worker 新增 `/api/catalog*`（目录、筛选、详情、下载）与 `/api/me*`（收藏等），新增数据服务 `data/`（`ultrapads-data`）。接口见 `docs/API.md` §7，决策见 `docs/adr/0005-catalog-and-accounts.md`。
+- 素材入库管线 `tools/catalog`：拉取、许可证校验（白名单）、BPM 与小节对齐、切片、打包 `.upkit`（内含 FLAC）、质检、试听预览、发布。
+
 ### 变更
 
 - 官网、README、文档与设置页「关于」不再提及参考 App 的名称；删除两篇针对它的逆向分析文档。
