@@ -28,6 +28,25 @@ import 'pad_mapping.dart';
 import 'perform_layout.dart';
 import 'perform_toolbar.dart';
 
+/// 演奏页用到的引擎投影字段。只订阅这些：走带位置（播放时约 60 Hz）不触发整页重建。
+typedef _PerformView = ({
+  List<PadParams> pads,
+  List<PadPlayState> padStates,
+  KitSummary? kit,
+  RecorderState recorder,
+  double recordElapsed,
+  bool controllerMode,
+});
+
+_PerformView _performView(EngineView v) => (
+  pads: v.pads,
+  padStates: v.padStates,
+  kit: v.kit,
+  recorder: v.recorder,
+  recordElapsed: v.recordElapsed,
+  controllerMode: v.controllerMode,
+);
+
 /// 演奏页（启动页），布局以 App Store 4.7.0（`ScreenPads/Main`）为准：
 ///
 /// ```
@@ -276,7 +295,7 @@ class _PerformPageState extends ConsumerState<PerformPage>
     final l10n = context.l10n;
     final theme = UpTheme.of(context);
     final c = theme.colors;
-    final view = ref.watch(engineViewProvider);
+    final view = ref.watch(engineViewProvider.select(_performView));
     final bank = ref.watch(bankProvider);
     final tutorial = ref.watch(tutorialProvider);
     final settings = ref.watch(settingsProvider);
@@ -393,7 +412,7 @@ class _PerformPageState extends ConsumerState<PerformPage>
     BuildContext context,
     UpSemantic c,
     UpL10n l10n,
-    EngineView view,
+    _PerformView view,
     TutorialSession? tutorial,
     Widget row,
     Widget? bankButton,

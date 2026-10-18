@@ -41,6 +41,10 @@ class FfiEngineClient implements EngineClient {
 
   final Map<String, HubPeer> _peers = {};
 
+  /// 最近一次已知的走带状态。Transport 事件不带 speed / quantize，从这里补齐，
+  /// 避免播放时每个事件（约 60 Hz）都在 UI isolate 上做一次完整的同步 snapshot()。
+  TransportState? _transport;
+
   @override
   String get backendName => 'ffi';
 
@@ -302,7 +306,7 @@ class FfiEngineClient implements EngineClient {
       :final barLenBeats,
     ) =>
       TransportEvent(
-        snapshot().transport.copyWith(
+        _transport = (_transport ?? snapshot().transport).copyWith(
           playing: playing,
           beat: beat,
           bpm: bpm,
@@ -471,17 +475,18 @@ class FfiEngineClient implements EngineClient {
         pads[id.flat] = _params(p.params);
       }
       final tr = s.transport;
+      final transport = _transport = TransportState(
+        playing: tr.playing,
+        beat: tr.beat,
+        bpm: tr.bpm,
+        barLenBeats: tr.beatsPerBar.toDouble(),
+        speed: tr.speed,
+        quantize: _quantize(tr.quantize),
+      );
       return EngineSnapshot(
         padStates: states,
         pads: pads,
-        transport: TransportState(
-          playing: tr.playing,
-          beat: tr.beat,
-          bpm: tr.bpm,
-          barLenBeats: tr.beatsPerBar.toDouble(),
-          speed: tr.speed,
-          quantize: _quantize(tr.quantize),
-        ),
+        transport: transport,
         kit: s.kit == null ? null : _kit(s.kit!),
         recorder: _recorder(s.recorder),
         controllerMode: hubControllerStatus().connected,
@@ -541,6 +546,11 @@ class FfiEngineClient implements EngineClient {
     };
     try {
       ffi.send(cmd: out);
+      _transport = switch (cmd) {
+        SetSpeedCmd(:final ratio) => _transport?.copyWith(speed: ratio),
+        SetQuantizeCmd(:final q) => _transport?.copyWith(quantize: q),
+        _ => _transport,
+      };
     } catch (e) {
       _reportOnce('send', e);
     }

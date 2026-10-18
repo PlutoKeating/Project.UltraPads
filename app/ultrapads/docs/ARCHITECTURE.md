@@ -132,6 +132,10 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 - `PadGrid` 外层一个 `Listener`（不进手势竞技场），按坐标命中 pad；每个 pointer 记录按下的 pad，
   抬起 / 取消时释放同一个 pad，支持多点触控。鼠标只有主键触发。
 - 回调先同步调用 `padDown`（FRB `sync`，只推命令），再 `setState` 显示按下态。
+- UI isolate 保持空闲，指针事件才能立即处理：演奏页只 `select` 自己用到的 `EngineView` 字段（走带位置播放时约 60 Hz，
+  不触发整页重建）；`FfiEngineClient` 把 Transport 事件与缓存的走带状态合并，不为每个事件做一次同步 `snapshot()`。
+- 音频侧延迟见根目录 `docs/ARCHITECTURE.md` §4（Android LowLatency、桌面默认 128 帧）。设置页的缓冲档位在 Android 上隐藏
+  （由 AAudio 决定，显示为「系统」）。
 - 键盘映射（桌面）：`1 2 3 / Q W E / A S D / Z X C` 对应当前页 12 个 pad，Tab 翻页，Space 停止全部，R 录音；
   键盘按下态通过 `PadGrid.externallyPressed` 同样立即显示。
 
