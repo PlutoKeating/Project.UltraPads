@@ -70,10 +70,12 @@
 
 ## 6. 个人多设备协同（up-hub）
 
-- **发现**：mDNS `_ultrapads._tcp.local`（桌面广播；Android 需持有 MulticastLock）
-- **配对**：桌面显示 6 位配对码/二维码，手机输入后交换设备密钥（Ed25519），之后的连接都要校验
-- **同步**：曲库以内容寻址（BLAKE3）blob + 清单（manifest）组织；按清单差异增量拉取/推送；冲突以"最后写入者胜 + 保留副本"处理
-- **控制器**：手机 Pad 事件经 UDP（低延迟，带序号）或 WebSocket 回退，发送到桌面引擎，可录进桌面工程
+详细设计见 `docs/adr/0004-personal-hub.md`，协议见 `docs/API.md` 第 4 节。
+
+- **发现**：mDNS `_ultrapads._tcp.local`（桌面广播；Android 需持有 MulticastLock）；AP 隔离时可手动输入地址（`probe`）
+- **配对与鉴权**：6 位一次性配对码 + SPAKE2；设备身份为 Ed25519，控制面采用双向 TLS + 公钥钉扎，撤销立即生效
+- **同步**：曲库以内容寻址（BLAKE3）blob + 带版本向量的清单组织；增量、可续传；并发冲突时"最后写入者胜 + 保留副本"
+- **控制器**：手机 Pad 事件经 UDP（序号 + 会话密钥 HMAC，双发去重，按 pad 处理乱序）发送到桌面引擎；会话结束时补发 pad_up。TCP/WebSocket 回退尚未实现
 - **P2P**：`HubTransport` trait 预留 iroh 实现（跨局域网直连），v0.0.1 只实现局域网
 
 ## 7. 目录结构
