@@ -236,10 +236,8 @@ impl Library {
             let pkg = UpkitPackage::build(
                 &kit.doc,
                 kit.assets,
-                &up_format::upkit::BuildOptions {
-                    created: Some(fsutil::rfc3339(fsutil::now_ms())),
-                    ..Default::default()
-                },
+                // 不写导入时间：同一来源在不同设备上导入的包逐字节一致（多设备同步不冲突）。
+                &up_format::upkit::BuildOptions::default(),
             )?;
             let out = self.install_package(
                 &pkg,

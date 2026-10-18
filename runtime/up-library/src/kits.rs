@@ -270,8 +270,12 @@ impl Library {
             self.put_blob(bytes)?;
         }
         m.id = id.clone();
-        m.updated = Some(fsutil::rfc3339(now));
-        if m.created.is_none() {
+        // 导入（dedupe）保留包里的时间戳：同一个包在不同设备上导入得到逐字节相同的
+        // manifest，多设备同步时不会被当成并发修改而产生冲突副本。保存编辑才更新时间。
+        if !opts.dedupe {
+            m.updated = Some(fsutil::rfc3339(now));
+        }
+        if !opts.dedupe && m.created.is_none() {
             m.created = Some(fsutil::rfc3339(
                 prev.as_ref().map(|p| p.created_at_ms).unwrap_or(now),
             ));

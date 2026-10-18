@@ -925,3 +925,18 @@ fn model_roundtrip_through_library() {
     assert_eq!(p.layers[0].sample_id.as_deref(), Some(mic.id.as_str()));
     assert_eq!(lib.kit_summary(&id).unwrap().to_protocol().pad_count, 12);
 }
+
+/// 同一个包在两台设备（两个曲库）上导入得到同一个 ID 和同样的 manifest，
+/// 多设备同步时不会被当成并发修改而产生冲突副本。
+#[test]
+fn same_package_imports_identically_on_two_devices() {
+    let (_a_dir, a) = lib();
+    let (_b_dir, b) = lib();
+    let pkg = repo_root().join("content/kits/ultrapads-starter.upkit");
+    let ra = a.import(&pkg).unwrap();
+    std::thread::sleep(std::time::Duration::from_millis(1100));
+    let rb = b.import(&pkg).unwrap();
+    let (ia, ib) = (&ra.kits[0].kit_id, &rb.kits[0].kit_id);
+    assert_eq!(ia, ib);
+    assert_eq!(a.kit_manifest(ia).unwrap(), b.kit_manifest(ib).unwrap());
+}

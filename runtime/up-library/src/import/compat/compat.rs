@@ -666,6 +666,12 @@ fn run(
             Some(x) => x,
             None => continue,
         };
+        // 确定性 ID：同一原 App Kit 在不同设备上导入得到同一个 ID（多设备同步不重复）。
+        doc.id = fsutil::stable_id(&format!(
+            "{}:{}",
+            flavor.id(),
+            orig_id.as_deref().unwrap_or(&c.name.to_lowercase())
+        ));
         if let Some(info) = info {
             doc.genres = info.genres.clone();
             doc.tags = info.tags.clone();

@@ -67,6 +67,15 @@ pub fn new_id() -> String {
     uuid::Uuid::now_v7().to_string()
 }
 
+/// 由稳定键派生的确定性 ID（UUIDv8 格式，BLAKE3 前 16 字节）。同一来源在不同设备上
+/// 导入得到同一个 ID，多设备同步时不会变成两个 Kit。
+pub fn stable_id(key: &str) -> String {
+    let h = blake3::hash(key.as_bytes());
+    let mut b = [0u8; 16];
+    b.copy_from_slice(&h.as_bytes()[..16]);
+    uuid::Builder::from_custom_bytes(b).into_uuid().to_string()
+}
+
 /// 资源 ID 只能包含 `[A-Za-z0-9_~-]`（会被用作目录名；`~` 用于同步冲突副本 `<id>~conflict~<hash>`）。
 pub fn is_safe_id(id: &str) -> bool {
     !id.is_empty()

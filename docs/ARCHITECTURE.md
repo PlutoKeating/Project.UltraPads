@@ -113,6 +113,7 @@
 └── projects/                    编曲工程（预留）
 ```
 
+- 多设备一致性：导入（去重路径）保留包内的 `created`/`updated`，不写导入时间；原 App Kit 的 ID 由 `fsutil::stable_id("<来源>:<原 Kit ID>")` 确定性派生（UUIDv8 格式）。同一个包在不同设备上导入得到同一 ID、逐字节相同的 manifest，Hub 同步时不会出现重复 Kit 或冲突副本；只有保存编辑才更新 `updated`。
 - 导入安全：ZIP 条目路径规范化（拒绝绝对路径/`..`/盘符/符号链接）、条目数/单文件/总大小/压缩比限额、manifest 哈希校验后才入库；写文件一律"临时文件 → fsync → rename"。
 - 所有导入的音频在入库时统一为 WAV（Ogg/MP3/FLAC 等经 up-codec 解码转码），引擎只需解析 WAV。
 - 示例 Kit：`content/kits/*.upkit` 由 `cargo run -p up-library --example kitgen -- content/kits` 用代码合成生成（CC0-1.0）。应用把它们的副本打包为资源（`app/ultrapads/assets/kits/`），首次启动曲库为空时经 `library_import_bytes` 导入。原 App 素材只在被忽略的 `private-assets/` 中，经 `just inject-assets` 注入后由应用首次启动导入到用户自己的数据目录（或桌面开发时 `--dart-define=UP_PRIVATE_KITS=<dir>` 直接导入），不入库、不随仓库分发。默认加载：原版 Sunset → CC0 Starter → 第一个。
