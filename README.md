@@ -28,16 +28,15 @@ UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter �
 
 ## 功能
 
-- **演奏**：每组 12 个 pad，共 A、B 两组 24 个。
-  - 支持多点触控，每个 pad 可设为 One-shot、Loop 或 Gate。
-  - 支持 choke 组和按小节量化启动。
-  - 可实时变速（1.0 / 0.7 / 0.5），每个 pad 可单独变调（±12 半音）。
-- **教程**：时间轴提示下一个要按的 pad，判定 PERFECT / TOO FAST / TOO SLOW / MISS，教程时间轴随变速同比缩放。
+- **演奏**：一首歌可以有一组或多组音色（A、B、C… 最多 7 组），每组 12 个 pad，演奏中一键切换组，已经在播放的声音不会中断。
+  - 触摸到即发声：按下或手指滑进 pad 都立即触发，支持多点触控；每个 pad 可设为 One-shot、Loop 或 Gate。
+  - 支持 choke 组和按小节量化启动，每个 pad 可单独变调（±12 半音）。
+  - Linux 走 PipeWire 原生音频通路 + 实时优先级（指令到发声约 4 ms），Android 走 AAudio 低延迟模式。
 - **曲库**：
   - Kit 格式为 `.upkit`，即 SFZ 加 JSON 旁挂文件，用 BLAKE3 做内容寻址。
   - 可导入 SFZ、WAV 文件夹，也有原 App 素材导入器。
   - 项目可导出为 DAWproject。
-- **编辑 Kit**：给 pad 换音色（内置、麦克风、本地文件、其他 Kit、录音），调整 pad 属性，裁剪和试听样本。
+- **编辑 Kit**：新增、删除、调整音色组顺序，给 pad 换音色（内置、麦克风、本地文件、其他 Kit、录音），调整 pad 属性，裁剪和试听样本。
 - **录音与作品**：录下主输出生成作品，作品卡带波形，可循环播放、导出 WAV 和分享。
 - **皮肤**：3 套主题（霓虹、描边、浅色）、16 套原版风格预设，另有自定义皮肤编辑器。
 - **个人多设备协同（Hub）**：
@@ -66,7 +65,8 @@ curl -fsSL https://ultrapads.plutokeating.beer/install | bash
 ```
 
 - 安装到 `~/.local/opt/ultrapads`，命令为 `~/.local/bin/ultrapads`，并写入桌面项和图标。
-- 需要 GTK 3 和 ALSA（PipeWire / PulseAudio 的兼容层即可）；缺少时脚本会询问是否用系统包管理器安装。
+- 支持 Debian 12+、Ubuntu 23.04+、Fedora 38+、Arch 等（需要 glibc ≥ 2.36、PipeWire ≥ 0.3.65 的库；Ubuntu 22.04 不支持）。
+  需要 GTK 3、ALSA、PipeWire 与 D-Bus 运行库，缺少时脚本会询问后用系统包管理器安装（`--yes` 跳过询问）。
 - 选项写在 `bash -s --` 之后：`--version 0.1.0`（安装指定版本）、`--prefix <目录>`、`--no-desktop`、`--no-modify-path`、`--uninstall`（保留曲库与设置）。
 - 应用启动后会检查新版本（设置 → 关于 → 软件更新，可关闭），点「更新」即在应用内完成更新并重启。
 
@@ -136,7 +136,7 @@ docker run --rm -v "$PWD:/work" -w /work ghcr.io/plutokeating/ultrapads-cli:0.0.
 
 - 引擎是业务状态的唯一事实源，界面只持有只读投影。
 - 按 pad 时，Flutter 的原始指针事件通过同步 FFI 直接写入 Rust 的无锁队列。
-- 音频后端用 cpal：Linux 上走 ALSA，Android 上走 AAudio。音频图基于 Firewheel，外面包了一层自研抽象。
+- 音频后端用 cpal：Linux 上优先走 PipeWire 原生通路（经 rtkit 提为实时优先级，没有 PipeWire 时回退 ALSA），Android 上走 AAudio 低延迟模式。音频图基于 Firewheel，外面包了一层自研抽象。
 
 详见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
 

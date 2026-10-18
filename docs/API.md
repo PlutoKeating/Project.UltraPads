@@ -6,7 +6,8 @@
 ## 1. 基本约定
 
 - 采样时间用 `u64` 帧数；音乐时间用 `f64` 拍（beat），小节由拍号换算
-- Pad 编址：`PadId { bank: u8 /*0=A,1=B*/, index: u8 /*0..11*/ }`；平铺下标 = `bank*12 + index`
+- Pad 编址：`PadId { bank: u8 /*音色组 0=A … 6=G*/, index: u8 /*0..11*/ }`；平铺下标 = `bank*12 + index`，共 `PAD_COUNT = 7 × 12 = 84`（`up_core::BANK_COUNT` / `PADS_PER_BANK`）
+- 音色组：一首歌（Kit）有 `group_count` 组（1..=7），引擎始终为全部 84 个 pad 留位，所以切换组不会打断其它组正在播放的声音；默认 MIDI / SFZ 键位 `36 + flat`（36..=119）
 - 资源 ID：`SampleId`、`KitId`、`TrackId`、`ProjectId` 一律为 BLAKE3 内容哈希或 UUIDv7 字符串
 - 所有 FFI 函数返回 `Result<T, UpError>`；`UpError { code: ErrorCode, message: String }`
 - 标注 `#[frb(sync)]` 的函数在 UI 线程同步执行，**只允许推送无锁命令**，不得阻塞
@@ -55,7 +56,7 @@ pub enum EngineEvent {
     PadState { pad: PadId, state: PadPlayState },
     Transport { playing: bool, beat: f64, bpm: f64 /*有效 = 基础 × speed*/, bar_len_beats: f64,
                 song_secs: f64 /*= beat × 60 / 基础 bpm*/ },
-    Meters { master_peak: [f32; 2], master_rms: [f32; 2], pad_levels: Vec<f32> /*24*/ },
+    Meters { master_peak: [f32; 2], master_rms: [f32; 2], pad_levels: Vec<f32> /*PAD_COUNT = 84*/ },
     Recorder { state: RecorderState, elapsed_secs: f64 },
     KitLoaded { kit: KitSummary },
     TrackSaved { track: TrackInfo },         // 录音完成并入库（新增）
@@ -66,17 +67,18 @@ pub enum EngineEvent {
 }
 
 pub struct TransportClock { playing: bool, beat: f64, song_secs: f64, bpm: f64 /*基础*/, speed: f64 }
-pub struct EngineSnapshot { pads: Vec<PadSnapshot /*24*/>, transport: TransportState, kit: Option<KitSummary>,
+pub struct EngineSnapshot { pads: Vec<PadSnapshot /*PAD_COUNT = 84*/>, transport: TransportState, kit: Option<KitSummary>,
                             master_gain, recorder, recorder_elapsed_secs, sample_rate, active_voices }
 pub struct RenderScript { duration_secs: f64, events: Vec<TimedCommand { at_secs: f64, cmd: Command }> }
 ```
 
 行为规则（对齐 `docs/research/compat-*-analysis.md`）：
 - **Loop**：默认不量化，按下立即从头循环，再按停止（≈5 ms 淡出）。量化开启时：`Idle → Pending →`（下一个网格边界，采样级精确）`Playing`；Playing 时再按 → `Stopping`（等边界）→ `Idle`；Pending/等待中的 Stopping 再按可取消。第一个量化 Loop 会从 beat 0 启动 transport，最后一个 Loop 结束后自动停止。
+- **触发**：界面层"触摸到即触发"——指针按下落在 pad 上或滑进 pad 都发送 `PadDown`，滑出 / 抬起 / 取消发送 `PadUp`（`PadGrid`）；每次触碰都按 pad 模式处理。
 - **One-shot**：再按从头重触发（旧声部 5 ms 淡出）；**Gate**：松手淡出。
 - **Choke**：触发 pad X（组 g）时，所有 `choked_by.or(choke_group) == g` 的其它 pad 停止（Loop 也关掉，Pending 取消）。
 - **复音**：默认最多 32 个发声声部 + 16 个淡出尾巴；超限时偷取最老的 one-shot/gate（Loop 最后被偷），被偷声部淡出。
-- **速度**：`SetSpeed` 对所有声部做 4 点 Hermite 插值变速变调，transport 同比缩放；原 App 的三档 1.0 / 0.7 / 0.5 是推荐预设。UI 的速度控件只在教程模式出现（4.7.0），选择后发送 `SetSpeed`，教程时间轴按同一比例推进，退出教程恢复 1.0。
+- **速度**：`SetSpeed` 对所有声部做 4 点 Hermite 插值变速变调，transport 同比缩放；原 App 的三档 1.0 / 0.7 / 0.5 是推荐预设。当前应用界面不提供速度控件（v0.2.0 移除了教程模式），`SetSpeed` 与教程相关接口（`transport_clock`、`tutorial_get`、`tutorial_judge`）保留在引擎与 FFI 中。
 - **Pitch**：`PadParams.pitch`（KitDoc `pitchSemitones`）在声部起播时换算为速率倍数 `2^(pitch/12)`，与 speed 相乘；对在播声部实时生效。独立变调不变速留给 `OfflineStretcher`。
 - **试听声部**：作品播放与编辑器试听共用一个不占用 pad 的立体声试听声部（不受 speed 影响）；新的试听会替换正在播放的作品（推送 `TrackPlayback { track: None }`）。离线 pitch/tempo 接口见 `up_dsp::stretch::OfflineStretcher`（后续接 Signalsmith Stretch）。
 - 事件约 60 Hz 合并：Meters 只保留最新值（无声时不重复发送）；PadState、Transport、Recorder 变化立即排队（控制线程 4 ms 轮询）。
@@ -117,7 +119,7 @@ DTO 定义在 `bridge/up-ffi/src/api/types.rs`（与引擎类型一一对应，D
 | `app_version() -> String` | ✅ | 应用版本 `X.Y.Z`（Cargo workspace 版本，与 pubspec 一致） |
 | `update_*` | | 应用内更新（`runtime/up-update`），见 §6.4 |
 
-`KitSummary`（FFI）= 引擎字段 `{ id, name, pad_count, bpm, has_tutorial }` + 曲库字段 `{ description, authors, genres, tags, theme_color, inspired_by, cover_path, favorite, source_kind, last_used_at_ms }`（引擎事件中曲库字段为空）。
+`KitSummary`（FFI）= 引擎字段 `{ id, name, pad_count /*有声音的 pad 数*/, group_count /*音色组数 1..=7*/, bpm, has_tutorial }` + 曲库字段 `{ description, authors, genres, tags, theme_color, inspired_by, cover_path, favorite, source_kind, last_used_at_ms }`（引擎事件中曲库字段为空）。
 
 **教程格式（`TutorialChart`，时间单位 = 秒，速度 1.0 时的歌曲时间）**
 

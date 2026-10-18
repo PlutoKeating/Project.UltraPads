@@ -30,7 +30,7 @@ lib/
    ├─ assets/private_assets.dart  私有素材清单解析（见 §6）
    ├─ engine/                engine_bootstrap.dart（UP_ENGINE=mock|ffi）、ffi_engine_client.dart
    ├─ library/first_run.dart 首次启动：导入内置 Kit（CC0 资源 / 注入的 4.7.0 Kit）并加载默认 Kit
-   ├─ config/app_links.dart  外部链接（assets/config/links.json：视频教程搜索地址；页面不写 URL）
+   ├─ config/app_links.dart  外部链接（assets/config/links.json：下载页；页面不写 URL）
    ├─ dev/dev_hooks.dart     开发/验证环境变量（ULTRAPADS_HUB_AUTOSTART、ULTRAPADS_LOG_EVENTS、ULTRAPADS_UPDATE_SELFTEST）
    ├─ update/                应用内更新：update_controller.dart（状态机）、apk_installer.dart（Android 安装通道）
    ├─ routing/               routes.dart（路径常量）、router.dart（go_router + 转场）
@@ -38,7 +38,6 @@ lib/
    ├─ rust/                  FRB 生成代码（不要手改）
    └─ features/
       ├─ perform/            演奏页、功能按钮行、键盘映射、引擎→PadData 映射
-      ├─ tutorial/           时间轴教程：判定反馈层、时间参数
       ├─ library/            曲库（KITS / FEED / PROFILE）、Kit 预览、曲风
       ├─ editor/             编辑 Kit（LOAD SOUND、EDIT PAD、EDIT FILE 裁剪）、采样选择器
       ├─ recorder/           麦克风采样页、保存录音面板、分享
@@ -66,8 +65,7 @@ lib/
 | `/hub` | `HubPage` 多设备协同 | 推入 | 新增（F10） |
 | `/dev/gallery?tab=&skin=` | `DesignGalleryPage` | 推入 | 新增（ADR-0001 #13 修订：替代 Figma） |
 
-弹层（不是路由）：皮肤面板 `showSkinsSheet`（0.4 s QuadOut 底部滑入）、速度框
-`showSpeedModal`（4.7.0 `modalVelocities`：速度按钮正下方的下拉框，1.0 / 0.7 / 0.5，进 0.5 s、出 1.0 s QuadOut）、保存录音 `showSaveRecordingSheet`、采样选择、确认对话框。
+弹层（不是路由）：皮肤面板 `showSkinsSheet`（0.4 s QuadOut 底部滑入）、保存录音 `showSaveRecordingSheet`、采样选择、确认对话框。
 
 - 未完成引导时 `redirect` 到 `/onboarding`；画廊路由不受影响。
 - `--dart-define=UP_GALLERY=true` 时初始路由为 `/dev/gallery`；`--dart-define=UP_ROUTE=<路由>` 或桌面环境变量
@@ -78,21 +76,19 @@ lib/
 ### 3.1 演奏页结构
 
 ```
-UpTopBar: [♫ SONGS] KIT <名称> …… [速度 1.0（仅教程模式，点开下拉 1.0/0.7/0.5）] [▶ YouTube/BiliBili]
-功能行 (functionRow 50pt) ──────────────────────────── [A/B 64.5×63]
-  默认：[🎓 LEARN TO PLAY] | [⋮]
-  ⋮ 展开（整行横移，0.3 s CircIn/CircOut）：[● 录音] [皮肤] [编辑] [分享] [设置] [◀]
-  教程模式：[▶/■] ———o——— [✕]
-PadGrid 3×4（A/B 两页横移 0.2 s QuadOut），教程模式叠加判定反馈层
-首次引导浮层（FirstGuide，非教程模式、未看过时）
+UpTopBar: [♫ SONGS] <歌名> ………………………………………………………………… [⚙ 设置]
+功能行 (functionRow 50pt)：[A][B][C]…（音色组切换条） | [⋮]
+  ⋮ 展开（整行横移，0.3 s CircIn/CircOut）：[● 录音] [皮肤] [编辑] [分享] [◀]
+PadGrid 3×4（当前音色组；组间横移 0.2 s QuadOut）
+首次引导浮层（FirstGuide，未看过时）
 ```
 
-- **视频教程按钮**（4.7.0 `btnYoutube`，顶栏最右）：`url_launcher` 打开外部链接。链接来自
-  `assets/config/links.json`（`appLinksProvider`）：Kit 自带 `videoUrl` 优先，否则按界面语言选搜索地址
-  （zh → BiliBili，其余 → YouTube），搜索词 = Kit 名 + `videoQuerySuffix`。Android 11+ 在 Manifest 中声明
-  VIEW https 的 `<queries>`。
+- **顶栏**：标题直接显示歌名（Kit 名，不带「KIT / 音色包」前缀）；右上角 `TopBarTileButton` 是设置入口（原视频教程按钮的位置）。
+- **音色组**：一首歌有 `KitSummary.groupCount` 组（A–G，最多 7 组），`PadGroupSwitcher` 点击切换（`bankProvider`）。
+  切换只改变接下来触摸的 pad，已经在播放的声音（包括 Loop）继续——引擎始终为全部组的 pad 留位。键盘 Tab 依次切到下一组。
+- **学习演奏 / 教程模式与速度控件已移除**（v0.2.0）；引擎与 FFI 的教程能力（`tutorial_get` 等）保留。
 - **首次引导**（`features/onboarding/first_guide.dart`，4.7.0 FirstGuide）：70% 遮罩挖洞、手指 1.0 s QuadIn
-  上移、白色气泡、STEP x/4（从右滑入）、SKIP（0.25 s 滑入）；4 步：pad → LEARN TO PLAY → ⋮ → SONGS。
+  上移、白色气泡、STEP x/4（从右滑入）、SKIP（0.25 s 滑入）；4 步：pad → 音色组切换条 → ⋮ → SONGS。
   完成或跳过后写入设置 `firstGuideSeen`；设置页「开发者 → 重新显示新手引导」可重置。
 
 ### 3.2 宽屏布局（`features/perform/perform_layout.dart`）
@@ -119,8 +115,7 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 | `metersProvider` / `trackPlaybackProvider` / `engineErrorsProvider` | 高频 / 单类事件流 | 事件 |
 | `kitsProvider` / `tracksProvider` | 曲库、作品（`LibraryChanged` / `KitLoaded` 时刷新） | 引擎查询 |
 | `hubViewProvider` | Hub 服务、配对、同步进度、控制器 | Hub 事件 |
-| `bankProvider` | 当前显示的页 A/B（纯 UI；加载 Kit 时回到 A） | UI |
-| `tutorialProvider` | 教程会话：时间轴位置、速度、已判定步骤、反馈 | UI（消费引擎给的 `TutorialChart`） |
+| `bankProvider` | 当前显示的音色组（0 = A；纯 UI；加载 Kit 时回到 A） | UI |
 | `kitLoadProvider` / `favoritesProvider` | 加载中的 Kit；收藏（本机偏好） | UI / prefs |
 | `settingsProvider` / `upThemeProvider` / `localeControllerProvider` | 皮肤、自定义皮肤、动画开关、音频偏好、自动检查更新、语言 | SharedPreferences |
 | `updateProvider` | 应用内更新阶段（检查 / 可更新 / 下载进度 / 待重启或待安装 / 失败） | `update_*`（§11） |
@@ -131,14 +126,16 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 
 ## 5. 触摸延迟
 
-- `PadGrid` 外层一个 `Listener`（不进手势竞技场），按坐标命中 pad；每个 pointer 记录按下的 pad，
-  抬起 / 取消时释放同一个 pad，支持多点触控。鼠标只有主键触发。
+- `PadGrid` 外层一个 `Listener`（不进手势竞技场），按坐标命中 pad。**触摸到即触发**：每个 pointer 记录它当前触摸的 pad，
+  按下落在 pad 上或移动时滑进新的 pad 都立即 `padDown`（先松开上一个 pad），滑出 / 抬起 / 取消时 `padUp`；在空 pad 上按下再滑进有声音的 pad 同样触发。
+  支持多点触控；鼠标只有按住主键时触发。
+- pad 按下态当帧即全亮（不等动画控制器下一帧起步），松开 0.1 s 淡出。
 - 回调先同步调用 `padDown`（FRB `sync`，只推命令），再 `setState` 显示按下态。
 - UI isolate 保持空闲，指针事件才能立即处理：演奏页只 `select` 自己用到的 `EngineView` 字段（走带位置播放时约 60 Hz，
   不触发整页重建）；`FfiEngineClient` 把 Transport 事件与缓存的走带状态合并，不为每个事件做一次同步 `snapshot()`。
-- 音频侧延迟见根目录 `docs/ARCHITECTURE.md` §4（Android LowLatency、桌面默认 128 帧）。设置页的缓冲档位在 Android 上隐藏
+- 音频侧延迟见根目录 `docs/ARCHITECTURE.md` §4（Linux PipeWire 原生 + 实时优先级、Android LowLatency、桌面默认 128 帧）。设置页的缓冲档位在 Android 上隐藏
   （由 AAudio 决定，显示为「系统」）。
-- 键盘映射（桌面）：`1 2 3 / Q W E / A S D / Z X C` 对应当前页 12 个 pad，Tab 翻页，Space 停止全部，R 录音；
+- 键盘映射（桌面）：`1 2 3 / Q W E / A S D / Z X C` 对应当前组 12 个 pad，Tab 切到下一组，Space 停止全部，R 录音；
   键盘按下态通过 `PadGrid.externallyPressed` 同样立即显示。
 
 ## 6. 私有素材注入
@@ -168,13 +165,12 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 | Pad 动效 | 按下 1 帧变亮（`pad.pressAttack` 17 ms），松开 0.1 s QuadOut；Loop 白色闪烁 0.6 s yoyo + 图标 1.2 s 一圈 | 4.7.0 Transition |
 | Lottie | 保留 `SegmentedLottie`（按下播 0→0.5、松开 0.5→1），仅在设置「经典 Pad 动画」+ 注入了 APK 素材时使用 | 4.7.0 没有 Lottie；APK 的效果作为可选旧版皮肤 |
 | Fragment Shader | 霓虹 bloom / 按下波纹 / Loop 描边呼吸作为光效增强（低端机和测试回退 BoxShadow） | 用户要求光效；原 App 没有 shader |
-| ⋮ 菜单 | 整行横移展开（录音 / 皮肤 / 编辑 / 分享 / 设置 / 返回），不是弹出菜单 | 4.7.0 `navMoreButtons`；「设置」是我们新增的入口 |
-| 传输栏 / 速度 | 只在教程模式出现：▶/■ + 进度条 + 速度 1.0/0.7/0.5 | 4.7.0 `btnNavController=tutorialVelocity`；截图中的传输栏属于教程模式 |
+| ⋮ 菜单 | 整行横移展开（录音 / 皮肤 / 编辑 / 分享 / 返回），不是弹出菜单；设置入口在顶栏右上角 | 4.7.0 `navMoreButtons`；v0.2.0 用户要求 |
+| 功能行 / 顶栏 | 4.7.0 的 LEARN TO PLAY 与视频教程按钮移除，改为音色组切换条与设置入口；顶栏只显示歌名 | v0.2.0 用户要求 |
 | 停止全部 | 键盘 Space；`StopAllCmd`。演奏页没有常驻停止按钮 | 4.7.0 没有 |
-| 教程 | 时间轴：pad 提前 `tutorial.fill`(1 s) 从下往上填满，判 PERFECT / TOO FAST / TOO SLOW / MISS；窗口优先用引擎谱面的 `perfectMs`/`missMs` | 4.7.0 tutorial.json；APK 的无时间步骤格式仍兼容 |
-| 速度 | 实时变速播放（引擎 `SetSpeed`，varispeed）+ 教程时间轴同比缩放；只在教程模式出现，退出教程恢复 1.0 | 已定决策（4.7.0 未确认音频是否变速，分析文档 §9-2）；引擎 `transport_clock.song_secs` 同样按 speed 推进 |
+| 教程 / 速度 | 界面移除（v0.2.0）；引擎仍解析 4.7.0 `tutorial.json`、提供 `SetSpeed` 与 `tutorial_judge` | v0.2.0 用户要求 |
 | 曲库 | 3 个 Tab（KITS / FEED / PROFILE）+ 搜索；订阅横幅换成「新曲推送卡」；解锁弹窗去掉付费按钮 | ADR-0001 #4 |
-| 编辑 Kit | 整页 `#EE4286` 粉底（primitive `swatch.mediumPink`，暂无 semantic token）；EDIT PAD 含颜色 / Loop / Hold / 分组 / 音量 / PITCH ±（半音 ±12）/ 声像 / 裁剪 / 复制 / 清空；试听走 `sample_preview`（不占用 pad） | 4.7.0 |
+| 编辑 Kit | 整页 `#EE4286` 粉底（primitive `swatch.mediumPink`，暂无 semantic token）；pad 区左侧为当前音色组的 12 个迷你 pad，右侧为组切换与新增 / 左移 / 右移 / 删除（删除有声音的组需确认，组结构变化实时同步引擎，保存时组数变化则重载 Kit）；EDIT PAD 含颜色 / Loop / Hold / 分组 / 音量 / PITCH ±（半音 ±12）/ 声像 / 裁剪 / 复制 / 清空；试听走 `sample_preview`（不占用 pad） | 4.7.0 |
 | 录音 | 录音结束弹「保存录音」面板，导出 `.flac` 后分享 | 4.7.0 |
 | 引导 | Walkthrough 4 页 + 风格选择；Splash 用系统启动页 | 4.7.0（试用 / 订阅页不做） |
 | 设置 / Hub / 皮肤编辑器 / 画廊 | 原 App 没有，按设计系统新做 | 需求 F7、F8、F10、ADR-0001 #13 |
@@ -190,7 +186,7 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 | 编辑 Kit | `library_kit_json` + `library_save_kit(kitJson)`：读取 `up_model::KitDoc` JSON，修改 pad 字段（含 `pitchSemitones`）后写回（保留 layers / meta 等未知字段；换采样时清空 layers） |
 | 采样 | sample_waveform、sample_preview / sample_preview_stop、sampler_record_start/stop、library_list_samples（`sampleInfo` 由它查找） |
 | 作品 | tracks_list / track_play(loop) / track_stop / track_export / track_rename / track_delete |
-| 教程 | tutorial_get（带 perfectMs / missMs） |
+| 教程 | tutorial_get（带 perfectMs / missMs；v0.2.0 起界面不再使用） |
 | Hub | `docs/API.md` §3.1 全部函数；事件见 API.md 的 Dart 映射说明 |
 | 版本 / 更新 | `app_version`（设置「关于」）、`update_check` / `update_download` / `update_cancel` / `update_apply` / `update_relaunch`（§11） |
 | ColorRole | 与引擎同名同序；调色板下标只由 `ColorRole.paletteIndex` 决定（API.md §3.1 末尾的映射表） |
@@ -219,11 +215,12 @@ Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径
 ## 10. 测试
 
 - `test/app_test.dart`：用 `MockEngineClient(realtime: false)` 启动完整应用；覆盖 Listener 同步触发、
-  功能行展开、皮肤切换、时间轴教程与速度框、A/B、键盘映射、各页面 golden、LET'S PLAY、录音保存、引导、中文。
+  功能行展开、皮肤切换、顶栏（歌名 + 设置入口）、音色组切换（切换不打断播放）、键盘映射、各页面 golden、LET'S PLAY、录音保存、引导、中文。
+- `test/editor_groups_test.dart`：编辑器新增 / 右移 / 删除音色组（实时同步引擎、删除需确认）。
 - `test/gallery_test.dart`：画廊交互，以及 3 个内置主题 + 16 套预设各一份 golden（组件页）。
 - `test/update_test.dart`：更新状态机（Linux 装入并重启、Android 申请「安装未知应用」后安装、手动安装不下载、Mock 不自动检查）与设置页「软件更新」。
 - `test/first_run_test.dart`（默认 Kit 顺序、打包的 CC0 Kit 与 `content/kits` 一致、空曲库导入）、
-  `layout_test.dart`、`video_link_test.dart`、`first_guide_test.dart`、`image_skin_test.dart`。
+  `layout_test.dart`、`first_guide_test.dart`、`image_skin_test.dart`。
 - golden 位于 `test/goldens/`，字体由 `test/flutter_test_config.dart` 加载（Open Sans + Material Icons）。
 
 ## 11. 应用内更新（`lib/src/update/`，接口见 `docs/API.md` §6）

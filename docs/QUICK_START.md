@@ -16,7 +16,7 @@
 | melos | 8.x（根 `pubspec.yaml` 的 dev 依赖，用 `dart run melos` 调用即可） | Dart 多包分析与测试 |
 | Node.js + pnpm | Node ≥ 22，pnpm 12 | 设计 token 构建（Style Dictionary）、图标生成、官网测试（`website/`，node --test） |
 | ImageMagick + Chromium | magick 7.x；chromium / google-chrome / Playwright headless shell 任一（或 `CHROME=<路径>`） | 仅 `just icons` 需要 |
-| Linux 桌面依赖 | GTK 3 开发包、clang、cmake、ninja、pkg-config、ALSA 开发包（`libasound2-dev`） | Linux 构建与音频 |
+| Linux 桌面依赖 | GTK 3 开发包、clang、cmake、ninja、pkg-config、ALSA / PipeWire / D-Bus 开发包（`libasound2-dev libpipewire-0.3-dev libspa-0.2-dev libdbus-1-dev`，PipeWire ≥ 0.3.65） | Linux 构建与音频 |
 
 ```bash
 rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
@@ -46,7 +46,7 @@ just run-mock         # 内存 MockEngineClient，不需要 Rust 引擎
 just build-linux      # flutter build linux --release → app/ultrapads/build/linux/x64/release/bundle/ultrapads
 ```
 
-音频走 cpal → ALSA（PipeWire / PulseAudio 的 ALSA 兼容层即可）。
+音频走 cpal：有 PipeWire 时用原生通路（流线程经 rtkit 提为实时优先级），否则回退 ALSA。用 `pw-top` 可以看到 UltraPads 节点的 quantum 与欠载计数（ERR）。
 
 开发 / 截图用的启动参数：
 
@@ -102,7 +102,7 @@ just cli --help                 # cargo run -p up-cli
 just docker-cli 0.0.1           # 构建 ghcr.io/plutokeating/ultrapads-cli:0.0.1
 ```
 
-镜像只包含 `up-cli` 和 ALSA 运行库。构建上下文由根目录 `.dockerignore` 白名单限定为 Rust 工作区（`Cargo.*`、`engine/`、`runtime/`、`bridge/`），私有素材和构建产物不会进入镜像。
+镜像只包含 `up-cli` 和 ALSA / PipeWire / D-Bus 运行库（基于 Debian 12）。构建上下文由根目录 `.dockerignore` 白名单限定为 Rust 工作区（`Cargo.*`、`engine/`、`runtime/`、`bridge/`），私有素材和构建产物不会进入镜像。
 
 ## 4. 首次启动与内置 Kit
 

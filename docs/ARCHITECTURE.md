@@ -39,7 +39,7 @@
 
 | 线程 | 职责 | 约束 |
 |---|---|---|
-| 音频线程（设备回调） | `AudioProcessor::process(out, channels)`：图依次执行 Sampler（消费命令 → 量化调度 → 渲染 24 路 pad 总线 + 试听）→ Mixer（pad 电平）→ Master（增益平滑、限幅、电平、录音环形缓冲） | 不分配、不加锁、不做系统调用；测试用计数分配器证明零分配（`up_rt::alloc_check`） |
+| 音频线程（设备回调） | `AudioProcessor::process(out, channels)`：图依次执行 Sampler 节点（消费命令 → 量化调度 → 把全部音色组的 pad（最多 7 × 12 = 84 个）渲染进节点内预分配的立体声总线 + 试听 → 节点内 Mixer 混成立体声并统计 pad 电平）→ Master（增益平滑、限幅、电平、录音环形缓冲）。pad 总线不占音频图端口（Firewheel 每节点 ≤ 64 个），组数与端口无关 | 不分配、不加锁、不做系统调用；测试用计数分配器证明零分配（`up_rt::alloc_check`） |
 | 引擎控制线程（`up-engine-control`） | 拥有音频图（Firewheel context 非 `Send`）；4 ms 轮询事件环、回收被替换的 `Arc<Sample>`、约 60 Hz 合并 Meters、维护快照（`ArcSwap`）、收尾录音（交给 runtime 写盘） | 可分配；不做文件 I/O（engine 层无 I/O） |
 | 运行基座线程（`up-host`） | cpal 输出/输入流各占一个宿主线程（stream 非 `Send`）；解码、重采样、Kit 加载、录音落盘、事件总线转发 | 资源准备好后以 `Arc` 送进音频线程 |
 | UI 线程（Dart） | 指针事件 → `pad_down/pad_up`（FRB `sync`，只往无锁队列推命令，微秒级）；订阅事件流驱动动画 | UI 按下态立即生效，不等音频回调 |
@@ -56,12 +56,12 @@
 
 | 平台 | 外壳 | 音频后端 | 验证 |
 |---|---|---|---|
-| Linux x64 | Flutter linux（GTK） | cpal → ALSA（PipeWire/Pulse 兼容）；默认周期 128 帧、双缓冲 | ✅（`docs/research/v0.0.1-verification.md`） |
+| Linux x64 | Flutter linux（GTK）；发布版在 Debian 12 容器构建（glibc 2.36、PipeWire 0.3.65） | cpal → PipeWire 原生（`pipewire` feature；`realtime-dbus` 经 rtkit 把流线程提为 SCHED_RR），无 PipeWire 时回退 ALSA；默认周期 128 帧 | ✅（`docs/research/v0.0.1-verification.md`） |
 | Android | Flutter android，minSdk 26；release 开启 R8，keep 规则见 `android/app/proguard-rules.pro` | cpal → AAudio（需 `ndk_context` 初始化，见 bridge 文档；默认设备为伪设备 `aaudio:-1`）；cpal `realtime` feature 请求 `PERFORMANCE_MODE_LOW_LATENCY`，缓冲固定交给 AAudio（按 burst 回调、欠载时自动加大），忽略 `buffer_frames` | ✅ 模拟器（真机待验收） |
 | Windows | Flutter windows | cpal → WASAPI | 仅开发 |
 | macOS/iOS | Flutter | cpal → CoreAudio | 仅开发 |
 | Web | Flutter web（skwasm） | Rust→WASM，AudioWorklet，需 COOP/COEP；不支持时降级 | 仅开发 |
-| Linux arm64 | Flutter linux（GTK），发布 CI 在 `ubuntu-22.04-arm` 原生构建 | cpal → ALSA | 发布构建（未实机验证） |
+| Linux arm64 | Flutter linux（GTK），发布 CI 在 `ubuntu-24.04-arm` 上的 Debian 12 容器原生构建 | 同 x64 | 发布构建（未实机验证） |
 | 插件 | nih-plug CLAP/VST3 | 宿主提供 | 预留 |
 
 ## 5. 设计系统
