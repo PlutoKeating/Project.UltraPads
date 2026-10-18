@@ -49,6 +49,9 @@ flutter build linux --debug
 flutter build apk --debug --target-platform android-x64,android-arm64
 ```
 
+release 构建、正式签名与发版流程（`just bump` / `just release`）见根目录 `docs/QUICK_START.md` §7；
+应用内更新见 `ARCHITECTURE.md` §11。
+
 ## 目录
 
 见 `ARCHITECTURE.md` §2。

@@ -18,6 +18,7 @@
 │                        文件存储、MIDI(midir)、时钟                │
 │   runtime/up-library ← 曲库：Kit/样本/作品存储、导入导出           │
 │   runtime/up-hub     ← 个人多设备协同：mDNS 发现、配对、同步、控制器 │
+│   runtime/up-update  ← 应用内更新：版本清单、校验下载、Linux 版本切换 │
 │   runtime/up-cli     ← 无头：离线渲染、Kit 打包、Hub 守护进程       │
 │   runtime/up-plugin  ← CLAP/VST3 外壳（预留）                     │
 ├──────────────────────────────────────────────────────────────┤
@@ -53,14 +54,14 @@
 
 ## 4. 平台适配
 
-| 平台 | 外壳 | 音频后端 | 验证（v0.0.1） |
+| 平台 | 外壳 | 音频后端 | 验证 |
 |---|---|---|---|
 | Linux x64 | Flutter linux（GTK） | cpal → ALSA（PipeWire/Pulse 兼容）；默认周期 128 帧、双缓冲 | ✅（`docs/research/v0.0.1-verification.md`） |
 | Android | Flutter android，minSdk 26；release 开启 R8，keep 规则见 `android/app/proguard-rules.pro` | cpal → AAudio（需 `ndk_context` 初始化，见 bridge 文档；默认设备为伪设备 `aaudio:-1`）；cpal `realtime` feature 请求 `PERFORMANCE_MODE_LOW_LATENCY`，缓冲固定交给 AAudio（按 burst 回调、欠载时自动加大），忽略 `buffer_frames` | ✅ 模拟器（真机待验收） |
 | Windows | Flutter windows | cpal → WASAPI | 仅开发 |
 | macOS/iOS | Flutter | cpal → CoreAudio | 仅开发 |
 | Web | Flutter web（skwasm） | Rust→WASM，AudioWorklet，需 COOP/COEP；不支持时降级 | 仅开发 |
-| Linux ARM | 交叉编译 aarch64 | ALSA | 仅开发 |
+| Linux arm64 | Flutter linux（GTK），发布 CI 在 `ubuntu-22.04-arm` 原生构建 | cpal → ALSA | 发布构建（未实机验证） |
 | 插件 | nih-plug CLAP/VST3 | 宿主提供 | 预留 |
 
 ## 5. 设计系统
@@ -132,3 +133,38 @@
 - **试听声部**：作品播放（可循环）与编辑器 `sample_preview`（任意区段）共用一个不占用 pad 的立体声声部，不受 speed 影响。
 - **录音**：Master 限幅后的立体声写入 rtrb 环形缓冲 → 控制线程汇总为 `Take`（时长 + 128 段波形）→ runtime 写 WAV（FFI 下存入曲库 `tracks/`）→ `TrackSaved` 事件。
 - **CLI**：`up-cli devices | render --kit-dir <dir> --events <json> --out <wav> | play --kit-dir <dir> --pad A0 | latency-probe | inspect <wav>`（`cargo run -p up-cli -- …`）。
+
+## 10. 安装、应用内更新与发布
+
+发布接口契约见 `docs/API.md` §6，发布操作见 `docs/QUICK_START.md` §7。
+
+```
+tag vX.Y.Z ──► .github/workflows/release.yml ──► GitHub Release（tar.gz ×2、APK ×3、SHA256SUMS.txt；GitHub 记录每个资产的 sha256）
+                                                      │
+ultrapads.plutokeating.beer（website/，Cloudflare Worker，推送 main 由 Workers Builds 自动部署）
+  /install        安装脚本（静态）
+  /api/version    读 GitHub 最新正式版 → 版本清单（边缘缓存 5 min + 7 天陈旧副本）
+  /dl/<tag>/<f>   镜像下载，按 GitHub 的 sha256 核对后边缘缓存
+        ▲                         ▲
+   curl … | bash             runtime/up-update（FFI update_*）← 设置「软件更新」/ 启动静默检查
+```
+
+- **Linux 安装布局**（安装脚本与应用内更新共用，免 root）：`<前缀>/versions/<版本>/`（发布包内容）、
+  `<前缀>/current → versions/<版本>`（rename(2) 原子切换）、`<前缀>/install.json`（`installer: "install.sh"`，
+  应用据此判断能否自更新）。默认前缀 `~/.local/opt/ultrapads`；`~/.local/bin/ultrapads` 与桌面项都指向 `current`，
+  只保留当前版与上一版。运行中的进程用的是旧版本目录，切换后重启才生效（应用 `update_relaunch`：约 1 s 后由 `sh` 启动新版本，本进程退出）。
+- **发布包布局**（`tools/release/package-linux.sh`）：顶层目录 `ultrapads-<版本>-linux-<架构>/`，内含 Flutter bundle
+  （`ultrapads`、`lib/`、`data/`）与 `share/applications/dev.ultrapads.ultrapads.desktop`、`share/icons/hicolor/512x512/apps/…png`。
+  `dev.ultrapads.ultrapads` 同时是 GTK `g_set_prgname`、Wayland app_id 与图标名。
+- **完整性**：只认 GitHub 为每个资产记录的 sha256（Worker、安装脚本、`up-update` 三处核对）；镜像只是加速，不被信任。
+  应用的清单解析只接受 https 地址与 64 位十六进制哈希；解包拒绝绝对路径、`..` 与指向包外的符号链接。
+- **应用内更新**（`runtime/up-update` + `bridge/up-ffi/src/api/update.rs` + `app/ultrapads/lib/src/update/`）：
+  - 检查：`/api/version` 失败时回退 GitHub API；只发 GET，不带设备信息；启动后每进程最多一次，设置可关。
+  - 下载：镜像优先、失败回退直链，边下边算 SHA-256，`.part` 通过校验才改名；可取消；下载目录 `<cache_dir>/updates/` 只留本次的包。
+  - 安装方式：脚本安装的 Linux → 应用内装入并重启；Android → `dev.ultrapads/update` MethodChannel，经 FileProvider
+    （只暴露 `cacheDir/updates/`）调起系统安装器，用户确认；其它（手动解压、开发构建）→ 只提示并打开下载页。
+- **Android 签名**：正式密钥不入库，本机 `~/.config/ultrapads/key.properties` + `release.jks`，CI 从仓库 Secret 解出；
+  Gradle 依次查找 `UP_KEY_PROPERTIES` → `android/key.properties` → `~/.config/ultrapads/key.properties`，都没有时本地回退调试密钥、CI 直接失败；
+  发布流水线核对 APK 证书 SHA-256，必须与 `release.yml` 中的 `ANDROID_CERT_SHA256` 一致（签名一变，用户就得卸载重装）。
+- **版本号**：Cargo `[workspace.package] version`（FFI `app_version()` 读取）与 pubspec `version: X.Y.Z+构建号`（构建号即 Android versionCode）
+  由 `tools/release/bump.sh` 同时修改，`check-version.sh` 与 CI 核对两者及 tag 一致。

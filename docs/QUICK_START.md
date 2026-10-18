@@ -1,6 +1,6 @@
 # UltraPads 快速上手
 
-> 适用版本：v0.0.1。v0.0.1 只在 **Linux x64** 与 **Android**（API 26+）上构建和验证，其它平台只保证能开发。
+> 适用版本：v0.1.0。完整验证过的平台是 **Linux x64** 与 **Android**（API 26+）；Linux arm64 由发布 CI 原生构建；其它平台只保证能开发。
 > 命令都在仓库根目录执行，除非另有说明。
 
 ## 1. 环境要求
@@ -14,7 +14,7 @@
 | flutter_rust_bridge_codegen | **2.13.0**（与 `flutter_rust_bridge: 2.13.0` 严格一致） | 生成 Rust↔Dart 绑定 |
 | just | 1.x | 统一命令入口（`just --list`） |
 | melos | 8.x（根 `pubspec.yaml` 的 dev 依赖，用 `dart run melos` 调用即可） | Dart 多包分析与测试 |
-| Node.js + pnpm | Node ≥ 22，pnpm 12 | 设计 token 构建（Style Dictionary）、图标生成 |
+| Node.js + pnpm | Node ≥ 22，pnpm 12 | 设计 token 构建（Style Dictionary）、图标生成、官网测试（`website/`，node --test） |
 | ImageMagick + Chromium | magick 7.x；chromium / google-chrome / Playwright headless shell 任一（或 `CHROME=<路径>`） | 仅 `just icons` 需要 |
 | Linux 桌面依赖 | GTK 3 开发包、clang、cmake、ninja、pkg-config、ALSA 开发包（`libasound2-dev`） | Linux 构建与音频 |
 
@@ -79,6 +79,10 @@ adb install -r app/ultrapads/build/app/outputs/flutter-apk/app-arm64-v8a-release
 adb shell am start -n dev.ultrapads.ultrapads/.MainActivity
 ```
 
+release 包用正式密钥签名：Gradle 依次查找 `UP_KEY_PROPERTIES`、`app/ultrapads/android/key.properties`、
+`~/.config/ultrapads/key.properties`（字段 `storeFile` / `storePassword` / `keyAlias` / `keyPassword`），都没有时回退调试密钥
+（本地开发可用，但装不上正式版之上；CI 中缺失直接失败）。
+
 模拟器（x86_64，API 34）：
 
 ```bash
@@ -142,3 +146,28 @@ just check            # = rust-check + dart-check
 3. 配对（输入配对码）→ 同步 → 用作控制器；在模拟器上按 pad，桌面 stdout 出现远端控制器连接、pad 状态和电平日志。
 
 **同一台 Linux 上的两个进程 / 集成测试**：`cargo test -p up_ffi --test ffi_hub`（FFI 全流程：服务、配对、同步、控制器转发）。
+
+## 7. 发布
+
+一次发布 = 改版本号 → 写 CHANGELOG → 推送 tag，其余由 `.github/workflows/release.yml` 完成（约 20–30 分钟）。
+
+```bash
+just bump 0.1.1          # Cargo.toml workspace 版本 + pubspec（构建号 +1，即 Android versionCode）+ Cargo.lock
+# 在 CHANGELOG.md 写 "## [0.1.1] - YYYY-MM-DD" 一节（会作为 Release 说明；没有这一节 CI 会失败）
+git commit -am "chore(release): v0.1.1" && git push
+just release             # 核对版本后打 tag v0.1.1 并推送 → CI：Linux x64 / arm64、Android ×3、SHA256SUMS → GitHub Release
+```
+
+- 发布后立即生效：官网 `/api/version`、安装脚本与应用内更新都读取 GitHub 最新正式版（边缘缓存最多 5 分钟），不需要重新部署站点。
+- **Android 签名密钥**：`~/.config/ultrapads/release.jks` 与 `key.properties`（不入库，**请异地备份**；丢失后新版本无法覆盖安装）。
+  CI 使用仓库 Secret `ANDROID_KEYSTORE_BASE64`（`base64 -w0 release.jks`）、`ANDROID_KEYSTORE_PASSWORD`、`ANDROID_KEY_ALIAS`，
+  并核对 APK 证书 SHA-256 等于 `release.yml` 中的 `ANDROID_CERT_SHA256`。
+- **官网**（`website/`）：Cloudflare Worker `ultrapads` 已关联本仓库（Workers Builds，根目录 `website`），推送 `main` 自动部署；
+  自定义域名在 Cloudflare 控制台绑定。本地：`cd website && npx wrangler dev`；测试 `just website-test`（安装脚本端到端 + 清单映射）。
+  可选 Worker Secret `GITHUB_TOKEN` 提高 GitHub API 限额。
+- **本地打包**：`just package-linux`（`dist/ultrapads-<版本>-linux-x64.tar.gz`，布局与 CI 相同）。
+- **验证应用内更新**：用低于最新正式版的版本号构建并按安装脚本布局安装，然后
+  `ULTRAPADS_UPDATE_SELFTEST=1 ~/.local/bin/ultrapads`（Android：`--dart-define=UP_UPDATE_SELFTEST=true`，日志见 `adb logcat -s flutter`），
+  会依次打印检查、下载进度、校验、装入与重启（Android：交给系统安装器）。
+- `up-update` 联网测试：`cargo test -p up-update --test live -- --ignored`。
+

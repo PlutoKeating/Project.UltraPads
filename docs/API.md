@@ -1,6 +1,6 @@
 # UltraPads API 契约
 
-本文件定义三层之间的接口：引擎协议（`engine/up-protocol`）、FFI 面（`bridge/up-ffi`，经 flutter_rust_bridge 暴露给 Dart），以及 Hub 网络协议（`runtime/up-hub`）。
+本文件定义三层之间的接口：引擎协议（`engine/up-protocol`）、FFI 面（`bridge/up-ffi`，经 flutter_rust_bridge 暴露给 Dart）、Hub 网络协议（`runtime/up-hub`），以及发布与更新接口（`website/`、`runtime/up-update`，§6）。
 **修改接口必须同步修改本文档。**
 
 ## 1. 基本约定
@@ -114,6 +114,8 @@ DTO 定义在 `bridge/up-ffi/src/api/types.rs`（与引擎类型一一对应，D
 | `sampler_record_start(input_device: Option<String>)` / `sampler_record_stop() -> String` | | 麦克风采样（最长 30 s）；停止后存入曲库（`Microphone` 样本）并注册进引擎，返回 `SampleId`（BLAKE3） |
 | `tracks_list() -> Vec<TrackInfo>` / `track_play(id, looping)` / `track_stop()` / `track_rename(id, name) -> TrackInfo` / `track_export(id, path, fmt) -> String` / `track_delete(id)` | | 录音作品（曲库 `tracks/`），`fmt`：`wav`（BWF）/ `dawproject`；`TrackInfo.waveform` 为 128 段概要 |
 | `hub_*` | | 个人多设备 Hub（`runtime/up-hub`），见 §3.1 |
+| `app_version() -> String` | ✅ | 应用版本 `X.Y.Z`（Cargo workspace 版本，与 pubspec 一致） |
+| `update_*` | | 应用内更新（`runtime/up-update`），见 §6.4 |
 
 `KitSummary`（FFI）= 引擎字段 `{ id, name, pad_count, bpm, has_tutorial }` + 曲库字段 `{ description, authors, genres, tags, theme_color, inspired_by, cover_path, favorite, source_kind, last_used_at_ms }`（引擎事件中曲库字段为空）。
 
@@ -319,3 +321,78 @@ end 16B  tag       HMAC-SHA256(会话密钥, 前面所有字节) 的前 16 字�
 原 App 素材导入器是可插拔的 `CompatSource`（`detect` + `import(emit)`）：内置 `compat-android`（APK 3.x：WAV + `list.json` + 顺序教程）与 `compat-ios`（IPA 4.x：Ogg/MP3 入库时转 WAV + `fetch.json`/`fetch_next.json` + 计时教程 `tutorial.json` + 分课 `<id>_lesson.json`）。`library_import("private-assets/compat-ios")` 一次导入全部 6 个内置 Kit 并合并 1259 个目录条目。
 
 格式层（无 I/O）：`up_format::sfz`（解析/白名单/序列化，`#include` 走 `IncludeResolver` 回调）、`kit_json` / `manifest` / `tutorial`（serde 模型，Schema 在 `content/schema/`）、`wav`（`smpl`/`acid`/`inst`/`cue `/`bext` 读写、PCM 编解码、loop/BPM 推断）、`smf`（教程谱）、`upkit`（`KitDoc` ↔ 包）、`model`（`KitDoc` ↔ `up_model::KitDoc`）、`dawproject`（DAWproject 1.0 导出，官方 XSD 在 `content/schema/dawproject/`）。
+
+## 6. 发布与更新接口（`website/`、`runtime/up-update`）
+
+架构与安装布局见 `docs/ARCHITECTURE.md` §10。站点 `https://ultrapads.plutokeating.beer`，只读，无鉴权，所有响应带 `Access-Control-Allow-Origin: *`。
+
+### 6.1 发布资产
+
+GitHub Release `vX.Y.Z`（正式版，非预发布）中的资产：`ultrapads-X.Y.Z-<平台>.<扩展名>` 与 `SHA256SUMS.txt`。
+
+| 平台键 | 文件 |
+|---|---|
+| `linux-x64` / `linux-arm64` | `ultrapads-X.Y.Z-linux-x64.tar.gz` / `…-linux-arm64.tar.gz`（布局见 ARCHITECTURE §10） |
+| `android-arm64-v8a` / `android-armeabi-v7a` / `android-x86_64` | `ultrapads-X.Y.Z-android-<abi>.apk` |
+
+每个资产的 sha256 取自 GitHub 记录的 `digest`（`sha256:<hex>`）；没有 digest 的资产不出现在清单里。
+
+### 6.2 HTTP
+
+| 请求 | 响应 |
+|---|---|
+| `GET /api/version` | 最新正式版清单（JSON，见下）。`?tag=vX.Y.Z` 指定版本；没有该版本 `404`；GitHub 不可用且没有缓存副本 `502` |
+| `GET /api/version?format=sh&platform=<平台键>[&tag=…]` | 纯文本，每行 `KEY=value`：`UP_VERSION`、`UP_TAG`、`UP_NAME`、`UP_SIZE`、`UP_SHA256`、`UP_URL`、`UP_FALLBACK_URL`。值只含 `[A-Za-z0-9._:/+-]`；安装脚本逐行按前缀读取，不 `eval`。该平台没有包 `404`，平台键不对 `400` |
+| `GET /dl/<tag>/<文件名>` | 镜像 `github.com/…/releases/download/<tag>/<文件名>`，只限 §6.1 的文件名；与 GitHub 的 sha256 核对，通过才边缘缓存 7 天（不符时流出错、不缓存）。响应头 `X-Digest: sha256:<hex>` |
+| `GET /dl/latest/<平台键>` | `302` 到最新正式版该平台的 `/dl/` 地址 |
+| `GET /install` | 安装脚本（`text/plain`） |
+
+```json
+{
+  "version": "0.1.0",
+  "tag": "v0.1.0",
+  "published_at": "2026-10-18T00:00:00Z",
+  "notes_url": "https://github.com/PlutoKeating/Project.UltraPads/releases/tag/v0.1.0",
+  "assets": {
+    "linux-x64": {
+      "name": "ultrapads-0.1.0-linux-x64.tar.gz",
+      "size": 33000000,
+      "sha256": "<64 位小写十六进制>",
+      "url": "https://ultrapads.plutokeating.beer/dl/v0.1.0/ultrapads-0.1.0-linux-x64.tar.gz",
+      "fallback_url": "https://github.com/PlutoKeating/Project.UltraPads/releases/download/v0.1.0/ultrapads-0.1.0-linux-x64.tar.gz"
+    }
+  }
+}
+```
+
+### 6.3 安装脚本
+
+`curl -fsSL https://ultrapads.plutokeating.beer/install | bash -s -- [选项]`；选项 `--version X.Y.Z`、`--prefix DIR`、`--no-desktop`、
+`--no-modify-path`、`--uninstall`、`--yes`、`--lang zh|en`；环境变量 `UP_SITE` 覆盖站点（测试用）。退出码非 0 表示失败且未改动现有安装。
+写入 `<前缀>/install.json`：
+
+```json
+{ "installer": "install.sh", "schema": 1, "version": "0.1.0", "platform": "linux-x64", "bin_link": "/home/u/.local/bin/ultrapads", "desktop": true }
+```
+
+应用内更新只在 `installer == "install.sh"` 且可执行文件位于 `<前缀>/versions/<版本>/ultrapads` 时自更新，并在装入新版本后改写 `version`。
+
+### 6.4 FFI（`bridge/up-ffi/src/api/update.rs`）
+
+| 函数 | 同步 | 说明 |
+|---|---|---|
+| `update_check(site: Option<String>) -> UpdateInfo` | | 查询 §6.2 的清单（`site` 为空用正式站点；站点失败回退 `api.github.com` 的 releases/latest）。`UpdateInfo { current, latest, available /*更新且本平台有包*/, notes_url, asset_name, asset_size, source /*site|github*/, install_mode }` |
+| `update_download() -> Stream<UpdateProgress>` | | 下载最近一次 `update_check` 找到的包到 `<cache_dir>/updates/`：镜像优先、失败回退直链，边下边算 SHA-256。`Downloading { done, total, mirror }`* → `Ready { path }` 或 `Failed { error }`。同一时刻一个下载（否则 `[busy]`） |
+| `update_cancel()` | ✅ | 取消下载，流以 `Failed { [cancelled] … }` 结束 |
+| `update_apply(path)` | | Linux（`SelfUpdate`）：解包到 `versions/<新版本>`、原子切换 `current`、刷新桌面项、只留当前与上一版；非脚本安装 `[unmanaged]` |
+| `update_relaunch()` | | Linux：约 1 s 后启动 `<前缀>/current/ultrapads`；调用方随即停止音频并退出 |
+
+`UpdateInstallMode { SelfUpdate /*脚本安装的 Linux*/, ApkInstaller /*Android*/, Manual /*其它：打开下载页*/ }`。错误 `message` 标签：`[network]`（Io）、`[protocol]` / `[hash_mismatch]`（Format）、`[cancelled]` / `[busy]` / `[no_update]` / `[unmanaged]`（InvalidState）。
+
+**Android 安装**：MethodChannel `dev.ultrapads/update`：`canInstallPackages` → `bool`（是否已允许「安装未知应用」）、`openInstallSettings`、
+`installApk({path})`（只接受 `cacheDir/updates/*.apk`，经 FileProvider `${applicationId}.updates` 交给系统安装器，用户确认）。
+Manifest 声明 `REQUEST_INSTALL_PACKAGES`。
+
+Dart：`EngineClient.appVersion` / `updateCheck` / `updateDownload` / `updateCancel` / `updateApply` / `updateRelaunch`，
+数据类 `UpdateInfo`、`UpdateInstallMode`、`UpdateProgress`（`UpdateDownloading` / `UpdateReady` / `UpdateFailed`）。
+

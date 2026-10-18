@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="design/brand/ultrapads.svg" width="128" height="128" alt="UltraPads">
+</p>
+
 # UltraPads
 
 [![License](https://img.shields.io/github/license/PlutoKeating/Project.UltraPads)](LICENSE)
@@ -47,21 +51,37 @@ UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter �
   - 应用内有组件画廊（Design Gallery）。
   - 用 lint 保证全仓库不硬编码颜色或外形值。
 - **无头 CLI**：`up-cli` 支持离线渲染、单 pad 播放、延迟探针和 WAV 检查。
+- **安装与更新**：Linux 一行命令安装（免 sudo），应用内检查并安装新版本（Linux 就地更新并重启，Android 交给系统安装器）。
 
 全部需求见 [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md)，版本记录见 [`CHANGELOG.md`](CHANGELOG.md)。
 
-## 下载
+## 下载与安装
 
-在 [Releases](https://github.com/PlutoKeating/Project.UltraPads/releases) 页面下载对应平台的安装包。
+官网：<https://ultrapads.plutokeating.beer>
 
-| 平台 | 文件 | 说明 |
-|---|---|---|
-| Linux x64 | `ultrapads-<版本>-linux-x64.tar.gz` | 解压后运行 `./ultrapads`，需要 GTK 3 和 ALSA（PipeWire / PulseAudio 的兼容层即可） |
-| Android 8.0+ | `ultrapads-<版本>-android-arm64-v8a.apk` | 大多数手机用这个包；另提供 `armeabi-v7a`、`x86_64` |
-| 无头 CLI | `ghcr.io/plutokeating/ultrapads-cli` | 容器镜像，见下文 |
+**Linux（x86_64 / arm64）**，在终端运行（不需要 sudo，再运行一次就是更新）：
+
+```bash
+curl -fsSL https://ultrapads.plutokeating.beer/install | bash
+```
+
+- 安装到 `~/.local/opt/ultrapads`，命令为 `~/.local/bin/ultrapads`，并写入桌面项和图标。
+- 需要 GTK 3 和 ALSA（PipeWire / PulseAudio 的兼容层即可）；缺少时脚本会询问是否用系统包管理器安装。
+- 选项写在 `bash -s --` 之后：`--version 0.1.0`（安装指定版本）、`--prefix <目录>`、`--no-desktop`、`--no-modify-path`、`--uninstall`（保留曲库与设置）。
+- 应用启动后会检查新版本（设置 → 关于 → 软件更新，可关闭），点「更新」即在应用内完成更新并重启。
+
+**Android 8.0+**：在官网或 [Releases](https://github.com/PlutoKeating/Project.UltraPads/releases) 下载 APK，大多数手机选 `arm64-v8a`（另有 `armeabi-v7a`、`x86_64`）。之后的新版本可以在应用内下载并交给系统安装器。
+
+| 平台 | 文件 |
+|---|---|
+| Linux x64 / arm64 | `ultrapads-<版本>-linux-x64.tar.gz` / `…-linux-arm64.tar.gz`（安装脚本使用的包，也可手动解压运行 `./ultrapads`，但这样不能应用内更新） |
+| Android | `ultrapads-<版本>-android-<abi>.apk` |
+| 校验 | `SHA256SUMS.txt` |
+| 无头 CLI | `ghcr.io/plutokeating/ultrapads-cli`（容器镜像，见下文） |
 
 > [!IMPORTANT]
-> v0.0.1 只在 **Linux x64** 和 **Android 模拟器（x86_64）** 上验证过。Windows、Web、macOS 和 iOS 的代码可以编译开发，但还没有验证。Android 包目前用调试密钥签名，后续版本换成正式密钥后，需要先卸载旧版再安装。
+> 从 **0.0.1 升级 Android 版**：0.1.0 起改用正式签名，需要先卸载旧版再安装（会清空本机曲库，可先用「我的设备」同步到电脑）。
+> 目前只在 **Linux x64** 和 **Android 模拟器（x86_64）** 上做过完整验证；Linux arm64 包由 CI 原生构建。Windows、Web、macOS 和 iOS 的代码可以编译开发，但还没有验证。
 
 ## 从源码构建
 
@@ -84,6 +104,8 @@ just run-mock       # 不编译 Rust，用 Mock 引擎运行界面
 | `just build-android` | 构建 Android release APK（按 ABI 拆分） |
 | `just tokens` / `just codegen` | 重新生成设计 token 和 Rust↔Dart 绑定 |
 | `just icons` | 由 `design/brand/ultrapads-mark.svg` 重新生成全平台应用图标与官网图标 |
+| `just bump <X.Y.Z>` / `just release` | 统一修改版本号 / 打 tag 推送，由 GitHub Actions 构建并发布（见 QUICK_START「发布」） |
+| `just package-linux` / `just website-test` | 本地打 Linux 发布包 / 运行官网与安装脚本测试 |
 | `just cli <参数>` | 运行无头 CLI |
 | `just inject-assets` | 可选：把本机自备的原 App 素材注入应用（不入库） |
 
@@ -104,7 +126,8 @@ docker run --rm -v "$PWD:/work" -w /work ghcr.io/plutokeating/ultrapads-cli:0.0.
 │         只发 Command、订阅 Event/快照      │
 ├──────────────── bridge/up-ffi ──────────────┤  flutter_rust_bridge，Dart 的唯一入口
 │ ② 运行基座  runtime/                        │  up-host 音频设备与存储 · up-library 曲库
-│                                             │  up-hub 多设备协同 · up-cli 无头工具
+│                                             │  up-hub 多设备协同 · up-update 应用内更新
+│                                             │  up-cli 无头工具
 ├─────────────────────────────────────────────┤
 │ ① 纯引擎  engine/                           │  音频图、采样器、传输、混音、录音、
 │         零平台依赖、音频线程零分配零锁      │  数据模型、文件格式、协议
@@ -121,14 +144,15 @@ docker run --rm -v "$PWD:/work" -w /work ghcr.io/plutokeating/ultrapads-cli:0.0.
 
 ```
 engine/        ① 纯引擎（Rust crates：core、dsp、graph、sampler、transport、mixer、recorder、model、format…）
-runtime/       ② 运行基座：up-host、up-library、up-hub、up-cli
+runtime/       ② 运行基座：up-host、up-library、up-hub、up-update、up-cli
 bridge/up-ffi  Rust ↔ Dart 的 FFI 接口
 app/ultrapads  ③ Flutter 应用
 packages/      up_tokens（设计 token）up_ui（组件）up_fx（光效）up_i18n（多语言）up_engine（引擎客户端契约）
 design/tokens  W3C DTCG token 源 + Style Dictionary 构建
 design/brand   品牌标志（UP 组合字）与应用图标 SVG
 content/       Kit schema 与 CC0 示例 Kit
-tools/         lint、素材注入、图标生成
+tools/         lint、素材注入、图标生成、发布脚本
+website/       官网 ultrapads.plutokeating.beer：安装脚本、下载页、发布接口与镜像（Cloudflare Worker）
 docs/          架构、API、需求、ADR、调研
 ```
 
@@ -136,16 +160,16 @@ docs/          架构、API、需求、ADR、调研
 
 | 文档 | 内容 |
 |---|---|
-| [`docs/QUICK_START.md`](docs/QUICK_START.md) | 环境准备、构建运行、Android 模拟器、Hub 联调 |
+| [`docs/QUICK_START.md`](docs/QUICK_START.md) | 环境准备、构建运行、Android 模拟器、Hub 联调、发布 |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | 分层、线程模型、平台适配、设计系统、多设备协同 |
-| [`docs/API.md`](docs/API.md) | 引擎协议、FFI 接口、Hub 协议 |
+| [`docs/API.md`](docs/API.md) | 引擎协议、FFI 接口、Hub 协议、发布与更新接口 |
 | [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) | 功能和非功能需求 |
 | [`docs/adr/`](docs/adr/) | 架构决策记录 |
 | [`docs/research/`](docs/research/) | 竞品拆解、格式调研、v0.0.1 验证记录 |
 
 ## 当前状态
 
-v0.0.1 是首个可用版本。已知限制见 [`docs/research/v0.0.1-verification.md`](docs/research/v0.0.1-verification.md#6-已知问题)，主要有：
+当前版本 v0.1.0（更新记录见 [`CHANGELOG.md`](CHANGELOG.md)）。v0.0.1 的已知限制见 [`docs/research/v0.0.1-verification.md`](docs/research/v0.0.1-verification.md#6-已知问题)，主要有：
 
 - 只在模拟器上验证过，还没有真机延迟数据。
 - 作品播放没有实时进度条。

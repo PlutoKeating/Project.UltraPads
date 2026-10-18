@@ -31,7 +31,8 @@ lib/
    ├─ engine/                engine_bootstrap.dart（UP_ENGINE=mock|ffi）、ffi_engine_client.dart
    ├─ library/first_run.dart 首次启动：导入内置 Kit（CC0 资源 / 注入的 4.7.0 Kit）并加载默认 Kit
    ├─ config/app_links.dart  外部链接（assets/config/links.json：视频教程搜索地址；页面不写 URL）
-   ├─ dev/dev_hooks.dart     开发/验证环境变量（ULTRAPADS_HUB_AUTOSTART、ULTRAPADS_LOG_EVENTS）
+   ├─ dev/dev_hooks.dart     开发/验证环境变量（ULTRAPADS_HUB_AUTOSTART、ULTRAPADS_LOG_EVENTS、ULTRAPADS_UPDATE_SELFTEST）
+   ├─ update/                应用内更新：update_controller.dart（状态机）、apk_installer.dart（Android 安装通道）
    ├─ routing/               routes.dart（路径常量）、router.dart（go_router + 转场）
    ├─ state/                 Riverpod：engine_state / perform_state / library_state / settings_state
    ├─ rust/                  FRB 生成代码（不要手改）
@@ -121,7 +122,8 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 | `bankProvider` | 当前显示的页 A/B（纯 UI；加载 Kit 时回到 A） | UI |
 | `tutorialProvider` | 教程会话：时间轴位置、速度、已判定步骤、反馈 | UI（消费引擎给的 `TutorialChart`） |
 | `kitLoadProvider` / `favoritesProvider` | 加载中的 Kit；收藏（本机偏好） | UI / prefs |
-| `settingsProvider` / `upThemeProvider` / `localeControllerProvider` | 皮肤、自定义皮肤、动画开关、音频偏好、语言 | SharedPreferences |
+| `settingsProvider` / `upThemeProvider` / `localeControllerProvider` | 皮肤、自定义皮肤、动画开关、音频偏好、自动检查更新、语言 | SharedPreferences |
+| `updateProvider` | 应用内更新阶段（检查 / 可更新 / 下载进度 / 待重启或待安装 / 失败） | `update_*`（§11） |
 
 规则：业务变更一律经 `EngineClient`（命令或异步函数）；Provider 只做投影。
 `tryEngine` / `tryEngineDo` 把 `EngineNotImplemented` 转成 null / false，页面据此显示
@@ -190,6 +192,7 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 | 作品 | tracks_list / track_play(loop) / track_stop / track_export / track_rename / track_delete |
 | 教程 | tutorial_get（带 perfectMs / missMs） |
 | Hub | `docs/API.md` §3.1 全部函数；事件见 API.md 的 Dart 映射说明 |
+| 版本 / 更新 | `app_version`（设置「关于」）、`update_check` / `update_download` / `update_cancel` / `update_apply` / `update_relaunch`（§11） |
 | ColorRole | 与引擎同名同序；调色板下标只由 `ColorRole.paletteIndex` 决定（API.md §3.1 末尾的映射表） |
 
 `--dart-define=UP_ENGINE=mock` 使用 `MockEngineClient`；FFI 库加载失败时也自动回退到 Mock，
@@ -218,6 +221,20 @@ Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径
 - `test/app_test.dart`：用 `MockEngineClient(realtime: false)` 启动完整应用；覆盖 Listener 同步触发、
   功能行展开、皮肤切换、时间轴教程与速度框、A/B、键盘映射、各页面 golden、LET'S PLAY、录音保存、引导、中文。
 - `test/gallery_test.dart`：画廊交互，以及 3 个内置主题 + 16 套预设各一份 golden（组件页）。
+- `test/update_test.dart`：更新状态机（Linux 装入并重启、Android 申请「安装未知应用」后安装、手动安装不下载、Mock 不自动检查）与设置页「软件更新」。
 - `test/first_run_test.dart`（默认 Kit 顺序、打包的 CC0 Kit 与 `content/kits` 一致、空曲库导入）、
   `layout_test.dart`、`video_link_test.dart`、`first_guide_test.dart`、`image_skin_test.dart`。
 - golden 位于 `test/goldens/`，字体由 `test/flutter_test_config.dart` 加载（Open Sans + Material Icons）。
+
+## 11. 应用内更新（`lib/src/update/`，接口见 `docs/API.md` §6）
+
+- **触发**：演奏页首帧后 `UpdateController.autoCheck()`，每进程最多一次；设置「自动检查更新」关闭或 Mock 引擎时跳过；
+  失败不打扰用户。发现新版时演奏页 toast 一次（同一版本只提示一次，记在偏好 `updateNotified`）。
+- **设置 → 关于 → 软件更新**（`features/settings/update_section.dart`）：状态一行 + 当前可做的一个动作——检查 / 更新 /
+  取消 / 重启以完成更新（Linux）/ 安装（Android）/ 重试 / 下载页（`assets/config/links.json` 的 `downloadPage`，手动安装的副本）；
+  有新版时另有「更新内容」（Release 页面）；下方是自动检查开关。
+- **状态机**：`idle → checking → upToDate | available → downloading → ready | failed`。Linux（`selfUpdate`）下载完成即 `update_apply`，
+  `ready` 后点重启：`update_relaunch` → `audioStop` → 退出；Android（`apkInstaller`）下载完成直接交给系统安装器，
+  未允许「安装未知应用」时先打开该设置页并提示再点一次「安装」。
+- 测试替换：`apkInstallerProvider`、`appExitProvider`；`MockEngineClient(appVersion:, availableUpdate:)` 模拟有新版本与下载。
+
