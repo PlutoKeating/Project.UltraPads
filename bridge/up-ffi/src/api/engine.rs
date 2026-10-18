@@ -83,23 +83,10 @@ pub fn audio_devices() -> R<Vec<AudioDeviceInfo>> {
 }
 
 /// Engine event stream (~60 Hz meters; pad/transport/recorder changes
-/// immediately). Each call creates an independent subscription.
+/// immediately) merged with hub events (`EngineEvent::Hub`). Each call
+/// creates an independent subscription.
 pub fn events(sink: StreamSink<EngineEvent>) -> R<()> {
-    let rx = state::core()?.subscribe();
-    std::thread::Builder::new()
-        .name("up-ffi-events".into())
-        .spawn(move || {
-            for ev in rx {
-                if sink.add(ev.into()).is_err() {
-                    break; // Dart side closed the stream.
-                }
-            }
-        })
-        .map_err(|e| UpError {
-            code: ErrorCode::Internal,
-            message: e.to_string(),
-        })?;
-    Ok(())
+    crate::events::pump(move |ev| sink.add(ev).is_ok())
 }
 
 /// Full state snapshot (lock-free read).
@@ -108,22 +95,79 @@ pub fn snapshot() -> R<EngineSnapshot> {
     Ok(state::core()?.snapshot()?.into())
 }
 
-/// Hot path: press a pad (lock-free queue push, microseconds).
+/// Hot path: press a pad (lock-free queue push, microseconds). While a hub
+/// controller link is up the event is forwarded to the hub instead (and
+/// also played locally only with `hub_controller_set_local_echo(true)`).
 #[frb(sync)]
 pub fn pad_down(bank: u8, index: u8, velocity: f32) -> R<()> {
-    Ok(state::core()?.pad_down(up_core::PadId { bank, index }, velocity)?)
+    let pad = up_core::PadId { bank, index };
+    if pad.is_valid()
+        && crate::hub_rt::forward(up_hub::RemotePadEvent::PadDown {
+            bank,
+            index,
+            velocity: velocity_127(velocity),
+        })?
+    {
+        return Ok(());
+    }
+    Ok(state::core()?.pad_down(pad, velocity)?)
 }
 
-/// Hot path: release a pad.
+/// Hot path: release a pad (forwarded like `pad_down`).
 #[frb(sync)]
 pub fn pad_up(bank: u8, index: u8) -> R<()> {
-    Ok(state::core()?.pad_up(up_core::PadId { bank, index })?)
+    let pad = up_core::PadId { bank, index };
+    if pad.is_valid() && crate::hub_rt::forward(up_hub::RemotePadEvent::PadUp { bank, index })? {
+        return Ok(());
+    }
+    Ok(state::core()?.pad_up(pad)?)
 }
 
-/// Generic command (lock-free).
+/// Generic command (lock-free). `PadDown`, `PadUp` and `StopAll` follow the
+/// controller forwarding rule of `pad_down`; everything else stays local.
 #[frb(sync)]
 pub fn send(cmd: Command) -> R<()> {
+    let remote = match &cmd {
+        Command::PadDown { pad, velocity } => Some((
+            *pad,
+            up_hub::RemotePadEvent::PadDown {
+                bank: pad.bank,
+                index: pad.index,
+                velocity: velocity_127(*velocity),
+            },
+        )),
+        Command::PadUp { pad } => Some((
+            *pad,
+            up_hub::RemotePadEvent::PadUp {
+                bank: pad.bank,
+                index: pad.index,
+            },
+        )),
+        Command::StopAll => Some((PadId { bank: 0, index: 0 }, up_hub::RemotePadEvent::StopAll)),
+        _ => None,
+    };
+    if let Some((pad, ev)) = remote
+        && (up_core::PadId {
+            bank: pad.bank,
+            index: pad.index,
+        })
+        .is_valid()
+        && crate::hub_rt::forward(ev)?
+    {
+        return Ok(());
+    }
     Ok(state::core()?.send(cmd.into())?)
+}
+
+/// 0..=1 → MIDI-style 0..=127 for the controller wire format.
+#[inline]
+fn velocity_127(v: f32) -> u8 {
+    let v = if v.is_finite() {
+        v.clamp(0.0, 1.0)
+    } else {
+        1.0
+    };
+    (v * 127.0).round() as u8
 }
 
 /// Precise transport clock extrapolated to now (tutorial judgement).

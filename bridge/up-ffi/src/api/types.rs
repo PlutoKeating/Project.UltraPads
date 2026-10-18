@@ -28,15 +28,6 @@ pub struct UpError {
     pub message: String,
 }
 
-impl UpError {
-    pub(crate) fn not_implemented(what: &str) -> Self {
-        Self {
-            code: ErrorCode::NotImplemented,
-            message: format!("{what} is not implemented yet"),
-        }
-    }
-}
-
 impl std::fmt::Display for UpError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:?}: {}", self.code, self.message)
@@ -195,16 +186,44 @@ pub struct TrackInfo {
     pub waveform: Vec<f32>,
 }
 
+/// Hub events, delivered through `events()` as `EngineEvent::Hub` (docs/API.md §3.1).
 #[derive(Debug, Clone, PartialEq)]
 pub enum HubEvent {
+    /// The local hub server is listening (`hub_start_server`).
     ServerStarted { port: u16 },
+    /// The local hub server stopped.
     ServerStopped,
+    /// mDNS found (or updated) a hub (also sent on the `hub_discover` stream).
     PeerDiscovered { id: String, name: String },
+    /// A discovered hub went away.
     PeerLost { id: String },
+    /// Pairing succeeded: as a client (`hub_pair`), or as the hub when a
+    /// device paired with the active pairing code.
     Paired { id: String, name: String },
+    /// `hub_sync` started.
+    SyncStarted { peer: String },
+    /// Blobs transferred so far (`done`) out of those known to be needed
+    /// (`total`, grows while the sync discovers more work).
     SyncProgress { peer: String, done: u64, total: u64 },
+    /// `hub_sync` finished successfully (a failure is thrown by `hub_sync`
+    /// and also reported as `Error { op: "sync" }`).
+    SyncFinished { peer: String, report: SyncReport },
+    /// This device is now a remote pad controller of `peer`.
     ControllerConnected { peer: String },
+    /// The controller link ended (`hub_controller_disconnect`, or the hub
+    /// stopped answering pings).
     ControllerDisconnected,
+    /// Hub side: a paired device started controlling the local engine.
+    RemoteControllerConnected { device: String, name: String },
+    /// Hub side: that controller session ended (held pads were released).
+    RemoteControllerDisconnected { device: String },
+    /// A background hub operation failed (`op`: `discover`, `sync`,
+    /// `controller`, `server`).
+    Error {
+        op: String,
+        peer: Option<String>,
+        error: UpError,
+    },
 }
 
 /// Engine → UI event.
@@ -413,16 +432,30 @@ pub struct SampleInfo {
     pub created_unix_ms: i64,
 }
 
-/// Hub peer (owned by `runtime/up-hub`).
+/// A hub reachable from this device (discovered, probed or remembered).
 #[derive(Debug, Clone, PartialEq)]
 pub struct HubPeer {
+    /// Hub device id (base32 Ed25519 public key; TLS-pinned).
     pub id: String,
     pub name: String,
+    /// First candidate IP (IPv4 preferred).
     pub address: String,
+    /// Control-plane TCP port.
     pub port: u16,
+    /// This device trusts the hub (paired before).
     pub paired: bool,
+    /// All candidate `ip:port` addresses, tried in order.
+    pub addresses: Vec<String>,
 }
 
+/// `hub_discover` stream item.
+#[derive(Debug, Clone, PartialEq)]
+pub enum HubPeerEvent {
+    Found(HubPeer),
+    Lost { id: String },
+}
+
+/// A trusted (paired) device.
 #[derive(Debug, Clone, PartialEq)]
 pub struct PairedDevice {
     pub id: String,
@@ -430,12 +463,92 @@ pub struct PairedDevice {
     pub paired_unix_ms: i64,
 }
 
+/// Result of `hub_sync` (mirrors `up_hub::SyncReport`).
 #[derive(Debug, Clone, PartialEq)]
 pub struct SyncReport {
+    /// Library entries changed locally (= `local_changed`).
     pub pulled: u32,
+    /// Entries changed on the hub (= `remote_changed`).
     pub pushed: u32,
     pub conflicts: u32,
+    /// Bytes transferred in both directions.
     pub bytes: u64,
+    pub uploaded_blobs: u32,
+    pub uploaded_bytes: u64,
+    pub downloaded_blobs: u32,
+    pub downloaded_bytes: u64,
+    pub resumed_blobs: u32,
+    /// Ids of the conflict copies (`<id>~conflict~<digest>`).
+    pub conflict_ids: Vec<String>,
+    pub duration_ms: u64,
+}
+
+/// Returned by `hub_start_server` / `hub_server_info`.
+#[derive(Debug, Clone, PartialEq)]
+pub struct HubServerInfo {
+    /// Local device id (same identity as the client side).
+    pub id: String,
+    pub name: String,
+    /// Bound control-plane address, e.g. `0.0.0.0:47100`.
+    pub listen_address: String,
+    pub port: u16,
+    /// Controller UDP port.
+    pub udp_port: u16,
+    /// LAN `ip:port` addresses to show for manual entry (`hub_probe`).
+    pub addresses: Vec<String>,
+    /// mDNS advertising is active.
+    pub advertising: bool,
+}
+
+/// One-time pairing code shown on the hub.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PairingCode {
+    /// 6 digits.
+    pub code: String,
+    pub expires_unix_ms: i64,
+    pub ttl_secs: u32,
+}
+
+/// Hub-side statistics of one controller session.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ControllerSessionStats {
+    pub session_id: u32,
+    pub device_id: String,
+    pub name: String,
+    pub packets: u64,
+    pub accepted_events: u64,
+    pub duplicates: u64,
+    pub reordered_dropped: u64,
+    pub too_old: u64,
+    pub bad_mac: u64,
+    pub idle_ms: u64,
+    pub held_pads: u32,
+}
+
+/// Controller round-trip statistics (Ping/Pong), microseconds.
+#[derive(Debug, Clone, PartialEq)]
+pub struct HubLatency {
+    pub samples: u32,
+    pub pings_sent: u64,
+    pub pongs_received: u64,
+    pub rtt_min_us: u64,
+    pub rtt_p50_us: u64,
+    pub rtt_p95_us: u64,
+    pub rtt_max_us: u64,
+    pub rtt_mean_us: u64,
+    pub one_way_estimate_us: u64,
+}
+
+/// Client-side controller state.
+#[derive(Debug, Clone, PartialEq)]
+pub struct HubControllerStatus {
+    pub connected: bool,
+    pub peer: Option<String>,
+    pub peer_name: Option<String>,
+    pub session_id: Option<u32>,
+    /// `pad_down/pad_up` also play on this device while connected.
+    pub local_echo: bool,
+    pub latency: Option<HubLatency>,
 }
 
 // ---------------------------------------------------------------- conversions

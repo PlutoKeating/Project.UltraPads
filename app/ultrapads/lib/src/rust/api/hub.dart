@@ -7,28 +7,101 @@ import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'types.dart';
 
-/// TODO(up-hub): start the desktop hub server.
-Future<void> hubStartServer({required String name}) =>
+/// Start the hub server (TLS control plane, controller UDP, mDNS advert).
+/// Tries the last port, then 47100, then a random one. Calling it again
+/// with the same name returns the running server; another name restarts it.
+/// On Android the Wi-Fi multicast lock is taken automatically.
+Future<HubServerInfo> hubStartServer({required String name}) =>
     RustLib.instance.api.crateApiHubHubStartServer(name: name);
 
-/// TODO(up-hub)
+/// Stop the hub server (releases pads held by remote controllers).
 Future<void> hubStopServer() => RustLib.instance.api.crateApiHubHubStopServer();
 
-/// TODO(up-hub): mDNS discovery stream.
-Stream<HubPeer> hubDiscover() => RustLib.instance.api.crateApiHubHubDiscover();
+/// The running server, if any.
+Future<HubServerInfo?> hubServerInfo() =>
+    RustLib.instance.api.crateApiHubHubServerInfo();
 
-/// TODO(up-hub)
+/// New 6-digit one-time pairing code (5 min, 5 attempts; replaces the
+/// previous code). `HubEvent::Paired` is emitted when a device pairs with it.
+Future<PairingCode> hubNewPairingCode() =>
+    RustLib.instance.api.crateApiHubHubNewPairingCode();
+
+/// Close the pairing window.
+Future<void> hubCancelPairing() =>
+    RustLib.instance.api.crateApiHubHubCancelPairing();
+
+/// Devices this device trusts (paired phones when acting as hub, paired
+/// hubs when acting as client — one shared trust list), newest first.
+Future<List<PairedDevice>> hubTrustedDevices() =>
+    RustLib.instance.api.crateApiHubHubTrustedDevices();
+
+/// Revoke trust in a device; its requests are rejected immediately and its
+/// controller session is closed. Returns whether it was trusted.
+Future<bool> hubRevoke({required String id}) =>
+    RustLib.instance.api.crateApiHubHubRevoke(id: id);
+
+/// Live controller sessions on the local hub (empty when not running).
+Future<List<ControllerSessionStats>> hubControllerStats() =>
+    RustLib.instance.api.crateApiHubHubControllerStats();
+
+/// Name this device presents when pairing (default: the hub name if a server
+/// was started, else `UltraPads <os>`).
+Future<void> hubSetDeviceName({required String name}) =>
+    RustLib.instance.api.crateApiHubHubSetDeviceName(name: name);
+
+/// This device's id (base32 public key).
+Future<String> hubDeviceId() => RustLib.instance.api.crateApiHubHubDeviceId();
+
+/// Browse the LAN for hubs (mDNS). Only one discovery runs at a time: a new
+/// call ends the previous stream. Stop with `hub_discover_stop` (cancelling
+/// the Dart subscription alone is only noticed at the next event). On
+/// Android the multicast lock is held while discovery runs.
+Stream<HubPeerEvent> hubDiscover() =>
+    RustLib.instance.api.crateApiHubHubDiscover();
+
+/// Stop discovery (and release the multicast lock).
+Future<void> hubDiscoverStop() =>
+    RustLib.instance.api.crateApiHubHubDiscoverStop();
+
+/// Connect to `address` (`ip`, `ip:port`, `host[:port]`; default port 47100)
+/// and read the hub's identity from its TLS key — for manual IP entry when
+/// mDNS is blocked. The peer is remembered for `hub_pair` etc.
+Future<HubPeer> hubProbe({required String address}) =>
+    RustLib.instance.api.crateApiHubHubProbe(address: address);
+
+/// Hubs seen this session or paired before (with their last addresses).
+Future<List<HubPeer>> hubKnownPeers() =>
+    RustLib.instance.api.crateApiHubHubKnownPeers();
+
+/// Pair with a hub (`peer` = id from discovery/probe, or an address) using
+/// the 6-digit code shown on it. Wrong code → `PermissionDenied`,
+/// message `[pairing_failed] …`.
 Future<PairedDevice> hubPair({required String peer, required String code}) =>
     RustLib.instance.api.crateApiHubHubPair(peer: peer, code: code);
 
-/// TODO(up-hub)
+/// Forget a paired hub locally.
+Future<bool> hubForget({required String peer}) =>
+    RustLib.instance.api.crateApiHubHubForget(peer: peer);
+
+/// Two-way incremental library sync with a paired hub. Emits
+/// `SyncStarted` → `SyncProgress`* → `SyncFinished` (or `Error{op:"sync"}`),
+/// and `LibraryChanged` when local entries changed.
 Future<SyncReport> hubSync({required String peer}) =>
     RustLib.instance.api.crateApiHubHubSync(peer: peer);
 
-/// TODO(up-hub): after connecting, `pad_down`/`pad_up` are forwarded to the peer.
-Future<void> hubControllerConnect({required String peer}) =>
+/// Become a remote pad controller of a paired hub. Replaces an existing
+/// link. Emits `ControllerConnected`.
+Future<HubControllerStatus> hubControllerConnect({required String peer}) =>
     RustLib.instance.api.crateApiHubHubControllerConnect(peer: peer);
 
-/// TODO(up-hub)
+/// End the controller link (pads play locally again).
 Future<void> hubControllerDisconnect() =>
     RustLib.instance.api.crateApiHubHubControllerDisconnect();
+
+/// Controller link state and round-trip latency.
+HubControllerStatus hubControllerStatus() =>
+    RustLib.instance.api.crateApiHubHubControllerStatus();
+
+/// Also play pads locally while connected as a controller (default off).
+void hubControllerSetLocalEcho({required bool enabled}) =>
+    RustLib.instance.api.crateApiHubHubControllerSetLocalEcho(enabled: enabled);

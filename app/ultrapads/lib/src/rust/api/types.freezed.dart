@@ -1800,7 +1800,7 @@ extension HubEventPatterns on HubEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HubEvent_ServerStarted value)?  serverStarted,TResult Function( HubEvent_ServerStopped value)?  serverStopped,TResult Function( HubEvent_PeerDiscovered value)?  peerDiscovered,TResult Function( HubEvent_PeerLost value)?  peerLost,TResult Function( HubEvent_Paired value)?  paired,TResult Function( HubEvent_SyncProgress value)?  syncProgress,TResult Function( HubEvent_ControllerConnected value)?  controllerConnected,TResult Function( HubEvent_ControllerDisconnected value)?  controllerDisconnected,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HubEvent_ServerStarted value)?  serverStarted,TResult Function( HubEvent_ServerStopped value)?  serverStopped,TResult Function( HubEvent_PeerDiscovered value)?  peerDiscovered,TResult Function( HubEvent_PeerLost value)?  peerLost,TResult Function( HubEvent_Paired value)?  paired,TResult Function( HubEvent_SyncStarted value)?  syncStarted,TResult Function( HubEvent_SyncProgress value)?  syncProgress,TResult Function( HubEvent_SyncFinished value)?  syncFinished,TResult Function( HubEvent_ControllerConnected value)?  controllerConnected,TResult Function( HubEvent_ControllerDisconnected value)?  controllerDisconnected,TResult Function( HubEvent_RemoteControllerConnected value)?  remoteControllerConnected,TResult Function( HubEvent_RemoteControllerDisconnected value)?  remoteControllerDisconnected,TResult Function( HubEvent_Error value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case HubEvent_ServerStarted() when serverStarted != null:
@@ -1808,10 +1808,15 @@ return serverStarted(_that);case HubEvent_ServerStopped() when serverStopped != 
 return serverStopped(_that);case HubEvent_PeerDiscovered() when peerDiscovered != null:
 return peerDiscovered(_that);case HubEvent_PeerLost() when peerLost != null:
 return peerLost(_that);case HubEvent_Paired() when paired != null:
-return paired(_that);case HubEvent_SyncProgress() when syncProgress != null:
-return syncProgress(_that);case HubEvent_ControllerConnected() when controllerConnected != null:
+return paired(_that);case HubEvent_SyncStarted() when syncStarted != null:
+return syncStarted(_that);case HubEvent_SyncProgress() when syncProgress != null:
+return syncProgress(_that);case HubEvent_SyncFinished() when syncFinished != null:
+return syncFinished(_that);case HubEvent_ControllerConnected() when controllerConnected != null:
 return controllerConnected(_that);case HubEvent_ControllerDisconnected() when controllerDisconnected != null:
-return controllerDisconnected(_that);case _:
+return controllerDisconnected(_that);case HubEvent_RemoteControllerConnected() when remoteControllerConnected != null:
+return remoteControllerConnected(_that);case HubEvent_RemoteControllerDisconnected() when remoteControllerDisconnected != null:
+return remoteControllerDisconnected(_that);case HubEvent_Error() when error != null:
+return error(_that);case _:
   return orElse();
 
 }
@@ -1829,7 +1834,7 @@ return controllerDisconnected(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HubEvent_ServerStarted value)  serverStarted,required TResult Function( HubEvent_ServerStopped value)  serverStopped,required TResult Function( HubEvent_PeerDiscovered value)  peerDiscovered,required TResult Function( HubEvent_PeerLost value)  peerLost,required TResult Function( HubEvent_Paired value)  paired,required TResult Function( HubEvent_SyncProgress value)  syncProgress,required TResult Function( HubEvent_ControllerConnected value)  controllerConnected,required TResult Function( HubEvent_ControllerDisconnected value)  controllerDisconnected,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HubEvent_ServerStarted value)  serverStarted,required TResult Function( HubEvent_ServerStopped value)  serverStopped,required TResult Function( HubEvent_PeerDiscovered value)  peerDiscovered,required TResult Function( HubEvent_PeerLost value)  peerLost,required TResult Function( HubEvent_Paired value)  paired,required TResult Function( HubEvent_SyncStarted value)  syncStarted,required TResult Function( HubEvent_SyncProgress value)  syncProgress,required TResult Function( HubEvent_SyncFinished value)  syncFinished,required TResult Function( HubEvent_ControllerConnected value)  controllerConnected,required TResult Function( HubEvent_ControllerDisconnected value)  controllerDisconnected,required TResult Function( HubEvent_RemoteControllerConnected value)  remoteControllerConnected,required TResult Function( HubEvent_RemoteControllerDisconnected value)  remoteControllerDisconnected,required TResult Function( HubEvent_Error value)  error,}){
 final _that = this;
 switch (_that) {
 case HubEvent_ServerStarted():
@@ -1837,10 +1842,15 @@ return serverStarted(_that);case HubEvent_ServerStopped():
 return serverStopped(_that);case HubEvent_PeerDiscovered():
 return peerDiscovered(_that);case HubEvent_PeerLost():
 return peerLost(_that);case HubEvent_Paired():
-return paired(_that);case HubEvent_SyncProgress():
-return syncProgress(_that);case HubEvent_ControllerConnected():
+return paired(_that);case HubEvent_SyncStarted():
+return syncStarted(_that);case HubEvent_SyncProgress():
+return syncProgress(_that);case HubEvent_SyncFinished():
+return syncFinished(_that);case HubEvent_ControllerConnected():
 return controllerConnected(_that);case HubEvent_ControllerDisconnected():
-return controllerDisconnected(_that);}
+return controllerDisconnected(_that);case HubEvent_RemoteControllerConnected():
+return remoteControllerConnected(_that);case HubEvent_RemoteControllerDisconnected():
+return remoteControllerDisconnected(_that);case HubEvent_Error():
+return error(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -1854,7 +1864,7 @@ return controllerDisconnected(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HubEvent_ServerStarted value)?  serverStarted,TResult? Function( HubEvent_ServerStopped value)?  serverStopped,TResult? Function( HubEvent_PeerDiscovered value)?  peerDiscovered,TResult? Function( HubEvent_PeerLost value)?  peerLost,TResult? Function( HubEvent_Paired value)?  paired,TResult? Function( HubEvent_SyncProgress value)?  syncProgress,TResult? Function( HubEvent_ControllerConnected value)?  controllerConnected,TResult? Function( HubEvent_ControllerDisconnected value)?  controllerDisconnected,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HubEvent_ServerStarted value)?  serverStarted,TResult? Function( HubEvent_ServerStopped value)?  serverStopped,TResult? Function( HubEvent_PeerDiscovered value)?  peerDiscovered,TResult? Function( HubEvent_PeerLost value)?  peerLost,TResult? Function( HubEvent_Paired value)?  paired,TResult? Function( HubEvent_SyncStarted value)?  syncStarted,TResult? Function( HubEvent_SyncProgress value)?  syncProgress,TResult? Function( HubEvent_SyncFinished value)?  syncFinished,TResult? Function( HubEvent_ControllerConnected value)?  controllerConnected,TResult? Function( HubEvent_ControllerDisconnected value)?  controllerDisconnected,TResult? Function( HubEvent_RemoteControllerConnected value)?  remoteControllerConnected,TResult? Function( HubEvent_RemoteControllerDisconnected value)?  remoteControllerDisconnected,TResult? Function( HubEvent_Error value)?  error,}){
 final _that = this;
 switch (_that) {
 case HubEvent_ServerStarted() when serverStarted != null:
@@ -1862,10 +1872,15 @@ return serverStarted(_that);case HubEvent_ServerStopped() when serverStopped != 
 return serverStopped(_that);case HubEvent_PeerDiscovered() when peerDiscovered != null:
 return peerDiscovered(_that);case HubEvent_PeerLost() when peerLost != null:
 return peerLost(_that);case HubEvent_Paired() when paired != null:
-return paired(_that);case HubEvent_SyncProgress() when syncProgress != null:
-return syncProgress(_that);case HubEvent_ControllerConnected() when controllerConnected != null:
+return paired(_that);case HubEvent_SyncStarted() when syncStarted != null:
+return syncStarted(_that);case HubEvent_SyncProgress() when syncProgress != null:
+return syncProgress(_that);case HubEvent_SyncFinished() when syncFinished != null:
+return syncFinished(_that);case HubEvent_ControllerConnected() when controllerConnected != null:
 return controllerConnected(_that);case HubEvent_ControllerDisconnected() when controllerDisconnected != null:
-return controllerDisconnected(_that);case _:
+return controllerDisconnected(_that);case HubEvent_RemoteControllerConnected() when remoteControllerConnected != null:
+return remoteControllerConnected(_that);case HubEvent_RemoteControllerDisconnected() when remoteControllerDisconnected != null:
+return remoteControllerDisconnected(_that);case HubEvent_Error() when error != null:
+return error(_that);case _:
   return null;
 
 }
@@ -1882,17 +1897,22 @@ return controllerDisconnected(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int port)?  serverStarted,TResult Function()?  serverStopped,TResult Function( String id,  String name)?  peerDiscovered,TResult Function( String id)?  peerLost,TResult Function( String id,  String name)?  paired,TResult Function( String peer,  BigInt done,  BigInt total)?  syncProgress,TResult Function( String peer)?  controllerConnected,TResult Function()?  controllerDisconnected,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int port)?  serverStarted,TResult Function()?  serverStopped,TResult Function( String id,  String name)?  peerDiscovered,TResult Function( String id)?  peerLost,TResult Function( String id,  String name)?  paired,TResult Function( String peer)?  syncStarted,TResult Function( String peer,  BigInt done,  BigInt total)?  syncProgress,TResult Function( String peer,  SyncReport report)?  syncFinished,TResult Function( String peer)?  controllerConnected,TResult Function()?  controllerDisconnected,TResult Function( String device,  String name)?  remoteControllerConnected,TResult Function( String device)?  remoteControllerDisconnected,TResult Function( String op,  String? peer,  UpError error)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HubEvent_ServerStarted() when serverStarted != null:
 return serverStarted(_that.port);case HubEvent_ServerStopped() when serverStopped != null:
 return serverStopped();case HubEvent_PeerDiscovered() when peerDiscovered != null:
 return peerDiscovered(_that.id,_that.name);case HubEvent_PeerLost() when peerLost != null:
 return peerLost(_that.id);case HubEvent_Paired() when paired != null:
-return paired(_that.id,_that.name);case HubEvent_SyncProgress() when syncProgress != null:
-return syncProgress(_that.peer,_that.done,_that.total);case HubEvent_ControllerConnected() when controllerConnected != null:
+return paired(_that.id,_that.name);case HubEvent_SyncStarted() when syncStarted != null:
+return syncStarted(_that.peer);case HubEvent_SyncProgress() when syncProgress != null:
+return syncProgress(_that.peer,_that.done,_that.total);case HubEvent_SyncFinished() when syncFinished != null:
+return syncFinished(_that.peer,_that.report);case HubEvent_ControllerConnected() when controllerConnected != null:
 return controllerConnected(_that.peer);case HubEvent_ControllerDisconnected() when controllerDisconnected != null:
-return controllerDisconnected();case _:
+return controllerDisconnected();case HubEvent_RemoteControllerConnected() when remoteControllerConnected != null:
+return remoteControllerConnected(_that.device,_that.name);case HubEvent_RemoteControllerDisconnected() when remoteControllerDisconnected != null:
+return remoteControllerDisconnected(_that.device);case HubEvent_Error() when error != null:
+return error(_that.op,_that.peer,_that.error);case _:
   return orElse();
 
 }
@@ -1910,17 +1930,22 @@ return controllerDisconnected();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int port)  serverStarted,required TResult Function()  serverStopped,required TResult Function( String id,  String name)  peerDiscovered,required TResult Function( String id)  peerLost,required TResult Function( String id,  String name)  paired,required TResult Function( String peer,  BigInt done,  BigInt total)  syncProgress,required TResult Function( String peer)  controllerConnected,required TResult Function()  controllerDisconnected,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int port)  serverStarted,required TResult Function()  serverStopped,required TResult Function( String id,  String name)  peerDiscovered,required TResult Function( String id)  peerLost,required TResult Function( String id,  String name)  paired,required TResult Function( String peer)  syncStarted,required TResult Function( String peer,  BigInt done,  BigInt total)  syncProgress,required TResult Function( String peer,  SyncReport report)  syncFinished,required TResult Function( String peer)  controllerConnected,required TResult Function()  controllerDisconnected,required TResult Function( String device,  String name)  remoteControllerConnected,required TResult Function( String device)  remoteControllerDisconnected,required TResult Function( String op,  String? peer,  UpError error)  error,}) {final _that = this;
 switch (_that) {
 case HubEvent_ServerStarted():
 return serverStarted(_that.port);case HubEvent_ServerStopped():
 return serverStopped();case HubEvent_PeerDiscovered():
 return peerDiscovered(_that.id,_that.name);case HubEvent_PeerLost():
 return peerLost(_that.id);case HubEvent_Paired():
-return paired(_that.id,_that.name);case HubEvent_SyncProgress():
-return syncProgress(_that.peer,_that.done,_that.total);case HubEvent_ControllerConnected():
+return paired(_that.id,_that.name);case HubEvent_SyncStarted():
+return syncStarted(_that.peer);case HubEvent_SyncProgress():
+return syncProgress(_that.peer,_that.done,_that.total);case HubEvent_SyncFinished():
+return syncFinished(_that.peer,_that.report);case HubEvent_ControllerConnected():
 return controllerConnected(_that.peer);case HubEvent_ControllerDisconnected():
-return controllerDisconnected();}
+return controllerDisconnected();case HubEvent_RemoteControllerConnected():
+return remoteControllerConnected(_that.device,_that.name);case HubEvent_RemoteControllerDisconnected():
+return remoteControllerDisconnected(_that.device);case HubEvent_Error():
+return error(_that.op,_that.peer,_that.error);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1934,17 +1959,22 @@ return controllerDisconnected();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int port)?  serverStarted,TResult? Function()?  serverStopped,TResult? Function( String id,  String name)?  peerDiscovered,TResult? Function( String id)?  peerLost,TResult? Function( String id,  String name)?  paired,TResult? Function( String peer,  BigInt done,  BigInt total)?  syncProgress,TResult? Function( String peer)?  controllerConnected,TResult? Function()?  controllerDisconnected,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int port)?  serverStarted,TResult? Function()?  serverStopped,TResult? Function( String id,  String name)?  peerDiscovered,TResult? Function( String id)?  peerLost,TResult? Function( String id,  String name)?  paired,TResult? Function( String peer)?  syncStarted,TResult? Function( String peer,  BigInt done,  BigInt total)?  syncProgress,TResult? Function( String peer,  SyncReport report)?  syncFinished,TResult? Function( String peer)?  controllerConnected,TResult? Function()?  controllerDisconnected,TResult? Function( String device,  String name)?  remoteControllerConnected,TResult? Function( String device)?  remoteControllerDisconnected,TResult? Function( String op,  String? peer,  UpError error)?  error,}) {final _that = this;
 switch (_that) {
 case HubEvent_ServerStarted() when serverStarted != null:
 return serverStarted(_that.port);case HubEvent_ServerStopped() when serverStopped != null:
 return serverStopped();case HubEvent_PeerDiscovered() when peerDiscovered != null:
 return peerDiscovered(_that.id,_that.name);case HubEvent_PeerLost() when peerLost != null:
 return peerLost(_that.id);case HubEvent_Paired() when paired != null:
-return paired(_that.id,_that.name);case HubEvent_SyncProgress() when syncProgress != null:
-return syncProgress(_that.peer,_that.done,_that.total);case HubEvent_ControllerConnected() when controllerConnected != null:
+return paired(_that.id,_that.name);case HubEvent_SyncStarted() when syncStarted != null:
+return syncStarted(_that.peer);case HubEvent_SyncProgress() when syncProgress != null:
+return syncProgress(_that.peer,_that.done,_that.total);case HubEvent_SyncFinished() when syncFinished != null:
+return syncFinished(_that.peer,_that.report);case HubEvent_ControllerConnected() when controllerConnected != null:
 return controllerConnected(_that.peer);case HubEvent_ControllerDisconnected() when controllerDisconnected != null:
-return controllerDisconnected();case _:
+return controllerDisconnected();case HubEvent_RemoteControllerConnected() when remoteControllerConnected != null:
+return remoteControllerConnected(_that.device,_that.name);case HubEvent_RemoteControllerDisconnected() when remoteControllerDisconnected != null:
+return remoteControllerDisconnected(_that.device);case HubEvent_Error() when error != null:
+return error(_that.op,_that.peer,_that.error);case _:
   return null;
 
 }
@@ -2263,6 +2293,74 @@ as String,
 /// @nodoc
 
 
+class HubEvent_SyncStarted extends HubEvent {
+  const HubEvent_SyncStarted({required this.peer}): super._();
+  
+
+ final  String peer;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HubEvent_SyncStartedCopyWith<HubEvent_SyncStarted> get copyWith => _$HubEvent_SyncStartedCopyWithImpl<HubEvent_SyncStarted>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HubEvent_SyncStarted&&(identical(other.peer, peer) || other.peer == peer));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,peer);
+}
+
+@override
+String toString() {
+    return 'HubEvent.syncStarted(peer: $peer)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HubEvent_SyncStartedCopyWith<$Res> implements $HubEventCopyWith<$Res> {
+  factory $HubEvent_SyncStartedCopyWith(HubEvent_SyncStarted value, $Res Function(HubEvent_SyncStarted) _then) = _$HubEvent_SyncStartedCopyWithImpl;
+@useResult
+$Res call({
+ String peer
+});
+
+
+
+
+}
+/// @nodoc
+class _$HubEvent_SyncStartedCopyWithImpl<$Res>
+    implements $HubEvent_SyncStartedCopyWith<$Res> {
+  _$HubEvent_SyncStartedCopyWithImpl(this._self, this._then);
+
+  final HubEvent_SyncStarted _self;
+  final $Res Function(HubEvent_SyncStarted) _then;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? peer = null,}) {
+  return _then(HubEvent_SyncStarted(
+peer: null == peer ? _self.peer : peer // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class HubEvent_SyncProgress extends HubEvent {
   const HubEvent_SyncProgress({required this.peer, required this.done, required this.total}): super._();
   
@@ -2326,6 +2424,76 @@ peer: null == peer ? _self.peer : peer // ignore: cast_nullable_to_non_nullable
 as String,done: null == done ? _self.done : done // ignore: cast_nullable_to_non_nullable
 as BigInt,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as BigInt,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class HubEvent_SyncFinished extends HubEvent {
+  const HubEvent_SyncFinished({required this.peer, required this.report}): super._();
+  
+
+ final  String peer;
+ final  SyncReport report;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HubEvent_SyncFinishedCopyWith<HubEvent_SyncFinished> get copyWith => _$HubEvent_SyncFinishedCopyWithImpl<HubEvent_SyncFinished>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HubEvent_SyncFinished&&(identical(other.peer, peer) || other.peer == peer)&&(identical(other.report, report) || other.report == report));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,peer,report);
+}
+
+@override
+String toString() {
+    return 'HubEvent.syncFinished(peer: $peer, report: $report)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HubEvent_SyncFinishedCopyWith<$Res> implements $HubEventCopyWith<$Res> {
+  factory $HubEvent_SyncFinishedCopyWith(HubEvent_SyncFinished value, $Res Function(HubEvent_SyncFinished) _then) = _$HubEvent_SyncFinishedCopyWithImpl;
+@useResult
+$Res call({
+ String peer, SyncReport report
+});
+
+
+
+
+}
+/// @nodoc
+class _$HubEvent_SyncFinishedCopyWithImpl<$Res>
+    implements $HubEvent_SyncFinishedCopyWith<$Res> {
+  _$HubEvent_SyncFinishedCopyWithImpl(this._self, this._then);
+
+  final HubEvent_SyncFinished _self;
+  final $Res Function(HubEvent_SyncFinished) _then;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? peer = null,Object? report = null,}) {
+  return _then(HubEvent_SyncFinished(
+peer: null == peer ? _self.peer : peer // ignore: cast_nullable_to_non_nullable
+as String,report: null == report ? _self.report : report // ignore: cast_nullable_to_non_nullable
+as SyncReport,
   ));
 }
 
@@ -2431,6 +2599,512 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class HubEvent_RemoteControllerConnected extends HubEvent {
+  const HubEvent_RemoteControllerConnected({required this.device, required this.name}): super._();
+  
+
+ final  String device;
+ final  String name;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HubEvent_RemoteControllerConnectedCopyWith<HubEvent_RemoteControllerConnected> get copyWith => _$HubEvent_RemoteControllerConnectedCopyWithImpl<HubEvent_RemoteControllerConnected>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HubEvent_RemoteControllerConnected&&(identical(other.device, device) || other.device == device)&&(identical(other.name, name) || other.name == name));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,device,name);
+}
+
+@override
+String toString() {
+    return 'HubEvent.remoteControllerConnected(device: $device, name: $name)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HubEvent_RemoteControllerConnectedCopyWith<$Res> implements $HubEventCopyWith<$Res> {
+  factory $HubEvent_RemoteControllerConnectedCopyWith(HubEvent_RemoteControllerConnected value, $Res Function(HubEvent_RemoteControllerConnected) _then) = _$HubEvent_RemoteControllerConnectedCopyWithImpl;
+@useResult
+$Res call({
+ String device, String name
+});
+
+
+
+
+}
+/// @nodoc
+class _$HubEvent_RemoteControllerConnectedCopyWithImpl<$Res>
+    implements $HubEvent_RemoteControllerConnectedCopyWith<$Res> {
+  _$HubEvent_RemoteControllerConnectedCopyWithImpl(this._self, this._then);
+
+  final HubEvent_RemoteControllerConnected _self;
+  final $Res Function(HubEvent_RemoteControllerConnected) _then;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? device = null,Object? name = null,}) {
+  return _then(HubEvent_RemoteControllerConnected(
+device: null == device ? _self.device : device // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class HubEvent_RemoteControllerDisconnected extends HubEvent {
+  const HubEvent_RemoteControllerDisconnected({required this.device}): super._();
+  
+
+ final  String device;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HubEvent_RemoteControllerDisconnectedCopyWith<HubEvent_RemoteControllerDisconnected> get copyWith => _$HubEvent_RemoteControllerDisconnectedCopyWithImpl<HubEvent_RemoteControllerDisconnected>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HubEvent_RemoteControllerDisconnected&&(identical(other.device, device) || other.device == device));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,device);
+}
+
+@override
+String toString() {
+    return 'HubEvent.remoteControllerDisconnected(device: $device)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HubEvent_RemoteControllerDisconnectedCopyWith<$Res> implements $HubEventCopyWith<$Res> {
+  factory $HubEvent_RemoteControllerDisconnectedCopyWith(HubEvent_RemoteControllerDisconnected value, $Res Function(HubEvent_RemoteControllerDisconnected) _then) = _$HubEvent_RemoteControllerDisconnectedCopyWithImpl;
+@useResult
+$Res call({
+ String device
+});
+
+
+
+
+}
+/// @nodoc
+class _$HubEvent_RemoteControllerDisconnectedCopyWithImpl<$Res>
+    implements $HubEvent_RemoteControllerDisconnectedCopyWith<$Res> {
+  _$HubEvent_RemoteControllerDisconnectedCopyWithImpl(this._self, this._then);
+
+  final HubEvent_RemoteControllerDisconnected _self;
+  final $Res Function(HubEvent_RemoteControllerDisconnected) _then;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? device = null,}) {
+  return _then(HubEvent_RemoteControllerDisconnected(
+device: null == device ? _self.device : device // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class HubEvent_Error extends HubEvent {
+  const HubEvent_Error({required this.op, this.peer, required this.error}): super._();
+  
+
+ final  String op;
+ final  String? peer;
+ final  UpError error;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HubEvent_ErrorCopyWith<HubEvent_Error> get copyWith => _$HubEvent_ErrorCopyWithImpl<HubEvent_Error>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HubEvent_Error&&(identical(other.op, op) || other.op == op)&&(identical(other.peer, peer) || other.peer == peer)&&(identical(other.error, error) || other.error == error));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,op,peer,error);
+}
+
+@override
+String toString() {
+    return 'HubEvent.error(op: $op, peer: $peer, error: $error)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HubEvent_ErrorCopyWith<$Res> implements $HubEventCopyWith<$Res> {
+  factory $HubEvent_ErrorCopyWith(HubEvent_Error value, $Res Function(HubEvent_Error) _then) = _$HubEvent_ErrorCopyWithImpl;
+@useResult
+$Res call({
+ String op, String? peer, UpError error
+});
+
+
+
+
+}
+/// @nodoc
+class _$HubEvent_ErrorCopyWithImpl<$Res>
+    implements $HubEvent_ErrorCopyWith<$Res> {
+  _$HubEvent_ErrorCopyWithImpl(this._self, this._then);
+
+  final HubEvent_Error _self;
+  final $Res Function(HubEvent_Error) _then;
+
+/// Create a copy of HubEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? op = null,Object? peer = freezed,Object? error = null,}) {
+  return _then(HubEvent_Error(
+op: null == op ? _self.op : op // ignore: cast_nullable_to_non_nullable
+as String,peer: freezed == peer ? _self.peer : peer // ignore: cast_nullable_to_non_nullable
+as String?,error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as UpError,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$HubPeerEvent {
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HubPeerEvent);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'HubPeerEvent()';
+}
+
+
+}
+
+/// @nodoc
+class $HubPeerEventCopyWith<$Res>  {
+$HubPeerEventCopyWith(HubPeerEvent _, $Res Function(HubPeerEvent) __);
+}
+
+
+/// Adds pattern-matching-related methods to [HubPeerEvent].
+extension HubPeerEventPatterns on HubPeerEvent {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HubPeerEvent_Found value)?  found,TResult Function( HubPeerEvent_Lost value)?  lost,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case HubPeerEvent_Found() when found != null:
+return found(_that);case HubPeerEvent_Lost() when lost != null:
+return lost(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HubPeerEvent_Found value)  found,required TResult Function( HubPeerEvent_Lost value)  lost,}){
+final _that = this;
+switch (_that) {
+case HubPeerEvent_Found():
+return found(_that);case HubPeerEvent_Lost():
+return lost(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HubPeerEvent_Found value)?  found,TResult? Function( HubPeerEvent_Lost value)?  lost,}){
+final _that = this;
+switch (_that) {
+case HubPeerEvent_Found() when found != null:
+return found(_that);case HubPeerEvent_Lost() when lost != null:
+return lost(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( HubPeer field0)?  found,TResult Function( String id)?  lost,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case HubPeerEvent_Found() when found != null:
+return found(_that.field0);case HubPeerEvent_Lost() when lost != null:
+return lost(_that.id);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( HubPeer field0)  found,required TResult Function( String id)  lost,}) {final _that = this;
+switch (_that) {
+case HubPeerEvent_Found():
+return found(_that.field0);case HubPeerEvent_Lost():
+return lost(_that.id);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( HubPeer field0)?  found,TResult? Function( String id)?  lost,}) {final _that = this;
+switch (_that) {
+case HubPeerEvent_Found() when found != null:
+return found(_that.field0);case HubPeerEvent_Lost() when lost != null:
+return lost(_that.id);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class HubPeerEvent_Found extends HubPeerEvent {
+  const HubPeerEvent_Found(this.field0): super._();
+  
+
+ final  HubPeer field0;
+
+/// Create a copy of HubPeerEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HubPeerEvent_FoundCopyWith<HubPeerEvent_Found> get copyWith => _$HubPeerEvent_FoundCopyWithImpl<HubPeerEvent_Found>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HubPeerEvent_Found&&(identical(other.field0, field0) || other.field0 == field0));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,field0);
+}
+
+@override
+String toString() {
+    return 'HubPeerEvent.found(field0: $field0)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HubPeerEvent_FoundCopyWith<$Res> implements $HubPeerEventCopyWith<$Res> {
+  factory $HubPeerEvent_FoundCopyWith(HubPeerEvent_Found value, $Res Function(HubPeerEvent_Found) _then) = _$HubPeerEvent_FoundCopyWithImpl;
+@useResult
+$Res call({
+ HubPeer field0
+});
+
+
+
+
+}
+/// @nodoc
+class _$HubPeerEvent_FoundCopyWithImpl<$Res>
+    implements $HubPeerEvent_FoundCopyWith<$Res> {
+  _$HubPeerEvent_FoundCopyWithImpl(this._self, this._then);
+
+  final HubPeerEvent_Found _self;
+  final $Res Function(HubPeerEvent_Found) _then;
+
+/// Create a copy of HubPeerEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? field0 = null,}) {
+  return _then(HubPeerEvent_Found(
+null == field0 ? _self.field0 : field0 // ignore: cast_nullable_to_non_nullable
+as HubPeer,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class HubPeerEvent_Lost extends HubPeerEvent {
+  const HubPeerEvent_Lost({required this.id}): super._();
+  
+
+ final  String id;
+
+/// Create a copy of HubPeerEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HubPeerEvent_LostCopyWith<HubPeerEvent_Lost> get copyWith => _$HubPeerEvent_LostCopyWithImpl<HubPeerEvent_Lost>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HubPeerEvent_Lost&&(identical(other.id, id) || other.id == id));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,id);
+}
+
+@override
+String toString() {
+    return 'HubPeerEvent.lost(id: $id)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HubPeerEvent_LostCopyWith<$Res> implements $HubPeerEventCopyWith<$Res> {
+  factory $HubPeerEvent_LostCopyWith(HubPeerEvent_Lost value, $Res Function(HubPeerEvent_Lost) _then) = _$HubPeerEvent_LostCopyWithImpl;
+@useResult
+$Res call({
+ String id
+});
+
+
+
+
+}
+/// @nodoc
+class _$HubPeerEvent_LostCopyWithImpl<$Res>
+    implements $HubPeerEvent_LostCopyWith<$Res> {
+  _$HubPeerEvent_LostCopyWithImpl(this._self, this._then);
+
+  final HubPeerEvent_Lost _self;
+  final $Res Function(HubPeerEvent_Lost) _then;
+
+/// Create a copy of HubPeerEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+  return _then(HubPeerEvent_Lost(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 mixin _$TransportCmd {

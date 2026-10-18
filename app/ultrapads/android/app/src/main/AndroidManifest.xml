@@ -1,6 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Microphone sampling (requested at runtime via dev.ultrapads/permissions). -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- Personal hub (runtime/up-hub): LAN TLS/UDP sockets and mDNS discovery.
+         CHANGE_WIFI_MULTICAST_STATE is needed for the MulticastLock (HubMulticast.kt);
+         all four are normal permissions (no runtime prompt). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
     <!-- Low-latency audio is preferred but not required. -->
     <uses-feature android:name="android.hardware.audio.low_latency" android:required="false"/>
     <uses-feature android:name="android.hardware.microphone" android:required="false"/>

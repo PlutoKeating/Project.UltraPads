@@ -7,8 +7,11 @@ import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'types.dart';
 
-/// Initialise storage roots, logging and the engine. Idempotent: a second
-/// call (e.g. after a Flutter hot restart) returns the running engine.
+// These functions are ignored because they are not marked as `pub`: `velocity_127`
+
+/// Initialise storage roots, the engine and the library
+/// (`<data_dir>/library`). Idempotent: a second call (e.g. after a Flutter
+/// hot restart) returns the running engine.
 Future<EngineInfo> init({required AppDirs appDirs}) =>
     RustLib.instance.api.crateApiEngineInit(appDirs: appDirs);
 
@@ -26,13 +29,16 @@ Future<List<AudioDeviceInfo>> audioDevices() =>
     RustLib.instance.api.crateApiEngineAudioDevices();
 
 /// Engine event stream (~60 Hz meters; pad/transport/recorder changes
-/// immediately). Each call creates an independent subscription.
+/// immediately) merged with hub events (`EngineEvent::Hub`). Each call
+/// creates an independent subscription.
 Stream<EngineEvent> events() => RustLib.instance.api.crateApiEngineEvents();
 
 /// Full state snapshot (lock-free read).
 EngineSnapshot snapshot() => RustLib.instance.api.crateApiEngineSnapshot();
 
-/// Hot path: press a pad (lock-free queue push, microseconds).
+/// Hot path: press a pad (lock-free queue push, microseconds). While a hub
+/// controller link is up the event is forwarded to the hub instead (and
+/// also played locally only with `hub_controller_set_local_echo(true)`).
 void padDown({
   required int bank,
   required int index,
@@ -43,11 +49,12 @@ void padDown({
   velocity: velocity,
 );
 
-/// Hot path: release a pad.
+/// Hot path: release a pad (forwarded like `pad_down`).
 void padUp({required int bank, required int index}) =>
     RustLib.instance.api.crateApiEnginePadUp(bank: bank, index: index);
 
-/// Generic command (lock-free).
+/// Generic command (lock-free). `PadDown`, `PadUp` and `StopAll` follow the
+/// controller forwarding rule of `pad_down`; everything else stays local.
 void send({required Command cmd}) =>
     RustLib.instance.api.crateApiEngineSend(cmd: cmd);
 
@@ -86,12 +93,14 @@ Future<Float32List> sampleWaveform({
 Future<void> samplerRecordStart({String? inputDevice}) => RustLib.instance.api
     .crateApiEngineSamplerRecordStart(inputDevice: inputDevice);
 
-/// Stop microphone sampling; returns the new sample id (assign it with
-/// `SetPadParams`).
+/// Stop microphone sampling, store the take in the library (as a
+/// `Microphone` sample) and register it with the engine. Returns the new
+/// sample id (BLAKE3) to assign with `SetPadParams`.
 Future<String> samplerRecordStop() =>
     RustLib.instance.api.crateApiEngineSamplerRecordStop();
 
-/// Tutorial chart for a kit, if it has one.
+/// Tutorial chart for a kit (from the library's tutorials, or a folder
+/// kit's `tutorial.json`).
 Future<TutorialChart?> tutorialGet({required String kit}) =>
     RustLib.instance.api.crateApiEngineTutorialGet(kit: kit);
 

@@ -8,8 +8,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'types.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `kit_summary_from_library`, `not_implemented`, `track_from_library`, `tutorial_event`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`
+// These functions are ignored because they are not marked as `pub`: `kit_summary_from_library`, `track_from_library`, `tutorial_event`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`
 
 class AppDirs {
   final String dataDir;
@@ -200,6 +200,66 @@ sealed class Command with _$Command {
   const factory Command.transport(TransportCmd field0) = Command_Transport;
 }
 
+/// Hub-side statistics of one controller session.
+class ControllerSessionStats {
+  final int sessionId;
+  final String deviceId;
+  final String name;
+  final BigInt packets;
+  final BigInt acceptedEvents;
+  final BigInt duplicates;
+  final BigInt reorderedDropped;
+  final BigInt tooOld;
+  final BigInt badMac;
+  final BigInt idleMs;
+  final int heldPads;
+
+  const ControllerSessionStats({
+    required this.sessionId,
+    required this.deviceId,
+    required this.name,
+    required this.packets,
+    required this.acceptedEvents,
+    required this.duplicates,
+    required this.reorderedDropped,
+    required this.tooOld,
+    required this.badMac,
+    required this.idleMs,
+    required this.heldPads,
+  });
+
+  @override
+  int get hashCode =>
+      sessionId.hashCode ^
+      deviceId.hashCode ^
+      name.hashCode ^
+      packets.hashCode ^
+      acceptedEvents.hashCode ^
+      duplicates.hashCode ^
+      reorderedDropped.hashCode ^
+      tooOld.hashCode ^
+      badMac.hashCode ^
+      idleMs.hashCode ^
+      heldPads.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ControllerSessionStats &&
+          runtimeType == other.runtimeType &&
+          sessionId == other.sessionId &&
+          deviceId == other.deviceId &&
+          name == other.name &&
+          packets == other.packets &&
+          acceptedEvents == other.acceptedEvents &&
+          duplicates == other.duplicates &&
+          reorderedDropped == other.reorderedDropped &&
+          tooOld == other.tooOld &&
+          badMac == other.badMac &&
+          idleMs == other.idleMs &&
+          heldPads == other.heldPads;
+}
+
 @freezed
 sealed class EngineEvent with _$EngineEvent {
   const EngineEvent._();
@@ -333,38 +393,190 @@ enum ErrorCode {
   internal,
 }
 
+/// Client-side controller state.
+class HubControllerStatus {
+  final bool connected;
+  final String? peer;
+  final String? peerName;
+  final int? sessionId;
+
+  /// `pad_down/pad_up` also play on this device while connected.
+  final bool localEcho;
+  final HubLatency? latency;
+
+  const HubControllerStatus({
+    required this.connected,
+    this.peer,
+    this.peerName,
+    this.sessionId,
+    required this.localEcho,
+    this.latency,
+  });
+
+  @override
+  int get hashCode =>
+      connected.hashCode ^
+      peer.hashCode ^
+      peerName.hashCode ^
+      sessionId.hashCode ^
+      localEcho.hashCode ^
+      latency.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HubControllerStatus &&
+          runtimeType == other.runtimeType &&
+          connected == other.connected &&
+          peer == other.peer &&
+          peerName == other.peerName &&
+          sessionId == other.sessionId &&
+          localEcho == other.localEcho &&
+          latency == other.latency;
+}
+
 @freezed
 sealed class HubEvent with _$HubEvent {
   const HubEvent._();
 
+  /// The local hub server is listening (`hub_start_server`).
   const factory HubEvent.serverStarted({required int port}) =
       HubEvent_ServerStarted;
+
+  /// The local hub server stopped.
   const factory HubEvent.serverStopped() = HubEvent_ServerStopped;
+
+  /// mDNS found (or updated) a hub (also sent on the `hub_discover` stream).
   const factory HubEvent.peerDiscovered({
     required String id,
     required String name,
   }) = HubEvent_PeerDiscovered;
+
+  /// A discovered hub went away.
   const factory HubEvent.peerLost({required String id}) = HubEvent_PeerLost;
+
+  /// Pairing succeeded: as a client (`hub_pair`), or as the hub when a
+  /// device paired with the active pairing code.
   const factory HubEvent.paired({required String id, required String name}) =
       HubEvent_Paired;
+
+  /// `hub_sync` started.
+  const factory HubEvent.syncStarted({required String peer}) =
+      HubEvent_SyncStarted;
+
+  /// Blobs transferred so far (`done`) out of those known to be needed
+  /// (`total`, grows while the sync discovers more work).
   const factory HubEvent.syncProgress({
     required String peer,
     required BigInt done,
     required BigInt total,
   }) = HubEvent_SyncProgress;
+
+  /// `hub_sync` finished successfully (a failure is thrown by `hub_sync`
+  /// and also reported as `Error { op: "sync" }`).
+  const factory HubEvent.syncFinished({
+    required String peer,
+    required SyncReport report,
+  }) = HubEvent_SyncFinished;
+
+  /// This device is now a remote pad controller of `peer`.
   const factory HubEvent.controllerConnected({required String peer}) =
       HubEvent_ControllerConnected;
+
+  /// The controller link ended (`hub_controller_disconnect`, or the hub
+  /// stopped answering pings).
   const factory HubEvent.controllerDisconnected() =
       HubEvent_ControllerDisconnected;
+
+  /// Hub side: a paired device started controlling the local engine.
+  const factory HubEvent.remoteControllerConnected({
+    required String device,
+    required String name,
+  }) = HubEvent_RemoteControllerConnected;
+
+  /// Hub side: that controller session ended (held pads were released).
+  const factory HubEvent.remoteControllerDisconnected({
+    required String device,
+  }) = HubEvent_RemoteControllerDisconnected;
+
+  /// A background hub operation failed (`op`: `discover`, `sync`,
+  /// `controller`, `server`).
+  const factory HubEvent.error({
+    required String op,
+    String? peer,
+    required UpError error,
+  }) = HubEvent_Error;
 }
 
-/// Hub peer (owned by `runtime/up-hub`).
+/// Controller round-trip statistics (Ping/Pong), microseconds.
+class HubLatency {
+  final int samples;
+  final BigInt pingsSent;
+  final BigInt pongsReceived;
+  final BigInt rttMinUs;
+  final BigInt rttP50Us;
+  final BigInt rttP95Us;
+  final BigInt rttMaxUs;
+  final BigInt rttMeanUs;
+  final BigInt oneWayEstimateUs;
+
+  const HubLatency({
+    required this.samples,
+    required this.pingsSent,
+    required this.pongsReceived,
+    required this.rttMinUs,
+    required this.rttP50Us,
+    required this.rttP95Us,
+    required this.rttMaxUs,
+    required this.rttMeanUs,
+    required this.oneWayEstimateUs,
+  });
+
+  @override
+  int get hashCode =>
+      samples.hashCode ^
+      pingsSent.hashCode ^
+      pongsReceived.hashCode ^
+      rttMinUs.hashCode ^
+      rttP50Us.hashCode ^
+      rttP95Us.hashCode ^
+      rttMaxUs.hashCode ^
+      rttMeanUs.hashCode ^
+      oneWayEstimateUs.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HubLatency &&
+          runtimeType == other.runtimeType &&
+          samples == other.samples &&
+          pingsSent == other.pingsSent &&
+          pongsReceived == other.pongsReceived &&
+          rttMinUs == other.rttMinUs &&
+          rttP50Us == other.rttP50Us &&
+          rttP95Us == other.rttP95Us &&
+          rttMaxUs == other.rttMaxUs &&
+          rttMeanUs == other.rttMeanUs &&
+          oneWayEstimateUs == other.oneWayEstimateUs;
+}
+
+/// A hub reachable from this device (discovered, probed or remembered).
 class HubPeer {
+  /// Hub device id (base32 Ed25519 public key; TLS-pinned).
   final String id;
   final String name;
+
+  /// First candidate IP (IPv4 preferred).
   final String address;
+
+  /// Control-plane TCP port.
   final int port;
+
+  /// This device trusts the hub (paired before).
   final bool paired;
+
+  /// All candidate `ip:port` addresses, tried in order.
+  final List<String> addresses;
 
   const HubPeer({
     required this.id,
@@ -372,6 +584,7 @@ class HubPeer {
     required this.address,
     required this.port,
     required this.paired,
+    required this.addresses,
   });
 
   @override
@@ -380,7 +593,8 @@ class HubPeer {
       name.hashCode ^
       address.hashCode ^
       port.hashCode ^
-      paired.hashCode;
+      paired.hashCode ^
+      addresses.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -391,7 +605,69 @@ class HubPeer {
           name == other.name &&
           address == other.address &&
           port == other.port &&
-          paired == other.paired;
+          paired == other.paired &&
+          addresses == other.addresses;
+}
+
+@freezed
+sealed class HubPeerEvent with _$HubPeerEvent {
+  const HubPeerEvent._();
+
+  const factory HubPeerEvent.found(HubPeer field0) = HubPeerEvent_Found;
+  const factory HubPeerEvent.lost({required String id}) = HubPeerEvent_Lost;
+}
+
+/// Returned by `hub_start_server` / `hub_server_info`.
+class HubServerInfo {
+  /// Local device id (same identity as the client side).
+  final String id;
+  final String name;
+
+  /// Bound control-plane address, e.g. `0.0.0.0:47100`.
+  final String listenAddress;
+  final int port;
+
+  /// Controller UDP port.
+  final int udpPort;
+
+  /// LAN `ip:port` addresses to show for manual entry (`hub_probe`).
+  final List<String> addresses;
+
+  /// mDNS advertising is active.
+  final bool advertising;
+
+  const HubServerInfo({
+    required this.id,
+    required this.name,
+    required this.listenAddress,
+    required this.port,
+    required this.udpPort,
+    required this.addresses,
+    required this.advertising,
+  });
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      listenAddress.hashCode ^
+      port.hashCode ^
+      udpPort.hashCode ^
+      addresses.hashCode ^
+      advertising.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HubServerInfo &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          listenAddress == other.listenAddress &&
+          port == other.port &&
+          udpPort == other.udpPort &&
+          addresses == other.addresses &&
+          advertising == other.advertising;
 }
 
 /// Result of `library_import`.
@@ -668,6 +944,7 @@ class PadSnapshot {
           sampleSecs == other.sampleSecs;
 }
 
+/// A trusted (paired) device.
 class PairedDevice {
   final String id;
   final String name;
@@ -690,6 +967,32 @@ class PairedDevice {
           id == other.id &&
           name == other.name &&
           pairedUnixMs == other.pairedUnixMs;
+}
+
+/// One-time pairing code shown on the hub.
+class PairingCode {
+  /// 6 digits.
+  final String code;
+  final PlatformInt64 expiresUnixMs;
+  final int ttlSecs;
+
+  const PairingCode({
+    required this.code,
+    required this.expiresUnixMs,
+    required this.ttlSecs,
+  });
+
+  @override
+  int get hashCode => code.hashCode ^ expiresUnixMs.hashCode ^ ttlSecs.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PairingCode &&
+          runtimeType == other.runtimeType &&
+          code == other.code &&
+          expiresUnixMs == other.expiresUnixMs &&
+          ttlSecs == other.ttlSecs;
 }
 
 enum Quantize { none, sixteenth, eighth, beat, bar, twoBars, fourBars }
@@ -742,22 +1045,54 @@ class SampleInfo {
           createdUnixMs == other.createdUnixMs;
 }
 
+/// Result of `hub_sync` (mirrors `up_hub::SyncReport`).
 class SyncReport {
+  /// Library entries changed locally (= `local_changed`).
   final int pulled;
+
+  /// Entries changed on the hub (= `remote_changed`).
   final int pushed;
   final int conflicts;
+
+  /// Bytes transferred in both directions.
   final BigInt bytes;
+  final int uploadedBlobs;
+  final BigInt uploadedBytes;
+  final int downloadedBlobs;
+  final BigInt downloadedBytes;
+  final int resumedBlobs;
+
+  /// Ids of the conflict copies (`<id>~conflict~<digest>`).
+  final List<String> conflictIds;
+  final BigInt durationMs;
 
   const SyncReport({
     required this.pulled,
     required this.pushed,
     required this.conflicts,
     required this.bytes,
+    required this.uploadedBlobs,
+    required this.uploadedBytes,
+    required this.downloadedBlobs,
+    required this.downloadedBytes,
+    required this.resumedBlobs,
+    required this.conflictIds,
+    required this.durationMs,
   });
 
   @override
   int get hashCode =>
-      pulled.hashCode ^ pushed.hashCode ^ conflicts.hashCode ^ bytes.hashCode;
+      pulled.hashCode ^
+      pushed.hashCode ^
+      conflicts.hashCode ^
+      bytes.hashCode ^
+      uploadedBlobs.hashCode ^
+      uploadedBytes.hashCode ^
+      downloadedBlobs.hashCode ^
+      downloadedBytes.hashCode ^
+      resumedBlobs.hashCode ^
+      conflictIds.hashCode ^
+      durationMs.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -767,7 +1102,14 @@ class SyncReport {
           pulled == other.pulled &&
           pushed == other.pushed &&
           conflicts == other.conflicts &&
-          bytes == other.bytes;
+          bytes == other.bytes &&
+          uploadedBlobs == other.uploadedBlobs &&
+          uploadedBytes == other.uploadedBytes &&
+          downloadedBlobs == other.downloadedBlobs &&
+          downloadedBytes == other.downloadedBytes &&
+          resumedBlobs == other.resumedBlobs &&
+          conflictIds == other.conflictIds &&
+          durationMs == other.durationMs;
 }
 
 class TrackInfo {

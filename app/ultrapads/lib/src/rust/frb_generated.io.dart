@@ -31,7 +31,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
-  RustStreamSink<HubPeer> dco_decode_StreamSink_hub_peer_Sse(dynamic raw);
+  RustStreamSink<HubPeerEvent> dco_decode_StreamSink_hub_peer_event_Sse(
+    dynamic raw,
+  );
 
   @protected
   String dco_decode_String(dynamic raw);
@@ -79,6 +81,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   HubEvent dco_decode_box_autoadd_hub_event(dynamic raw);
 
   @protected
+  HubLatency dco_decode_box_autoadd_hub_latency(dynamic raw);
+
+  @protected
+  HubPeer dco_decode_box_autoadd_hub_peer(dynamic raw);
+
+  @protected
+  HubServerInfo dco_decode_box_autoadd_hub_server_info(dynamic raw);
+
+  @protected
   PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw);
 
   @protected
@@ -92,6 +103,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Quantize dco_decode_box_autoadd_quantize(dynamic raw);
+
+  @protected
+  SyncReport dco_decode_box_autoadd_sync_report(dynamic raw);
 
   @protected
   TrackInfo dco_decode_box_autoadd_track_info(dynamic raw);
@@ -121,6 +135,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Command dco_decode_command(dynamic raw);
 
   @protected
+  ControllerSessionStats dco_decode_controller_session_stats(dynamic raw);
+
+  @protected
   EngineEvent dco_decode_engine_event(dynamic raw);
 
   @protected
@@ -139,10 +156,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double dco_decode_f_64(dynamic raw);
 
   @protected
+  HubControllerStatus dco_decode_hub_controller_status(dynamic raw);
+
+  @protected
   HubEvent dco_decode_hub_event(dynamic raw);
 
   @protected
+  HubLatency dco_decode_hub_latency(dynamic raw);
+
+  @protected
   HubPeer dco_decode_hub_peer(dynamic raw);
+
+  @protected
+  HubPeerEvent dco_decode_hub_peer_event(dynamic raw);
+
+  @protected
+  HubServerInfo dco_decode_hub_server_info(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -169,10 +198,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<AudioDeviceInfo> dco_decode_list_audio_device_info(dynamic raw);
 
   @protected
+  List<ControllerSessionStats> dco_decode_list_controller_session_stats(
+    dynamic raw,
+  );
+
+  @protected
+  List<HubPeer> dco_decode_list_hub_peer(dynamic raw);
+
+  @protected
   List<KitSummary> dco_decode_list_kit_summary(dynamic raw);
 
   @protected
   List<PadSnapshot> dco_decode_list_pad_snapshot(dynamic raw);
+
+  @protected
+  List<PairedDevice> dco_decode_list_paired_device(dynamic raw);
 
   @protected
   Float32List dco_decode_list_prim_f_32_strict(dynamic raw);
@@ -209,6 +249,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
+
+  @protected
+  HubLatency? dco_decode_opt_box_autoadd_hub_latency(dynamic raw);
+
+  @protected
+  HubServerInfo? dco_decode_opt_box_autoadd_hub_server_info(dynamic raw);
 
   @protected
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
@@ -254,6 +300,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PairedDevice dco_decode_paired_device(dynamic raw);
+
+  @protected
+  PairingCode dco_decode_pairing_code(dynamic raw);
 
   @protected
   Quantize dco_decode_quantize(dynamic raw);
@@ -321,7 +370,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
-  RustStreamSink<HubPeer> sse_decode_StreamSink_hub_peer_Sse(
+  RustStreamSink<HubPeerEvent> sse_decode_StreamSink_hub_peer_event_Sse(
     SseDeserializer deserializer,
   );
 
@@ -371,6 +420,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   HubEvent sse_decode_box_autoadd_hub_event(SseDeserializer deserializer);
 
   @protected
+  HubLatency sse_decode_box_autoadd_hub_latency(SseDeserializer deserializer);
+
+  @protected
+  HubPeer sse_decode_box_autoadd_hub_peer(SseDeserializer deserializer);
+
+  @protected
+  HubServerInfo sse_decode_box_autoadd_hub_server_info(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
@@ -384,6 +444,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Quantize sse_decode_box_autoadd_quantize(SseDeserializer deserializer);
+
+  @protected
+  SyncReport sse_decode_box_autoadd_sync_report(SseDeserializer deserializer);
 
   @protected
   TrackInfo sse_decode_box_autoadd_track_info(SseDeserializer deserializer);
@@ -417,6 +480,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Command sse_decode_command(SseDeserializer deserializer);
 
   @protected
+  ControllerSessionStats sse_decode_controller_session_stats(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   EngineEvent sse_decode_engine_event(SseDeserializer deserializer);
 
   @protected
@@ -435,10 +503,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
+  HubControllerStatus sse_decode_hub_controller_status(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   HubEvent sse_decode_hub_event(SseDeserializer deserializer);
 
   @protected
+  HubLatency sse_decode_hub_latency(SseDeserializer deserializer);
+
+  @protected
   HubPeer sse_decode_hub_peer(SseDeserializer deserializer);
+
+  @protected
+  HubPeerEvent sse_decode_hub_peer_event(SseDeserializer deserializer);
+
+  @protected
+  HubServerInfo sse_decode_hub_server_info(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -467,10 +549,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  List<ControllerSessionStats> sse_decode_list_controller_session_stats(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  List<HubPeer> sse_decode_list_hub_peer(SseDeserializer deserializer);
+
+  @protected
   List<KitSummary> sse_decode_list_kit_summary(SseDeserializer deserializer);
 
   @protected
   List<PadSnapshot> sse_decode_list_pad_snapshot(SseDeserializer deserializer);
+
+  @protected
+  List<PairedDevice> sse_decode_list_paired_device(
+    SseDeserializer deserializer,
+  );
 
   @protected
   Float32List sse_decode_list_prim_f_32_strict(SseDeserializer deserializer);
@@ -513,6 +608,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
+  HubLatency? sse_decode_opt_box_autoadd_hub_latency(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  HubServerInfo? sse_decode_opt_box_autoadd_hub_server_info(
+    SseDeserializer deserializer,
+  );
 
   @protected
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
@@ -564,6 +669,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PairedDevice sse_decode_paired_device(SseDeserializer deserializer);
+
+  @protected
+  PairingCode sse_decode_pairing_code(SseDeserializer deserializer);
 
   @protected
   Quantize sse_decode_quantize(SseDeserializer deserializer);
@@ -635,8 +743,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
-  void sse_encode_StreamSink_hub_peer_Sse(
-    RustStreamSink<HubPeer> self,
+  void sse_encode_StreamSink_hub_peer_event_Sse(
+    RustStreamSink<HubPeerEvent> self,
     SseSerializer serializer,
   );
 
@@ -698,6 +806,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_box_autoadd_hub_latency(
+    HubLatency self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_hub_peer(HubPeer self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_hub_server_info(
+    HubServerInfo self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_box_autoadd_i_64(
     PlatformInt64 self,
     SseSerializer serializer,
@@ -720,6 +843,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_quantize(Quantize self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_sync_report(
+    SyncReport self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_track_info(
@@ -758,6 +887,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_command(Command self, SseSerializer serializer);
 
   @protected
+  void sse_encode_controller_session_stats(
+    ControllerSessionStats self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_engine_event(EngineEvent self, SseSerializer serializer);
 
   @protected
@@ -779,10 +914,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
+  void sse_encode_hub_controller_status(
+    HubControllerStatus self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_hub_event(HubEvent self, SseSerializer serializer);
 
   @protected
+  void sse_encode_hub_latency(HubLatency self, SseSerializer serializer);
+
+  @protected
   void sse_encode_hub_peer(HubPeer self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_hub_peer_event(HubPeerEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_hub_server_info(HubServerInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -812,6 +962,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_controller_session_stats(
+    List<ControllerSessionStats> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_hub_peer(List<HubPeer> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_kit_summary(
     List<KitSummary> self,
     SseSerializer serializer,
@@ -820,6 +979,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_pad_snapshot(
     List<PadSnapshot> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_list_paired_device(
+    List<PairedDevice> self,
     SseSerializer serializer,
   );
 
@@ -884,6 +1049,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_hub_latency(
+    HubLatency? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_hub_server_info(
+    HubServerInfo? self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_box_autoadd_i_64(
     PlatformInt64? self,
     SseSerializer serializer,
@@ -942,6 +1119,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_paired_device(PairedDevice self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_pairing_code(PairingCode self, SseSerializer serializer);
 
   @protected
   void sse_encode_quantize(Quantize self, SseSerializer serializer);

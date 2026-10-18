@@ -82,6 +82,14 @@
 - **同步**：曲库以内容寻址（BLAKE3）blob + 带版本向量的清单组织；增量、可续传；并发冲突时"最后写入者胜 + 保留副本"
 - **控制器**：手机 Pad 事件经 UDP（序号 + 会话密钥 HMAC，双发去重，按 pad 处理乱序）发送到桌面引擎；会话结束时补发 pad_up。TCP/WebSocket 回退尚未实现
 - **P2P**：`HubTransport` trait 预留 iroh 实现（跨局域网直连），v0.0.1 只实现局域网
+- **FFI 接入（`bridge/up-ffi/src/hub_rt.rs`，函数见 `docs/API.md` §3.1）**：
+  - 一个全局多线程 tokio runtime（2 worker，`up-hub`）承载所有 Hub 任务；FRB `async fn` 只把工作 spawn 上去并等待 `JoinHandle`
+  - 身份、受信列表、记住的 Hub、上次端口存于 `<data_dir>/hub`；Hub 与客户端两个角色共用同一身份
+  - 曲库 = `up_library::hub_store::LibraryHubStore`，外包一层：Hub 侧合并改动曲库、客户端同步改动曲库时发 `LibraryChanged`；客户端同步按 blob 统计 `SyncProgress`
+  - 远端控制器 → `PadSink` → 引擎无锁命令队列（与 UI 热路径同一个 `EngineHandle`，多生产者）
+  - 本机作为控制器时，FFI `pad_down/pad_up`（FRB sync）经 `ArcSwap` 读取当前 `ControllerHandle` 并同步转发（HMAC + 非阻塞 UDP），默认本地不发声（`hub_controller_set_local_echo` 可开）；Pong 超时 5 s 自动断开
+  - Hub 事件与引擎事件合并进同一个 `events()` 流（`EngineEvent::Hub`）
+  - Android：Manifest 声明 `INTERNET`/`ACCESS_NETWORK_STATE`/`ACCESS_WIFI_STATE`/`CHANGE_WIFI_MULTICAST_STATE`；MulticastLock 由 Rust 经 JNI（仅框架类）在 `hub_discover`/`hub_start_server` 前获取、停止时释放，`MainActivity.onStart/onStop` 通过 `nativeSetForeground` 让它只在前台持有
 
 ## 7. 目录结构
 

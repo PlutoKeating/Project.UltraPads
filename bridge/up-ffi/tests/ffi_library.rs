@@ -1,6 +1,6 @@
 //! Exercises the FFI functions from Rust (no Dart, no audio device):
 //! init → import example kits → list → load → snapshot → waveform →
-//! tutorial → save edited kit → stubs.
+//! tutorial → save edited kit → hub state.
 
 use std::path::PathBuf;
 use std::time::Duration;
@@ -108,10 +108,8 @@ fn library_flow_through_ffi() {
     assert!(std::path::Path::new(&out).exists());
 
     assert!(tracks::tracks_list().unwrap().is_empty());
-    assert_eq!(
-        hub::hub_stop_server().unwrap_err().code,
-        ErrorCode::NotImplemented
-    );
+    // Hub: no server until hub_start_server (full flow in ffi_hub.rs).
+    assert!(hub::hub_server_info().unwrap().is_none());
     std::thread::sleep(Duration::from_millis(20));
     let _ = std::fs::remove_dir_all(&tmp);
 }

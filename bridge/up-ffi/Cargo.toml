@@ -17,8 +17,15 @@ up-host = { workspace = true }
 up-model = { workspace = true }
 up-codec = { workspace = true }
 up-library = { workspace = true }
+up-hub = { workspace = true }
 arc-swap = "1"
+async-trait = "0.1"
+crossbeam-channel = "0.5"
+if-addrs = "0.15"
 log = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "net", "sync", "time", "macros", "io-util"] }
 
 [target.'cfg(target_os = "android")'.dependencies]
 jni-sys = "0.4"

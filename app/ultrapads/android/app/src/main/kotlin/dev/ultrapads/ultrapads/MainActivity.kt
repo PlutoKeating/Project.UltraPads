@@ -18,6 +18,12 @@ import io.flutter.plugin.common.MethodChannel
  * (implemented in `bridge/up-ffi/src/android.rs`). Dart's later `dlopen`
  * returns the same, already-initialised library instance.
  *
+ * The hub's Wi-Fi multicast lock (mDNS, ADR-0004 §Android) is managed in
+ * Rust: `hub_discover` / `hub_start_server` acquire it through JNI before
+ * starting mDNS and release it when discovery / the server stops. This
+ * activity only reports foreground/background via [nativeSetForeground]
+ * ([onStart] / [onStop]) so the lock is never held in the background.
+ *
  * RECORD_AUDIO is requested through the `dev.ultrapads/permissions`
  * MethodChannel (see docs/API.md §3):
  *  - `recordAudioStatus` → `"granted"` | `"denied"`
@@ -25,10 +31,21 @@ import io.flutter.plugin.common.MethodChannel
  */
 class MainActivity : FlutterActivity() {
     private var pendingPermissionResult: MethodChannel.Result? = null
+    private var nativeLoaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initNativeAudio(applicationContext)
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setNativeForeground(true)
+    }
+
+    override fun onStop() {
+        setNativeForeground(false)
+        super.onStop()
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -75,9 +92,22 @@ class MainActivity : FlutterActivity() {
     /** Implemented in Rust: `Java_dev_ultrapads_ultrapads_MainActivity_nativeInit`. */
     private external fun nativeInit(context: Context): Boolean
 
+    /** Implemented in Rust: releases the multicast lock while in the background. */
+    private external fun nativeSetForeground(foreground: Boolean)
+
+    private fun setNativeForeground(foreground: Boolean) {
+        if (!nativeLoaded) return
+        try {
+            nativeSetForeground(foreground)
+        } catch (e: UnsatisfiedLinkError) {
+            Log.e(TAG, "nativeSetForeground missing in libup_ffi.so", e)
+        }
+    }
+
     private fun initNativeAudio(context: Context) {
         try {
             System.loadLibrary("up_ffi")
+            nativeLoaded = true
             if (!nativeInit(context)) {
                 Log.i(TAG, "native audio context was already initialised")
             }
