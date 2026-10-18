@@ -958,7 +958,7 @@ class UpL10nEn extends UpL10n {
 
   @override
   String get settingsResearchNotice =>
-      'UltraPads is a private research project.';
+      'UltraPads is an open-source research project (Apache-2.0).';
 
   @override
   String get hubTitle => 'My devices';

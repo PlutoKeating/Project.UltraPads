@@ -823,7 +823,7 @@
   "@settingsLicenses": {},
   "settingsPrivacy": "Privacy",
   "@settingsPrivacy": {},
-  "settingsResearchNotice": "UltraPads is a private research project.",
+  "settingsResearchNotice": "UltraPads is an open-source research project (Apache-2.0).",
   "@settingsResearchNotice": {},
   "hubTitle": "My devices",
   "@hubTitle": {},

@@ -278,7 +278,7 @@
   "settingsVersion": "版本 {version}",
   "settingsLicenses": "开源许可",
   "settingsPrivacy": "隐私",
-  "settingsResearchNotice": "UltraPads 是私有研究项目。",
+  "settingsResearchNotice": "UltraPads 是以学习研究为目的的开源项目（Apache-2.0）。",
   "hubTitle": "我的设备",
   "hubDescription": "通过局域网同步曲库，并把手机当作打击垫控制器。",
   "hubEnable": "在本机运行 Hub",

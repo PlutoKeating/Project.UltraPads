@@ -1768,7 +1768,7 @@ abstract class UpL10n {
   /// No description provided for @settingsResearchNotice.
   ///
   /// In en, this message translates to:
-  /// **'UltraPads is a private research project.'**
+  /// **'UltraPads is an open-source research project (Apache-2.0).'**
   String get settingsResearchNotice;
 
   /// No description provided for @hubTitle.

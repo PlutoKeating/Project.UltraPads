@@ -3,7 +3,7 @@
 Flutter + Rust 实现的打击垫与音乐创作软件，一份代码多端打包（Linux、Android、Windows、Web、macOS/iOS 预留）。
 以学习研究为目的复刻 Ref 的界面和交互，并扩展为兼顾随手创作和复杂编曲的工具。
 
-> ⚠️ 私有研究项目。原 App 的素材（图标、Kit 音频、封面）只存放在被 gitignore 的 `private-assets/` 和 `references/` 中，永不入库、永不分发。
+> ⚠️ 代码仓库以 Apache-2.0 公开开源（2026-10-18 起）。原 App 素材（图标、Kit 音频、封面等）仍只存放在被 gitignore 的 `private-assets/` 与 `references/` 中，不随仓库分发；没有这些素材时应用使用开源占位资源和 CC0 示例 Kit。
 
 ## 文档
 

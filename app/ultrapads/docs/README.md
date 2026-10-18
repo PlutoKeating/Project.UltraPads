@@ -23,7 +23,7 @@ just run-linux                 # Linux + FFI 引擎（加载失败自动回退 M
 
 ## 私有素材
 
-原 App 素材永不入库。`assets/private_manifest/` 是**入库**的目录，只含：
+原 App 素材不入库、不随（公开的）仓库分发。`assets/private_manifest/` 是**入库**的目录，只含：
 
 - `manifest.json`：占位清单（`available: false`）
 - `.gitignore`：忽略该目录下其它所有文件

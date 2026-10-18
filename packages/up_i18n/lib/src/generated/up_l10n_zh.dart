@@ -951,7 +951,8 @@ class UpL10nZh extends UpL10n {
   String get settingsPrivacy => '隐私';
 
   @override
-  String get settingsResearchNotice => 'UltraPads 是私有研究项目。';
+  String get settingsResearchNotice =>
+      'UltraPads 是以学习研究为目的的开源项目（Apache-2.0）。';
 
   @override
   String get hubTitle => '我的设备';
