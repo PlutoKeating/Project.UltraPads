@@ -249,6 +249,13 @@ pub(crate) fn find_device(
             })
         });
     };
+    // The default device is not always part of the enumeration (AAudio's
+    // default is the pseudo device `aaudio:-1`), so match it first.
+    if let Some(d) = default
+        && (device_id(&d).as_deref() == Some(w) || device_name(&d).eq_ignore_ascii_case(w))
+    {
+        return Ok(d);
+    }
     let devices = host
         .devices()
         .map_err(|e| audio_err("enumerate devices", e))?;
