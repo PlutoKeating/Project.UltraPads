@@ -12,6 +12,7 @@ import 'package:up_i18n/up_i18n.dart';
 
 import 'src/app/app.dart';
 import 'src/assets/private_assets.dart';
+import 'src/dev/dev_hooks.dart';
 import 'src/engine/engine_bootstrap.dart';
 import 'src/library/first_run.dart';
 import 'src/state/engine_state.dart';
@@ -44,6 +45,8 @@ Future<void> main() async {
       child: const UltraPadsApp(),
     ),
   );
+
+  unawaited(DevHooks.run(boot.client));
 
   // 首次启动导入内置 Kit 并加载默认 Kit（后台进行，完成后由 KitLoaded /
   // LibraryChanged 事件刷新界面）。
