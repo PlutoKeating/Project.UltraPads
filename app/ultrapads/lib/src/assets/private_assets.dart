@@ -15,7 +15,13 @@ import 'package:up_tokens/up_tokens.dart';
 /// 任何查询在素材缺失时返回 null，调用方回退到开源占位（程序化绘制、
 /// Material 图标、up_tokens 的 Montserrat）。
 class PrivateAssets {
-  const PrivateAssets._(this.available, this.priority, this.entries);
+  const PrivateAssets._(
+    this.available,
+    this.priority,
+    this.entries, {
+    this.privateKits = const {},
+    this.generatedAt = '',
+  });
 
   static const PrivateAssets none = PrivateAssets._(false, [], {});
 
@@ -25,6 +31,13 @@ class PrivateAssets {
   final List<String> priority;
   final Map<String, String> entries;
 
+  /// 原 App 内置 Kit：原目录结构中的相对路径（相对 compat-ios 根）→ 资源路径。
+  /// 首次启动还原成目录后交给曲库导入器（见 `library/first_run.dart`）。
+  final Map<String, String> privateKits;
+
+  /// 注入时间（用来判断是否需要重新导入内置 Kit）。
+  final String generatedAt;
+
   static Future<PrivateAssets> load([AssetBundle? bundle]) async {
     final b = bundle ?? rootBundle;
     for (final name in const ['injected.json', 'manifest.json']) {
@@ -33,10 +46,15 @@ class PrivateAssets {
             jsonDecode(await b.loadString('$_dir/$name'))
                 as Map<String, dynamic>;
         if (json['available'] != true) continue;
+        final kits = json['privateKits'] as Map<String, dynamic>?;
         return PrivateAssets._(
           true,
           List<String>.from(json['priority'] as List? ?? const []),
           Map<String, String>.from(json['entries'] as Map? ?? const {}),
+          privateKits: Map<String, String>.from(
+            kits?['files'] as Map? ?? const {},
+          ),
+          generatedAt: json['generatedAt'] as String? ?? '',
         );
       } catch (_) {
         // 未注入：继续回退

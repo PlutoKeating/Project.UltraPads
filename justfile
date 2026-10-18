@@ -58,7 +58,11 @@ build-web:
 cli *ARGS:
     cargo run -p up-cli -- {{ARGS}}
 
-# 把 private-assets/compat 的 UI 素材注入应用（不入库；缺失时用开源占位）
+# 把 content/kits 的 CC0 示例 Kit 复制为应用资源（首次启动导入；测试检查两处一致）
+bundle-kits:
+    cp content/kits/*.upkit {{app}}/assets/kits/
+
+# 把 private-assets/ 的 UI 素材与 4.7.0 内置 Kit 注入应用（不入库；缺失时用开源占位）
 inject-assets:
     dart run tools/assets/inject_private_assets.dart
 

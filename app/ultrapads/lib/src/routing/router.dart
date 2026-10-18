@@ -61,6 +61,10 @@ CustomTransitionPage<T> sheetPage<T>(GoRouterState s, Widget child) =>
 /// `--dart-define=UP_GALLERY=true`：启动直接进入设计画廊。
 const bool galleryFlag = bool.fromEnvironment('UP_GALLERY');
 
+/// `--dart-define=UP_ROUTE=/kits`：开发 / 截图用，启动直接打开某个路由
+/// （仍遵守引导重定向）。
+const String routeFlag = String.fromEnvironment('UP_ROUTE');
+
 final routerProvider = Provider<GoRouter>((ref) {
   final onboarded = ValueNotifier(ref.read(settingsProvider).onboarded);
   ref.listen(
@@ -69,7 +73,9 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
   ref.onDispose(onboarded.dispose);
   return GoRouter(
-    initialLocation: galleryFlag ? Routes.gallery : Routes.perform,
+    initialLocation: galleryFlag
+        ? Routes.gallery
+        : (routeFlag.isNotEmpty ? routeFlag : Routes.perform),
     refreshListenable: onboarded,
     redirect: (context, state) {
       if (state.matchedLocation == Routes.gallery) return null;

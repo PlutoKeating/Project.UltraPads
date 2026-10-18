@@ -44,3 +44,5 @@ flutter:
     # 入库的占位清单目录（永远存在）。注入的私有素材也平铺在这里（被目录内 .gitignore 忽略），
     # 见 tools/assets/inject_private_assets.dart 和 docs/README.md「私有素材」。
     - assets/private_manifest/
+    # CC0 示例 Kit（content/kits/*.upkit 的副本，测试保证一致），首次启动导入曲库。
+    - assets/kits/

@@ -14,6 +14,12 @@
 //   dart run tools/assets/inject_private_assets.dart --check        # 报告状态
 //   dart run tools/assets/inject_private_assets.dart --root <dir>   # 自定义 private-assets 根
 //
+// 内置 Kit：ios 来源的 `kit`（audio/kits/**）与 `data`（data/initial/*.json）类别就是
+// 4.7.0 的 6 个内置 Kit 及其目录/教程。清单的 `privateKits` 记录它们在原目录结构中的
+// 相对路径 → 打包资源路径；应用首次启动时把这些文件还原到临时目录，再交给曲库的
+// 原 App 素材导入器（`library_import`，compat-ios 来源）导入，见
+// app/ultrapads/lib/src/library/first_run.dart。
+//
 // 为什么是扁平目录：pubspec 声明的资源目录必须存在，且目录声明不递归。
 // assets/private_manifest/ 是入库目录（只含占位清单 manifest.json 与 .gitignore），
 // 永远存在；注入文件以 `<来源>_<类别>__<相对路径用 __ 连接>` 平铺其中，一条声明即可全部打包。
@@ -69,7 +75,7 @@ final _sources = <_Source>[
     _Category(
       'kit',
       'audio/kits',
-      (p) => RegExp(r'\.(ogg|wav|txt)$').hasMatch(p),
+      (p) => RegExp(r'\.(ogg|mp3|wav|txt)$').hasMatch(p),
       recursive: true,
     ),
     _Category(
@@ -133,6 +139,8 @@ void main(List<String> args) {
 
   _clean(target);
   final entries = <String, String>{};
+  // 内置 Kit：原目录结构中的相对路径（相对 compat-ios 根）→ 打包资源路径。
+  final privateKits = <String, String>{};
   final counts = <String, Map<String, int>>{};
   final priority = <String>[];
   for (final src in _sources) {
@@ -159,6 +167,9 @@ void main(List<String> args) {
         final flat = _flat(src.id, cat.name, rel);
         f.copySync('${target.path}/$flat');
         entries['${src.id}/${cat.name}/$rel'] = '$_bundlePrefix/$flat';
+        if (src.id == 'ios' && (cat.name == 'kit' || cat.name == 'data')) {
+          privateKits['${cat.dir}/$rel'] = '$_bundlePrefix/$flat';
+        }
       }
       c[cat.name] = files.length;
     }
@@ -179,6 +190,8 @@ void main(List<String> args) {
     'generatedAt': DateTime.now().toUtc().toIso8601String(),
     'counts': counts,
     'entries': entries,
+    if (privateKits.isNotEmpty)
+      'privateKits': {'source': 'compat-ios', 'files': privateKits},
   };
   File(
     '${target.path}/$_manifestName',

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +13,7 @@ import 'package:up_i18n/up_i18n.dart';
 import 'src/app/app.dart';
 import 'src/assets/private_assets.dart';
 import 'src/engine/engine_bootstrap.dart';
+import 'src/library/first_run.dart';
 import 'src/state/engine_state.dart';
 import 'src/state/settings_state.dart';
 
@@ -40,9 +44,27 @@ Future<void> main() async {
       child: const UltraPadsApp(),
     ),
   );
+
+  // 首次启动导入内置 Kit 并加载默认 Kit（后台进行，完成后由 KitLoaded /
+  // LibraryChanged 事件刷新界面）。
+  unawaited(
+    FirstRunImporter(
+      engine: boot.client,
+      prefs: prefs,
+      assets: assets,
+      tempDir: () async {
+        final base = await getTemporaryDirectory();
+        return Directory(
+          '${base.path}/ultrapads-private-kits-'
+          '${DateTime.now().microsecondsSinceEpoch}',
+        ).create(recursive: true);
+      },
+    ).run(),
+  );
 }
 
-/// 初始化引擎：存储目录、音频设备、默认 Kit。任何一步失败都只记录日志，UI 照常启动并降级。
+/// 初始化引擎：存储目录、音频设备。任何一步失败都只记录日志，UI 照常启动并降级。
+/// 内置 Kit 导入与默认 Kit 由 [FirstRunImporter] 在 runApp 之后完成。
 Future<void> _initEngine(EngineClient engine, SharedPreferences prefs) async {
   Future<void> step(String name, Future<void> Function() body) async {
     try {
@@ -66,9 +88,4 @@ Future<void> _initEngine(EngineClient engine, SharedPreferences prefs) async {
       ),
     ),
   );
-  await step('default_kit', () async {
-    if (engine.snapshot().kit != null) return;
-    final kits = await engine.libraryListKits();
-    if (kits.isNotEmpty) await engine.libraryLoadKit(kits.first.id);
-  });
 }
