@@ -2,13 +2,38 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
-## [Unreleased]
+## [0.1.0] - 2026-10-18
+
+一键安装、应用内更新与正式签名，外加按键延迟优化。
+
+> **从 0.0.1 升级 Android 版**：0.1.0 起 APK 改用正式密钥签名（证书 SHA-256
+> `bb7dd4d8…f8362816`），与 0.0.1 的调试签名不同，需要**先卸载旧版再安装**（会清空本机曲库，
+> 可先用「我的设备」同步到电脑）。之后的版本都能在应用内直接更新。Linux 不受影响。
 
 ### 新增
 
+- **Linux 一键安装 / 更新**：`curl -fsSL https://ultrapads.plutokeating.beer/install | bash`。
+  免 sudo，装到 `~/.local/opt/ultrapads/versions/<版本>`（`current` 原子切换、保留上一版可回滚），
+  写入 `~/.local/bin/ultrapads`、桌面项与图标；再运行即升级；下载走 Cloudflare 边缘镜像（失败回退 GitHub）并核对 SHA-256；
+  缺少 GTK 3 / ALSA 时询问后用系统包管理器安装。选项 `--version`、`--prefix`、`--no-desktop`、`--no-modify-path`、`--uninstall`、`--yes`。
+- **官网与发布接口** `ultrapads.plutokeating.beer`（`website/`，Cloudflare Worker）：下载落地页（中 / 英）、
+  `/api/version`（最新正式版清单，`?format=sh` 供脚本读取）、`/dl/<tag>/<文件>`（按 GitHub 记录的 sha256 核对后边缘缓存的镜像）、
+  `/dl/latest/<平台>`。
+- **应用内更新**（新 crate `runtime/up-update` + FFI `update_*`）：启动后静默检查一次（只发 GET，设置里可关），
+  有新版时提示一次；「设置 → 关于 → 软件更新」可下载、查看更新内容。Linux（脚本安装）就地装入新版本并重启；
+  Android 下载并校验 APK 后交给系统安装器；手动解压的副本只提示并打开下载页。
+- **Linux arm64** 发布包（树莓派 / ARM 笔记本）。
+- 发布流水线 `.github/workflows/release.yml`：推送 tag 即构建 Linux x64 / arm64、Android 三个 ABI，
+  核对 APK 签名证书，生成 `SHA256SUMS.txt` 并创建 Release；`just bump` / `just release` / `just package-linux`。
 - 品牌标志定稿：UP 组合字（粉紫果冻 U + 青色 pad 竖笔 + PlutoKeating 琥珀 orb），源文件 `design/brand/ultrapads-mark.svg`。
   `just icons` 由它生成 Linux、Windows、macOS、iOS、Android（含 adaptive icon）、Web 与官网的全部图标；
   Flutter Web 的 manifest / 页面标题改为 UltraPads 与品牌底色，替换模板默认值。
+- Linux 桌面项（`dev.ultrapads.ultrapads.desktop`，类别 Audio / Music）；窗口标题与应用名统一为 UltraPads。
+
+### 变更
+
+- Android release 包使用正式签名（密钥不入库，见 `docs/QUICK_START.md`「发布」）；新增 `REQUEST_INSTALL_PACKAGES` 权限（应用内更新）。
+- 设置页「关于」的版本号改为运行时读取（`app_version`），不再写死。
 
 ### 改进
 
