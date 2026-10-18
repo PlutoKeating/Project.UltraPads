@@ -1,0 +1,141 @@
+{
+  "transport": {
+    "$type": "color",
+    "background": { "$value": "{color.grey.920}" },
+    "stopBackground": { "$value": "{color.grey.700}" },
+    "stopIcon": { "$value": "{color.base.white}" },
+    "waveformPlayed": { "$value": "{color.neon.pink.500}" },
+    "waveformUnplayed": { "$value": "{color.alpha.white.30}" },
+    "progressTrack": { "$value": "{color.alpha.white.20}" },
+    "progressFill": { "$value": "{color.brand.rose}" },
+    "thumb": { "$value": "{color.brand.rose}" },
+    "speedBackground": { "$value": "{color.base.white}" },
+    "speedText": { "$value": "{color.grey.850}" }
+  },
+  "chip": {
+    "$type": "color",
+    "background": { "$value": "{color.grey.700}" },
+    "foreground": { "$value": "{color.base.white}" },
+    "iconBox": { "$value": "{color.grey.800}" },
+    "selectedBackground": { "$value": "{color.brand.raspberry}" },
+    "selectedForeground": { "$value": "{color.base.white}" },
+    "selectedIconBox": { "$value": "{color.brand.raspberryDeep}" },
+    "hintBackground": { "$value": "{color.base.white}", "$description": "APK A/B tutorial hint inverts to white" },
+    "hintForeground": { "$value": "{color.base.black}" }
+  },
+  "card": {
+    "$type": "color",
+    "background": { "$value": "{color.grey.800}" },
+    "backgroundSelected": { "$value": "{color.grey.700}" },
+    "border": { "$value": "{color.alpha.white.8}" },
+    "title": { "$value": "{color.base.white}" },
+    "subtitle": { "$value": "{color.alpha.white.70}" },
+    "overline": { "$value": "{color.grey.400}" },
+    "selectedIndicator": { "$value": "{color.brand.roseLight}" }
+  },
+  "banner": {
+    "scrim": { "$type": "gradient", "$value": "{gradient.scrimBottom}" },
+    "indicator": { "$type": "color", "$value": "{color.alpha.white.40}" },
+    "indicatorActive": { "$type": "color", "$value": "{color.base.white}" }
+  },
+  "sheet": {
+    "$type": "color",
+    "background": { "$value": "{color.grey.820}" },
+    "header": { "$value": "{color.grey.920}" },
+    "handle": { "$value": "{color.alpha.white.30}" },
+    "item": { "$value": "{color.grey.800}" },
+    "itemPressed": { "$value": "{color.grey.700}" },
+    "itemIconBox": { "$value": "{color.grey.850}" },
+    "underline": { "$value": "{color.brand.rose}" }
+  },
+  "list": {
+    "$type": "color",
+    "item": { "$value": "{color.grey.800}" },
+    "itemPressed": { "$value": "{color.grey.700}" },
+    "separator": { "$value": "{color.grey.900}" }
+  },
+  "badge": {
+    "$type": "color",
+    "background": { "$value": "{color.brand.roseLight}" },
+    "foreground": { "$value": "{color.base.white}" },
+    "new": { "$value": "{color.swatch.vibrantGreen}" },
+    "top": { "$value": "{color.swatch.dandelion}" },
+    "topForeground": { "$value": "{color.grey.850}" }
+  },
+  "button": {
+    "$type": "color",
+    "primaryBackground": { "$value": "{color.brand.rose}" },
+    "primaryForeground": { "$value": "{color.base.white}" },
+    "primaryPressed": { "$value": "{color.brand.raspberry}" },
+    "secondaryBackground": { "$value": "{color.grey.700}" },
+    "secondaryForeground": { "$value": "{color.base.white}" },
+    "outlineBorder": { "$value": "{color.base.white}" },
+    "ghostForeground": { "$value": "{color.base.white}" },
+    "dangerBackground": { "$value": "{color.swatch.scarlet}" },
+    "disabledBackground": { "$value": "{color.alpha.white.12}" },
+    "disabledForeground": { "$value": "{color.alpha.white.30}" }
+  },
+  "input": {
+    "$type": "color",
+    "background": { "$value": "{color.grey.950}" },
+    "foreground": { "$value": "{color.base.white}" },
+    "placeholder": { "$value": "{color.grey.400}" },
+    "cursor": { "$value": "{color.brand.rose}" }
+  },
+  "slider": {
+    "$type": "color",
+    "track": { "$value": "{color.alpha.white.20}" },
+    "fill": { "$value": "{color.brand.rose}" },
+    "thumb": { "$value": "{color.brand.rose}" }
+  },
+  "dialog": {
+    "$type": "color",
+    "background": { "$value": "{color.grey.800}" },
+    "scrim": { "$value": "{color.alpha.black.63}" }
+  },
+  "toast": {
+    "$type": "color",
+    "background": { "$value": "{color.alpha.white.90}" },
+    "foreground": { "$value": "{color.grey.850}" }
+  },
+  "meter": {
+    "$type": "color",
+    "track": { "$value": "{color.alpha.white.8}" },
+    "low": { "$value": "{color.swatch.vibrantGreen}" },
+    "mid": { "$value": "{color.swatch.dandelion}" },
+    "high": { "$value": "{color.swatch.scarlet}" },
+    "peak": { "$value": "{color.base.white}" }
+  },
+  "waveform": {
+    "$type": "color",
+    "active": { "$value": "{color.neon.pink.500}" },
+    "inactive": { "$value": "{color.alpha.white.30}" },
+    "selection": { "$value": "{color.alpha.white.12}" },
+    "marker": { "$value": "{color.base.white}" }
+  },
+  "progressRing": {
+    "$type": "color",
+    "track": { "$value": "{color.base.white}" },
+    "fill": { "$value": "{color.brand.rose}" }
+  },
+  "record": {
+    "$type": "color",
+    "indicator": { "$value": "{color.swatch.scarlet}" },
+    "trackCard": { "$value": "{color.grey.800}" }
+  },
+  "genre": {
+    "$type": "color",
+    "label": { "$value": "{color.alpha.white.70}" },
+    "ring": { "$value": "{color.base.white}" }
+  },
+  "swatch": {
+    "$type": "color",
+    "ring": { "$value": "{color.base.white}" }
+  },
+  "hub": {
+    "$type": "color",
+    "online": { "$value": "{color.swatch.vibrantGreen}" },
+    "pairing": { "$value": "{color.swatch.skyBlue}" },
+    "offline": { "$value": "{color.grey.500}" }
+  }
+}

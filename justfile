@@ -29,7 +29,10 @@ rust-check:
 
 # Dart：分析 + 测试 + 硬编码检查
 dart-check:
+    cd design/tokens && pnpm run check
+    dart run tools/lint/test/no_hardcode_test.dart
     dart run tools/lint/no_hardcode.dart
+    cd packages/up_i18n && dart run up_i18n:check
     melos run analyze
     melos run test
 
@@ -54,3 +57,15 @@ build-web:
 # 无头 CLI（离线渲染、Kit 打包、Hub 守护进程）
 cli *ARGS:
     cargo run -p up-cli -- {{ARGS}}
+
+# 把 private-assets/compat 的 UI 素材注入应用（不入库；缺失时用开源占位）
+inject-assets:
+    dart run tools/assets/inject_private_assets.dart
+
+# 删除已注入的私有素材，回到纯开源占位
+clean-assets:
+    dart run tools/assets/inject_private_assets.dart --clean
+
+# 用 MockEngineClient 运行 Linux 版（无需 Rust 引擎）
+run-mock:
+    cd {{app}} && flutter run -d linux --dart-define=UP_ENGINE=mock

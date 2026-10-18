@@ -1,0 +1,8 @@
+{
+  "$description": "Neon skin. The base semantic layer already describes neon; only values that intentionally differ from base belong here (keep it explicit for the skin editor).",
+  "pad": {
+    "fill": { "radial": { "$type": "number", "$value": 1 } },
+    "idle": { "glow": { "$type": "number", "$value": 0 } },
+    "pressed": { "glow": { "$type": "number", "$value": 1 } }
+  }
+}

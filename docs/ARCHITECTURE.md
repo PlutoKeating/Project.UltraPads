@@ -62,11 +62,13 @@
 
 ## 5. 设计系统
 
-- 事实源：`design/tokens/*.tokens.json`（W3C DTCG）
-- 构建：`design/tokens` 下的 Style Dictionary 构建出 `packages/up_tokens/lib/src/generated/`（Dart）和 `design/tokens/build/css/`
-- 分层：primitive → semantic → component；皮肤 = semantic 层覆盖（neon / outline / light / custom）
-- Dart 侧以 `ThemeExtension<UpTheme>` 注入；组件只能通过 `UpTheme.of(context)` 取值
-- lint：`tools/lint/no_hardcode.dart` 禁止 `packages/up_ui`、`app/ultrapads/lib/features` 中出现 `Color(0x…)`、`Colors.*`、数字字面量的圆角/时长，以及硬编码文案（中文字符或 `Text('…')` 字面量）
+- 事实源：`design/tokens/src/{primitive,semantic,component,themes}/`（W3C DTCG），主题清单在 `design/tokens/themes.config.json`
+- 构建：`pnpm run build` 生成 `packages/up_tokens/lib/src/generated/*.g.dart`、`design/tokens/build/css/`、`design/tokens/build/json/`（产物入库，Flutter 构建不依赖 Node）；`pnpm run check` 校验产物是最新的
+- 分层：primitive → semantic → component；皮肤 = semantic 层覆盖（neon / outline / light，用户自定义皮肤以 JSON 保存）；component 层不得含颜色
+- Dart 侧以 `ThemeExtension<UpTheme>` 注入，组件只能通过 `UpTheme.of(context)` 取值；`UpTheme.lerp` 让主题切换自动带动画
+- 字体：Uni Sans 是商业字体，不入库，由 `just inject-assets` 注入，`UpFonts.loadPrivate()` 加载；缺失时回退到 Montserrat（OFL）
+- i18n：`packages/up_i18n`（ARB，zh/en），`UpL10n.of(context)`、`LocaleController`；`dart run up_i18n:add_locale <code>` 新增语言，`dart run up_i18n:check` 检查缺失
+- lint：`tools/lint/no_hardcode.dart` 扫描 `packages/up_ui`、`packages/up_fx`、`app/ultrapads/lib`（排除生成代码），禁止 `Color(0x…)`、`Colors.*`、数字字面量的圆角/时长/间距/字号，以及 `Text('…')` 字面量；行级豁免写 `// up-lint-ignore: <原因>`
 
 ## 6. 个人多设备协同（up-hub）
 

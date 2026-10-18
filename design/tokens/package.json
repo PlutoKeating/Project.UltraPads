@@ -1,0 +1,19 @@
+{
+  "name": "@ultrapads/design-tokens",
+  "version": "0.0.1",
+  "private": true,
+  "description": "UltraPads design tokens (W3C DTCG) -> Dart / CSS / flat JSON via Style Dictionary",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@12.11.2",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check"
+  },
+  "devDependencies": {
+    "style-dictionary": "5.7.0"
+  }
+}

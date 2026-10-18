@@ -1,0 +1,24 @@
+{
+  "shadow": {
+    "$type": "shadow",
+    "none": { "$value": [] },
+    "sm": { "$value": [{ "color": "{color.alpha.black.20}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 1, "unit": "px" }, "blur": { "value": 3, "unit": "px" }, "spread": { "value": 0, "unit": "px" } }] },
+    "md": { "$value": [{ "color": "{color.alpha.black.50}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 4, "unit": "px" }, "blur": { "value": 12, "unit": "px" }, "spread": { "value": 0, "unit": "px" } }] },
+    "lg": { "$value": [{ "color": "{color.alpha.black.63}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 10, "unit": "px" }, "blur": { "value": 28, "unit": "px" }, "spread": { "value": 0, "unit": "px" } }], "$description": "Floating kit cards / track card (SHOT)" },
+    "padBevel": { "$value": [{ "color": "{color.alpha.black.50}", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 3, "unit": "px" }, "blur": { "value": 0, "unit": "px" }, "spread": { "value": 0, "unit": "px" } }], "$description": "Hard bottom edge under neon pads (SHOT)" }
+  },
+  "glow": {
+    "$type": "shadow",
+    "$description": "Glow recipes. Colour alpha = layer opacity; RGB is replaced at runtime by the pad role colour (UpGlowSpec.shadows(color)).",
+    "none": { "$value": [] },
+    "sm": { "$value": [{ "color": "#FFFFFF8C", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 0, "unit": "px" }, "blur": { "value": 8, "unit": "px" }, "spread": { "value": 0, "unit": "px" } }] },
+    "md": { "$value": [
+      { "color": "#FFFFFFA6", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 0, "unit": "px" }, "blur": { "value": 12, "unit": "px" }, "spread": { "value": 0, "unit": "px" } },
+      { "color": "#FFFFFF4D", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 0, "unit": "px" }, "blur": { "value": 28, "unit": "px" }, "spread": { "value": 2, "unit": "px" } }
+    ] },
+    "lg": { "$value": [
+      { "color": "#FFFFFFBF", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 0, "unit": "px" }, "blur": { "value": 16, "unit": "px" }, "spread": { "value": 1, "unit": "px" } },
+      { "color": "#FFFFFF59", "offsetX": { "value": 0, "unit": "px" }, "offsetY": { "value": 0, "unit": "px" }, "blur": { "value": 40, "unit": "px" }, "spread": { "value": 6, "unit": "px" } }
+    ] }
+  }
+}

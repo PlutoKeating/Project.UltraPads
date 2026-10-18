@@ -1,0 +1,45 @@
+{
+  "$description": "Outline skin: dark cells with role-coloured strokes; uses the classic APK pad gradients.",
+  "surface": {
+    "$type": "color",
+    "pads": { "$value": "{color.grey.950}" },
+    "padContainer": { "$value": "{color.grey.950}" }
+  },
+  "pad": {
+    "palette": {
+      "$type": "color",
+      "0": { "core": { "$value": "{color.classic.pink.300}" }, "mid": { "$value": "{color.classic.pink.500}" }, "edge": { "$value": "{color.classic.pink.700}" }, "glow": { "$value": "{color.classic.pink.500}" } },
+      "1": { "core": { "$value": "{color.classic.orange.300}" }, "mid": { "$value": "{color.classic.orange.500}" }, "edge": { "$value": "{color.classic.orange.700}" }, "glow": { "$value": "{color.classic.orange.500}" } },
+      "2": { "core": { "$value": "{color.classic.green.300}" }, "mid": { "$value": "{color.classic.green.500}" }, "edge": { "$value": "{color.classic.green.700}" }, "glow": { "$value": "{color.classic.green.500}" } },
+      "3": { "core": { "$value": "{color.classic.blue.300}" }, "mid": { "$value": "{color.classic.blue.500}" }, "edge": { "$value": "{color.classic.blue.700}" }, "glow": { "$value": "{color.classic.blue.500}" } },
+      "4": { "core": { "$value": "{color.swatch.lavenderPink}" }, "mid": { "$value": "{color.swatch.vividPurple}" }, "edge": { "$value": "{color.swatch.vividPurple}" }, "glow": { "$value": "{color.swatch.vividPurple}" } },
+      "5": { "core": { "$value": "{color.swatch.aquaMarine}" }, "mid": { "$value": "{color.swatch.aquaMarine}" }, "edge": { "$value": "{color.swatch.skyBlue}" }, "glow": { "$value": "{color.swatch.aquaMarine}" } },
+      "6": { "core": { "$value": "{color.swatch.dandelion}" }, "mid": { "$value": "{color.swatch.greenYellow}" }, "edge": { "$value": "{color.swatch.greenYellow}" }, "glow": { "$value": "{color.swatch.greenYellow}" } },
+      "7": { "core": { "$value": "{color.swatch.orangeyRed}" }, "mid": { "$value": "{color.swatch.orangeyRed}" }, "edge": { "$value": "{color.swatch.scarlet}" }, "glow": { "$value": "{color.swatch.orangeyRed}" } }
+    },
+    "fill": { "radial": { "$type": "number", "$value": 0 } },
+    "border": { "$type": "color", "$value": "{color.grey.930}" },
+    "idle": {
+      "fillOpacity": { "$type": "number", "$value": 0 },
+      "borderWidth": { "$type": "dimension", "$value": "{borderWidth.regular}" },
+      "glow": { "$type": "number", "$value": 0 },
+      "bevel": { "$type": "number", "$value": 0 }
+    },
+    "pressed": {
+      "fillOpacity": { "$type": "number", "$value": 1 },
+      "flashOpacity": { "$type": "number", "$value": "{opacity.dim}" },
+      "glow": { "$type": "number", "$value": 0.5 },
+      "scale": { "$type": "number", "$value": 1 }
+    },
+    "playing": {
+      "fillOpacity": { "$type": "number", "$value": 0.85 },
+      "flashOpacity": { "$type": "number", "$value": "{opacity.dim}" },
+      "glow": { "$type": "number", "$value": 0.4 }
+    },
+    "loop": {
+      "idleFill": { "$type": "color", "$value": "{color.base.transparent}" },
+      "idleFillOpacity": { "$type": "number", "$value": 0 },
+      "borderWidth": { "$type": "dimension", "$value": "{borderWidth.regular}" }
+    }
+  }
+}

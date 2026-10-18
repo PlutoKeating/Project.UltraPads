@@ -1,0 +1,68 @@
+{
+  "$description": "Semantic layer — base values (identical to the neon skin). Themes override these paths only. Allowed $type: color | gradient | number | dimension.",
+  "surface": {
+    "$type": "color",
+    "app": { "$value": "{color.grey.900}", "$description": "Window / toolbar background" },
+    "pads": { "$value": "{color.grey.850}", "$description": "Perform page background" },
+    "page": { "$value": "{color.grey.840}", "$description": "Library / tab pages" },
+    "raised": { "$value": "{color.grey.800}", "$description": "List cells, cards" },
+    "raisedHigh": { "$value": "{color.grey.700}", "$description": "Chips, selected cells" },
+    "sunken": { "$value": "{color.grey.950}", "$description": "Search field, wells" },
+    "toolbar": { "$value": "{color.grey.920}", "$description": "Secondary (tutorial) toolbar" },
+    "bankButton": { "$value": "{color.grey.940}", "$description": "A/B button" },
+    "padContainer": { "$value": "{color.grey.820}" },
+    "scrim": { "$value": "{color.alpha.black.63}" },
+    "dim": { "$value": "{color.alpha.black.20}", "$description": "Behind skin panel" },
+    "overlayDownload": { "$value": "{color.alpha.black.67}" }
+  },
+  "border": {
+    "$type": "color",
+    "subtle": { "$value": "{color.alpha.white.8}" },
+    "default": { "$value": "{color.alpha.white.12}" },
+    "strong": { "$value": "{color.alpha.white.30}" },
+    "divider": { "$value": "{color.grey.900}" },
+    "inverse": { "$value": "{color.base.white}" }
+  },
+  "text": {
+    "$type": "color",
+    "primary": { "$value": "{color.base.white}" },
+    "secondary": { "$value": "{color.alpha.white.70}" },
+    "muted": { "$value": "{color.grey.400}", "$description": "APK coolgrey" },
+    "faint": { "$value": "{color.grey.500}" },
+    "disabled": { "$value": "{color.alpha.white.30}" },
+    "inverse": { "$value": "{color.grey.850}" },
+    "onAccent": { "$value": "{color.base.white}" },
+    "link": { "$value": "{color.brand.rose}" }
+  },
+  "icon": {
+    "$type": "color",
+    "primary": { "$value": "{color.base.white}" },
+    "secondary": { "$value": "{color.grey.400}" },
+    "disabled": { "$value": "{color.alpha.white.30}" },
+    "onAccent": { "$value": "{color.base.white}" }
+  },
+  "accent": {
+    "$type": "color",
+    "primary": { "$value": "{color.brand.rose}", "$description": "APK red_pink" },
+    "primaryPressed": { "$value": "{color.brand.raspberry}" },
+    "primaryMuted": { "$value": "{color.brand.raspberryDeep}" },
+    "selected": { "$value": "{color.brand.roseLight}", "$description": "APK selected_kit" },
+    "secondary": { "$value": "{color.brand.electric}" },
+    "preview": { "$value": "{color.swatch.aquaMarine}" }
+  },
+  "status": {
+    "$type": "color",
+    "success": { "$value": "{color.swatch.vibrantGreen}" },
+    "warning": { "$value": "{color.swatch.dandelion}" },
+    "danger": { "$value": "{color.swatch.scarlet}" },
+    "info": { "$value": "{color.swatch.skyBlue}" },
+    "recording": { "$value": "{color.swatch.scarlet}" }
+  },
+  "brand": {
+    "background": { "$type": "gradient", "$value": "{gradient.brand}" }
+  },
+  "focus": {
+    "ring": { "$type": "color", "$value": "{color.base.white}" },
+    "ringWidth": { "$type": "dimension", "$value": "{borderWidth.regular}" }
+  }
+}

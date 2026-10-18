@@ -1,0 +1,42 @@
+{
+  "size": {
+    "$type": "dimension",
+    "icon": {
+      "xs": { "$value": { "value": 12, "unit": "px" } },
+      "sm": { "$value": { "value": 16, "unit": "px" } },
+      "md": { "$value": { "value": 20, "unit": "px" } },
+      "lg": { "$value": { "value": 24, "unit": "px" } },
+      "xl": { "$value": { "value": 32, "unit": "px" } },
+      "xxl": { "$value": { "value": 48, "unit": "px" } }
+    },
+    "touch": {
+      "min": { "$value": { "value": 44, "unit": "px" } },
+      "comfortable": { "$value": { "value": 48, "unit": "px" } }
+    },
+    "bar": {
+      "toolbar": { "$value": { "value": 56, "unit": "px" }, "$description": "APK toolbar" },
+      "tabbar": { "$value": { "value": 50, "unit": "px" }, "$description": "APK tab bar / appbar" },
+      "menu": { "$value": { "value": 36, "unit": "px" }, "$description": "APK pads menu bar / tutorial bar" },
+      "header": { "$value": { "value": 44, "unit": "px" }, "$description": "APK edit pad header" },
+      "banner": { "$value": { "value": 54, "unit": "px" } }
+    },
+    "control": {
+      "xs": { "$value": { "value": 20, "unit": "px" } },
+      "sm": { "$value": { "value": 28, "unit": "px" } },
+      "md": { "$value": { "value": 34, "unit": "px" }, "$description": "APK edit pad buttons 34-36" },
+      "lg": { "$value": { "value": 44, "unit": "px" } },
+      "xl": { "$value": { "value": 54, "unit": "px" }, "$description": "APK sub_button height" },
+      "ab": { "$value": { "value": 56, "unit": "px" }, "$description": "APK A/B button 56x56" }
+    },
+    "content": {
+      "subButtonWidth": { "$value": { "value": 335, "unit": "px" } },
+      "featuredWidth": { "$value": { "value": 300, "unit": "px" } },
+      "featuredHeight": { "$value": { "value": 160, "unit": "px" } },
+      "featuredHolderHeight": { "$value": { "value": 175, "unit": "px" } },
+      "videoHeight": { "$value": { "value": 211, "unit": "px" } },
+      "kitCellHeight": { "$value": { "value": 60, "unit": "px" } },
+      "editRowHeight": { "$value": { "value": 100, "unit": "px" } },
+      "tabletMaxWidth": { "$value": { "value": 600, "unit": "px" } }
+    }
+  }
+}

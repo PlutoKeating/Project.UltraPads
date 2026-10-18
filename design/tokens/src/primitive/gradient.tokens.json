@@ -1,0 +1,27 @@
+{
+  "gradient": {
+    "$type": "gradient",
+    "brand": {
+      "$value": [
+        { "color": "{color.brand.magenta}", "position": 0 },
+        { "color": "{color.brand.berry}", "position": 0.5 },
+        { "color": "{color.brand.plum}", "position": 1 }
+      ],
+      "$description": "Marketing / hero background (SHOT)."
+    },
+    "scrimBottom": {
+      "$value": [
+        { "color": "{color.base.transparent}", "position": 0 },
+        { "color": "{color.alpha.black.63}", "position": 1 }
+      ]
+    },
+    "emptyPad": {
+      "$value": [
+        { "color": "{color.grey.960}", "position": 0 },
+        { "color": "{color.grey.975}", "position": 0.95 },
+        { "color": "{color.grey.1000}", "position": 1 }
+      ],
+      "$description": "APK placeholder pad gradient."
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "pad": {
+    "palette": {
+      "$type": "color",
+      "$description": "Ordered pad colour roles. Kits reference a role index (wraps modulo the palette length), never RGB. Each role: core (gradient stop 0 / radial centre), mid (0.5), edge (1), glow. Roles 0-3 map to the APK Kit config colours rosa / amarelo / verde / azul.",
+      "0": { "core": { "$value": "{color.neon.pink.300}" }, "mid": { "$value": "{color.neon.pink.500}" }, "edge": { "$value": "{color.neon.pink.700}" }, "glow": { "$value": "{color.neon.pink.500}" } },
+      "1": { "core": { "$value": "{color.neon.yellow.300}" }, "mid": { "$value": "{color.neon.yellow.500}" }, "edge": { "$value": "{color.neon.yellow.700}" }, "glow": { "$value": "{color.neon.yellow.500}" } },
+      "2": { "core": { "$value": "{color.neon.green.300}" }, "mid": { "$value": "{color.neon.green.500}" }, "edge": { "$value": "{color.neon.green.700}" }, "glow": { "$value": "{color.neon.green.500}" } },
+      "3": { "core": { "$value": "{color.neon.blue.300}" }, "mid": { "$value": "{color.neon.blue.500}" }, "edge": { "$value": "{color.neon.blue.700}" }, "glow": { "$value": "{color.neon.blue.500}" } },
+      "4": { "core": { "$value": "{color.neon.magenta.300}" }, "mid": { "$value": "{color.neon.magenta.500}" }, "edge": { "$value": "{color.neon.magenta.700}" }, "glow": { "$value": "{color.neon.magenta.500}" } },
+      "5": { "core": { "$value": "{color.neon.cyan.300}" }, "mid": { "$value": "{color.neon.cyan.500}" }, "edge": { "$value": "{color.neon.cyan.700}" }, "glow": { "$value": "{color.neon.cyan.500}" } },
+      "6": { "core": { "$value": "{color.neon.orange.300}" }, "mid": { "$value": "{color.neon.orange.500}" }, "edge": { "$value": "{color.neon.orange.700}" }, "glow": { "$value": "{color.neon.orange.500}" } },
+      "7": { "core": { "$value": "{color.neon.rose.300}" }, "mid": { "$value": "{color.neon.rose.500}" }, "edge": { "$value": "{color.neon.rose.700}" }, "glow": { "$value": "{color.neon.rose.500}" } }
+    },
+    "shape": {
+      "radiusRatio": { "$type": "number", "$value": "{ratio.padRadius}", "$description": "Corner radius = pad short side * ratio (APK 12%)" }
+    },
+    "fill": {
+      "radial": { "$type": "number", "$value": 1, "$description": "1 = radial (core centre), 0 = linear top->bottom; lerpable" }
+    },
+    "flash": { "$type": "color", "$value": "{color.base.white}", "$description": "Press flash overlay colour (APK white flash layer)" },
+    "border": { "$type": "color", "$value": "{color.grey.930}" },
+    "label": { "$type": "color", "$value": "{color.base.white}" },
+    "idle": {
+      "fillOpacity": { "$type": "number", "$value": 1 },
+      "borderWidth": { "$type": "dimension", "$value": "{borderWidth.none}" },
+      "glow": { "$type": "number", "$value": 0 },
+      "bevel": { "$type": "number", "$value": 1, "$description": "Strength of the hard bottom bevel shadow" }
+    },
+    "pressed": {
+      "fillOpacity": { "$type": "number", "$value": 1 },
+      "flashOpacity": { "$type": "number", "$value": "{opacity.flash}" },
+      "glow": { "$type": "number", "$value": 1 },
+      "scale": { "$type": "number", "$value": 0.97 }
+    },
+    "playing": {
+      "fillOpacity": { "$type": "number", "$value": 1 },
+      "flashOpacity": { "$type": "number", "$value": "{opacity.flash}" },
+      "glow": { "$type": "number", "$value": 0.8 }
+    },
+    "pending": {
+      "opacityMin": { "$type": "number", "$value": 0.4, "$description": "Blink floor while a loop waits for its quantised start" }
+    },
+    "disabled": {
+      "opacity": { "$type": "number", "$value": "{opacity.disabled}" }
+    },
+    "selected": {
+      "border": { "$type": "color", "$value": "{color.base.white}" },
+      "borderWidth": { "$type": "dimension", "$value": "{borderWidth.regular}" }
+    },
+    "loop": {
+      "idleFill": { "$type": "color", "$value": "{color.neon.violet.500}", "$description": "SHOT idle loop pad body" },
+      "idleFillOpacity": { "$type": "number", "$value": 1 },
+      "borderWidth": { "$type": "dimension", "$value": "{borderWidth.thin}", "$description": "Role-coloured stroke around idle loop pads" },
+      "icon": { "$type": "color", "$value": "{color.base.white}", "$description": "Loop glyph on a playing pad (idle uses the role colour)" }
+    },
+    "empty": {
+      "fill": { "$type": "gradient", "$value": "{gradient.emptyPad}" },
+      "border": { "$type": "color", "$value": "{color.alpha.white.8}" }
+    },
+    "tutorial": {
+      "dimOpacity": { "$type": "number", "$value": "{opacity.dim}" },
+      "highlight": { "$type": "color", "$value": "{color.base.white}" }
+    }
+  }
+}

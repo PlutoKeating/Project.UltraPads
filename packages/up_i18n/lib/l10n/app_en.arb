@@ -1,0 +1,1133 @@
+{
+  "@@locale": "en",
+  "localeNativeName": "English",
+  "@localeNativeName": {
+    "description": "Name of this language written in itself; shown in the language picker."
+  },
+  "localeEnglishName": "English",
+  "@localeEnglishName": {
+    "description": "Name of this language in English; shown as secondary text in the language picker."
+  },
+  "commonOk": "OK",
+  "@commonOk": {},
+  "commonCancel": "Cancel",
+  "@commonCancel": {},
+  "commonDone": "Done",
+  "@commonDone": {},
+  "commonSave": "Save",
+  "@commonSave": {},
+  "commonDelete": "Delete",
+  "@commonDelete": {},
+  "commonEdit": "Edit",
+  "@commonEdit": {},
+  "commonRename": "Rename",
+  "@commonRename": {},
+  "commonClose": "Close",
+  "@commonClose": {},
+  "commonBack": "Back",
+  "@commonBack": {},
+  "commonNext": "Next",
+  "@commonNext": {},
+  "commonSkip": "Skip",
+  "@commonSkip": {},
+  "commonRetry": "Retry",
+  "@commonRetry": {},
+  "commonConfirm": "Confirm",
+  "@commonConfirm": {},
+  "commonApply": "Apply",
+  "@commonApply": {},
+  "commonReset": "Reset",
+  "@commonReset": {},
+  "commonSearch": "Search",
+  "@commonSearch": {},
+  "commonSeeMore": "See more",
+  "@commonSeeMore": {},
+  "commonShare": "Share",
+  "@commonShare": {},
+  "commonPlay": "Play",
+  "@commonPlay": {},
+  "commonPause": "Pause",
+  "@commonPause": {},
+  "commonStop": "Stop",
+  "@commonStop": {},
+  "commonLoading": "Loading…",
+  "@commonLoading": {},
+  "commonOn": "On",
+  "@commonOn": {},
+  "commonOff": "Off",
+  "@commonOff": {},
+  "commonYes": "Yes",
+  "@commonYes": {},
+  "commonNo": "No",
+  "@commonNo": {},
+  "commonUndo": "Undo",
+  "@commonUndo": {},
+  "commonRedo": "Redo",
+  "@commonRedo": {},
+  "commonCopy": "Copy",
+  "@commonCopy": {},
+  "commonPaste": "Paste",
+  "@commonPaste": {},
+  "commonImport": "Import",
+  "@commonImport": {},
+  "commonExport": "Export",
+  "@commonExport": {},
+  "commonAdd": "Add",
+  "@commonAdd": {},
+  "commonRemove": "Remove",
+  "@commonRemove": {},
+  "commonDownload": "Download",
+  "@commonDownload": {},
+  "commonDownloadProgress": "Downloading… {percent}%",
+  "@commonDownloadProgress": {
+    "description": "Download progress label.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "commonUnknown": "Unknown",
+  "@commonUnknown": {},
+  "commonNew": "New",
+  "@commonNew": {},
+  "commonTop": "Top",
+  "@commonTop": {},
+  "commonAll": "All",
+  "@commonAll": {},
+  "commonSelect": "Select",
+  "@commonSelect": {},
+  "commonGotIt": "Got it",
+  "@commonGotIt": {},
+  "commonLearnMore": "Learn more",
+  "@commonLearnMore": {},
+  "commonComingSoon": "Coming soon",
+  "@commonComingSoon": {},
+  "commonNone": "None",
+  "@commonNone": {},
+  "navPerform": "Perform",
+  "@navPerform": {
+    "description": "Main navigation: pad performance screen."
+  },
+  "navLibrary": "Library",
+  "@navLibrary": {},
+  "navCreate": "Create",
+  "@navCreate": {},
+  "navRecordings": "Recordings",
+  "@navRecordings": {},
+  "navSettings": "Settings",
+  "@navSettings": {},
+  "navMenu": "Menu",
+  "@navMenu": {
+    "description": "Top-left menu button on the perform screen."
+  },
+  "navSongs": "Songs",
+  "@navSongs": {
+    "description": "Chip on the perform screen that opens the song/kit library."
+  },
+  "navKits": "Kits",
+  "@navKits": {},
+  "navProfile": "Profile",
+  "@navProfile": {},
+  "performTutorial": "Tutorial",
+  "@performTutorial": {
+    "description": "Toolbar chip that starts the guided tutorial."
+  },
+  "performMoreOptions": "More options",
+  "@performMoreOptions": {},
+  "performBankA": "A",
+  "@performBankA": {
+    "description": "Label of pad bank A (first 12 pads). Usually kept as a Latin letter."
+  },
+  "performBankB": "B",
+  "@performBankB": {
+    "description": "Label of pad bank B (pads 13-24). Usually kept as a Latin letter."
+  },
+  "performSwitchBank": "Switch to bank {bank}",
+  "@performSwitchBank": {
+    "placeholders": {
+      "bank": {
+        "type": "String"
+      }
+    }
+  },
+  "performStopAll": "Stop all",
+  "@performStopAll": {},
+  "performSpeed": "Speed {value}×",
+  "@performSpeed": {
+    "description": "Playback speed multiplier badge.",
+    "placeholders": {
+      "value": {
+        "type": "double",
+        "format": "decimalPatternDigits",
+        "optionalParameters": {
+          "decimalDigits": 1
+        }
+      }
+    }
+  },
+  "performRecord": "Record",
+  "@performRecord": {},
+  "performRecording": "Recording…",
+  "@performRecording": {},
+  "performStopRecording": "Stop recording",
+  "@performStopRecording": {},
+  "performEditKit": "Edit kit",
+  "@performEditKit": {},
+  "performShareKit": "Share kit",
+  "@performShareKit": {},
+  "performSkins": "Skins",
+  "@performSkins": {},
+  "performVideoTutorial": "Video tutorial",
+  "@performVideoTutorial": {},
+  "performKitLoaded": "Kit loaded!",
+  "@performKitLoaded": {},
+  "performLoadingKit": "Loading {kitName}…",
+  "@performLoadingKit": {
+    "placeholders": {
+      "kitName": {
+        "type": "String"
+      }
+    }
+  },
+  "performNoKit": "No kit loaded",
+  "@performNoKit": {},
+  "performPickKit": "Pick a kit",
+  "@performPickKit": {},
+  "performPadEmpty": "Empty pad",
+  "@performPadEmpty": {},
+  "performPadModeLoop": "Loop",
+  "@performPadModeLoop": {},
+  "performPadModeOneShot": "One-shot",
+  "@performPadModeOneShot": {},
+  "performPadModeGate": "Hold",
+  "@performPadModeGate": {},
+  "performPadLabel": "Pad {number}",
+  "@performPadLabel": {
+    "description": "Accessibility name of a pad.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "performPadSemantics": "Pad {number}, {mode}, {state}",
+  "@performPadSemantics": {
+    "description": "Screen-reader description of a pad.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "mode": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "performPadStatePlaying": "playing",
+  "@performPadStatePlaying": {},
+  "performPadStateIdle": "idle",
+  "@performPadStateIdle": {},
+  "performPadStatePending": "waiting for the next bar",
+  "@performPadStatePending": {},
+  "performQuantize": "Quantize",
+  "@performQuantize": {},
+  "performQuantizeBar": "1 bar",
+  "@performQuantizeBar": {},
+  "performQuantizeBeat": "1 beat",
+  "@performQuantizeBeat": {},
+  "performQuantizeOff": "Off",
+  "@performQuantizeOff": {},
+  "performTempo": "{bpm} BPM",
+  "@performTempo": {
+    "placeholders": {
+      "bpm": {
+        "type": "int"
+      }
+    }
+  },
+  "performMetronome": "Metronome",
+  "@performMetronome": {},
+  "performKeyboardHint": "Use your keyboard to play pads",
+  "@performKeyboardHint": {},
+  "performMidiLearn": "MIDI learn",
+  "@performMidiLearn": {},
+  "performControllerMode": "Controller mode",
+  "@performControllerMode": {},
+  "performInspiredBy": "Inspired by",
+  "@performInspiredBy": {},
+  "libraryTitle": "Kits",
+  "@libraryTitle": {},
+  "librarySearchHint": "Search songs, artists or kits",
+  "@librarySearchHint": {},
+  "libraryFeatured": "Featured",
+  "@libraryFeatured": {},
+  "libraryNewSongs": "New songs",
+  "@libraryNewSongs": {},
+  "libraryTopSongs": "Top songs",
+  "@libraryTopSongs": {},
+  "libraryGenre": "Genre",
+  "@libraryGenre": {},
+  "libraryGenreHipHop": "Hip-Hop",
+  "@libraryGenreHipHop": {},
+  "libraryGenreFunkBr": "Funk BR",
+  "@libraryGenreFunkBr": {},
+  "libraryGenreKpop": "K-Pop",
+  "@libraryGenreKpop": {},
+  "libraryGenreRock": "Rock",
+  "@libraryGenreRock": {},
+  "libraryGenreDisco": "Disco",
+  "@libraryGenreDisco": {},
+  "libraryGenreEdm": "EDM",
+  "@libraryGenreEdm": {},
+  "libraryGenrePop": "Pop",
+  "@libraryGenrePop": {},
+  "libraryGenreTrap": "Trap",
+  "@libraryGenreTrap": {},
+  "libraryGenreHouse": "House",
+  "@libraryGenreHouse": {},
+  "libraryGenreLatin": "Latin",
+  "@libraryGenreLatin": {},
+  "libraryKitBadge": "Kit",
+  "@libraryKitBadge": {
+    "description": "Small overline above a kit name on cards."
+  },
+  "libraryKitGenre": "{genre} music",
+  "@libraryKitGenre": {
+    "description": "Kit card subtitle, e.g. 'Hip-Hop music'.",
+    "placeholders": {
+      "genre": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryInspiredBy": "Inspired by {artist}",
+  "@libraryInspiredBy": {
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryLetsPlay": "Let's play",
+  "@libraryLetsPlay": {},
+  "libraryDownloadKit": "Download kit",
+  "@libraryDownloadKit": {},
+  "libraryDownloaded": "Downloaded",
+  "@libraryDownloaded": {},
+  "libraryNotDownloaded": "Not downloaded",
+  "@libraryNotDownloaded": {},
+  "libraryKitCount": "{count, plural, =0{No kits} =1{1 kit} other{{count} kits}}",
+  "@libraryKitCount": {
+    "description": "ICU plural example.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNoResults": "No results for “{query}”",
+  "@libraryNoResults": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryEmpty": "Your library is empty. Import a kit to get started.",
+  "@libraryEmpty": {},
+  "libraryImportKit": "Import kit",
+  "@libraryImportKit": {},
+  "libraryImportFromFile": "Import from file",
+  "@libraryImportFromFile": {},
+  "libraryImportFromDevices": "Import from my devices",
+  "@libraryImportFromDevices": {},
+  "libraryImportLinkHint": "Paste a kit link",
+  "@libraryImportLinkHint": {},
+  "libraryMyKits": "My kits",
+  "@libraryMyKits": {},
+  "libraryFavorites": "Favorites",
+  "@libraryFavorites": {},
+  "libraryAddFavorite": "Add to favorites",
+  "@libraryAddFavorite": {},
+  "libraryRemoveFavorite": "Remove from favorites",
+  "@libraryRemoveFavorite": {},
+  "libraryRecentlyPlayed": "Recently played",
+  "@libraryRecentlyPlayed": {},
+  "libraryNewKitAvailable": "New kit: {kitName}",
+  "@libraryNewKitAvailable": {
+    "placeholders": {
+      "kitName": {
+        "type": "String"
+      }
+    }
+  },
+  "librarySortBy": "Sort by",
+  "@librarySortBy": {},
+  "librarySortName": "Name",
+  "@librarySortName": {},
+  "librarySortRecent": "Recent",
+  "@librarySortRecent": {},
+  "libraryDeleteKitTitle": "Delete kit?",
+  "@libraryDeleteKitTitle": {},
+  "libraryDeleteKitBody": "“{kitName}” and its sounds will be removed from this device.",
+  "@libraryDeleteKitBody": {
+    "placeholders": {
+      "kitName": {
+        "type": "String"
+      }
+    }
+  },
+  "kitEditorTitle": "Edit kit",
+  "@kitEditorTitle": {},
+  "kitEditorNewKit": "New kit",
+  "@kitEditorNewKit": {},
+  "kitEditorKitName": "Kit name",
+  "@kitEditorKitName": {},
+  "kitEditorKitNameHint": "My kit",
+  "@kitEditorKitNameHint": {},
+  "kitEditorDescription": "Description",
+  "@kitEditorDescription": {},
+  "kitEditorColor": "Color",
+  "@kitEditorColor": {},
+  "kitEditorPadColor": "Pad color",
+  "@kitEditorPadColor": {},
+  "kitEditorPadMode": "Pad mode",
+  "@kitEditorPadMode": {},
+  "kitEditorChokeGroup": "Choke group",
+  "@kitEditorChokeGroup": {
+    "description": "Pads in the same group stop each other."
+  },
+  "kitEditorChokeGroupValue": "Group {group}",
+  "@kitEditorChokeGroupValue": {
+    "placeholders": {
+      "group": {
+        "type": "int"
+      }
+    }
+  },
+  "kitEditorPitch": "Pitch",
+  "@kitEditorPitch": {},
+  "kitEditorPitchValue": "{semitones} st",
+  "@kitEditorPitchValue": {
+    "description": "Pitch shift in semitones, already signed (e.g. '+3').",
+    "placeholders": {
+      "semitones": {
+        "type": "String"
+      }
+    }
+  },
+  "kitEditorTimeStretch": "Time stretch",
+  "@kitEditorTimeStretch": {},
+  "kitEditorVolume": "Volume",
+  "@kitEditorVolume": {},
+  "kitEditorPan": "Pan",
+  "@kitEditorPan": {},
+  "kitEditorTrim": "Trim",
+  "@kitEditorTrim": {},
+  "kitEditorFadeIn": "Fade in",
+  "@kitEditorFadeIn": {},
+  "kitEditorFadeOut": "Fade out",
+  "@kitEditorFadeOut": {},
+  "kitEditorPreview": "Preview",
+  "@kitEditorPreview": {},
+  "kitEditorClearPad": "Clear pad",
+  "@kitEditorClearPad": {},
+  "kitEditorCopyPad": "Copy pad",
+  "@kitEditorCopyPad": {},
+  "kitEditorPastePad": "Paste pad",
+  "@kitEditorPastePad": {},
+  "kitEditorSaveKit": "Save kit",
+  "@kitEditorSaveKit": {},
+  "kitEditorSaved": "Kit saved",
+  "@kitEditorSaved": {},
+  "kitEditorUnsavedTitle": "Discard changes?",
+  "@kitEditorUnsavedTitle": {},
+  "kitEditorUnsavedBody": "You have unsaved changes to this kit.",
+  "@kitEditorUnsavedBody": {},
+  "kitEditorDiscard": "Discard",
+  "@kitEditorDiscard": {},
+  "kitEditorSelectPad": "Select a pad to load a sound",
+  "@kitEditorSelectPad": {},
+  "kitEditorMaxLength": "Sounds are limited to {seconds} seconds",
+  "@kitEditorMaxLength": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "loadSoundTitle": "Load sound",
+  "@loadSoundTitle": {
+    "description": "Header of the sound source sheet."
+  },
+  "loadSoundImportFrom": "Import from",
+  "@loadSoundImportFrom": {
+    "description": "Small overline above a source name."
+  },
+  "loadSoundRecordingFrom": "Recording from",
+  "@loadSoundRecordingFrom": {
+    "description": "Small overline above the microphone source."
+  },
+  "loadSoundSourceSongs": "Built-in songs",
+  "@loadSoundSourceSongs": {},
+  "loadSoundSourceMicrophone": "Microphone",
+  "@loadSoundSourceMicrophone": {},
+  "loadSoundSourceFiles": "Files",
+  "@loadSoundSourceFiles": {},
+  "loadSoundSourceKits": "Kits",
+  "@loadSoundSourceKits": {},
+  "loadSoundSourceRecordings": "Recordings",
+  "@loadSoundSourceRecordings": {},
+  "loadSoundHoldToRecord": "Hold to record",
+  "@loadSoundHoldToRecord": {},
+  "loadSoundElapsed": "{seconds}s",
+  "@loadSoundElapsed": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "recordStart": "Start recording",
+  "@recordStart": {},
+  "recordStop": "Stop recording",
+  "@recordStop": {},
+  "recordSaveTitle": "Save recording",
+  "@recordSaveTitle": {},
+  "recordNameHint": "Recording name",
+  "@recordNameHint": {},
+  "recordDefaultName": "Track {number}",
+  "@recordDefaultName": {
+    "description": "Default name of a new recording.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "recordSaved": "Recording saved",
+  "@recordSaved": {},
+  "recordDiscardTitle": "Discard recording?",
+  "@recordDiscardTitle": {},
+  "worksTitle": "Recordings",
+  "@worksTitle": {},
+  "worksEmpty": "No recordings yet. Tap record to capture your first track.",
+  "@worksEmpty": {},
+  "worksCount": "{count, plural, =0{No recordings} =1{1 recording} other{{count} recordings}}",
+  "@worksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worksRecordedOn": "Recorded {date}",
+  "@worksRecordedOn": {
+    "description": "Date placeholder example.",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+  "worksExportWav": "Export WAV",
+  "@worksExportWav": {},
+  "worksLoop": "Loop playback",
+  "@worksLoop": {},
+  "worksShuffle": "Shuffle",
+  "@worksShuffle": {},
+  "worksDeleteTitle": "Delete recording?",
+  "@worksDeleteTitle": {},
+  "worksDeleteBody": "“{name}” will be permanently deleted.",
+  "@worksDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "worksRenameTitle": "Rename recording",
+  "@worksRenameTitle": {},
+  "tutorialTitle": "Tutorial",
+  "@tutorialTitle": {},
+  "tutorialStep": "Step {current} of {total}",
+  "@tutorialStep": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialTapHighlighted": "Tap the highlighted pads",
+  "@tutorialTapHighlighted": {},
+  "tutorialSwitchBank": "Switch to bank {bank}",
+  "@tutorialSwitchBank": {
+    "placeholders": {
+      "bank": {
+        "type": "String"
+      }
+    }
+  },
+  "tutorialComplete": "Great job! Tutorial complete",
+  "@tutorialComplete": {},
+  "tutorialRestart": "Restart",
+  "@tutorialRestart": {},
+  "tutorialExit": "Exit tutorial",
+  "@tutorialExit": {},
+  "tutorialProgress": "{percent}% complete",
+  "@tutorialProgress": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialUnavailable": "This kit has no tutorial yet",
+  "@tutorialUnavailable": {},
+  "tutorialWatchVideo": "Watch video",
+  "@tutorialWatchVideo": {},
+  "skinTitle": "Skins",
+  "@skinTitle": {},
+  "skinNeon": "Neon",
+  "@skinNeon": {
+    "description": "Built-in skin: glowing gradient pads."
+  },
+  "skinOutline": "Outline",
+  "@skinOutline": {
+    "description": "Built-in skin: dark pads with coloured outlines."
+  },
+  "skinLight": "Light",
+  "@skinLight": {},
+  "skinCustom": "Custom",
+  "@skinCustom": {},
+  "skinApply": "Apply skin",
+  "@skinApply": {},
+  "skinApplied": "Skin applied",
+  "@skinApplied": {},
+  "skinEditorTitle": "Skin editor",
+  "@skinEditorTitle": {},
+  "skinEditorNew": "New skin",
+  "@skinEditorNew": {},
+  "skinEditorBasedOn": "Based on {skin}",
+  "@skinEditorBasedOn": {
+    "placeholders": {
+      "skin": {
+        "type": "String"
+      }
+    }
+  },
+  "skinEditorNameHint": "Skin name",
+  "@skinEditorNameHint": {},
+  "skinEditorGroupSurface": "Backgrounds",
+  "@skinEditorGroupSurface": {},
+  "skinEditorGroupText": "Text",
+  "@skinEditorGroupText": {},
+  "skinEditorGroupAccent": "Accent",
+  "@skinEditorGroupAccent": {},
+  "skinEditorGroupPad": "Pads",
+  "@skinEditorGroupPad": {},
+  "skinEditorGroupPalette": "Pad palette",
+  "@skinEditorGroupPalette": {},
+  "skinEditorPaletteRole": "Color {index}",
+  "@skinEditorPaletteRole": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "skinEditorCore": "Center",
+  "@skinEditorCore": {},
+  "skinEditorMid": "Middle",
+  "@skinEditorMid": {},
+  "skinEditorEdge": "Edge",
+  "@skinEditorEdge": {},
+  "skinEditorGlow": "Glow",
+  "@skinEditorGlow": {},
+  "skinEditorCornerRadius": "Corner radius",
+  "@skinEditorCornerRadius": {},
+  "skinEditorGlowIntensity": "Glow intensity",
+  "@skinEditorGlowIntensity": {},
+  "skinEditorResetToken": "Reset to default",
+  "@skinEditorResetToken": {},
+  "skinEditorResetAll": "Reset all",
+  "@skinEditorResetAll": {},
+  "skinEditorExport": "Export skin",
+  "@skinEditorExport": {},
+  "skinEditorImport": "Import skin",
+  "@skinEditorImport": {},
+  "skinEditorImportInvalid": "This skin file is invalid",
+  "@skinEditorImportInvalid": {},
+  "skinEditorImportIgnored": "{count, plural, =1{1 setting from a newer version was ignored} other{{count} settings from a newer version were ignored}}",
+  "@skinEditorImportIgnored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "skinEditorChangeCount": "{count, plural, =0{No changes} =1{1 change} other{{count} changes}}",
+  "@skinEditorChangeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "skinEditorDeleteTitle": "Delete skin?",
+  "@skinEditorDeleteTitle": {},
+  "settingsTitle": "Settings",
+  "@settingsTitle": {},
+  "settingsAudio": "Audio",
+  "@settingsAudio": {},
+  "settingsOutputDevice": "Output device",
+  "@settingsOutputDevice": {},
+  "settingsInputDevice": "Input device",
+  "@settingsInputDevice": {},
+  "settingsBufferSize": "Buffer size",
+  "@settingsBufferSize": {},
+  "settingsBufferSizeValue": "{frames} samples ({ms} ms)",
+  "@settingsBufferSizeValue": {
+    "placeholders": {
+      "frames": {
+        "type": "int"
+      },
+      "ms": {
+        "type": "double",
+        "format": "decimalPatternDigits",
+        "optionalParameters": {
+          "decimalDigits": 1
+        }
+      }
+    }
+  },
+  "settingsSampleRate": "Sample rate",
+  "@settingsSampleRate": {},
+  "settingsSampleRateValue": "{rate} Hz",
+  "@settingsSampleRateValue": {
+    "placeholders": {
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLatency": "Latency",
+  "@settingsLatency": {},
+  "settingsMeasureLatency": "Measure latency",
+  "@settingsMeasureLatency": {},
+  "settingsLatencyValue": "{ms} ms",
+  "@settingsLatencyValue": {
+    "placeholders": {
+      "ms": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {},
+  "settingsLanguageSystem": "System default ({language})",
+  "@settingsLanguageSystem": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAppearance": "Appearance",
+  "@settingsAppearance": {},
+  "settingsSkin": "Skin",
+  "@settingsSkin": {},
+  "settingsAnimatePads": "Animate pads",
+  "@settingsAnimatePads": {},
+  "settingsReduceMotion": "Reduce motion",
+  "@settingsReduceMotion": {},
+  "settingsHaptics": "Haptic feedback",
+  "@settingsHaptics": {},
+  "settingsKeepScreenOn": "Keep screen on",
+  "@settingsKeepScreenOn": {},
+  "settingsMidi": "MIDI",
+  "@settingsMidi": {},
+  "settingsMidiDevices": "MIDI devices",
+  "@settingsMidiDevices": {},
+  "settingsMidiNone": "No MIDI devices connected",
+  "@settingsMidiNone": {},
+  "settingsKeyboardMapping": "Keyboard mapping",
+  "@settingsKeyboardMapping": {},
+  "settingsStorage": "Storage",
+  "@settingsStorage": {},
+  "settingsStorageUsed": "{size} used",
+  "@settingsStorageUsed": {
+    "description": "size is pre-formatted, e.g. '120 MB'.",
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsClearCache": "Clear cache",
+  "@settingsClearCache": {},
+  "settingsCacheCleared": "Cache cleared",
+  "@settingsCacheCleared": {},
+  "settingsAbout": "About",
+  "@settingsAbout": {},
+  "settingsVersion": "Version {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLicenses": "Open-source licenses",
+  "@settingsLicenses": {},
+  "settingsPrivacy": "Privacy",
+  "@settingsPrivacy": {},
+  "settingsResearchNotice": "UltraPads is a private research project.",
+  "@settingsResearchNotice": {},
+  "hubTitle": "My devices",
+  "@hubTitle": {},
+  "hubDescription": "Sync your library and use your phone as a pad controller over the local network.",
+  "@hubDescription": {},
+  "hubEnable": "Run hub on this device",
+  "@hubEnable": {},
+  "hubRunning": "Hub running at {address}",
+  "@hubRunning": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "hubStopped": "Hub stopped",
+  "@hubStopped": {},
+  "hubDiscovering": "Looking for devices…",
+  "@hubDiscovering": {},
+  "hubNoDevices": "No devices found on this network",
+  "@hubNoDevices": {},
+  "hubDeviceOnline": "Online",
+  "@hubDeviceOnline": {},
+  "hubDeviceOffline": "Offline",
+  "@hubDeviceOffline": {},
+  "hubDeviceLastSeen": "Last seen {time}",
+  "@hubDeviceLastSeen": {
+    "description": "time is a pre-formatted relative time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hubDeviceCount": "{count, plural, =0{No paired devices} =1{1 paired device} other{{count} paired devices}}",
+  "@hubDeviceCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pairingNewDevice": "Pair new device",
+  "@pairingNewDevice": {},
+  "pairingCodeTitle": "Pairing code",
+  "@pairingCodeTitle": {},
+  "pairingCodeBody": "Enter this code on your other device: {code}",
+  "@pairingCodeBody": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "pairingEnterCode": "Enter the code shown on your other device",
+  "@pairingEnterCode": {},
+  "pairingConfirm": "Pair with {deviceName}?",
+  "@pairingConfirm": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "pairingSuccess": "Paired with {deviceName}",
+  "@pairingSuccess": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "pairingFailed": "Pairing failed. Check the code and try again.",
+  "@pairingFailed": {},
+  "pairingExpired": "The code has expired",
+  "@pairingExpired": {},
+  "pairingUnpair": "Unpair",
+  "@pairingUnpair": {},
+  "pairingUnpairConfirm": "Unpair {deviceName}? It will stop syncing with this device.",
+  "@pairingUnpairConfirm": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "pairingOwnDevicesOnly": "Only pair devices you own.",
+  "@pairingOwnDevicesOnly": {},
+  "pairingSameNetwork": "Both devices must be on the same Wi-Fi network.",
+  "@pairingSameNetwork": {},
+  "hubSyncLibrary": "Sync library",
+  "@hubSyncLibrary": {},
+  "hubSyncProgress": "Syncing {done} of {total}…",
+  "@hubSyncProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "hubSyncDone": "Library is up to date",
+  "@hubSyncDone": {},
+  "hubSyncConflicts": "{count, plural, =1{1 conflict needs attention} other{{count} conflicts need attention}}",
+  "@hubSyncConflicts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hubUseAsController": "Use as controller",
+  "@hubUseAsController": {},
+  "hubControlling": "Controlling {deviceName}",
+  "@hubControlling": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "hubDisconnected": "Disconnected from {deviceName}",
+  "@hubDisconnected": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "hubRoundTrip": "Round trip {ms} ms",
+  "@hubRoundTrip": {
+    "placeholders": {
+      "ms": {
+        "type": "int"
+      }
+    }
+  },
+  "errorGeneric": "Something went wrong",
+  "@errorGeneric": {},
+  "errorNetwork": "No network connection",
+  "@errorNetwork": {},
+  "errorTimeout": "The request timed out",
+  "@errorTimeout": {},
+  "errorDownloadFailed": "Download failed. Check your connection and try again.",
+  "@errorDownloadFailed": {},
+  "errorKitCorrupt": "This kit is damaged and can't be loaded",
+  "@errorKitCorrupt": {},
+  "errorKitNotFound": "Kit not found",
+  "@errorKitNotFound": {},
+  "errorAudioDevice": "Audio device unavailable",
+  "@errorAudioDevice": {},
+  "errorAudioEngine": "Couldn't start the audio engine ({code})",
+  "@errorAudioEngine": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "errorStorageFull": "Not enough storage space",
+  "@errorStorageFull": {},
+  "errorFileRead": "Couldn't read “{fileName}”",
+  "@errorFileRead": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "errorFileWrite": "Couldn't save “{fileName}”",
+  "@errorFileWrite": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "errorUnsupportedFormat": "This file format isn't supported",
+  "@errorUnsupportedFormat": {},
+  "errorRecordingFailed": "Recording failed",
+  "@errorRecordingFailed": {},
+  "errorPermissionDenied": "Permission denied",
+  "@errorPermissionDenied": {},
+  "errorDeviceUnreachable": "Can't reach {deviceName}",
+  "@errorDeviceUnreachable": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "errorVersionMismatch": "{deviceName} runs an incompatible version",
+  "@errorVersionMismatch": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "errorNameEmpty": "Name can't be empty",
+  "@errorNameEmpty": {},
+  "errorNameTooLong": "{max, plural, =1{Name must be at most 1 character} other{Name must be at most {max} characters}}",
+  "@errorNameTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "errorNameTaken": "That name is already in use",
+  "@errorNameTaken": {},
+  "permissionMicrophoneTitle": "Microphone access",
+  "@permissionMicrophoneTitle": {},
+  "permissionMicrophoneBody": "UltraPads uses the microphone to record sounds into your pads. Recordings stay on your device.",
+  "@permissionMicrophoneBody": {},
+  "permissionStorageTitle": "File access",
+  "@permissionStorageTitle": {},
+  "permissionStorageBody": "Allow file access to import audio and export your recordings.",
+  "@permissionStorageBody": {},
+  "permissionLocalNetworkTitle": "Local network",
+  "@permissionLocalNetworkTitle": {},
+  "permissionLocalNetworkBody": "Used only to find and connect your own devices on this Wi-Fi.",
+  "@permissionLocalNetworkBody": {},
+  "permissionBluetoothTitle": "Bluetooth MIDI",
+  "@permissionBluetoothTitle": {},
+  "permissionBluetoothBody": "Allow Bluetooth to connect wireless MIDI controllers.",
+  "@permissionBluetoothBody": {},
+  "permissionNotificationsTitle": "Notifications",
+  "@permissionNotificationsTitle": {},
+  "permissionNotificationsBody": "Get notified when a sync or export finishes.",
+  "@permissionNotificationsBody": {},
+  "permissionAllow": "Allow",
+  "@permissionAllow": {},
+  "permissionOpenSettings": "Open settings",
+  "@permissionOpenSettings": {},
+  "permissionDeniedForever": "Permission was denied. You can enable it in system settings.",
+  "@permissionDeniedForever": {},
+  "shareKitMessage": "Play my kit “{kitName}” on UltraPads",
+  "@shareKitMessage": {
+    "placeholders": {
+      "kitName": {
+        "type": "String"
+      }
+    }
+  },
+  "shareRecordingMessage": "Listen to “{name}”, made with UltraPads",
+  "@shareRecordingMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shareLinkCopied": "Link copied",
+  "@shareLinkCopied": {},
+  "a11yOpenMenu": "Open menu",
+  "@a11yOpenMenu": {},
+  "a11yCloseSheet": "Close panel",
+  "@a11yCloseSheet": {},
+  "a11yKitCover": "Cover of {kitName}",
+  "@a11yKitCover": {
+    "placeholders": {
+      "kitName": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yWaveform": "Waveform of {name}",
+  "@a11yWaveform": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yProgress": "{percent} percent",
+  "@a11yProgress": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "timeJustNow": "Just now",
+  "@timeJustNow": {},
+  "timeMinutesAgo": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgo": "{count, plural, =1{Yesterday} other{{count} days ago}}",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unitSeconds": "{count, plural, =1{1 second} other{{count} seconds}}",
+  "@unitSeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingMakeMusicTitle": "Make your own music!",
+  "@onboardingMakeMusicTitle": {},
+  "onboardingRhythmsTitle": "Enjoy the best rhythms",
+  "@onboardingRhythmsTitle": {},
+  "onboardingLoopsTitle": "Discover DJ loops & beats!",
+  "@onboardingLoopsTitle": {},
+  "onboardingStyleTitle": "Choose your style",
+  "@onboardingStyleTitle": {},
+  "onboardingShareTitle": "Share your music",
+  "@onboardingShareTitle": {},
+  "onboardingStart": "Get started",
+  "@onboardingStart": {},
+  "onboardingPlayStyle": "{choice, select, solo{Play solo} jam{Jam with friends} other{Just exploring}}",
+  "@onboardingPlayStyle": {
+    "description": "ICU select example: how the user wants to play.",
+    "placeholders": {
+      "choice": {
+        "type": "String"
+      }
+    }
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "$description": "Light skin.",
+  "surface": {
+    "$type": "color",
+    "app": { "$value": "{color.grey.50}" },
+    "pads": { "$value": "{color.grey.100}" },
+    "page": { "$value": "{color.grey.50}" },
+    "raised": { "$value": "{color.base.white}" },
+    "raisedHigh": { "$value": "{color.grey.100}" },
+    "sunken": { "$value": "{color.grey.200}" },
+    "toolbar": { "$value": "{color.base.white}" },
+    "bankButton": { "$value": "{color.grey.200}" },
+    "padContainer": { "$value": "{color.grey.200}" },
+    "scrim": { "$value": "{color.alpha.black.50}" },
+    "dim": { "$value": "{color.alpha.black.12}" }
+  },
+  "border": {
+    "$type": "color",
+    "subtle": { "$value": "{color.alpha.black.8}" },
+    "default": { "$value": "{color.alpha.black.12}" },
+    "strong": { "$value": "{color.alpha.black.25}" },
+    "divider": { "$value": "{color.grey.200}" },
+    "inverse": { "$value": "{color.grey.850}" }
+  },
+  "text": {
+    "$type": "color",
+    "primary": { "$value": "{color.grey.850}" },
+    "secondary": { "$value": "{color.grey.600}" },
+    "muted": { "$value": "{color.grey.500}" },
+    "faint": { "$value": "{color.grey.400}" },
+    "disabled": { "$value": "{color.grey.300}" },
+    "inverse": { "$value": "{color.base.white}" }
+  },
+  "icon": {
+    "$type": "color",
+    "primary": { "$value": "{color.grey.850}" },
+    "secondary": { "$value": "{color.grey.500}" },
+    "disabled": { "$value": "{color.grey.300}" }
+  },
+  "focus": { "ring": { "$type": "color", "$value": "{color.grey.850}" } },
+  "pad": {
+    "border": { "$type": "color", "$value": "{color.grey.200}" },
+    "idle": { "glow": { "$type": "number", "$value": 0 }, "bevel": { "$type": "number", "$value": 0.4 } },
+    "pressed": { "glow": { "$type": "number", "$value": 0.6 } },
+    "playing": { "glow": { "$type": "number", "$value": 0.5 } },
+    "selected": { "border": { "$type": "color", "$value": "{color.grey.850}" } },
+    "loop": { "idleFill": { "$type": "color", "$value": "{color.grey.300}" } },
+    "empty": { "border": { "$type": "color", "$value": "{color.alpha.black.8}" } },
+    "tutorial": { "highlight": { "$type": "color", "$value": "{color.grey.850}" } }
+  },
+  "transport": {
+    "$type": "color",
+    "background": { "$value": "{color.base.white}" },
+    "stopBackground": { "$value": "{color.grey.200}" },
+    "stopIcon": { "$value": "{color.grey.850}" },
+    "waveformUnplayed": { "$value": "{color.alpha.black.25}" },
+    "progressTrack": { "$value": "{color.alpha.black.12}" },
+    "speedBackground": { "$value": "{color.grey.850}" },
+    "speedText": { "$value": "{color.base.white}" }
+  },
+  "chip": {
+    "$type": "color",
+    "background": { "$value": "{color.grey.200}" },
+    "foreground": { "$value": "{color.grey.850}" },
+    "iconBox": { "$value": "{color.grey.100}" },
+    "hintBackground": { "$value": "{color.grey.850}" },
+    "hintForeground": { "$value": "{color.base.white}" }
+  },
+  "card": {
+    "$type": "color",
+    "background": { "$value": "{color.base.white}" },
+    "backgroundSelected": { "$value": "{color.grey.100}" },
+    "border": { "$value": "{color.alpha.black.8}" },
+    "title": { "$value": "{color.grey.850}" },
+    "subtitle": { "$value": "{color.grey.600}" },
+    "overline": { "$value": "{color.grey.500}" }
+  },
+  "sheet": {
+    "$type": "color",
+    "background": { "$value": "{color.grey.50}" },
+    "header": { "$value": "{color.base.white}" },
+    "handle": { "$value": "{color.alpha.black.25}" },
+    "item": { "$value": "{color.base.white}" },
+    "itemPressed": { "$value": "{color.grey.100}" },
+    "itemIconBox": { "$value": "{color.grey.100}" }
+  },
+  "list": {
+    "$type": "color",
+    "item": { "$value": "{color.base.white}" },
+    "itemPressed": { "$value": "{color.grey.100}" },
+    "separator": { "$value": "{color.grey.200}" }
+  },
+  "button": {
+    "$type": "color",
+    "secondaryBackground": { "$value": "{color.grey.200}" },
+    "secondaryForeground": { "$value": "{color.grey.850}" },
+    "outlineBorder": { "$value": "{color.grey.850}" },
+    "ghostForeground": { "$value": "{color.grey.850}" },
+    "disabledBackground": { "$value": "{color.alpha.black.8}" },
+    "disabledForeground": { "$value": "{color.grey.300}" }
+  },
+  "input": {
+    "$type": "color",
+    "background": { "$value": "{color.grey.100}" },
+    "foreground": { "$value": "{color.grey.850}" },
+    "placeholder": { "$value": "{color.grey.500}" }
+  },
+  "slider": { "track": { "$type": "color", "$value": "{color.alpha.black.12}" } },
+  "dialog": { "background": { "$type": "color", "$value": "{color.base.white}" }, "scrim": { "$type": "color", "$value": "{color.alpha.black.50}" } },
+  "toast": { "background": { "$type": "color", "$value": "{color.grey.850}" }, "foreground": { "$type": "color", "$value": "{color.base.white}" } },
+  "meter": { "track": { "$type": "color", "$value": "{color.alpha.black.8}" }, "peak": { "$type": "color", "$value": "{color.grey.850}" } },
+  "waveform": { "inactive": { "$type": "color", "$value": "{color.alpha.black.25}" }, "selection": { "$type": "color", "$value": "{color.alpha.black.8}" }, "marker": { "$type": "color", "$value": "{color.grey.850}" } },
+  "progressRing": { "track": { "$type": "color", "$value": "{color.grey.200}" } },
+  "record": { "trackCard": { "$type": "color", "$value": "{color.base.white}" } },
+  "genre": { "label": { "$type": "color", "$value": "{color.grey.600}" }, "ring": { "$type": "color", "$value": "{color.grey.850}" } },
+  "swatch": { "ring": { "$type": "color", "$value": "{color.grey.850}" } }
+}

@@ -1,0 +1,23 @@
+{
+  "radius": {
+    "$type": "dimension",
+    "none": { "$value": { "value": 0, "unit": "px" } },
+    "xs": { "$value": { "value": 2, "unit": "px" } },
+    "sm": { "$value": { "value": 3, "unit": "px" }, "$description": "APK kit_shape" },
+    "md": { "$value": { "value": 4, "unit": "px" }, "$description": "APK pad xml / mini / edit / save buttons" },
+    "lg": { "$value": { "value": 6, "unit": "px" }, "$description": "APK kit card / not-downloaded" },
+    "xl": { "$value": { "value": 8, "unit": "px" }, "$description": "APK save record / preview kit" },
+    "xxl": { "$value": { "value": 12, "unit": "px" }, "$description": "APK social media" },
+    "xxxl": { "$value": { "value": 16, "unit": "px" } },
+    "pill": { "$value": { "value": 999, "unit": "px" } }
+  },
+  "ratio": {
+    "$type": "number",
+    "$description": "Proportional shape ratios (radius = side * ratio).",
+    "padRadius": { "$value": 0.12, "$description": "APK Lottie 16/133 ≈ 12% of pad side" },
+    "padNumberSize": { "$value": 0.12, "$description": "APK pad number text = pad width * 0.12" },
+    "padNumberInsetEnd": { "$value": 0.10 },
+    "padNumberInsetBottom": { "$value": 0.03 },
+    "circle": { "$value": 0.5 }
+  }
+}

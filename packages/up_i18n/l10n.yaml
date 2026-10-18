@@ -1,0 +1,10 @@
+# gen-l10n config for up_i18n. Regenerate: `dart run up_i18n:gen` (or `flutter gen-l10n` in this dir).
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-dir: lib/src/generated
+output-localization-file: up_l10n.dart
+output-class: UpL10n
+nullable-getter: false
+preferred-supported-locales: [en]
+format: true
+relax-syntax: false
