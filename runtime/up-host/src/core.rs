@@ -237,7 +237,26 @@ impl AppCore {
         AudioHost::devices()
     }
 
+    /// Open the output. A chosen device that cannot be opened (unplugged,
+    /// or refused by the platform) falls back to the default output, so a bad
+    /// saved choice never leaves the app silent.
     pub fn audio_start(&self, cfg: &AudioConfig) -> UpResult<AudioStatus> {
+        match self.audio_start_with(cfg) {
+            Err(e) if cfg.output_device.is_some() => {
+                log::warn!(
+                    "output device {:?} failed ({e}); falling back to the default output",
+                    cfg.output_device
+                );
+                self.audio_start_with(&AudioConfig {
+                    output_device: None,
+                    ..cfg.clone()
+                })
+            }
+            r => r,
+        }
+    }
+
+    fn audio_start_with(&self, cfg: &AudioConfig) -> UpResult<AudioStatus> {
         let mut st = self.lock()?;
         if st.host.is_running()
             && let Some(p) = st.host.stop()

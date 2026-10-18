@@ -445,12 +445,20 @@ impl AudioHost {
             SupportedBufferSize::Range { min, max } => Some(want.clamp(*min, *max)),
             SupportedBufferSize::Unknown => cfg.buffer_frames,
         };
+        // AAudio converts channel counts itself. Some devices report mono only
+        // (e.g. a phone's built-in speaker) and some vendors refuse a mono FAST
+        // track (AAUDIO_ERROR_INTERNAL), so always ask for stereo on Android.
+        let channels = if cfg!(target_os = "android") {
+            2
+        } else {
+            chosen.channels()
+        };
         Ok(OutputPlan {
             device_id: device_id(&device),
             device_name: device_name(&device),
             host: host.id().name().to_owned(),
             sample_rate: chosen.sample_rate(),
-            channels: chosen.channels(),
+            channels,
             buffer_frames,
             sample_format: format!("{:?}", chosen.sample_format()),
         })

@@ -90,7 +90,7 @@ DTO 定义在 `bridge/up-ffi/src/api/types.rs`（与引擎类型一一对应，D
 | 函数 | 同步 | 说明 |
 |---|---|---|
 | `init(app_dirs: AppDirs { data_dir, cache_dir }) -> EngineInfo` | | 创建引擎（48 kHz，`audio_start` 时按设备采样率重建）并打开曲库 `<data_dir>/library`；幂等（热重启后再次调用返回现有实例） |
-| `audio_start(cfg: AudioConfig) -> AudioStatus` | | `AudioConfig { buffer_frames: Option<u32> /*默认 128；Android 忽略，由 AAudio 按 burst 回调*/, sample_rate: Option<u32>, output_device: Option<String> /*id 或名称*/ }`；`AudioStatus { running, host, device, sample_rate, channels, buffer_frames, sample_format, output_latency_ms }` |
+| `audio_start(cfg: AudioConfig) -> AudioStatus` | | `AudioConfig { buffer_frames: Option<u32> /*默认 128；Android 忽略，由 AAudio 按 burst 回调*/, sample_rate: Option<u32>, output_device: Option<String> /*id 或名称*/ }`；`AudioStatus { running, host, device, sample_rate, channels, buffer_frames, sample_format, output_latency_ms }`。`output_device` 打不开时自动回退到系统默认输出（`AudioStatus.device` 反映实际设备）；Android 始终以立体声打开（AAudio 自行做声道转换），采样率默认取设备原生输出采样率 |
 | `audio_stop()` / `audio_status() -> AudioStatus` | | |
 | `audio_devices() -> Vec<AudioDeviceInfo>` | | `{ id, name, is_input, is_output, is_default_output, is_default_input, default_sample_rate, max_output_channels, max_input_channels, min/max_buffer_frames }` |
 | `events() -> Stream<EngineEvent>` | | 引擎事件与 Hub 事件（`EngineEvent::Hub`，§3.1）合并在同一个流里。每次调用一个独立订阅。**建议在应用生命周期内保持一个订阅；取消时不要 `await sub.cancel()`**——FRB 的 `async*` 流要等到下一个事件才完成取消 |
