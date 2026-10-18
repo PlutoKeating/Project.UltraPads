@@ -9,10 +9,17 @@
 //       与 GitHub 记录的 sha256（digest）核对，通过才在边缘缓存 7 天（缓存键含 sha256，附件替换后自动失效），不符则让下载出错。
 //   GET /dl/latest/<平台>
 //       302 到最新正式版对应平台的 /dl/ 地址（落地页的下载按钮，页面脚本跑不起来时也能用）。
+//   /api/catalog*、/api/me*
+//       官方曲库目录（匿名可读，.upkit 纯透传下载）与账号数据（PlutoKeating 账号令牌）。契约见 docs/API.md §7，
+//       实现在 catalog.js / me.js，数据在 data/ 服务里。
 //
-// 不含任何账号或令牌；GITHUB_TOKEN 是可选的 Worker Secret（提高 GitHub API 匿名 60 次 / 小时的限额）。
+// 版本与镜像接口不含任何账号或令牌；GITHUB_TOKEN 是可选的 Worker Secret（提高 GitHub API 匿名 60 次 / 小时的限额）。
+// 目录与账号接口需要 Secret ULTRAPADS_DATA_KEY（数据服务密钥），以及 vars ID_ISSUER_URL / ALLOWED_CLIENT_IDS / DATA_URL。
 
 import { MIRRORED, PLATFORMS, REPO, TAG, manifestFromRelease, manifestToShell } from "./release.js";
+import { handleCatalog } from "./catalog.js";
+import { handleMe } from "./me.js";
+import { cors, jsonError } from "./http.js";
 
 const API_TTL = 300;
 const STALE_TTL = 7 * 86400;
@@ -20,12 +27,6 @@ const DL_TTL = 7 * 86400;
 const SMALL_MAX = 1 << 20;
 
 const cacheOf = () => caches.default;
-
-function cors(h) {
-  h.set("Access-Control-Allow-Origin", "*");
-  h.set("Access-Control-Expose-Headers", "Content-Length, X-Upstream");
-  return h;
-}
 
 function text(status, body) {
   return new Response(body, {
@@ -43,8 +44,16 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
-        headers: cors(new Headers({ "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS", "Access-Control-Allow-Headers": "Accept" })),
+        headers: cors(new Headers({
+          "Access-Control-Allow-Methods": "GET, HEAD, PUT, POST, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Accept, Authorization, Content-Type, Range",
+        })),
       });
+    }
+    if (url.pathname === "/api/me" || url.pathname.startsWith("/api/me/")) return handleMe(request, url, env);
+    if (url.pathname === "/api/catalog" || url.pathname.startsWith("/api/catalog/")) {
+      if (request.method !== "GET" && request.method !== "HEAD") return jsonError(405, "method_not_allowed");
+      return handleCatalog(request, url, env, ctx);
     }
     if (request.method !== "GET" && request.method !== "HEAD") return text(405, "GET only\n");
     if (url.pathname === "/api/version") return version(url, request, env, ctx);

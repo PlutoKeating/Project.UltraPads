@@ -2,10 +2,13 @@
   "name": "ultrapads-website",
   "private": true,
   "type": "module",
-  "description": "ultrapads.plutokeating.beer：安装脚本、下载落地页与发布镜像 Worker（无构建步骤，wrangler 直接部署）",
+  "description": "ultrapads.plutokeating.beer：安装脚本、下载落地页、发布镜像与官方曲库目录/账号 Worker（无构建步骤，wrangler 直接部署）",
   "scripts": {
     "test": "node --test \"test/*.test.js\"",
     "dev": "npx wrangler dev",
     "deploy": "npx wrangler deploy"
+  },
+  "dependencies": {
+    "jose": "^6.2.12"
   }
 }

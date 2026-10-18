@@ -2,6 +2,8 @@
 // 部署：Cloudflare 控制台里该 Worker 已关联本仓库（Workers Builds，根目录 website/），推送 main 即自动部署；
 // 自定义域名 ultrapads.plutokeating.beer 在控制台 Settings → Domains & Routes 绑定，不写在这里。
 // 可选 Secret GITHUB_TOKEN（只读、无权限的令牌即可）提高 GitHub API 限额。
+// 官方曲库目录与账号接口（docs/API.md §7）：Secret ULTRAPADS_DATA_KEY（数据服务密钥，npx wrangler secret put ULTRAPADS_DATA_KEY）；
+// vars 见下：账号签发方、允许的客户端 ID、数据服务地址（隧道路径前缀 /ultrapads）。
 {
   "$schema": "https://unpkg.com/wrangler@4/config-schema.json",
   "name": "ultrapads",
@@ -13,6 +15,11 @@
     "run_worker_first": ["/api/*", "/dl/*"],
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
+  },
+  "vars": {
+    "ID_ISSUER_URL": "https://id.plutokeating.beer/",
+    "ALLOWED_CLIENT_IDS": "ultrapads-app",
+    "DATA_URL": "https://data.jnify.plutokeating.beer/ultrapads"
   },
   "observability": { "enabled": true }
 }
