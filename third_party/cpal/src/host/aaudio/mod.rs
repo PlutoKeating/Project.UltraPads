@@ -552,6 +552,16 @@ where
     };
     tuning.mixer_bursts.store(mixer_bursts, Ordering::Relaxed);
 
+    // UltraPads patch: start low-latency streams at 2 bursts (Oboe's recommendation)
+    // instead of AAudio's default buffer size, which can be close to the full
+    // capacity. Underruns still grow the buffer through the dynamic tuning above.
+    if tune_dynamically && stream.performance_mode() == ndk::audio::AudioPerformanceMode::LowLatency {
+        let burst = stream.frames_per_burst();
+        if burst > 0 && stream.set_buffer_size_in_frames(burst.saturating_mul(2)).is_ok() {
+            tuning.mixer_bursts.store(2, Ordering::Relaxed);
+        }
+    }
+
     // SAFETY: Stream implements Send + Sync (see unsafe impl below). Arc<Mutex<AudioStream>>
     // is safe because the Mutex provides exclusive access and AudioStream's thread safety
     // is documented in the AAudio C API.
@@ -647,6 +657,16 @@ impl DeviceTrait for Device {
     fn default_output_config(&self) -> Result<SupportedStreamConfig, Error> {
         let mut configs: Vec<_> = self.supported_output_configs()?.collect();
         configs.sort_by(|a, b| b.cmp_default_heuristics(a));
+        // UltraPads patch: prefer the device's native output rate. AudioFlinger only
+        // grants the low-latency FAST path to streams that need no resampling.
+        if let Ok(native) = AudioManager::get_output_sample_rate() {
+            if let Some(range) = configs
+                .iter()
+                .find(|c| c.min_sample_rate() <= native && native <= c.max_sample_rate())
+            {
+                return Ok(range.clone().with_sample_rate(native));
+            }
+        }
         let range = configs.into_iter().next().ok_or_else(|| {
             Error::with_message(
                 ErrorKind::UnsupportedConfig,
