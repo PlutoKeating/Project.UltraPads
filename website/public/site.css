@@ -1,42 +1,47 @@
-/* 颜色取自 design/tokens 霓虹主题（neon.css）：背景 / 卡片 / 主色 #fd1a68 / pad 调色板 */
+/* 颜色取自品牌标志 design/brand/ultrapads-mark.svg：底色 #0e0f11 → #1d1e23、U 的粉紫渐变、pad 竖笔青色、琥珀 orb */
 :root {
-  --bg: #1b1f21;
-  --card: #242b2e;
-  --line: #363f43;
+  --bg: #0e0f11;
+  --card: #1d1e23;
+  --line: #2e3038;
   --text: #ffffff;
-  --muted: #9aa4a8;
-  --accent: #fd1a68;
+  --muted: #9a9ca8;
+  --accent: #f23cf0;
+  --accent-grad: linear-gradient(135deg, #ff8ab3, #f23cf0 55%, #7e4398);
   --accent-2: #3fddfe;
+  --orb: #ffb26e;
   --radius: 14px;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  background: radial-gradient(1200px 600px at 50% -200px, rgba(253, 26, 104, .18), transparent 70%), var(--bg);
+  background:
+    radial-gradient(900px 500px at 30% -200px, rgba(242, 60, 240, .16), transparent 70%),
+    radial-gradient(700px 400px at 80% -150px, rgba(63, 221, 254, .10), transparent 70%),
+    var(--bg);
   color: var(--text);
   font: 16px/1.6 system-ui, -apple-system, "Segoe UI", "Noto Sans SC", "PingFang SC", sans-serif;
 }
 main { max-width: 720px; margin: 0 auto; padding: 48px 16px 32px; }
 a { color: var(--accent-2); }
 .hero { text-align: center; margin-bottom: 32px; }
-.logo { filter: drop-shadow(0 8px 32px rgba(253, 26, 104, .35)); }
+.logo { filter: drop-shadow(0 8px 32px rgba(242, 60, 240, .35)); }
 h1 { font-size: 40px; margin: 12px 0 4px; letter-spacing: .02em; }
 .tagline { color: var(--muted); margin: 0 0 8px; }
 .version { margin: 0; color: var(--muted); }
-.version strong { color: var(--text); }
+.version strong { color: var(--orb); }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; margin: 16px 0; }
 h2 { margin: 0 0 8px; font-size: 22px; }
 h2 small { color: var(--muted); font-size: 14px; font-weight: 400; margin-left: 6px; }
 .cmd { display: flex; gap: 8px; align-items: stretch; margin: 12px 0; }
-.cmd code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; background: #15191a; border: 1px solid var(--line); border-radius: 10px; padding: 12px; font: 14px/1.4 ui-monospace, "JetBrains Mono", monospace; }
-button, .btn { font: inherit; border-radius: 10px; border: 1px solid var(--line); background: #363f43; color: var(--text); padding: 10px 16px; cursor: pointer; text-decoration: none; display: inline-block; }
+.cmd code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; background: #08090a; border: 1px solid var(--line); border-radius: 10px; padding: 12px; font: 14px/1.4 ui-monospace, "JetBrains Mono", monospace; }
+button, .btn { font: inherit; border-radius: 10px; border: 1px solid var(--line); background: #2a2c33; color: var(--text); padding: 10px 16px; cursor: pointer; text-decoration: none; display: inline-block; }
 button:hover, .btn:hover { border-color: var(--accent); }
-.btn.primary, #copy { background: var(--accent); border-color: var(--accent); }
+.btn.primary, #copy { background: var(--accent-grad); border-color: transparent; }
 .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
 details { margin-top: 8px; }
 summary { cursor: pointer; color: var(--muted); }
-pre { background: #15191a; border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; font: 13px/1.6 ui-monospace, monospace; }
+pre { background: #08090a; border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; font: 13px/1.6 ui-monospace, monospace; }
 .muted { color: var(--muted); font-size: 14px; }
 footer { text-align: center; margin-top: 32px; color: var(--muted); }
 footer span { margin: 0 6px; }
