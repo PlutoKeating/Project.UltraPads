@@ -4,76 +4,76 @@
     "$type": "color",
     "app": {
       "$value": "{color.ui.bgPads}",
-      "$description": "IPA nav bars / window"
+      "$description": "Ref nav bars / window"
     },
     "pads": {
       "$value": "{color.ui.bgPads}",
-      "$description": "IPA perform page"
+      "$description": "Ref perform page"
     },
     "page": {
       "$value": "{color.ui.bgMenu}",
-      "$description": "IPA library / search / save-kit pages"
+      "$description": "Ref library / search / save-kit pages"
     },
     "raised": {
       "$value": "{color.ui.cell}",
-      "$description": "IPA list rows"
+      "$description": "Ref list rows"
     },
     "raisedHigh": {
       "$value": "{color.ui.modalButton}",
-      "$description": "IPA secondary modal button / action sheet"
+      "$description": "Ref secondary modal button / action sheet"
     },
     "sunken": {
       "$value": "{color.ui.placeholder}",
-      "$description": "IPA placeholders / wells"
+      "$description": "Ref placeholders / wells"
     },
     "toolbar": {
       "$value": "{color.ui.bgPads}",
-      "$description": "IPA function button row"
+      "$description": "Ref function button row"
     },
     "bankButton": {
       "$value": "{color.ui.bgPads}",
-      "$description": "IPA A/B button"
+      "$description": "Ref A/B button"
     },
     "padContainer": {
       "$value": "{color.ui.bgPads}"
     },
     "scrim": {
       "$value": "{color.alpha.black.70}",
-      "$description": "IPA tutorial / full-page overlay 70%"
+      "$description": "Ref tutorial / full-page overlay 70%"
     },
     "dim": {
       "$value": "{color.alpha.black.50}",
-      "$description": "IPA info overlay 50%"
+      "$description": "Ref info overlay 50%"
     },
     "overlayDownload": {
       "$value": "{color.alpha.black.67}"
     },
     "scrimStrong": {
       "$value": "{color.alpha.black.80}",
-      "$description": "IPA kit preview overlay 80%"
+      "$description": "Ref kit preview overlay 80%"
     },
     "kitEditor": {
       "$value": "{color.brand.create}",
-      "$description": "IPA kit editor page background"
+      "$description": "Ref kit editor page background"
     },
     "social": {
       "$value": "{color.ui.social}",
-      "$description": "IPA social bar"
+      "$description": "Ref social bar"
     },
     "tabBar": {
       "$value": "{color.ui.bgMenu}",
-      "$description": "IPA tab bar"
+      "$description": "Ref tab bar"
     },
     "navShadow": {
       "$value": "{color.alpha.black.60}",
-      "$description": "IPA nav bar shadow"
+      "$description": "Ref nav bar shadow"
     }
   },
   "border": {
     "$type": "color",
     "subtle": {
       "$value": "{color.alpha.white.10}",
-      "$description": "IPA dividers (white 10%)"
+      "$description": "Ref dividers (white 10%)"
     },
     "default": {
       "$value": "{color.alpha.white.12}"
@@ -83,14 +83,14 @@
     },
     "divider": {
       "$value": "{color.alpha.white.10}",
-      "$description": "IPA tab bar top line / list separators"
+      "$description": "Ref tab bar top line / list separators"
     },
     "inverse": {
       "$value": "{color.base.white}"
     },
     "dark": {
       "$value": "{color.alpha.black.40}",
-      "$description": "IPA kit editor separator"
+      "$description": "Ref kit editor separator"
     }
   },
   "text": {
@@ -100,11 +100,11 @@
     },
     "secondary": {
       "$value": "{color.alpha.white.60}",
-      "$description": "IPA INSPIRED BY α0.6"
+      "$description": "Ref INSPIRED BY α0.6"
     },
     "muted": {
       "$value": "{color.ui.textSection}",
-      "$description": "IPA section titles"
+      "$description": "Ref section titles"
     },
     "faint": {
       "$value": "{color.grey.500}"
@@ -123,11 +123,11 @@
     },
     "section": {
       "$value": "{color.ui.textSection}",
-      "$description": "IPA library section titles"
+      "$description": "Ref library section titles"
     },
     "dark": {
       "$value": "{color.ui.textDark}",
-      "$description": "IPA dark text on white buttons"
+      "$description": "Ref dark text on white buttons"
     }
   },
   "icon": {
@@ -149,7 +149,7 @@
     "$type": "color",
     "primary": {
       "$value": "{color.brand.pink}",
-      "$description": "IPA #FD1A68 main accent"
+      "$description": "Ref #FD1A68 main accent"
     },
     "primaryPressed": {
       "$value": "{color.brand.rose}"
@@ -159,43 +159,43 @@
     },
     "selected": {
       "$value": "{color.brand.rosePad}",
-      "$description": "IPA genre check / skin price"
+      "$description": "Ref genre check / skin price"
     },
     "secondary": {
       "$value": "{color.brand.rose}",
-      "$description": "IPA divider under skin panel title, SAVE text, input focus"
+      "$description": "Ref divider under skin panel title, SAVE text, input focus"
     },
     "preview": {
       "$value": "{color.swatch.aquaMarine}"
     },
     "alert": {
       "$value": "{color.brand.alert}",
-      "$description": "IPA NO / CANCEL outline"
+      "$description": "Ref NO / CANCEL outline"
     },
     "create": {
       "$value": "{color.brand.create}",
-      "$description": "IPA kit editor accent"
+      "$description": "Ref kit editor accent"
     }
   },
   "status": {
     "$type": "color",
     "success": {
       "$value": "{color.ui.perfect}",
-      "$description": "IPA PERFECT feedback"
+      "$description": "Ref PERFECT feedback"
     },
     "warning": {
       "$value": "{color.swatch.dandelion}"
     },
     "danger": {
       "$value": "{color.ui.recRed}",
-      "$description": "IPA wrong-pad cross"
+      "$description": "Ref wrong-pad cross"
     },
     "info": {
       "$value": "{color.swatch.skyBlue}"
     },
     "recording": {
       "$value": "{color.ui.recRed}",
-      "$description": "IPA record button / timer"
+      "$description": "Ref record button / timer"
     }
   },
   "brand": {
@@ -218,15 +218,15 @@
     "$type": "color",
     "perfect": {
       "$value": "{color.ui.perfect}",
-      "$description": "IPA PERFECT circle"
+      "$description": "Ref PERFECT circle"
     },
     "wrong": {
       "$value": "{color.ui.recRed}",
-      "$description": "IPA wrong cross"
+      "$description": "Ref wrong cross"
     },
     "bubble": {
       "$value": "{color.base.white}",
-      "$description": "IPA first-open bubble"
+      "$description": "Ref first-open bubble"
     },
     "bubbleText": {
       "$value": "{color.base.black}"

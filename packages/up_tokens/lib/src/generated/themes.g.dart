@@ -34,7 +34,7 @@ abstract final class UpSemanticThemes {
     'neon':
         'Neon gradient glow: solid radial-gradient pads with coloured glow (current store look).',
     'outline':
-        'Dark surface with colour-stroked pads; pressed pads fill solid (classic APK palette).',
+        'Dark surface with colour-stroked pads; pressed pads fill solid (classic palette).',
     'light': 'Light surfaces with saturated pads and soft glow.',
   };
 }

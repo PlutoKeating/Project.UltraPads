@@ -61,7 +61,7 @@ class AppSettings {
   final String? outputDevice;
   final bool keyboardEnabled;
 
-  /// 使用 APK 经典 Lottie pad 动画（需要注入 APK 素材）。
+  /// 使用经典 Lottie pad 动画（需要注入 Android 格式素材）。
   final bool classicPads;
 
   /// 演奏页首次引导（参考设计 FirstGuide）已完成或跳过。

@@ -2,7 +2,7 @@
   "motion": {
     "duration": {
       "$type": "duration",
-      "$description": "IPA transition times unless noted (APK values kept only where IPA has no equivalent).",
+      "$description": "Ref transition times unless noted (Old ref values kept only where Ref has no equivalent).",
       "instant": {
         "$value": {
           "value": 0,
@@ -14,98 +14,98 @@
           "value": 17,
           "unit": "ms"
         },
-        "$description": "IPA pad press: jump to lit state on the next frame (1/60 s)"
+        "$description": "Ref pad press: jump to lit state on the next frame (1/60 s)"
       },
       "fast": {
         "$value": {
           "value": 100,
           "unit": "ms"
         },
-        "$description": "IPA pad release (QuadOut), loading grid step, wrong-mark fade-in"
+        "$description": "Ref pad release (QuadOut), loading grid step, wrong-mark fade-in"
       },
       "quick": {
         "$value": {
           "value": 150,
           "unit": "ms"
         },
-        "$description": "APK bottom sheet slide (no IPA equivalent)"
+        "$description": "Old ref bottom sheet slide (no Ref equivalent)"
       },
       "short": {
         "$value": {
           "value": 200,
           "unit": "ms"
         },
-        "$description": "IPA A/B page switch, text box / step label"
+        "$description": "Ref A/B page switch, text box / step label"
       },
       "skipSlide": {
         "$value": {
           "value": 250,
           "unit": "ms"
         },
-        "$description": "IPA skip-tutorial button slide-in"
+        "$description": "Ref skip-tutorial button slide-in"
       },
       "medium": {
         "$value": {
           "value": 300,
           "unit": "ms"
         },
-        "$description": "IPA nav row collapse (Circ), list play/stop cross-scale, PERFECT rise"
+        "$description": "Ref nav row collapse (Circ), list play/stop cross-scale, PERFECT rise"
       },
       "slow": {
         "$value": {
           "value": 400,
           "unit": "ms"
         },
-        "$description": "IPA skin panel in/out, input label float"
+        "$description": "Ref skin panel in/out, input label float"
       },
       "modalIn": {
         "$value": {
           "value": 500,
           "unit": "ms"
         },
-        "$description": "IPA speed picker in, import OPEN KIT button"
+        "$description": "Ref speed picker in, import OPEN KIT button"
       },
       "loopHalf": {
         "$value": {
           "value": 600,
           "unit": "ms"
         },
-        "$description": "IPA loop flash one way (yoyo); record button pulse"
+        "$description": "Ref loop flash one way (yoyo); record button pulse"
       },
       "breathe": {
         "$value": {
           "value": 783,
           "unit": "ms"
         },
-        "$description": "IPA SONGS button glow segment"
+        "$description": "Ref SONGS button glow segment"
       },
       "wrongOut": {
         "$value": {
           "value": 900,
           "unit": "ms"
         },
-        "$description": "IPA wrong-pad cross fade-out"
+        "$description": "Ref wrong-pad cross fade-out"
       },
       "slower": {
         "$value": {
           "value": 1000,
           "unit": "ms"
         },
-        "$description": "IPA speed picker out, record ripple, tutorial pad fill, first-open hand"
+        "$description": "Ref speed picker out, record ripple, tutorial pad fill, first-open hand"
       },
       "loopCycle": {
         "$value": {
           "value": 1200,
           "unit": "ms"
         },
-        "$description": "IPA loop flash period and loop icon revolution"
+        "$description": "Ref loop flash period and loop icon revolution"
       },
       "splash": {
         "$value": {
           "value": 1200,
           "unit": "ms"
         },
-        "$description": "IPA splash logo"
+        "$description": "Ref splash logo"
       },
       "toast": {
         "$value": {
@@ -119,25 +119,25 @@
           "value": 4000,
           "unit": "ms"
         },
-        "$description": "UP featured carousel autoplay (not in IPA data)"
+        "$description": "UP featured carousel autoplay (not in Ref data)"
       },
       "xfast": {
         "$value": {
           "value": 50,
           "unit": "ms"
         },
-        "$description": "IPA Square skin layer step (0.05 s)"
+        "$description": "Ref Square skin layer step (0.05 s)"
       },
       "padPressHalf": {
         "$value": "{motion.duration.frame}",
-        "$description": "Press attack (IPA: next frame). Kept name for existing callers."
+        "$description": "Press attack (Ref: next frame). Kept name for existing callers."
       },
       "padPress": {
         "$value": {
           "value": 117,
           "unit": "ms"
         },
-        "$description": "IPA press flash total: 1 frame attack + 0.1 s release"
+        "$description": "Ref press flash total: 1 frame attack + 0.1 s release"
       }
     },
     "easing": {
@@ -150,7 +150,7 @@
           1,
           1
         ],
-        "$description": "IPA rotation / fill"
+        "$description": "Ref rotation / fill"
       },
       "quadOut": {
         "$value": [
@@ -159,7 +159,7 @@
           0.45,
           0.94
         ],
-        "$description": "IPA default ease (most transitions)"
+        "$description": "Ref default ease (most transitions)"
       },
       "quadIn": {
         "$value": [
@@ -168,7 +168,7 @@
           0.68,
           0.53
         ],
-        "$description": "IPA first-open hand"
+        "$description": "Ref first-open hand"
       },
       "circOut": {
         "$value": [
@@ -177,7 +177,7 @@
           0.165,
           1
         ],
-        "$description": "IPA nav row return, record ripple"
+        "$description": "Ref nav row return, record ripple"
       },
       "circIn": {
         "$value": [
@@ -186,7 +186,7 @@
           0.98,
           0.335
         ],
-        "$description": "IPA nav row collapse"
+        "$description": "Ref nav row collapse"
       },
       "standard": {
         "$value": [
@@ -195,7 +195,7 @@
           0.58,
           1
         ],
-        "$description": "APK AccelerateDecelerate (old)"
+        "$description": "Old ref AccelerateDecelerate (old)"
       },
       "decelerate": {
         "$value": [
@@ -204,7 +204,7 @@
           0.2,
           1
         ],
-        "$description": "APK Decelerate (old)"
+        "$description": "Old ref Decelerate (old)"
       },
       "emphasized": {
         "$value": [
@@ -222,7 +222,7 @@
           1,
           1
         ],
-        "$description": "UP/APK accelerate"
+        "$description": "UP/Old ref accelerate"
       }
     },
     "spring": {

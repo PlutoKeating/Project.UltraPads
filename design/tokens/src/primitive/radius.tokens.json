@@ -18,35 +18,35 @@
         "value": 3,
         "unit": "px"
       },
-      "$description": "APK kit_shape"
+      "$description": "Old ref kit_shape"
     },
     "md": {
       "$value": {
         "value": 4,
         "unit": "px"
       },
-      "$description": "APK pad xml / mini / edit / save buttons"
+      "$description": "Old ref pad xml / mini / edit / save buttons"
     },
     "lg": {
       "$value": {
         "value": 6,
         "unit": "px"
       },
-      "$description": "APK kit card / not-downloaded"
+      "$description": "Old ref kit card / not-downloaded"
     },
     "xl": {
       "$value": {
         "value": 8,
         "unit": "px"
       },
-      "$description": "APK save record / preview kit; IPA Default pad 9-slice corner ~ 13pt on 128pt pad"
+      "$description": "Old ref save record / preview kit; Ref Default pad 9-slice corner ~ 13pt on 128pt pad"
     },
     "xxl": {
       "$value": {
         "value": 12,
         "unit": "px"
       },
-      "$description": "APK social media"
+      "$description": "Old ref social media"
     },
     "xxxl": {
       "$value": {
@@ -66,11 +66,11 @@
     "$description": "Proportional shape ratios (radius = side * ratio).",
     "padRadius": {
       "$value": 0.1,
-      "$description": "IPA: 9-slice source 72px with ~26px corner -> ~10% of a 256px pad side (APK Lottie was 12%)"
+      "$description": "Ref: 9-slice source 72px with ~26px corner -> ~10% of a 256px pad side (Old ref Lottie was 12%)"
     },
     "padNumberSize": {
       "$value": 0.12,
-      "$description": "APK pad number text = pad width * 0.12"
+      "$description": "Old ref pad number text = pad width * 0.12"
     },
     "padNumberInsetEnd": {
       "$value": 0.1

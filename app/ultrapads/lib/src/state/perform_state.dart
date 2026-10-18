@@ -6,7 +6,7 @@ import 'engine_state.dart';
 class BankController extends Notifier<int> {
   @override
   int build() {
-    // 加载新 Kit 时翻回 A（APK：KitLoaded → A）
+    // 加载新 Kit 时翻回 A（旧版参考：KitLoaded → A）
     ref.listen(
       engineViewProvider.select((v) => v.kit?.id),
       (_, _) => state = 0,

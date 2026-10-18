@@ -1,7 +1,7 @@
 # 视觉对比记录（v0.0.1 前端）
 
 > 参考：商店截图（`m_us_iphone`、`m_cn_iphone`、`m_ipad`、`iphone_1..5`），
-> IPA 参考设计数据（828×1472 画布 ÷ 2）。
+> 参考设计数据（828×1472 画布 ÷ 2）。
 > 对比对象：golden 截图（`app/ultrapads/test/goldens/*.png`，414×736 逻辑像素，开源字体，无私有素材）
 > 、Linux 实机运行截图（`flutter build linux --debug`，Mock / FFI 两种引擎）和 Android 模拟器
 > （emulator-5554，API 34 x86_64，`adb exec-out screencap`）截图；运行截图不入库。
@@ -42,7 +42,7 @@
 
 | # | 差异 | 原因 | 修正项 |
 |---|---|---|---|
-| 1 | 字体：golden 用 Open Sans（与参考设计一致）；商店截图的粗体更圆 | 截图是营销合成图 | 无需修正；注入 APK 素材后可选 Uni Sans（`UpFontSet.uniSans`） |
+| 1 | 字体：golden 用 Open Sans（与参考设计一致）；商店截图的粗体更圆 | 截图是营销合成图 | 无需修正；注入 Android 格式素材后可选 Uni Sans（`UpFontSet.uniSans`） |
 | 2 | Loop 待机 pad 颜色：截图 2 是紫色底 + 角色色描边；当前 neon 主题为深青底 | token `pad.loop.idleFill` 的取值 | 请 token 代理按截图 2 复核 neon 的 `pad.loop.idleFill` |
 | 3 | 演奏页顶部 YouTube / BiliBili 视频按钮未做 | 没有视频源 | 有教学视频源后加回（`performVideoTutorial` 文案已有） → ✅ v0.0.1：顶栏视频教程按钮（YouTube / BiliBili，链接在 `assets/config/links.json`） |
 | 4 | 演奏页底部 logo / 背景区（参考设计 y 1365–1471）未做 | 原为广告区 + 远程 loader | 可放品牌 logo（私有素材） |

@@ -24,12 +24,12 @@ abstract final class UpTransportTokens {
   /// Token: `transport.gap`
   static const double gap = 12;
 
-  /// IPA tutorial row 100px
+  /// Ref tutorial row 100px
   ///
   /// Token: `transport.height`
   static const double height = 50;
 
-  /// IPA play/stop block 84px
+  /// Ref play/stop block 84px
   ///
   /// Token: `transport.stopSize`
   static const double stopSize = 42;
@@ -37,7 +37,7 @@ abstract final class UpTransportTokens {
 
 /// Component tokens for `chip` (theme-independent geometry, motion and glow recipes).
 abstract final class UpChipTokens {
-  /// IPA SONGS button 63 px
+  /// Ref SONGS button 63 px
   ///
   /// Token: `chip.height`
   static const double height = 31.5;
@@ -69,7 +69,7 @@ abstract final class UpBannerTokens {
   /// Token: `banner.radius`
   static const double radius = 8;
 
-  /// IPA pagination 50x10 px
+  /// Ref pagination 50x10 px
   ///
   /// Token: `banner.indicatorWidth`
   static const double indicatorWidth = 25;
@@ -97,7 +97,7 @@ abstract final class UpBannerTokens {
   /// Token: `banner.holderHeight`
   static const double holderHeight = 147;
 
-  /// IPA pagination dot height 10px
+  /// Ref pagination dot height 10px
   ///
   /// Token: `banner.indicatorSize`
   static const double indicatorSize = 5;
@@ -105,7 +105,7 @@ abstract final class UpBannerTokens {
 
 /// Component tokens for `sheet` (theme-independent geometry, motion and glow recipes).
 abstract final class UpSheetTokens {
-  /// IPA skin panel 488 px, slides from the bottom
+  /// Ref skin panel 488 px, slides from the bottom
   ///
   /// Token: `sheet.height`
   static const double height = 244;
@@ -122,7 +122,7 @@ abstract final class UpSheetTokens {
   /// Token: `sheet.thumbSize`
   static const double thumbSize = 75;
 
-  /// IPA pink 2 px divider
+  /// Ref pink 2 px divider
   ///
   /// Token: `sheet.dividerHeight`
   static const double dividerHeight = 1;
@@ -135,7 +135,7 @@ abstract final class UpSheetTokens {
   /// Token: `sheet.handleHeight`
   static const double handleHeight = 4;
 
-  /// IPA 0.4 s QuadOut
+  /// Ref 0.4 s QuadOut
   ///
   /// Token: `sheet.enter`
   static const Duration enter = Duration(milliseconds: 400);
@@ -153,7 +153,7 @@ abstract final class UpSheetTokens {
     damping: 36,
   );
 
-  /// IPA LOAD SOUND row step 140 - row 132 px = 8px
+  /// Ref LOAD SOUND row step 140 - row 132 px = 8px
   ///
   /// Token: `sheet.itemGap`
   static const double itemGap = 4;
@@ -179,7 +179,7 @@ abstract final class UpBadgeTokens {
 
 /// Component tokens for `button` (theme-independent geometry, motion and glow recipes).
 abstract final class UpButtonTokens {
-  /// IPA btn 500x100 px
+  /// Ref btn 500x100 px
   ///
   /// Token: `button.width`
   static const double width = 250;
@@ -227,7 +227,7 @@ abstract final class UpButtonTokens {
   /// Token: `button.press`
   static const Duration press = Duration(milliseconds: 100);
 
-  /// IPA btn 500px
+  /// Ref btn 500px
   ///
   /// Token: `button.wideWidth`
   static const double wideWidth = 250;
@@ -241,7 +241,7 @@ abstract final class UpInputTokens {
   /// Token: `input.height`
   static const double height = 60.5;
 
-  /// IPA label move + colour 0.4 s QuadOut
+  /// Ref label move + colour 0.4 s QuadOut
   ///
   /// Token: `input.labelFloat`
   static const Duration labelFloat = Duration(milliseconds: 400);
@@ -258,7 +258,7 @@ abstract final class UpSliderTokens {
   /// Token: `slider.trackHeight`
   static const double trackHeight = 5;
 
-  /// IPA grip 50 px
+  /// Ref grip 50 px
   ///
   /// Token: `slider.thumbSize`
   static const double thumbSize = 25;
@@ -272,7 +272,7 @@ abstract final class UpSliderTokens {
 
 /// Component tokens for `dialog` (theme-independent geometry, motion and glow recipes).
 abstract final class UpDialogTokens {
-  /// IPA rate dialog 606 px
+  /// Ref rate dialog 606 px
   ///
   /// Token: `dialog.width`
   static const double width = 303;
@@ -370,7 +370,7 @@ abstract final class UpWaveformTokens {
 
 /// Component tokens for `progressRing` (theme-independent geometry, motion and glow recipes).
 abstract final class UpProgressRingTokens {
-  /// APK circular.xml (old)
+  /// Old ref circular.xml (old)
   ///
   /// Token: `progressRing.innerRadius`
   static const double innerRadius = 64;
@@ -378,7 +378,7 @@ abstract final class UpProgressRingTokens {
   /// Token: `progressRing.thickness`
   static const double thickness = 8;
 
-  /// IPA 3x3 loading grid shifts alpha every 0.1 s
+  /// Ref 3x3 loading grid shifts alpha every 0.1 s
   ///
   /// Token: `progressRing.loadingStep`
   static const Duration loadingStep = Duration(milliseconds: 100);
@@ -395,7 +395,7 @@ abstract final class UpRecordTokens {
   /// Token: `record.buttonSize`
   static const double buttonSize = 85;
 
-  /// IPA 0.6 s QuadOut: ring x1.2 red, dot x0.5
+  /// Ref 0.6 s QuadOut: ring x1.2 red, dot x0.5
   ///
   /// Token: `record.pulse`
   static const Duration pulse = Duration(milliseconds: 600);
@@ -406,7 +406,7 @@ abstract final class UpRecordTokens {
   /// Token: `record.dotScale`
   static const double dotScale = 0.5;
 
-  /// IPA ripple 1.0 s CircOut to 4x, alpha 1 -> 0
+  /// Ref ripple 1.0 s CircOut to 4x, alpha 1 -> 0
   ///
   /// Token: `record.ripple`
   static const Duration ripple = Duration(milliseconds: 1000);
@@ -417,7 +417,7 @@ abstract final class UpRecordTokens {
   /// Token: `record.rippleCurve`
   static const Cubic rippleCurve = Cubic(0.075, 0.82, 0.165, 1);
 
-  /// IPA save recording play button 110 px
+  /// Ref save recording play button 110 px
   ///
   /// Token: `record.playSize`
   static const double playSize = 55;
@@ -425,7 +425,7 @@ abstract final class UpRecordTokens {
 
 /// Component tokens for `swatch` (theme-independent geometry, motion and glow recipes).
 abstract final class UpSwatchTokens {
-  /// IPA 70 px colour dots, 8 colours
+  /// Ref 70 px colour dots, 8 colours
   ///
   /// Token: `swatch.size`
   static const double size = 35;
@@ -439,7 +439,7 @@ abstract final class UpSwatchTokens {
 
 /// Component tokens for `pad` (theme-independent geometry, motion and glow recipes).
 abstract final class UpPadTokens {
-  /// IPA 4px between pads
+  /// Ref 4px between pads
   ///
   /// Token: `pad.gap`
   static const double gap = 2;
@@ -447,12 +447,12 @@ abstract final class UpPadTokens {
   /// Token: `pad.minSize`
   static const double minSize = 44;
 
-  /// IPA pad component 256px (scaled to the cell)
+  /// Ref pad component 256px (scaled to the cell)
   ///
   /// Token: `pad.designSize`
   static const double designSize = 128;
 
-  /// IPA cell 267/268 x 255-257 px (not square)
+  /// Ref cell 267/268 x 255-257 px (not square)
   ///
   /// Token: `pad.cellWidth`
   static const double cellWidth = 133.5;
@@ -469,7 +469,7 @@ abstract final class UpPadTokens {
   /// Token: `pad.numberInsetBottomRatio`
   static const double numberInsetBottomRatio = 0.03;
 
-  /// IPA loop glyph 120x136 on a 256 pad
+  /// Ref loop glyph 120x136 on a 256 pad
   ///
   /// Token: `pad.loopIconRatio`
   static const double loopIconRatio = 0.47;
@@ -500,12 +500,12 @@ abstract final class UpPadTokens {
     ),
   ];
 
-  /// IPA: lit state on the next frame (no tween)
+  /// Ref: lit state on the next frame (no tween)
   ///
   /// Token: `pad.pressAttack`
   static const Duration pressAttack = Duration(milliseconds: 17);
 
-  /// IPA: 0.1 s QuadOut back to idle
+  /// Ref: 0.1 s QuadOut back to idle
   ///
   /// Token: `pad.pressRelease`
   static const Duration pressRelease = Duration(milliseconds: 100);
@@ -513,7 +513,7 @@ abstract final class UpPadTokens {
   /// Token: `pad.pressCurve`
   static const Cubic pressCurve = Cubic(0.25, 0.46, 0.45, 0.94);
 
-  /// IPA: 0.6 s one way, yoyo, infinite (1.2 s period)
+  /// Ref: 0.6 s one way, yoyo, infinite (1.2 s period)
   ///
   /// Token: `pad.loopFlashHalf`
   static const Duration loopFlashHalf = Duration(milliseconds: 600);
@@ -521,7 +521,7 @@ abstract final class UpPadTokens {
   /// Token: `pad.loopFlashCurve`
   static const Cubic loopFlashCurve = Cubic(0.25, 0.46, 0.45, 0.94);
 
-  /// IPA: loop icon 360° per 1.2 s
+  /// Ref: loop icon 360° per 1.2 s
   ///
   /// Token: `pad.loopRevolution`
   static const Duration loopRevolution = Duration(milliseconds: 1200);
@@ -534,12 +534,12 @@ abstract final class UpPadTokens {
   /// Token: `pad.pendingBlink`
   static const Duration pendingBlink = Duration(milliseconds: 400);
 
-  /// IPA Square skin: layer shrink 0.05 s, stagger 17 ms
+  /// Ref Square skin: layer shrink 0.05 s, stagger 17 ms
   ///
   /// Token: `pad.pressScaleIn`
   static const Duration pressScaleIn = Duration(milliseconds: 50);
 
-  /// IPA Circle/Square: back to 1.0 in 0.1 s QuadOut
+  /// Ref Circle/Square: back to 1.0 in 0.1 s QuadOut
   ///
   /// Token: `pad.pressScaleOut`
   static const Duration pressScaleOut = Duration(milliseconds: 100);
@@ -551,7 +551,7 @@ abstract final class UpPadTokens {
     damping: 38,
   );
 
-  /// IPA loop flash period 1.2 s
+  /// Ref loop flash period 1.2 s
   ///
   /// Token: `pad.loopFlashCycle`
   static const Duration loopFlashCycle = Duration(milliseconds: 1200);
@@ -570,17 +570,17 @@ abstract final class UpPadGridTokens {
   /// Token: `padGrid.banks`
   static const int banks = 2;
 
-  /// IPA pad area x 9..819 px
+  /// Ref pad area x 9..819 px
   ///
   /// Token: `padGrid.pageInset`
   static const double pageInset = 4.5;
 
-  /// IPA pad area y 286 px
+  /// Ref pad area y 286 px
   ///
   /// Token: `padGrid.top`
   static const double top = 143;
 
-  /// IPA pad area ends at y 1321 of 1472 px
+  /// Ref pad area ends at y 1321 of 1472 px
   ///
   /// Token: `padGrid.bottomInset`
   static const double bottomInset = 75.5;
@@ -588,7 +588,7 @@ abstract final class UpPadGridTokens {
   /// Token: `padGrid.maxWidth`
   static const double maxWidth = 600;
 
-  /// IPA A/B 0.2 s QuadOut, page slides 100%
+  /// Ref A/B 0.2 s QuadOut, page slides 100%
   ///
   /// Token: `padGrid.bankSwitch`
   static const Duration bankSwitch = Duration(milliseconds: 200);
@@ -596,12 +596,12 @@ abstract final class UpPadGridTokens {
   /// Token: `padGrid.bankSwitchCurve`
   static const Cubic bankSwitchCurve = Cubic(0.25, 0.46, 0.45, 0.94);
 
-  /// APK 6dp (old; IPA uses absolute y 286px)
+  /// Old ref 6dp (old; Ref uses absolute y 286px)
   ///
   /// Token: `padGrid.marginTop`
   static const double marginTop = 6;
 
-  /// APK 12dp (old)
+  /// Old ref 12dp (old)
   ///
   /// Token: `padGrid.marginBottom`
   static const double marginBottom = 12;
@@ -615,7 +615,7 @@ abstract final class UpTopBarTokens {
   /// Token: `topBar.songsHeight`
   static const double songsHeight = 31.5;
 
-  /// IPA (20,33) px
+  /// Ref (20,33) px
   ///
   /// Token: `topBar.songsX`
   static const double songsX = 10;
@@ -623,7 +623,7 @@ abstract final class UpTopBarTokens {
   /// Token: `topBar.songsY`
   static const double songsY = 16.5;
 
-  /// IPA KIT title at (216,45) px
+  /// Ref KIT title at (216,45) px
   ///
   /// Token: `topBar.titleX`
   static const double titleX = 108;
@@ -634,7 +634,7 @@ abstract final class UpTopBarTokens {
   /// Token: `topBar.youtubeHeight`
   static const double youtubeHeight = 44;
 
-  /// IPA function row y 126 px
+  /// Ref function row y 126 px
   ///
   /// Token: `topBar.functionRowY`
   static const double functionRowY = 63;
@@ -642,12 +642,12 @@ abstract final class UpTopBarTokens {
   /// Token: `topBar.functionRowHeight`
   static const double functionRowHeight = 50;
 
-  /// IPA 100x100 px
+  /// Ref 100x100 px
   ///
   /// Token: `topBar.functionButton`
   static const double functionButton = 50;
 
-  /// IPA inner block 84 px
+  /// Ref inner block 84 px
   ///
   /// Token: `topBar.functionButtonInner`
   static const double functionButtonInner = 42;
@@ -661,7 +661,7 @@ abstract final class UpTopBarTokens {
   /// Token: `topBar.bankButtonWidth`
   static const double bankButtonWidth = 64.5;
 
-  /// IPA 129x126 px
+  /// Ref 129x126 px
   ///
   /// Token: `topBar.bankButtonHeight`
   static const double bankButtonHeight = 63;
@@ -669,12 +669,12 @@ abstract final class UpTopBarTokens {
   /// Token: `topBar.iconSize`
   static const double iconSize = 23.5;
 
-  /// IPA SONGS glow 1 -> 0.5 -> 1 per 0.783 s linear
+  /// Ref SONGS glow 1 -> 0.5 -> 1 per 0.783 s linear
   ///
   /// Token: `topBar.songsBreathe`
   static const Duration songsBreathe = Duration(milliseconds: 783);
 
-  /// IPA function row collapse CircIn / return CircOut
+  /// Ref function row collapse CircIn / return CircOut
   ///
   /// Token: `topBar.collapse`
   static const Duration collapse = Duration(milliseconds: 300);
@@ -685,12 +685,12 @@ abstract final class UpTopBarTokens {
   /// Token: `topBar.expandCurve`
   static const Cubic expandCurve = Cubic(0.075, 0.82, 0.165, 1);
 
-  /// IPA top region above the function row (0..113px)
+  /// Ref top region above the function row (0..113px)
   ///
   /// Token: `topBar.height`
   static const double height = 56.5;
 
-  /// IPA SONGS x 20px
+  /// Ref SONGS x 20px
   ///
   /// Token: `topBar.paddingX`
   static const double paddingX = 10;
@@ -698,12 +698,12 @@ abstract final class UpTopBarTokens {
   /// Token: `topBar.gap`
   static const double gap = 8;
 
-  /// IPA A/B 129px
+  /// Ref A/B 129px
   ///
   /// Token: `topBar.bankButtonSize`
   static const double bankButtonSize = 64.5;
 
-  /// IPA record block 84px
+  /// Ref record block 84px
   ///
   /// Token: `topBar.recIconSize`
   static const double recIconSize = 42;
@@ -732,7 +732,7 @@ abstract final class UpTabBarTokens {
   /// Token: `tabBar.selectedCircle`
   static const double selectedCircle = 31.5;
 
-  /// IPA underline 3 px
+  /// Ref underline 3 px
   ///
   /// Token: `tabBar.indicatorHeight`
   static const double indicatorHeight = 1.5;
@@ -746,7 +746,7 @@ abstract final class UpTabBarTokens {
 
 /// Component tokens for `kitCard` (theme-independent geometry, motion and glow recipes).
 abstract final class UpKitCardTokens {
-  /// IPA kit row 132 px
+  /// Ref kit row 132 px
   ///
   /// Token: `kitCard.height`
   static const double height = 66;
@@ -763,7 +763,7 @@ abstract final class UpKitCardTokens {
   /// Token: `kitCard.textInset`
   static const double textInset = 86;
 
-  /// IPA selection bar 9 px
+  /// Ref selection bar 9 px
   ///
   /// Token: `kitCard.indicatorWidth`
   static const double indicatorWidth = 4.5;
@@ -786,7 +786,7 @@ abstract final class UpKitCardTokens {
   /// Token: `kitCard.smallHeight`
   static const double smallHeight = 87;
 
-  /// IPA KIT stamp rotation (degrees)
+  /// Ref KIT stamp rotation (degrees)
   ///
   /// Token: `kitCard.bigLabelAngle`
   static const double bigLabelAngle = 6.8;
@@ -807,22 +807,22 @@ abstract final class UpKitCardTokens {
     ),
   ];
 
-  /// IPA thumbnail height 109px
+  /// Ref thumbnail height 109px
   ///
   /// Token: `kitCard.coverSize`
   static const double coverSize = 54.5;
 
-  /// IPA thumbnail width 147px
+  /// Ref thumbnail width 147px
   ///
   /// Token: `kitCard.coverSizeLarge`
   static const double coverSizeLarge = 73.5;
 
-  /// IPA kit row 132px
+  /// Ref kit row 132px
   ///
   /// Token: `kitCard.heightLarge`
   static const double heightLarge = 66;
 
-  /// APK (old)
+  /// Old ref (old)
   ///
   /// Token: `kitCard.marginTop`
   static const double marginTop = 6;
@@ -856,12 +856,12 @@ abstract final class UpModalTokens {
   /// Token: `modal.speedHeight`
   static const double speedHeight = 140;
 
-  /// IPA speed picker in 0.5 s
+  /// Ref speed picker in 0.5 s
   ///
   /// Token: `modal.speedIn`
   static const Duration speedIn = Duration(milliseconds: 500);
 
-  /// IPA out 1.0 s
+  /// Ref out 1.0 s
   ///
   /// Token: `modal.speedOut`
   static const Duration speedOut = Duration(milliseconds: 1000);
@@ -886,12 +886,12 @@ abstract final class UpPageTokens {
 
 /// Component tokens for `listItem` (theme-independent geometry, motion and glow recipes).
 abstract final class UpListItemTokens {
-  /// IPA LOAD SOUND row 132 px
+  /// Ref LOAD SOUND row 132 px
   ///
   /// Token: `listItem.height`
   static const double height = 66;
 
-  /// IPA row step 140 px
+  /// Ref row step 140 px
   ///
   /// Token: `listItem.step`
   static const double step = 70;
@@ -911,7 +911,7 @@ abstract final class UpListItemTokens {
   /// Token: `listItem.radius`
   static const double radius = 0;
 
-  /// IPA profile entry 111 px
+  /// Ref profile entry 111 px
   ///
   /// Token: `listItem.profileRowHeight`
   static const double profileRowHeight = 55.5;
@@ -937,7 +937,7 @@ abstract final class UpKitEditorTokens {
   /// Token: `kitEditor.editPadWidth`
   static const double editPadWidth = 375;
 
-  /// IPA SALVAR 150x60 px
+  /// Ref SALVAR 150x60 px
   ///
   /// Token: `kitEditor.saveWidth`
   static const double saveWidth = 75;
@@ -945,12 +945,12 @@ abstract final class UpKitEditorTokens {
   /// Token: `kitEditor.saveHeight`
   static const double saveHeight = 30;
 
-  /// IPA close 95 px
+  /// Ref close 95 px
   ///
   /// Token: `kitEditor.closeSize`
   static const double closeSize = 47.5;
 
-  /// IPA trim max 30 s
+  /// Ref trim max 30 s
   ///
   /// Token: `kitEditor.maxTrim`
   static const Duration maxTrim = Duration(milliseconds: 30000);
@@ -982,7 +982,7 @@ abstract final class UpGenreIconTokens {
   /// Token: `genreIcon.gap`
   static const double gap = 12;
 
-  /// IPA genre list 659x96 px
+  /// Ref genre list 659x96 px
   ///
   /// Token: `genreIcon.rowHeight`
   static const double rowHeight = 48;
@@ -1012,12 +1012,12 @@ abstract final class UpTrackCardTokens {
     ),
   ];
 
-  /// IPA record pulse 0.6 s
+  /// Ref record pulse 0.6 s
   ///
   /// Token: `trackCard.recTransition`
   static const Duration recTransition = Duration(milliseconds: 600);
 
-  /// IPA record ripple 1.0 s
+  /// Ref record ripple 1.0 s
   ///
   /// Token: `trackCard.recLoop`
   static const Duration recLoop = Duration(milliseconds: 1000);
@@ -1025,7 +1025,7 @@ abstract final class UpTrackCardTokens {
 
 /// Component tokens for `tutorial` (theme-independent geometry, motion and glow recipes).
 abstract final class UpTutorialTokens {
-  /// IPA tutorial pad fills bottom->top in 1.0 s linear
+  /// Ref tutorial pad fills bottom->top in 1.0 s linear
   ///
   /// Token: `tutorial.fill`
   static const Duration fill = Duration(milliseconds: 1000);
@@ -1039,12 +1039,12 @@ abstract final class UpTutorialTokens {
   /// Token: `tutorial.bubbleHeight`
   static const double bubbleHeight = 132.5;
 
-  /// IPA 100 px cut-out
+  /// Ref 100 px cut-out
   ///
   /// Token: `tutorial.highlightHole`
   static const double highlightHole = 50;
 
-  /// IPA hand moves 200 px
+  /// Ref hand moves 200 px
   ///
   /// Token: `tutorial.handTravel`
   static const double handTravel = 100;
@@ -1055,7 +1055,7 @@ abstract final class UpTutorialTokens {
   /// Token: `tutorial.handCurve`
   static const Cubic handCurve = Cubic(0.55, 0.085, 0.68, 0.53);
 
-  /// IPA PERFECT rises 55 px in 0.3 s
+  /// Ref PERFECT rises 55 px in 0.3 s
   ///
   /// Token: `tutorial.perfectRise`
   static const double perfectRise = 27.5;
@@ -1063,7 +1063,7 @@ abstract final class UpTutorialTokens {
   /// Token: `tutorial.perfectDuration`
   static const Duration perfectDuration = Duration(milliseconds: 300);
 
-  /// IPA green circle grows to 20x in 0.4 s
+  /// Ref green circle grows to 20x in 0.4 s
   ///
   /// Token: `tutorial.perfectCircleScale`
   static const double perfectCircleScale = 20;
@@ -1071,7 +1071,7 @@ abstract final class UpTutorialTokens {
   /// Token: `tutorial.perfectCircle`
   static const Duration perfectCircle = Duration(milliseconds: 400);
 
-  /// IPA TOO FAST/SLOW tilt degrees
+  /// Ref TOO FAST/SLOW tilt degrees
   ///
   /// Token: `tutorial.missTilt`
   static const double missTilt = 6;
@@ -1085,7 +1085,7 @@ abstract final class UpTutorialTokens {
   /// Token: `tutorial.wrongScale`
   static const double wrongScale = 1.3;
 
-  /// IPA step label slides in 160 px
+  /// Ref step label slides in 160 px
   ///
   /// Token: `tutorial.stepSlide`
   static const double stepSlide = 80;
@@ -1102,7 +1102,7 @@ abstract final class UpTutorialTokens {
   /// Token: `tutorial.barHeight`
   static const double barHeight = 50;
 
-  /// IPA tutorial pad fill 1.0 s
+  /// Ref tutorial pad fill 1.0 s
   ///
   /// Token: `tutorial.pulse`
   static const Duration pulse = Duration(milliseconds: 1000);
@@ -1134,12 +1134,12 @@ abstract final class UpSkinItemTokens {
   /// Token: `skinItem.radius`
   static const double radius = 8;
 
-  /// APK (old)
+  /// Old ref (old)
   ///
   /// Token: `skinItem.marginStart`
   static const double marginStart = 20;
 
-  /// APK (old)
+  /// Old ref (old)
   ///
   /// Token: `skinItem.marginY`
   static const double marginY = 10;

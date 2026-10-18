@@ -2,7 +2,7 @@
   "$description": "Theme registry consumed by scripts/build.mjs. Each theme = base semantic layer + src/themes/<id>/*.tokens.json overrides. The first entry is the default.",
   "themes": [
     { "id": "neon", "brightness": "dark", "description": "Neon gradient glow: solid radial-gradient pads with coloured glow (current store look)." },
-    { "id": "outline", "brightness": "dark", "description": "Dark surface with colour-stroked pads; pressed pads fill solid (classic APK palette)." },
+    { "id": "outline", "brightness": "dark", "description": "Dark surface with colour-stroked pads; pressed pads fill solid (classic palette)." },
     { "id": "light", "brightness": "light", "description": "Light surfaces with saturated pads and soft glow." }
   ]
 }

@@ -531,7 +531,7 @@ enum TutorialStepKind {
 ///
 /// 参考设计的教程是**时间轴**格式：每步有时间点，pad 提前 `tutorial.fill` 时长开始
 /// 「填满」，在填满那一刻按下判定 PERFECT，早按 TOO FAST，晚按 TOO SLOW。
-/// [timeSecs] 为 null 时退化为旧版（APK）的无时间顺序模式。
+/// [timeSecs] 为 null 时退化为旧版（Android 格式）的无时间顺序模式。
 final class TutorialStep {
   const TutorialStep({
     this.pads = const [],

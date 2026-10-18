@@ -21,7 +21,7 @@
         { "color": "{color.grey.975}", "position": 0.95 },
         { "color": "{color.grey.1000}", "position": 1 }
       ],
-      "$description": "APK placeholder pad gradient."
+      "$description": "Old ref placeholder pad gradient."
     }
   }
 }

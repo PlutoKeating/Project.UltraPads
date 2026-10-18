@@ -87,7 +87,7 @@ class PrivateAssets {
 
   ImageProvider? image(String? path) => path == null ? null : AssetImage(path);
 
-  /// 注册私有字体：Uni Sans（APK）→ UpFonts 已知的家族名。
+  /// 注册私有字体：Uni Sans（Android 格式素材）→ UpFonts 已知的家族名。
   Future<void> registerFonts([AssetBundle? bundle]) async {
     if (!available) return;
     final b = bundle ?? rootBundle;

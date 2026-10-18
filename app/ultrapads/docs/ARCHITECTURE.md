@@ -148,21 +148,21 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
   付费墙 / GDPR / IDFA / 广告相关包不注入。`just clean-assets` 删除。
 - 运行时：`PrivateAssets.load()` 先读 `injected.json`，失败读占位清单；`resolve(类别, 文件)` 按优先级查找。
   缺失时回退开源占位：Open Sans（up_tokens 打包）、Material Icons、程序化绘制的 pad / 封面。
-- 当前用到的私有素材：皮肤缩略图（`ios/ui/ScreenPads__img_skins_*`）、Uni Sans 字体（APK，
-  注册为 `UpFonts.privateFiles` 的家族名）、APK `normal_*` Lottie（设置「经典 Pad 动画」开启时）、
+- 当前用到的私有素材：皮肤缩略图（`ios/ui/ScreenPads__img_skins_*`）、Uni Sans 字体（Android 格式素材，
+  注册为 `UpFonts.privateFiles` 的家族名）、Android 格式素材的 `normal_*` Lottie（设置「经典 Pad 动画」开启时）、
   image 类皮肤（Christmas / Pets / Muertos / Halloween）的整张 pad 位图（`PadImageSkin`：常态位图 +
   按下 / Loop 闪烁时淡入的亮态位图，`BoxFit.fill`，缺色退回 pink；未注入时保持 token 绘制）、
   私有素材包的 6 个内置 Kit（`privateKits`，首次启动导入，见 §8.1）。
 
-## 7. 设计取舍（截图 / IPA 参考设计 / APK 旧版参考冲突时的决定）
+## 7. 设计取舍（截图 / 参考设计 / 旧版参考冲突时的决定）
 
 | 方面 | 决定 | 依据 / 原因 |
 |---|---|---|
-| 第一基准 | **IPA 参考设计（FairyGUI 数据）+ 商店截图**；APK 只补充 | 主代理通知；IPA 与截图一致 |
+| 第一基准 | **参考设计（FairyGUI 数据）+ 商店截图**；旧版参考只补充 | 主代理通知；参考设计与截图一致 |
 | Pad 外观 | 程序化绘制（token 渐变 + 白色/浅色覆盖层 + 光晕），不用参考设计的 72px 位图 | 位图是 9 宫格小图，程序化能跟随皮肤 token 与 lerp；16 套预设由 token 代理转成 semantic 覆盖 |
 | 默认皮肤 | `neon`（截图的霓虹径向渐变 + 光晕）；参考设计 `Default` 等 16 套作为预设可选 | 用户要求以截图为准 |
 | Pad 动效 | 按下 1 帧变亮（`pad.pressAttack` 17 ms），松开 0.1 s QuadOut；Loop 白色闪烁 0.6 s yoyo + 图标 1.2 s 一圈 | 参考设计 Transition |
-| Lottie | 保留 `SegmentedLottie`（按下播 0→0.5、松开 0.5→1），仅在设置「经典 Pad 动画」+ 注入了 APK 素材时使用 | IPA 没有 Lottie；APK 的效果作为可选旧版皮肤 |
+| Lottie | 保留 `SegmentedLottie`（按下播 0→0.5、松开 0.5→1），仅在设置「经典 Pad 动画」+ 注入了 Android 格式素材时使用 | 参考设计没有 Lottie；旧版参考的效果作为可选旧版皮肤 |
 | Fragment Shader | 霓虹 bloom / 按下波纹 / Loop 描边呼吸作为光效增强（低端机和测试回退 BoxShadow） | 用户要求光效；参考设计没有 shader |
 | ⋮ 菜单 | 整行横移展开（录音 / 皮肤 / 编辑 / 分享 / 返回），不是弹出菜单；设置入口在顶栏右上角 | 参考设计 `navMoreButtons`；v0.2.0 用户要求 |
 | 功能行 / 顶栏 | 参考设计的 LEARN TO PLAY 与视频教程按钮移除，改为音色组切换条与设置入口；顶栏只显示歌名 | v0.2.0 用户要求 |
@@ -209,7 +209,7 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 pad 主体的渐变在 `full` 档由 `DitheredGradient`（`shaders/dither_gradient.frag`，±1/255 三角噪声）绘制：
 Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径向渐变 8 bit 量化后会出现同心淡环；
 `lite` 档与测试仍用普通渐变。
-设置「动画 Pad」关闭时 Lottie 不播放（APK `preferences_animate`）。
+设置「动画 Pad」关闭时 Lottie 不播放（旧版参考 `preferences_animate`）。
 
 ## 10. 测试
 

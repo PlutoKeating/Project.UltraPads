@@ -33,7 +33,7 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.grey.300`
   static const Color grey300 = Color(0xFFB9C0C6);
 
-  /// APK coolgrey (secondary text)
+  /// Old ref coolgrey (secondary text)
   ///
   /// Token: `color.grey.400`
   static const Color grey400 = Color(0xFF939BA3);
@@ -51,7 +51,7 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.grey.700`
   static const Color grey700 = Color(0xFF3C4145);
 
-  /// APK charcoal_grey / item_kit
+  /// Old ref charcoal_grey / item_kit
   ///
   /// Token: `color.grey.800`
   static const Color grey800 = Color(0xFF2C3336);
@@ -61,17 +61,17 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.grey.820`
   static const Color grey820 = Color(0xFF262D31);
 
-  /// APK charcoal (tab pages)
+  /// Old ref charcoal (tab pages)
   ///
   /// Token: `color.grey.840`
   static const Color grey840 = Color(0xFF242B2E);
 
-  /// APK app_color / black (pads page)
+  /// Old ref app_color / black (pads page)
   ///
   /// Token: `color.grey.850`
   static const Color grey850 = Color(0xFF242B2D);
 
-  /// APK primary / dark_grey (window, toolbar)
+  /// Old ref primary / dark_grey (window, toolbar)
   ///
   /// Token: `color.grey.900`
   static const Color grey900 = Color(0xFF202629);
@@ -81,37 +81,37 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.grey.920`
   static const Color grey920 = Color(0xFF1E1E1F);
 
-  /// APK pad border_black
+  /// Old ref pad border_black
   ///
   /// Token: `color.grey.930`
   static const Color grey930 = Color(0xFF1B1D1D);
 
-  /// APK A/B button background
+  /// Old ref A/B button background
   ///
   /// Token: `color.grey.940`
   static const Color grey940 = Color(0xFF191E20);
 
-  /// APK dark_grey_two / search_color
+  /// Old ref dark_grey_two / search_color
   ///
   /// Token: `color.grey.950`
   static const Color grey950 = Color(0xFF181B1C);
 
-  /// APK empty pad gradient start
+  /// Old ref empty pad gradient start
   ///
   /// Token: `color.grey.960`
   static const Color grey960 = Color(0xFF171B1C);
 
-  /// APK empty pad gradient mid
+  /// Old ref empty pad gradient mid
   ///
   /// Token: `color.grey.975`
   static const Color grey975 = Color(0xFF111314);
 
-  /// APK empty pad gradient end
+  /// Old ref empty pad gradient end
   ///
   /// Token: `color.grey.1000`
   static const Color grey1000 = Color(0xFF0B0D0D);
 
-  /// APK kit_background
+  /// Old ref kit_background
   ///
   /// Token: `color.alpha.white.4`
   static const Color alphaWhite4 = Color(0x0AFFFFFF);
@@ -119,7 +119,7 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.alpha.white.8`
   static const Color alphaWhite8 = Color(0x14FFFFFF);
 
-  /// IPA dividers / tab bar top line (img_white α0.1)
+  /// Ref dividers / tab bar top line (img_white α0.1)
   ///
   /// Token: `color.alpha.white.10`
   static const Color alphaWhite10 = Color(0x1AFFFFFF);
@@ -127,27 +127,27 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.alpha.white.12`
   static const Color alphaWhite12 = Color(0x1FFFFFFF);
 
-  /// APK white_20 (empty pad)
+  /// Old ref white_20 (empty pad)
   ///
   /// Token: `color.alpha.white.20`
   static const Color alphaWhite20 = Color(0x33FFFFFF);
 
-  /// APK white_30
+  /// Old ref white_30
   ///
   /// Token: `color.alpha.white.30`
   static const Color alphaWhite30 = Color(0x4CFFFFFF);
 
-  /// APK white_40 (pads container)
+  /// Old ref white_40 (pads container)
   ///
   /// Token: `color.alpha.white.40`
   static const Color alphaWhite40 = Color(0x66FFFFFF);
 
-  /// APK white_50
+  /// Old ref white_50
   ///
   /// Token: `color.alpha.white.50`
   static const Color alphaWhite50 = Color(0x7FFFFFFF);
 
-  /// IPA INSPIRED BY text α0.6
+  /// Ref INSPIRED BY text α0.6
   ///
   /// Token: `color.alpha.white.60`
   static const Color alphaWhite60 = Color(0x99FFFFFF);
@@ -155,7 +155,7 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.alpha.white.70`
   static const Color alphaWhite70 = Color(0xB3FFFFFF);
 
-  /// APK pad press flash peak
+  /// Old ref pad press flash peak
   ///
   /// Token: `color.alpha.white.75`
   static const Color alphaWhite75 = Color(0xBFFFFFFF);
@@ -169,62 +169,62 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.alpha.black.12`
   static const Color alphaBlack12 = Color(0x1F000000);
 
-  /// APK black_alpha_20 (skin panel dim)
+  /// Old ref black_alpha_20 (skin panel dim)
   ///
   /// Token: `color.alpha.black.20`
   static const Color alphaBlack20 = Color(0x33000000);
 
-  /// APK social media chip
+  /// Old ref social media chip
   ///
   /// Token: `color.alpha.black.25`
   static const Color alphaBlack25 = Color(0x40000000);
 
-  /// IPA kit editor separator / selection outside
+  /// Ref kit editor separator / selection outside
   ///
   /// Token: `color.alpha.black.40`
   static const Color alphaBlack40 = Color(0x66000000);
 
-  /// APK black_50
+  /// Old ref black_50
   ///
   /// Token: `color.alpha.black.50`
   static const Color alphaBlack50 = Color(0x80000000);
 
-  /// IPA nav bar shadow 60%
+  /// Ref nav bar shadow 60%
   ///
   /// Token: `color.alpha.black.60`
   static const Color alphaBlack60 = Color(0x99000000);
 
-  /// APK black_opacity (scrim)
+  /// Old ref black_opacity (scrim)
   ///
   /// Token: `color.alpha.black.63`
   static const Color alphaBlack63 = Color(0xA0000000);
 
-  /// APK background_download_kit
+  /// Old ref background_download_kit
   ///
   /// Token: `color.alpha.black.67`
   static const Color alphaBlack67 = Color(0xAC000000);
 
-  /// IPA tutorial / full-page dark overlay 70%
+  /// Ref tutorial / full-page dark overlay 70%
   ///
   /// Token: `color.alpha.black.70`
   static const Color alphaBlack70 = Color(0xB3000000);
 
-  /// IPA kit preview overlay 80%
+  /// Ref kit preview overlay 80%
   ///
   /// Token: `color.alpha.black.80`
   static const Color alphaBlack80 = Color(0xCC000000);
 
-  /// IPA secondary: skin panel divider, SAVE text, input focus (APK primary)
+  /// Ref secondary: skin panel divider, SAVE text, input focus (Old ref primary)
   ///
   /// Token: `color.brand.rose`
   static const Color brandRose = Color(0xFFF73873);
 
-  /// APK selected_kit / skin_price
+  /// Old ref selected_kit / skin_price
   ///
   /// Token: `color.brand.roseLight`
   static const Color brandRoseLight = Color(0xFFF93E78);
 
-  /// alias of brand.pink (APK red_pink_two)
+  /// alias of brand.pink (Old ref red_pink_two)
   ///
   /// Token: `color.brand.raspberry`
   static const Color brandRaspberry = Color(0xFFFD1A68);
@@ -234,7 +234,7 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.brand.raspberryDeep`
   static const Color brandRaspberryDeep = Color(0xFF8E1546);
 
-  /// APK electric_pink
+  /// Old ref electric_pink
   ///
   /// Token: `color.brand.electric`
   static const Color brandElectric = Color(0xFFFD1B99);
@@ -254,27 +254,27 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.brand.plum`
   static const Color brandPlum = Color(0xFF6E1470);
 
-  /// APK Kit colorBackground default rgb(248,69,62)
+  /// Old ref Kit colorBackground default rgb(248,69,62)
   ///
   /// Token: `color.brand.kitDefault`
   static const Color brandKitDefault = Color(0xFFF8453E);
 
-  /// IPA primary accent: SONGS button, tab underline, kit selection bar, progress
+  /// Ref primary accent: SONGS button, tab underline, kit selection bar, progress
   ///
   /// Token: `color.brand.pink`
   static const Color brandPink = Color(0xFFFD1A68);
 
-  /// IPA secondary: skin price, genre check
+  /// Ref secondary: skin price, genre check
   ///
   /// Token: `color.brand.rosePad`
   static const Color brandRosePad = Color(0xFFF73470);
 
-  /// IPA kit editor page background
+  /// Ref kit editor page background
   ///
   /// Token: `color.brand.create`
   static const Color brandCreate = Color(0xFFEE4286);
 
-  /// IPA rate dialog NO / CANCEL outline
+  /// Ref rate dialog NO / CANCEL outline
   ///
   /// Token: `color.brand.alert`
   static const Color brandAlert = Color(0xFFFD155F);
@@ -434,137 +434,137 @@ abstract final class UpPrimitiveColors {
   /// Token: `color.swatch.lavenderPink`
   static const Color swatchLavenderPink = Color(0xFFC86DD7);
 
-  /// IPA perform page, nav bars, skin panel, kit preview modal
+  /// Ref perform page, nav bars, skin panel, kit preview modal
   ///
   /// Token: `color.ui.bgPads`
   static const Color uiBgPads = Color(0xFF242B2E);
 
-  /// IPA library / search / save-kit pages, tab bar
+  /// Ref library / search / save-kit pages, tab bar
   ///
   /// Token: `color.ui.bgMenu`
   static const Color uiBgMenu = Color(0xFF262B2F);
 
-  /// IPA kit row, LOAD SOUND row, recording row
+  /// Ref kit row, LOAD SOUND row, recording row
   ///
   /// Token: `color.ui.cell`
   static const Color uiCell = Color(0xFF2C3336);
 
-  /// IPA kit row pressed
+  /// Ref kit row pressed
   ///
   /// Token: `color.ui.cellPressed`
   static const Color uiCellPressed = Color(0xFF252B2E);
 
-  /// IPA featured card placeholder
+  /// Ref featured card placeholder
   ///
   /// Token: `color.ui.placeholder`
   static const Color uiPlaceholder = Color(0xFF1E2225);
 
-  /// IPA social bar / feedback button
+  /// Ref social bar / feedback button
   ///
   /// Token: `color.ui.social`
   static const Color uiSocial = Color(0xFF1A1D20);
 
-  /// IPA watch-video unlock button / action sheet
+  /// Ref watch-video unlock button / action sheet
   ///
   /// Token: `color.ui.modalButton`
   static const Color uiModalButton = Color(0xFF363F43);
 
-  /// IPA library ads banner area
+  /// Ref library ads banner area
   ///
   /// Token: `color.ui.adsArea`
   static const Color uiAdsArea = Color(0xFF15181A);
 
-  /// IPA featured pagination
+  /// Ref featured pagination
   ///
   /// Token: `color.ui.paginationDot`
   static const Color uiPaginationDot = Color(0xFF484C4F);
 
-  /// IPA speed button digits
+  /// Ref speed button digits
   ///
   /// Token: `color.ui.textDark`
   static const Color uiTextDark = Color(0xFF282828);
 
-  /// IPA library section titles
+  /// Ref library section titles
   ///
   /// Token: `color.ui.textSection`
   static const Color uiTextSection = Color(0xFF939BA3);
 
-  /// IPA download counter
+  /// Ref download counter
   ///
   /// Token: `color.ui.textMuted`
   static const Color uiTextMuted = Color(0xFF999999);
 
-  /// IPA rate dialog input / toggle
+  /// Ref rate dialog input / toggle
   ///
   /// Token: `color.ui.inputText`
   static const Color uiInputText = Color(0xFF666666);
 
-  /// IPA record button / timer
+  /// Ref record button / timer
   ///
   /// Token: `color.ui.recRed`
   static const Color uiRecRed = Color(0xFFFF0000);
 
-  /// IPA tutorial pad fill
+  /// Ref tutorial pad fill
   ///
   /// Token: `color.ui.tutorialFill`
   static const Color uiTutorialFill = Color(0xFF10CEF8);
 
-  /// IPA tutorial pad outline
+  /// Ref tutorial pad outline
   ///
   /// Token: `color.ui.tutorialOutline`
   static const Color uiTutorialOutline = Color(0xFFBD1555);
 
-  /// IPA tutorial loop icon
+  /// Ref tutorial loop icon
   ///
   /// Token: `color.ui.tutorialLoop`
   static const Color uiTutorialLoop = Color(0xFF02BCEB);
 
-  /// IPA PERFECT feedback circle
+  /// Ref PERFECT feedback circle
   ///
   /// Token: `color.ui.perfect`
   static const Color uiPerfect = Color(0xFF1CCB19);
 
-  /// IPA paywall background
+  /// Ref paywall background
   ///
   /// Token: `color.ui.premium`
   static const Color uiPremium = Color(0xFFFF156C);
 
-  /// IPA paywall top
+  /// Ref paywall top
   ///
   /// Token: `color.ui.premiumTop`
   static const Color uiPremiumTop = Color(0xFFFD1A86);
 
-  /// IPA offer badge
+  /// Ref offer badge
   ///
   /// Token: `color.ui.premiumBadge`
   static const Color uiPremiumBadge = Color(0xFFFBC800);
 
-  /// IPA paywall privacy band
+  /// Ref paywall privacy band
   ///
   /// Token: `color.ui.premiumCyan`
   static const Color uiPremiumCyan = Color(0xFF00CCFF);
 
-  /// IPA subscription banner slash
+  /// Ref subscription banner slash
   ///
   /// Token: `color.ui.signatureCyan`
   static const Color uiSignatureCyan = Color(0xFF00CBFE);
 
-  /// IPA subscription banner glow
+  /// Ref subscription banner glow
   ///
   /// Token: `color.ui.signatureMagenta`
   static const Color uiSignatureMagenta = Color(0xFFFD1AD8);
 
-  /// IPA kit thumbnail glow
+  /// Ref kit thumbnail glow
   ///
   /// Token: `color.ui.thumbCyan`
   static const Color uiThumbCyan = Color(0xFF52DAFF);
 
-  /// IPA kit thumbnail glow
+  /// Ref kit thumbnail glow
   ///
   /// Token: `color.ui.thumbMagenta`
   static const Color uiThumbMagenta = Color(0xFFFF52DD);
 
-  /// IPA Halloween live-ops modal
+  /// Ref Halloween live-ops modal
   ///
   /// Token: `color.ui.liveOps`
   static const Color uiLiveOps = Color(0xFF371D55);
@@ -850,7 +850,7 @@ abstract final class UpGradients {
     stops: <double>[0, 1],
   );
 
-  /// APK placeholder pad gradient.
+  /// Old ref placeholder pad gradient.
   ///
   /// Token: `gradient.emptyPad`
   static const UpGradient emptyPad = UpGradient(
@@ -870,7 +870,7 @@ abstract final class UpOpacities {
   /// Token: `opacity.subtle`
   static const double subtle = 0.12;
 
-  /// APK tutorial non-target pad alpha; skin panel dim
+  /// Old ref tutorial non-target pad alpha; skin panel dim
   ///
   /// Token: `opacity.dim`
   static const double dim = 0.2;
@@ -884,7 +884,7 @@ abstract final class UpOpacities {
   /// Token: `opacity.strong`
   static const double strong = 0.7;
 
-  /// IPA pad press / loop flash white overlay peak (orange 0.8, green/pink 0.7)
+  /// Ref pad press / loop flash white overlay peak (orange 0.8, green/pink 0.7)
   ///
   /// Token: `opacity.flash`
   static const double flash = 0.8;
@@ -892,17 +892,17 @@ abstract final class UpOpacities {
   /// Token: `opacity.full`
   static const double full = 1;
 
-  /// IPA green / pink press overlay peak
+  /// Ref green / pink press overlay peak
   ///
   /// Token: `opacity.flashSoft`
   static const double flashSoft = 0.7;
 
-  /// IPA INSPIRED BY
+  /// Ref INSPIRED BY
   ///
   /// Token: `opacity.secondary`
   static const double secondary = 0.6;
 
-  /// IPA empty pad dashed frame alpha
+  /// Ref empty pad dashed frame alpha
   ///
   /// Token: `opacity.emptyPad`
   static const double emptyPad = 0.2;
@@ -961,32 +961,32 @@ abstract final class UpBorderWidths {
   /// Token: `borderWidth.hairline`
   static const double hairline = 0.5;
 
-  /// APK pad border_black
+  /// Old ref pad border_black
   ///
   /// Token: `borderWidth.thin`
   static const double thin = 1;
 
-  /// APK selected pad 2dp; IPA skin panel divider 2px->1pt uses hairline
+  /// Old ref selected pad 2dp; Ref skin panel divider 2px->1pt uses hairline
   ///
   /// Token: `borderWidth.regular`
   static const double regular = 2;
 
-  /// APK kit selected indicator
+  /// Old ref kit selected indicator
   ///
   /// Token: `borderWidth.thick`
   static const double thick = 3;
 
-  /// APK selected swatch
+  /// Old ref selected swatch
   ///
   /// Token: `borderWidth.heavy`
   static const double heavy = 4;
 
-  /// IPA tab underline 3px
+  /// Ref tab underline 3px
   ///
   /// Token: `borderWidth.tab`
   static const double tab = 1.5;
 
-  /// IPA kit row selection bar 9px
+  /// Ref kit row selection bar 9px
   ///
   /// Token: `borderWidth.selection`
   static const double selection = 4.5;
@@ -997,72 +997,72 @@ abstract final class UpDurations {
   /// Token: `motion.duration.instant`
   static const Duration instant = Duration(milliseconds: 0);
 
-  /// IPA pad press: jump to lit state on the next frame (1/60 s)
+  /// Ref pad press: jump to lit state on the next frame (1/60 s)
   ///
   /// Token: `motion.duration.frame`
   static const Duration frame = Duration(milliseconds: 17);
 
-  /// IPA pad release (QuadOut), loading grid step, wrong-mark fade-in
+  /// Ref pad release (QuadOut), loading grid step, wrong-mark fade-in
   ///
   /// Token: `motion.duration.fast`
   static const Duration fast = Duration(milliseconds: 100);
 
-  /// APK bottom sheet slide (no IPA equivalent)
+  /// Old ref bottom sheet slide (no Ref equivalent)
   ///
   /// Token: `motion.duration.quick`
   static const Duration quick = Duration(milliseconds: 150);
 
-  /// IPA A/B page switch, text box / step label
+  /// Ref A/B page switch, text box / step label
   ///
   /// Token: `motion.duration.short`
   static const Duration short = Duration(milliseconds: 200);
 
-  /// IPA skip-tutorial button slide-in
+  /// Ref skip-tutorial button slide-in
   ///
   /// Token: `motion.duration.skipSlide`
   static const Duration skipSlide = Duration(milliseconds: 250);
 
-  /// IPA nav row collapse (Circ), list play/stop cross-scale, PERFECT rise
+  /// Ref nav row collapse (Circ), list play/stop cross-scale, PERFECT rise
   ///
   /// Token: `motion.duration.medium`
   static const Duration medium = Duration(milliseconds: 300);
 
-  /// IPA skin panel in/out, input label float
+  /// Ref skin panel in/out, input label float
   ///
   /// Token: `motion.duration.slow`
   static const Duration slow = Duration(milliseconds: 400);
 
-  /// IPA speed picker in, import OPEN KIT button
+  /// Ref speed picker in, import OPEN KIT button
   ///
   /// Token: `motion.duration.modalIn`
   static const Duration modalIn = Duration(milliseconds: 500);
 
-  /// IPA loop flash one way (yoyo); record button pulse
+  /// Ref loop flash one way (yoyo); record button pulse
   ///
   /// Token: `motion.duration.loopHalf`
   static const Duration loopHalf = Duration(milliseconds: 600);
 
-  /// IPA SONGS button glow segment
+  /// Ref SONGS button glow segment
   ///
   /// Token: `motion.duration.breathe`
   static const Duration breathe = Duration(milliseconds: 783);
 
-  /// IPA wrong-pad cross fade-out
+  /// Ref wrong-pad cross fade-out
   ///
   /// Token: `motion.duration.wrongOut`
   static const Duration wrongOut = Duration(milliseconds: 900);
 
-  /// IPA speed picker out, record ripple, tutorial pad fill, first-open hand
+  /// Ref speed picker out, record ripple, tutorial pad fill, first-open hand
   ///
   /// Token: `motion.duration.slower`
   static const Duration slower = Duration(milliseconds: 1000);
 
-  /// IPA loop flash period and loop icon revolution
+  /// Ref loop flash period and loop icon revolution
   ///
   /// Token: `motion.duration.loopCycle`
   static const Duration loopCycle = Duration(milliseconds: 1200);
 
-  /// IPA splash logo
+  /// Ref splash logo
   ///
   /// Token: `motion.duration.splash`
   static const Duration splash = Duration(milliseconds: 1200);
@@ -1072,22 +1072,22 @@ abstract final class UpDurations {
   /// Token: `motion.duration.toast`
   static const Duration toast = Duration(milliseconds: 2500);
 
-  /// UP featured carousel autoplay (not in IPA data)
+  /// UP featured carousel autoplay (not in Ref data)
   ///
   /// Token: `motion.duration.carousel`
   static const Duration carousel = Duration(milliseconds: 4000);
 
-  /// IPA Square skin layer step (0.05 s)
+  /// Ref Square skin layer step (0.05 s)
   ///
   /// Token: `motion.duration.xfast`
   static const Duration xfast = Duration(milliseconds: 50);
 
-  /// Press attack (IPA: next frame). Kept name for existing callers.
+  /// Press attack (Ref: next frame). Kept name for existing callers.
   ///
   /// Token: `motion.duration.padPressHalf`
   static const Duration padPressHalf = Duration(milliseconds: 17);
 
-  /// IPA press flash total: 1 frame attack + 0.1 s release
+  /// Ref press flash total: 1 frame attack + 0.1 s release
   ///
   /// Token: `motion.duration.padPress`
   static const Duration padPress = Duration(milliseconds: 117);
@@ -1095,37 +1095,37 @@ abstract final class UpDurations {
 
 /// Motion easing curves.
 abstract final class UpEasings {
-  /// IPA rotation / fill
+  /// Ref rotation / fill
   ///
   /// Token: `motion.easing.linear`
   static const Cubic linear = Cubic(0, 0, 1, 1);
 
-  /// IPA default ease (most transitions)
+  /// Ref default ease (most transitions)
   ///
   /// Token: `motion.easing.quadOut`
   static const Cubic quadOut = Cubic(0.25, 0.46, 0.45, 0.94);
 
-  /// IPA first-open hand
+  /// Ref first-open hand
   ///
   /// Token: `motion.easing.quadIn`
   static const Cubic quadIn = Cubic(0.55, 0.085, 0.68, 0.53);
 
-  /// IPA nav row return, record ripple
+  /// Ref nav row return, record ripple
   ///
   /// Token: `motion.easing.circOut`
   static const Cubic circOut = Cubic(0.075, 0.82, 0.165, 1);
 
-  /// IPA nav row collapse
+  /// Ref nav row collapse
   ///
   /// Token: `motion.easing.circIn`
   static const Cubic circIn = Cubic(0.6, 0.04, 0.98, 0.335);
 
-  /// APK AccelerateDecelerate (old)
+  /// Old ref AccelerateDecelerate (old)
   ///
   /// Token: `motion.easing.standard`
   static const Cubic standard = Cubic(0.42, 0, 0.58, 1);
 
-  /// APK Decelerate (old)
+  /// Old ref Decelerate (old)
   ///
   /// Token: `motion.easing.decelerate`
   static const Cubic decelerate = Cubic(0, 0, 0.2, 1);
@@ -1135,7 +1135,7 @@ abstract final class UpEasings {
   /// Token: `motion.easing.emphasized`
   static const Cubic emphasized = Cubic(0.2, 0, 0, 1);
 
-  /// UP/APK accelerate
+  /// UP/Old ref accelerate
   ///
   /// Token: `motion.easing.accelerate`
   static const Cubic accelerate = Cubic(0.4, 0, 1, 1);
@@ -1180,27 +1180,27 @@ abstract final class UpRadii {
   /// Token: `radius.xs`
   static const double xs = 2;
 
-  /// APK kit_shape
+  /// Old ref kit_shape
   ///
   /// Token: `radius.sm`
   static const double sm = 3;
 
-  /// APK pad xml / mini / edit / save buttons
+  /// Old ref pad xml / mini / edit / save buttons
   ///
   /// Token: `radius.md`
   static const double md = 4;
 
-  /// APK kit card / not-downloaded
+  /// Old ref kit card / not-downloaded
   ///
   /// Token: `radius.lg`
   static const double lg = 6;
 
-  /// APK save record / preview kit; IPA Default pad 9-slice corner ~ 13pt on 128pt pad
+  /// Old ref save record / preview kit; Ref Default pad 9-slice corner ~ 13pt on 128pt pad
   ///
   /// Token: `radius.xl`
   static const double xl = 8;
 
-  /// APK social media
+  /// Old ref social media
   ///
   /// Token: `radius.xxl`
   static const double xxl = 12;
@@ -1214,12 +1214,12 @@ abstract final class UpRadii {
 
 /// Proportional ratios (value = side * ratio).
 abstract final class UpRatios {
-  /// IPA: 9-slice source 72px with ~26px corner -> ~10% of a 256px pad side (APK Lottie was 12%)
+  /// Ref: 9-slice source 72px with ~26px corner -> ~10% of a 256px pad side (Old ref Lottie was 12%)
   ///
   /// Token: `ratio.padRadius`
   static const double padRadius = 0.1;
 
-  /// APK pad number text = pad width * 0.12
+  /// Old ref pad number text = pad width * 0.12
   ///
   /// Token: `ratio.padNumberSize`
   static const double padNumberSize = 0.12;
@@ -1309,12 +1309,12 @@ abstract final class UpGlows {
 
 /// Size scale (logical px).
 abstract final class UpSizes {
-  /// IPA design canvas 828px
+  /// Ref design canvas 828px
   ///
   /// Token: `size.canvas.width`
   static const double canvasWidth = 414;
 
-  /// IPA design canvas 1472px
+  /// Ref design canvas 1472px
   ///
   /// Token: `size.canvas.height`
   static const double canvasHeight = 736;
@@ -1328,7 +1328,7 @@ abstract final class UpSizes {
   /// Token: `size.icon.md`
   static const double iconMd = 20;
 
-  /// IPA tab bar icon 47px
+  /// Ref tab bar icon 47px
   ///
   /// Token: `size.icon.lg`
   static const double iconLg = 23.5;
@@ -1342,107 +1342,107 @@ abstract final class UpSizes {
   /// Token: `size.touch.min`
   static const double touchMin = 44;
 
-  /// IPA function buttons 100px
+  /// Ref function buttons 100px
   ///
   /// Token: `size.touch.comfortable`
   static const double touchComfortable = 50;
 
-  /// IPA library / kit editor navigation bar 100px
+  /// Ref library / kit editor navigation bar 100px
   ///
   /// Token: `size.bar.nav`
   static const double barNav = 50;
 
-  /// IPA tab bar 100px
+  /// Ref tab bar 100px
   ///
   /// Token: `size.bar.tabbar`
   static const double barTabbar = 50;
 
-  /// IPA perform function button row 100px
+  /// Ref perform function button row 100px
   ///
   /// Token: `size.bar.functionRow`
   static const double barFunctionRow = 50;
 
-  /// IPA ads banner 103px
+  /// Ref ads banner 103px
   ///
   /// Token: `size.bar.banner`
   static const double barBanner = 51.5;
 
-  /// IPA perform bottom logo area 106px
+  /// Ref perform bottom logo area 106px
   ///
   /// Token: `size.bar.bottom`
   static const double barBottom = 53;
 
-  /// APK toolbar (old)
+  /// Old ref toolbar (old)
   ///
   /// Token: `size.bar.toolbar`
   static const double barToolbar = 56;
 
-  /// APK menu / tutorial bar (old)
+  /// Old ref menu / tutorial bar (old)
   ///
   /// Token: `size.bar.menu`
   static const double barMenu = 36;
 
-  /// APK seekbar thumb
+  /// Old ref seekbar thumb
   ///
   /// Token: `size.control.xs`
   static const double controlXs = 20;
 
-  /// IPA tutorial slider grip 50px
+  /// Ref tutorial slider grip 50px
   ///
   /// Token: `size.control.slider`
   static const double controlSlider = 25;
 
-  /// IPA colour dot 70px
+  /// Ref colour dot 70px
   ///
   /// Token: `size.control.swatch`
   static const double controlSwatch = 35;
 
-  /// IPA SONGS button height 63px
+  /// Ref SONGS button height 63px
   ///
   /// Token: `size.control.sm`
   static const double controlSm = 31.5;
 
-  /// IPA function button inner block 84px
+  /// Ref function button inner block 84px
   ///
   /// Token: `size.control.md`
   static const double controlMd = 42;
 
-  /// IPA nav close / search button 80px
+  /// Ref nav close / search button 80px
   ///
   /// Token: `size.control.mdBox`
   static const double controlMdBox = 40;
 
-  /// IPA generic btn 100px
+  /// Ref generic btn 100px
   ///
   /// Token: `size.control.lg`
   static const double controlLg = 50;
 
-  /// IPA modal buttons 124px
+  /// Ref modal buttons 124px
   ///
   /// Token: `size.control.xl`
   static const double controlXl = 62;
 
-  /// IPA kit / LOAD SOUND row 132px
+  /// Ref kit / LOAD SOUND row 132px
   ///
   /// Token: `size.control.row`
   static const double controlRow = 66;
 
-  /// IPA A/B button 129x126px
+  /// Ref A/B button 129x126px
   ///
   /// Token: `size.control.ab`
   static const double controlAb = 64.5;
 
-  /// IPA microphone record button 170px
+  /// Ref microphone record button 170px
   ///
   /// Token: `size.control.rec`
   static const double controlRec = 85;
 
-  /// IPA SONGS button 179px
+  /// Ref SONGS button 179px
   ///
   /// Token: `size.content.songsButtonWidth`
   static const double contentSongsButtonWidth = 89.5;
 
-  /// IPA YouTube button 142x88px
+  /// Ref YouTube button 142x88px
   ///
   /// Token: `size.content.youtubeWidth`
   static const double contentYoutubeWidth = 71;
@@ -1450,17 +1450,17 @@ abstract final class UpSizes {
   /// Token: `size.content.youtubeHeight`
   static const double contentYoutubeHeight = 44;
 
-  /// IPA LEARN TO PLAY button 420px
+  /// Ref LEARN TO PLAY button 420px
   ///
   /// Token: `size.content.tutorialButtonWidth`
   static const double contentTutorialButtonWidth = 210;
 
-  /// IPA more button 65px
+  /// Ref more button 65px
   ///
   /// Token: `size.content.moreButtonWidth`
   static const double contentMoreButtonWidth = 32.5;
 
-  /// IPA speed button 146x78px
+  /// Ref speed button 146x78px
   ///
   /// Token: `size.content.speedButtonWidth`
   static const double contentSpeedButtonWidth = 73;
@@ -1468,7 +1468,7 @@ abstract final class UpSizes {
   /// Token: `size.content.speedButtonHeight`
   static const double contentSpeedButtonHeight = 39;
 
-  /// IPA speed picker 226x280px
+  /// Ref speed picker 226x280px
   ///
   /// Token: `size.content.speedModalWidth`
   static const double contentSpeedModalWidth = 113;
@@ -1476,22 +1476,22 @@ abstract final class UpSizes {
   /// Token: `size.content.speedModalHeight`
   static const double contentSpeedModalHeight = 140;
 
-  /// IPA tutorial slider 511px
+  /// Ref tutorial slider 511px
   ///
   /// Token: `size.content.sliderWidth`
   static const double contentSliderWidth = 255.5;
 
-  /// IPA slider bar 10px
+  /// Ref slider bar 10px
   ///
   /// Token: `size.content.sliderHeight`
   static const double contentSliderHeight = 5;
 
-  /// IPA btn 500px
+  /// Ref btn 500px
   ///
   /// Token: `size.content.buttonWidth`
   static const double contentButtonWidth = 250;
 
-  /// IPA kit preview modal 675x924px
+  /// Ref kit preview modal 675x924px
   ///
   /// Token: `size.content.modalWidth`
   static const double contentModalWidth = 337.5;
@@ -1499,17 +1499,17 @@ abstract final class UpSizes {
   /// Token: `size.content.modalHeight`
   static const double contentModalHeight = 462;
 
-  /// IPA modal thumbnail 414px
+  /// Ref modal thumbnail 414px
   ///
   /// Token: `size.content.modalThumbHeight`
   static const double contentModalThumbHeight = 207;
 
-  /// IPA modal button 555px
+  /// Ref modal button 555px
   ///
   /// Token: `size.content.modalButtonWidth`
   static const double contentModalButtonWidth = 277.5;
 
-  /// IPA kit row thumbnail 147x109px
+  /// Ref kit row thumbnail 147x109px
   ///
   /// Token: `size.content.kitThumbWidth`
   static const double contentKitThumbWidth = 73.5;
@@ -1517,12 +1517,12 @@ abstract final class UpSizes {
   /// Token: `size.content.kitThumbHeight`
   static const double contentKitThumbHeight = 54.5;
 
-  /// IPA kit row text x 172px
+  /// Ref kit row text x 172px
   ///
   /// Token: `size.content.kitTextInset`
   static const double contentKitTextInset = 86;
 
-  /// IPA featured card 489x274px
+  /// Ref featured card 489x274px
   ///
   /// Token: `size.content.featuredWidth`
   static const double contentFeaturedWidth = 244.5;
@@ -1530,7 +1530,7 @@ abstract final class UpSizes {
   /// Token: `size.content.featuredHeight`
   static const double contentFeaturedHeight = 137;
 
-  /// IPA latest card 405x301px
+  /// Ref latest card 405x301px
   ///
   /// Token: `size.content.kitBigWidth`
   static const double contentKitBigWidth = 202.5;
@@ -1538,7 +1538,7 @@ abstract final class UpSizes {
   /// Token: `size.content.kitBigHeight`
   static const double contentKitBigHeight = 150.5;
 
-  /// IPA artist card 139x174px
+  /// Ref artist card 139x174px
   ///
   /// Token: `size.content.kitSmallWidth`
   static const double contentKitSmallWidth = 69.5;
@@ -1546,7 +1546,7 @@ abstract final class UpSizes {
   /// Token: `size.content.kitSmallHeight`
   static const double contentKitSmallHeight = 87;
 
-  /// IPA SEE ALL 336x67px
+  /// Ref SEE ALL 336x67px
   ///
   /// Token: `size.content.seeAllWidth`
   static const double contentSeeAllWidth = 168;
@@ -1554,37 +1554,37 @@ abstract final class UpSizes {
   /// Token: `size.content.seeAllHeight`
   static const double contentSeeAllHeight = 33.5;
 
-  /// IPA subscription banner 208px
+  /// Ref subscription banner 208px
   ///
   /// Token: `size.content.signatureHeight`
   static const double contentSignatureHeight = 104;
 
-  /// IPA skin panel 488px
+  /// Ref skin panel 488px
   ///
   /// Token: `size.content.skinPanelHeight`
   static const double contentSkinPanelHeight = 244;
 
-  /// IPA skin item 230px
+  /// Ref skin item 230px
   ///
   /// Token: `size.content.skinItem`
   static const double contentSkinItem = 115;
 
-  /// IPA skin thumbnail 150px
+  /// Ref skin thumbnail 150px
   ///
   /// Token: `size.content.skinThumb`
   static const double contentSkinThumb = 75;
 
-  /// IPA kit editor mini pad 90px
+  /// Ref kit editor mini pad 90px
   ///
   /// Token: `size.content.miniPad`
   static const double contentMiniPad = 45;
 
-  /// IPA mini pad gap 8px
+  /// Ref mini pad gap 8px
   ///
   /// Token: `size.content.miniPadGap`
   static const double contentMiniPadGap = 4;
 
-  /// IPA mini pad panel 330x429px
+  /// Ref mini pad panel 330x429px
   ///
   /// Token: `size.content.miniPanelWidth`
   static const double contentMiniPanelWidth = 165;
@@ -1592,12 +1592,12 @@ abstract final class UpSizes {
   /// Token: `size.content.miniPanelHeight`
   static const double contentMiniPanelHeight = 214.5;
 
-  /// IPA edit pad panel 750x533px
+  /// Ref edit pad panel 750x533px
   ///
   /// Token: `size.content.editPadWidth`
   static const double contentEditPadWidth = 375;
 
-  /// IPA trim waveform 781x222px
+  /// Ref trim waveform 781x222px
   ///
   /// Token: `size.content.waveformWidth`
   static const double contentWaveformWidth = 390.5;
@@ -1605,7 +1605,7 @@ abstract final class UpSizes {
   /// Token: `size.content.waveformHeight`
   static const double contentWaveformHeight = 111;
 
-  /// IPA search 750x72px
+  /// Ref search 750x72px
   ///
   /// Token: `size.content.searchFieldWidth`
   static const double contentSearchFieldWidth = 375;
@@ -1613,7 +1613,7 @@ abstract final class UpSizes {
   /// Token: `size.content.searchFieldHeight`
   static const double contentSearchFieldHeight = 36;
 
-  /// IPA save-kit input 667x121px
+  /// Ref save-kit input 667x121px
   ///
   /// Token: `size.content.inputWidth`
   static const double contentInputWidth = 333.5;
@@ -1621,7 +1621,7 @@ abstract final class UpSizes {
   /// Token: `size.content.inputHeight`
   static const double contentInputHeight = 60.5;
 
-  /// IPA first-open bubble 421x265px
+  /// Ref first-open bubble 421x265px
   ///
   /// Token: `size.content.bubbleWidth`
   static const double contentBubbleWidth = 210.5;
@@ -1629,12 +1629,12 @@ abstract final class UpSizes {
   /// Token: `size.content.bubbleHeight`
   static const double contentBubbleHeight = 132.5;
 
-  /// IPA tab selected circle 63px
+  /// Ref tab selected circle 63px
   ///
   /// Token: `size.content.tabSelectedCircle`
   static const double contentTabSelectedCircle = 31.5;
 
-  /// IPA profile sub tab 231x62px
+  /// Ref profile sub tab 231x62px
   ///
   /// Token: `size.content.subTabWidth`
   static const double contentSubTabWidth = 115.5;
@@ -1642,7 +1642,7 @@ abstract final class UpSizes {
   /// Token: `size.content.subTabHeight`
   static const double contentSubTabHeight = 31;
 
-  /// IPA rate dialog 606x873px
+  /// Ref rate dialog 606x873px
   ///
   /// Token: `size.content.dialogWidth`
   static const double contentDialogWidth = 303;
@@ -1658,12 +1658,12 @@ abstract final class UpSpacing {
   /// Token: `spacing.none`
   static const double none = 0;
 
-  /// APK pad cell margin
+  /// Old ref pad cell margin
   ///
   /// Token: `spacing.hair`
   static const double hair = 1;
 
-  /// IPA gap between pads (4px)
+  /// Ref gap between pads (4px)
   ///
   /// Token: `spacing.xxs`
   static const double xxs = 2;
@@ -1677,7 +1677,7 @@ abstract final class UpSpacing {
   /// Token: `spacing.md`
   static const double md = 8;
 
-  /// APK pads page margin; IPA top bar x (20px)
+  /// Old ref pads page margin; Ref top bar x (20px)
   ///
   /// Token: `spacing.lg`
   static const double lg = 10;
@@ -1685,7 +1685,7 @@ abstract final class UpSpacing {
   /// Token: `spacing.xl`
   static const double xl = 12;
 
-  /// APK fab_margin / text_margin
+  /// Old ref fab_margin / text_margin
   ///
   /// Token: `spacing.xxl`
   static const double xxl = 16;
@@ -1702,12 +1702,12 @@ abstract final class UpSpacing {
   /// Token: `spacing.massive`
   static const double massive = 48;
 
-  /// IPA pad area side margin (9px)
+  /// Ref pad area side margin (9px)
   ///
   /// Token: `spacing.edge`
   static const double edge = 4.5;
 
-  /// IPA kit row thumbnail inset (11px)
+  /// Ref kit row thumbnail inset (11px)
   ///
   /// Token: `spacing.kitRowInset`
   static const double kitRowInset = 5.5;
@@ -1715,32 +1715,32 @@ abstract final class UpSpacing {
 
 /// Font family stacks: [private family, open fallback].
 abstract final class UpFontFamilies {
-  /// IPA OpenSans-Regular (alias Uni Sans / UniSansRegular)
+  /// Ref OpenSans-Regular (alias Uni Sans / UniSansRegular)
   ///
   /// Token: `font.family.regular`
   static const List<String> regular = <String>['Open Sans'];
 
-  /// IPA OpenSans-ExtraBold (alias UniSansHeavy)
+  /// Ref OpenSans-ExtraBold (alias UniSansHeavy)
   ///
   /// Token: `font.family.heavy`
   static const List<String> heavy = <String>['Open Sans'];
 
-  /// IPA OpenSans-Light (alias UniSansThin)
+  /// Ref OpenSans-Light (alias UniSansThin)
   ///
   /// Token: `font.family.light`
   static const List<String> light = <String>['Open Sans'];
 
-  /// Optional private skin font (APK)
+  /// Optional private skin font (Old ref)
   ///
   /// Token: `font.family.uniSansRegular`
   static const List<String> uniSansRegular = <String>['Uni Sans'];
 
-  /// Optional private skin font (APK)
+  /// Optional private skin font (Old ref)
   ///
   /// Token: `font.family.uniSansHeavy`
   static const List<String> uniSansHeavy = <String>['Uni Sans Heavy'];
 
-  /// Optional private skin font (APK)
+  /// Optional private skin font (Old ref)
   ///
   /// Token: `font.family.uniSansThin`
   static const List<String> uniSansThin = <String>['Uni Sans Thin'];
@@ -1767,67 +1767,67 @@ abstract final class UpFontSizes {
   /// Token: `font.size.xxxs`
   static const double xxxs = 10;
 
-  /// IPA INSPIRED BY 23px
+  /// Ref INSPIRED BY 23px
   ///
   /// Token: `font.size.xxs`
   static const double xxs = 11.5;
 
-  /// IPA SONGS button / small buttons 25px
+  /// Ref SONGS button / small buttons 25px
   ///
   /// Token: `font.size.xs`
   static const double xs = 12.5;
 
-  /// IPA buttons 28px
+  /// Ref buttons 28px
   ///
   /// Token: `font.size.sm`
   static const double sm = 14;
 
-  /// IPA KIT + name 29px
+  /// Ref KIT + name 29px
   ///
   /// Token: `font.size.md`
   static const double md = 14.5;
 
-  /// IPA first-open bubble 30px
+  /// Ref first-open bubble 30px
   ///
   /// Token: `font.size.lg`
   static const double lg = 15;
 
-  /// IPA LOAD SOUND title 32px
+  /// Ref LOAD SOUND title 32px
   ///
   /// Token: `font.size.xl`
   static const double xl = 16;
 
-  /// IPA library section title 34px
+  /// Ref library section title 34px
   ///
   /// Token: `font.size.xxl`
   static const double xxl = 17;
 
-  /// IPA kit row title 35px
+  /// Ref kit row title 35px
   ///
   /// Token: `font.size.xxxl`
   static const double xxxl = 17.5;
 
-  /// IPA page title 36px
+  /// Ref page title 36px
   ///
   /// Token: `font.size.page`
   static const double page = 18;
 
-  /// IPA speed digits 38px
+  /// Ref speed digits 38px
   ///
   /// Token: `font.size.speed`
   static const double speed = 19;
 
-  /// IPA edit pad numeric values 48px
+  /// Ref edit pad numeric values 48px
   ///
   /// Token: `font.size.value`
   static const double value = 24;
 
-  /// IPA A/B letter 60px; paywall title 60px
+  /// Ref A/B letter 60px; paywall title 60px
   ///
   /// Token: `font.size.bank`
   static const double bank = 30;
 
-  /// IPA rate dialog title 70px
+  /// Ref rate dialog title 70px
   ///
   /// Token: `font.size.display`
   static const double display = 35;
@@ -1841,7 +1841,7 @@ abstract final class UpLetterSpacings {
   /// Token: `font.letterSpacing.none`
   static const double none = 0;
 
-  /// All-caps labels (IPA: no extra tracking)
+  /// All-caps labels (Ref: no extra tracking)
   ///
   /// Token: `font.letterSpacing.caps`
   static const double caps = 0;
@@ -1869,7 +1869,7 @@ abstract final class UpLineHeights {
 
 /// Text role specs. Build a TextStyle via `UpTheme.of(context).text`.
 abstract final class UpTextRoles {
-  /// IPA walkthrough / paywall title
+  /// Ref walkthrough / paywall title
   ///
   /// Token: `typography.hero`
   static const UpTextRoleSpec hero = UpTextRoleSpec(
@@ -1881,7 +1881,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA rate dialog title
+  /// Ref rate dialog title
   ///
   /// Token: `typography.display`
   static const UpTextRoleSpec display = UpTextRoleSpec(
@@ -1893,7 +1893,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.none,
   );
 
-  /// IPA page title (KITS)
+  /// Ref page title (KITS)
   ///
   /// Token: `typography.headline`
   static const UpTextRoleSpec headline = UpTextRoleSpec(
@@ -1905,7 +1905,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA kit row song title
+  /// Ref kit row song title
   ///
   /// Token: `typography.title`
   static const UpTextRoleSpec title = UpTextRoleSpec(
@@ -1917,7 +1917,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA top bar kit name
+  /// Ref top bar kit name
   ///
   /// Token: `typography.titleSm`
   static const UpTextRoleSpec titleSm = UpTextRoleSpec(
@@ -1929,7 +1929,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA library section title (use text.section colour)
+  /// Ref library section title (use text.section colour)
   ///
   /// Token: `typography.section`
   static const UpTextRoleSpec section = UpTextRoleSpec(
@@ -1941,7 +1941,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA LOAD SOUND / EDIT PAD header
+  /// Ref LOAD SOUND / EDIT PAD header
   ///
   /// Token: `typography.sheetTitle`
   static const UpTextRoleSpec sheetTitle = UpTextRoleSpec(
@@ -1963,7 +1963,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA SONGS button
+  /// Ref SONGS button
   ///
   /// Token: `typography.labelSm`
   static const UpTextRoleSpec labelSm = UpTextRoleSpec(
@@ -1985,7 +1985,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA INSPIRED BY (colour text.secondary = white 60%)
+  /// Ref INSPIRED BY (colour text.secondary = white 60%)
   ///
   /// Token: `typography.inspired`
   static const UpTextRoleSpec inspired = UpTextRoleSpec(
@@ -2027,7 +2027,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.none,
   );
 
-  /// IPA buttons 25-28px
+  /// Ref buttons 25-28px
   ///
   /// Token: `typography.button`
   static const UpTextRoleSpec button = UpTextRoleSpec(
@@ -2049,7 +2049,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA first-open guide bubble (black on white)
+  /// Ref first-open guide bubble (black on white)
   ///
   /// Token: `typography.bubble`
   static const UpTextRoleSpec bubble = UpTextRoleSpec(
@@ -2061,7 +2061,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA A/B letter
+  /// Ref A/B letter
   ///
   /// Token: `typography.padBank`
   static const UpTextRoleSpec padBank = UpTextRoleSpec(
@@ -2085,7 +2085,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.upper,
   );
 
-  /// IPA speed 1.0 (colour transport.speedText)
+  /// Ref speed 1.0 (colour transport.speedText)
   ///
   /// Token: `typography.numeric`
   static const UpTextRoleSpec numeric = UpTextRoleSpec(
@@ -2097,7 +2097,7 @@ abstract final class UpTextRoles {
     textCase: UpTextCase.none,
   );
 
-  /// IPA edit pad VOLUME / PITCH / GROUP values
+  /// Ref edit pad VOLUME / PITCH / GROUP values
   ///
   /// Token: `typography.value`
   static const UpTextRoleSpec value = UpTextRoleSpec(
@@ -2113,37 +2113,37 @@ abstract final class UpTextRoles {
 /// Typography roles (DTCG `typography.*`). Resolve a TextStyle with
 /// `UpTheme.of(context).text[UpTextRole.title]`.
 enum UpTextRole {
-  /// IPA walkthrough / paywall title
+  /// Ref walkthrough / paywall title
   ///
   /// Token: `typography.hero`
   hero(UpTextRoles.hero),
 
-  /// IPA rate dialog title
+  /// Ref rate dialog title
   ///
   /// Token: `typography.display`
   display(UpTextRoles.display),
 
-  /// IPA page title (KITS)
+  /// Ref page title (KITS)
   ///
   /// Token: `typography.headline`
   headline(UpTextRoles.headline),
 
-  /// IPA kit row song title
+  /// Ref kit row song title
   ///
   /// Token: `typography.title`
   title(UpTextRoles.title),
 
-  /// IPA top bar kit name
+  /// Ref top bar kit name
   ///
   /// Token: `typography.titleSm`
   titleSm(UpTextRoles.titleSm),
 
-  /// IPA library section title (use text.section colour)
+  /// Ref library section title (use text.section colour)
   ///
   /// Token: `typography.section`
   section(UpTextRoles.section),
 
-  /// IPA LOAD SOUND / EDIT PAD header
+  /// Ref LOAD SOUND / EDIT PAD header
   ///
   /// Token: `typography.sheetTitle`
   sheetTitle(UpTextRoles.sheetTitle),
@@ -2151,7 +2151,7 @@ enum UpTextRole {
   /// Token: `typography.label`
   label(UpTextRoles.label),
 
-  /// IPA SONGS button
+  /// Ref SONGS button
   ///
   /// Token: `typography.labelSm`
   labelSm(UpTextRoles.labelSm),
@@ -2159,7 +2159,7 @@ enum UpTextRole {
   /// Token: `typography.overline`
   overline(UpTextRoles.overline),
 
-  /// IPA INSPIRED BY (colour text.secondary = white 60%)
+  /// Ref INSPIRED BY (colour text.secondary = white 60%)
   ///
   /// Token: `typography.inspired`
   inspired(UpTextRoles.inspired),
@@ -2173,7 +2173,7 @@ enum UpTextRole {
   /// Token: `typography.caption`
   caption(UpTextRoles.caption),
 
-  /// IPA buttons 25-28px
+  /// Ref buttons 25-28px
   ///
   /// Token: `typography.button`
   button(UpTextRoles.button),
@@ -2181,12 +2181,12 @@ enum UpTextRole {
   /// Token: `typography.tab`
   tab(UpTextRoles.tab),
 
-  /// IPA first-open guide bubble (black on white)
+  /// Ref first-open guide bubble (black on white)
   ///
   /// Token: `typography.bubble`
   bubble(UpTextRoles.bubble),
 
-  /// IPA A/B letter
+  /// Ref A/B letter
   ///
   /// Token: `typography.padBank`
   padBank(UpTextRoles.padBank),
@@ -2196,12 +2196,12 @@ enum UpTextRole {
   /// Token: `typography.padNumber`
   padNumber(UpTextRoles.padNumber),
 
-  /// IPA speed 1.0 (colour transport.speedText)
+  /// Ref speed 1.0 (colour transport.speedText)
   ///
   /// Token: `typography.numeric`
   numeric(UpTextRoles.numeric),
 
-  /// IPA edit pad VOLUME / PITCH / GROUP values
+  /// Ref edit pad VOLUME / PITCH / GROUP values
   ///
   /// Token: `typography.value`
   value(UpTextRoles.value);

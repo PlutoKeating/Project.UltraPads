@@ -1,5 +1,5 @@
 {
-  "$description": "Primitive colour palette. Raw values only; UI code reads semantic tokens. Sources, in priority order: IPA = reference design data (UI layout packages / skin bitmaps); APK = older reference build (colors.xml / Lottie); SHOT = store screenshots; UP = UltraPads design extension.",
+  "$description": "Primitive colour palette. Raw values only; UI code reads semantic tokens. Sources, in priority order: Ref = reference design data (UI layout packages / skin bitmaps); Old ref = older reference build (colors.xml / Lottie); SHOT = store screenshots; UP = UltraPads design extension.",
   "color": {
     "$type": "color",
     "base": {
@@ -14,30 +14,30 @@
       }
     },
     "grey": {
-      "$description": "Dark neutral ramp. 950..700 from APK colors.xml, 50..300 for the light theme.",
+      "$description": "Dark neutral ramp. 950..700 from Old ref colors.xml, 50..300 for the light theme.",
       "1000": {
         "$value": "#0B0D0D",
-        "$description": "APK empty pad gradient end"
+        "$description": "Old ref empty pad gradient end"
       },
       "975": {
         "$value": "#111314",
-        "$description": "APK empty pad gradient mid"
+        "$description": "Old ref empty pad gradient mid"
       },
       "960": {
         "$value": "#171B1C",
-        "$description": "APK empty pad gradient start"
+        "$description": "Old ref empty pad gradient start"
       },
       "950": {
         "$value": "#181B1C",
-        "$description": "APK dark_grey_two / search_color"
+        "$description": "Old ref dark_grey_two / search_color"
       },
       "940": {
         "$value": "#191E20",
-        "$description": "APK A/B button background"
+        "$description": "Old ref A/B button background"
       },
       "930": {
         "$value": "#1B1D1D",
-        "$description": "APK pad border_black"
+        "$description": "Old ref pad border_black"
       },
       "920": {
         "$value": "#1E1E1F",
@@ -45,15 +45,15 @@
       },
       "900": {
         "$value": "#202629",
-        "$description": "APK primary / dark_grey (window, toolbar)"
+        "$description": "Old ref primary / dark_grey (window, toolbar)"
       },
       "850": {
         "$value": "#242B2D",
-        "$description": "APK app_color / black (pads page)"
+        "$description": "Old ref app_color / black (pads page)"
       },
       "840": {
         "$value": "#242B2E",
-        "$description": "APK charcoal (tab pages)"
+        "$description": "Old ref charcoal (tab pages)"
       },
       "820": {
         "$value": "#262D31",
@@ -61,7 +61,7 @@
       },
       "800": {
         "$value": "#2C3336",
-        "$description": "APK charcoal_grey / item_kit"
+        "$description": "Old ref charcoal_grey / item_kit"
       },
       "700": {
         "$value": "#3C4145",
@@ -76,7 +76,7 @@
       },
       "400": {
         "$value": "#939BA3",
-        "$description": "APK coolgrey (secondary text)"
+        "$description": "Old ref coolgrey (secondary text)"
       },
       "300": {
         "$value": "#B9C0C6"
@@ -95,7 +95,7 @@
       "white": {
         "4": {
           "$value": "#FFFFFF0A",
-          "$description": "APK kit_background"
+          "$description": "Old ref kit_background"
         },
         "8": {
           "$value": "#FFFFFF14"
@@ -105,37 +105,37 @@
         },
         "20": {
           "$value": "#FFFFFF33",
-          "$description": "APK white_20 (empty pad)"
+          "$description": "Old ref white_20 (empty pad)"
         },
         "30": {
           "$value": "#FFFFFF4C",
-          "$description": "APK white_30"
+          "$description": "Old ref white_30"
         },
         "40": {
           "$value": "#FFFFFF66",
-          "$description": "APK white_40 (pads container)"
+          "$description": "Old ref white_40 (pads container)"
         },
         "50": {
           "$value": "#FFFFFF7F",
-          "$description": "APK white_50"
+          "$description": "Old ref white_50"
         },
         "70": {
           "$value": "#FFFFFFB3"
         },
         "75": {
           "$value": "#FFFFFFBF",
-          "$description": "APK pad press flash peak"
+          "$description": "Old ref pad press flash peak"
         },
         "90": {
           "$value": "#FFFFFFE6"
         },
         "10": {
           "$value": "#FFFFFF1A",
-          "$description": "IPA dividers / tab bar top line (img_white α0.1)"
+          "$description": "Ref dividers / tab bar top line (img_white α0.1)"
         },
         "60": {
           "$value": "#FFFFFF99",
-          "$description": "IPA INSPIRED BY text α0.6"
+          "$description": "Ref INSPIRED BY text α0.6"
         }
       },
       "black": {
@@ -147,54 +147,54 @@
         },
         "20": {
           "$value": "#00000033",
-          "$description": "APK black_alpha_20 (skin panel dim)"
+          "$description": "Old ref black_alpha_20 (skin panel dim)"
         },
         "25": {
           "$value": "#00000040",
-          "$description": "APK social media chip"
+          "$description": "Old ref social media chip"
         },
         "50": {
           "$value": "#00000080",
-          "$description": "APK black_50"
+          "$description": "Old ref black_50"
         },
         "63": {
           "$value": "#000000A0",
-          "$description": "APK black_opacity (scrim)"
+          "$description": "Old ref black_opacity (scrim)"
         },
         "67": {
           "$value": "#000000AC",
-          "$description": "APK background_download_kit"
+          "$description": "Old ref background_download_kit"
         },
         "40": {
           "$value": "#00000066",
-          "$description": "IPA kit editor separator / selection outside"
+          "$description": "Ref kit editor separator / selection outside"
         },
         "60": {
           "$value": "#00000099",
-          "$description": "IPA nav bar shadow 60%"
+          "$description": "Ref nav bar shadow 60%"
         },
         "70": {
           "$value": "#000000B3",
-          "$description": "IPA tutorial / full-page dark overlay 70%"
+          "$description": "Ref tutorial / full-page dark overlay 70%"
         },
         "80": {
           "$value": "#000000CC",
-          "$description": "IPA kit preview overlay 80%"
+          "$description": "Ref kit preview overlay 80%"
         }
       }
     },
     "brand": {
       "rose": {
         "$value": "#F73873",
-        "$description": "IPA secondary: skin panel divider, SAVE text, input focus (APK primary)"
+        "$description": "Ref secondary: skin panel divider, SAVE text, input focus (Old ref primary)"
       },
       "roseLight": {
         "$value": "#F93E78",
-        "$description": "APK selected_kit / skin_price"
+        "$description": "Old ref selected_kit / skin_price"
       },
       "raspberry": {
         "$value": "#FD1A68",
-        "$description": "alias of brand.pink (APK red_pink_two)"
+        "$description": "alias of brand.pink (Old ref red_pink_two)"
       },
       "raspberryDeep": {
         "$value": "#8E1546",
@@ -202,7 +202,7 @@
       },
       "electric": {
         "$value": "#FD1B99",
-        "$description": "APK electric_pink"
+        "$description": "Old ref electric_pink"
       },
       "magenta": {
         "$value": "#D2066D",
@@ -218,27 +218,27 @@
       },
       "kitDefault": {
         "$value": "#F8453E",
-        "$description": "APK Kit colorBackground default rgb(248,69,62)"
+        "$description": "Old ref Kit colorBackground default rgb(248,69,62)"
       },
       "pink": {
         "$value": "#FD1A68",
-        "$description": "IPA primary accent: SONGS button, tab underline, kit selection bar, progress"
+        "$description": "Ref primary accent: SONGS button, tab underline, kit selection bar, progress"
       },
       "rosePad": {
         "$value": "#F73470",
-        "$description": "IPA secondary: skin price, genre check"
+        "$description": "Ref secondary: skin price, genre check"
       },
       "create": {
         "$value": "#EE4286",
-        "$description": "IPA kit editor page background"
+        "$description": "Ref kit editor page background"
       },
       "alert": {
         "$value": "#FD155F",
-        "$description": "IPA rate dialog NO / CANCEL outline"
+        "$description": "Ref rate dialog NO / CANCEL outline"
       }
     },
     "classic": {
-      "$description": "APK NORMAL-skin Lottie pad gradients (stops 0 / 0.5 / 1).",
+      "$description": "Old ref NORMAL-skin Lottie pad gradients (stops 0 / 0.5 / 1).",
       "blue": {
         "300": {
           "$value": "#54E0FF"
@@ -388,7 +388,7 @@
       }
     },
     "swatch": {
-      "$description": "APK kit editor colour picker (8 dots).",
+      "$description": "Old ref kit editor colour picker (8 dots).",
       "aquaMarine": {
         "$value": "#50E3C2"
       },
@@ -427,118 +427,118 @@
       }
     },
     "ui": {
-      "$description": "IPA UI surfaces and literals.",
+      "$description": "Ref UI surfaces and literals.",
       "bgPads": {
         "$value": "#242B2E",
-        "$description": "IPA perform page, nav bars, skin panel, kit preview modal"
+        "$description": "Ref perform page, nav bars, skin panel, kit preview modal"
       },
       "bgMenu": {
         "$value": "#262B2F",
-        "$description": "IPA library / search / save-kit pages, tab bar"
+        "$description": "Ref library / search / save-kit pages, tab bar"
       },
       "cell": {
         "$value": "#2C3336",
-        "$description": "IPA kit row, LOAD SOUND row, recording row"
+        "$description": "Ref kit row, LOAD SOUND row, recording row"
       },
       "cellPressed": {
         "$value": "#252B2E",
-        "$description": "IPA kit row pressed"
+        "$description": "Ref kit row pressed"
       },
       "placeholder": {
         "$value": "#1E2225",
-        "$description": "IPA featured card placeholder"
+        "$description": "Ref featured card placeholder"
       },
       "social": {
         "$value": "#1A1D20",
-        "$description": "IPA social bar / feedback button"
+        "$description": "Ref social bar / feedback button"
       },
       "modalButton": {
         "$value": "#363F43",
-        "$description": "IPA watch-video unlock button / action sheet"
+        "$description": "Ref watch-video unlock button / action sheet"
       },
       "adsArea": {
         "$value": "#15181A",
-        "$description": "IPA library ads banner area"
+        "$description": "Ref library ads banner area"
       },
       "paginationDot": {
         "$value": "#484C4F",
-        "$description": "IPA featured pagination"
+        "$description": "Ref featured pagination"
       },
       "textDark": {
         "$value": "#282828",
-        "$description": "IPA speed button digits"
+        "$description": "Ref speed button digits"
       },
       "textSection": {
         "$value": "#939BA3",
-        "$description": "IPA library section titles"
+        "$description": "Ref library section titles"
       },
       "textMuted": {
         "$value": "#999999",
-        "$description": "IPA download counter"
+        "$description": "Ref download counter"
       },
       "inputText": {
         "$value": "#666666",
-        "$description": "IPA rate dialog input / toggle"
+        "$description": "Ref rate dialog input / toggle"
       },
       "recRed": {
         "$value": "#FF0000",
-        "$description": "IPA record button / timer"
+        "$description": "Ref record button / timer"
       },
       "tutorialFill": {
         "$value": "#10CEF8",
-        "$description": "IPA tutorial pad fill"
+        "$description": "Ref tutorial pad fill"
       },
       "tutorialOutline": {
         "$value": "#BD1555",
-        "$description": "IPA tutorial pad outline"
+        "$description": "Ref tutorial pad outline"
       },
       "tutorialLoop": {
         "$value": "#02BCEB",
-        "$description": "IPA tutorial loop icon"
+        "$description": "Ref tutorial loop icon"
       },
       "perfect": {
         "$value": "#1CCB19",
-        "$description": "IPA PERFECT feedback circle"
+        "$description": "Ref PERFECT feedback circle"
       },
       "premium": {
         "$value": "#FF156C",
-        "$description": "IPA paywall background"
+        "$description": "Ref paywall background"
       },
       "premiumTop": {
         "$value": "#FD1A86",
-        "$description": "IPA paywall top"
+        "$description": "Ref paywall top"
       },
       "premiumBadge": {
         "$value": "#FBC800",
-        "$description": "IPA offer badge"
+        "$description": "Ref offer badge"
       },
       "premiumCyan": {
         "$value": "#00CCFF",
-        "$description": "IPA paywall privacy band"
+        "$description": "Ref paywall privacy band"
       },
       "signatureCyan": {
         "$value": "#00CBFE",
-        "$description": "IPA subscription banner slash"
+        "$description": "Ref subscription banner slash"
       },
       "signatureMagenta": {
         "$value": "#FD1AD8",
-        "$description": "IPA subscription banner glow"
+        "$description": "Ref subscription banner glow"
       },
       "thumbCyan": {
         "$value": "#52DAFF",
-        "$description": "IPA kit thumbnail glow"
+        "$description": "Ref kit thumbnail glow"
       },
       "thumbMagenta": {
         "$value": "#FF52DD",
-        "$description": "IPA kit thumbnail glow"
+        "$description": "Ref kit thumbnail glow"
       },
       "liveOps": {
         "$value": "#371D55",
-        "$description": "IPA Halloween live-ops modal"
+        "$description": "Ref Halloween live-ops modal"
       }
     },
     "pad": {
-      "$description": "IPA pad colours. base = skin tint value; highlight = Default bitmap top highlight; edge = Default bitmap rim; pressed = pale tint used by tint-swap skins (Crazy/Circle/LGBT).",
+      "$description": "Ref pad colours. base = skin tint value; highlight = Default bitmap top highlight; edge = Default bitmap rim; pressed = pale tint used by tint-swap skins (Crazy/Circle/LGBT).",
       "blue": {
         "base": {
           "$value": "#00CBF7"
@@ -603,7 +603,7 @@
       }
     },
     "skin": {
-      "$description": "IPA per-skin pad colours (skin tints + bitmap samples).",
+      "$description": "Ref per-skin pad colours (skin tints + bitmap samples).",
       "circle": {
         "blue": {
           "$value": "#04C9E2"

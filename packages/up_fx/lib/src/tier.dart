@@ -27,7 +27,7 @@ class FxScope extends InheritedWidget {
   /// 强制分级；null 表示自动检测（[detectTier]）。
   final FxTier? tier;
 
-  /// 设置页「动画 Pad」开关（APK `preferences_animate`）。
+  /// 设置页「动画 Pad」开关（旧版参考 `preferences_animate`）。
   final bool animatePads;
 
   static FxScope? maybeOf(BuildContext context) =>

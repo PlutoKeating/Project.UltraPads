@@ -279,12 +279,12 @@ class UpSemantic {
   /// Token: `transport.progressTrack`
   final Color transportProgressTrack;
 
-  /// IPA progress bar
+  /// Ref progress bar
   ///
   /// Token: `transport.progressFill`
   final Color transportProgressFill;
 
-  /// IPA slider grip
+  /// Ref slider grip
   ///
   /// Token: `transport.thumb`
   final Color transportThumb;
@@ -292,12 +292,12 @@ class UpSemantic {
   /// Token: `transport.speedBackground`
   final Color transportSpeedBackground;
 
-  /// IPA speed digits #282828
+  /// Ref speed digits #282828
   ///
   /// Token: `transport.speedText`
   final Color transportSpeedText;
 
-  /// IPA tutorial button block
+  /// Ref tutorial button block
   ///
   /// Token: `chip.background`
   final Color chipBackground;
@@ -308,7 +308,7 @@ class UpSemantic {
   /// Token: `chip.iconBox`
   final Color chipIconBox;
 
-  /// IPA SONGS button
+  /// Ref SONGS button
   ///
   /// Token: `chip.selectedBackground`
   final Color chipSelectedBackground;
@@ -321,7 +321,7 @@ class UpSemantic {
   /// Token: `chip.selectedIconBox`
   final Color chipSelectedIconBox;
 
-  /// APK A/B tutorial hint inverts to white
+  /// Old ref A/B tutorial hint inverts to white
   ///
   /// Token: `chip.hintBackground`
   final Color chipHintBackground;
@@ -329,12 +329,12 @@ class UpSemantic {
   /// Token: `chip.hintForeground`
   final Color chipHintForeground;
 
-  /// IPA kit row
+  /// Ref kit row
   ///
   /// Token: `card.background`
   final Color cardBackground;
 
-  /// IPA kit row pressed
+  /// Ref kit row pressed
   ///
   /// Token: `card.backgroundSelected`
   final Color cardBackgroundSelected;
@@ -345,7 +345,7 @@ class UpSemantic {
   /// Token: `card.title`
   final Color cardTitle;
 
-  /// IPA INSPIRED BY
+  /// Ref INSPIRED BY
   ///
   /// Token: `card.subtitle`
   final Color cardSubtitle;
@@ -353,17 +353,17 @@ class UpSemantic {
   /// Token: `card.overline`
   final Color cardOverline;
 
-  /// IPA kit row selection bar
+  /// Ref kit row selection bar
   ///
   /// Token: `card.selectedIndicator`
   final Color cardSelectedIndicator;
 
-  /// IPA featured placeholder
+  /// Ref featured placeholder
   ///
   /// Token: `card.placeholder`
   final Color cardPlaceholder;
 
-  /// IPA download counter
+  /// Ref download counter
   ///
   /// Token: `card.counter`
   final Color cardCounter;
@@ -371,7 +371,7 @@ class UpSemantic {
   /// Token: `banner.scrim`
   final UpGradient bannerScrim;
 
-  /// IPA pagination dot
+  /// Ref pagination dot
   ///
   /// Token: `banner.indicator`
   final Color bannerIndicator;
@@ -379,7 +379,7 @@ class UpSemantic {
   /// Token: `banner.indicatorActive`
   final Color bannerIndicatorActive;
 
-  /// IPA skin panel
+  /// Ref skin panel
   ///
   /// Token: `sheet.background`
   final Color sheetBackground;
@@ -399,7 +399,7 @@ class UpSemantic {
   /// Token: `sheet.itemIconBox`
   final Color sheetItemIconBox;
 
-  /// IPA skin panel title divider #F73873
+  /// Ref skin panel title divider #F73873
   ///
   /// Token: `sheet.underline`
   final Color sheetUnderline;
@@ -413,7 +413,7 @@ class UpSemantic {
   /// Token: `list.separator`
   final Color listSeparator;
 
-  /// IPA notification dot
+  /// Ref notification dot
   ///
   /// Token: `badge.background`
   final Color badgeBackground;
@@ -439,7 +439,7 @@ class UpSemantic {
   /// Token: `button.primaryPressed`
   final Color buttonPrimaryPressed;
 
-  /// IPA unlock / action sheet button
+  /// Ref unlock / action sheet button
   ///
   /// Token: `button.secondaryBackground`
   final Color buttonSecondaryBackground;
@@ -462,17 +462,17 @@ class UpSemantic {
   /// Token: `button.disabledForeground`
   final Color buttonDisabledForeground;
 
-  /// IPA NO / CANCEL outline
+  /// Ref NO / CANCEL outline
   ///
   /// Token: `button.alertBorder`
   final Color buttonAlertBorder;
 
-  /// IPA SAVE bar / pill buttons
+  /// Ref SAVE bar / pill buttons
   ///
   /// Token: `button.whiteBackground`
   final Color buttonWhiteBackground;
 
-  /// IPA SAVE text #F73873
+  /// Ref SAVE text #F73873
   ///
   /// Token: `button.whiteForeground`
   final Color buttonWhiteForeground;
@@ -489,12 +489,12 @@ class UpSemantic {
   /// Token: `input.cursor`
   final Color inputCursor;
 
-  /// IPA search field outline α0.5
+  /// Ref search field outline α0.5
   ///
   /// Token: `input.border`
   final Color inputBorder;
 
-  /// IPA label/underline focus #F73873
+  /// Ref label/underline focus #F73873
   ///
   /// Token: `input.focus`
   final Color inputFocus;
@@ -505,22 +505,22 @@ class UpSemantic {
   /// Token: `slider.fill`
   final Color sliderFill;
 
-  /// IPA grip
+  /// Ref grip
   ///
   /// Token: `slider.thumb`
   final Color sliderThumb;
 
-  /// IPA kit preview modal
+  /// Ref kit preview modal
   ///
   /// Token: `dialog.background`
   final Color dialogBackground;
 
-  /// IPA kit preview overlay
+  /// Ref kit preview overlay
   ///
   /// Token: `dialog.scrim`
   final Color dialogScrim;
 
-  /// IPA rate dialog
+  /// Ref rate dialog
   ///
   /// Token: `dialog.light`
   final Color dialogLight;
@@ -558,7 +558,7 @@ class UpSemantic {
   /// Token: `waveform.inactive`
   final Color waveformInactive;
 
-  /// IPA area outside trim selection
+  /// Ref area outside trim selection
   ///
   /// Token: `waveform.selection`
   final Color waveformSelection;
@@ -584,12 +584,12 @@ class UpSemantic {
   /// Token: `genre.ring`
   final Color genreRing;
 
-  /// IPA genre check
+  /// Ref genre check
   ///
   /// Token: `genre.check`
   final Color genreCheck;
 
-  /// IPA tab selected circle
+  /// Ref tab selected circle
   ///
   /// Token: `genre.tabSelected`
   final Color genreTabSelected;
@@ -726,7 +726,7 @@ class UpSemantic {
   /// Token: `pad.palette.7.pressed`
   final Color padPalette7Pressed;
 
-  /// Corner radius = pad short side * ratio (IPA ~10%; Circle skin 0.5)
+  /// Corner radius = pad short side * ratio (Ref ~10%; Circle skin 0.5)
   ///
   /// Token: `pad.shape.radiusRatio`
   final double padShapeRadiusRatio;
@@ -734,12 +734,12 @@ class UpSemantic {
   /// Token: `pad.fill.radial`
   final double padFillRadial;
 
-  /// 1 = draw the pad number (IPA Number skin)
+  /// 1 = draw the pad number (Ref Number skin)
   ///
   /// Token: `pad.showNumber`
   final double padShowNumber;
 
-  /// Default flash colour (IPA white overlay). Per-role colour: pad.palette.<i>.pressed.
+  /// Default flash colour (Ref white overlay). Per-role colour: pad.palette.<i>.pressed.
   ///
   /// Token: `pad.flash`
   final Color padFlash;
@@ -767,7 +767,7 @@ class UpSemantic {
   /// Token: `pad.pressed.fillOpacity`
   final double padPressedFillOpacity;
 
-  /// Peak alpha of the palette 'pressed' layer (IPA white overlay 0.8; tint-swap skins use 1)
+  /// Peak alpha of the palette 'pressed' layer (Ref white overlay 0.8; tint-swap skins use 1)
   ///
   /// Token: `pad.pressed.flashOpacity`
   final double padPressedFlashOpacity;
@@ -775,7 +775,7 @@ class UpSemantic {
   /// Token: `pad.pressed.glow`
   final double padPressedGlow;
 
-  /// IPA Default does not scale; Circle / Square skins 0.9
+  /// Ref Default does not scale; Circle / Square skins 0.9
   ///
   /// Token: `pad.pressed.scale`
   final double padPressedScale;
@@ -783,7 +783,7 @@ class UpSemantic {
   /// Token: `pad.playing.fillOpacity`
   final double padPlayingFillOpacity;
 
-  /// IPA loop flash peak (yoyo 0 <-> 0.8)
+  /// Ref loop flash peak (yoyo 0 <-> 0.8)
   ///
   /// Token: `pad.playing.flashOpacity`
   final double padPlayingFlashOpacity;
@@ -816,7 +816,7 @@ class UpSemantic {
   /// Token: `pad.loop.borderWidth`
   final double padLoopBorderWidth;
 
-  /// IPA loop glyph (white, α ~0.58 in Default bitmap)
+  /// Ref loop glyph (white, α ~0.58 in Default bitmap)
   ///
   /// Token: `pad.loop.icon`
   final Color padLoopIcon;
@@ -827,17 +827,17 @@ class UpSemantic {
   /// Token: `pad.empty.fill`
   final UpGradient padEmptyFill;
 
-  /// IPA dashed rounded frame
+  /// Ref dashed rounded frame
   ///
   /// Token: `pad.empty.border`
   final Color padEmptyBorder;
 
-  /// IPA empty pad frame alpha 0.2
+  /// Ref empty pad frame alpha 0.2
   ///
   /// Token: `pad.empty.opacity`
   final double padEmptyOpacity;
 
-  /// APK non-target pad alpha
+  /// Old ref non-target pad alpha
   ///
   /// Token: `pad.tutorial.dimOpacity`
   final double padTutorialDimOpacity;
@@ -845,7 +845,7 @@ class UpSemantic {
   /// Token: `pad.tutorial.highlight`
   final Color padTutorialHighlight;
 
-  /// IPA tutorial pad fill (fills bottom->top in 1 s)
+  /// Ref tutorial pad fill (fills bottom->top in 1 s)
   ///
   /// Token: `pad.tutorial.fill`
   final Color padTutorialFill;
@@ -856,42 +856,42 @@ class UpSemantic {
   /// Token: `pad.tutorial.loopIcon`
   final Color padTutorialLoopIcon;
 
-  /// IPA nav bars / window
+  /// Ref nav bars / window
   ///
   /// Token: `surface.app`
   final Color surfaceApp;
 
-  /// IPA perform page
+  /// Ref perform page
   ///
   /// Token: `surface.pads`
   final Color surfacePads;
 
-  /// IPA library / search / save-kit pages
+  /// Ref library / search / save-kit pages
   ///
   /// Token: `surface.page`
   final Color surfacePage;
 
-  /// IPA list rows
+  /// Ref list rows
   ///
   /// Token: `surface.raised`
   final Color surfaceRaised;
 
-  /// IPA secondary modal button / action sheet
+  /// Ref secondary modal button / action sheet
   ///
   /// Token: `surface.raisedHigh`
   final Color surfaceRaisedHigh;
 
-  /// IPA placeholders / wells
+  /// Ref placeholders / wells
   ///
   /// Token: `surface.sunken`
   final Color surfaceSunken;
 
-  /// IPA function button row
+  /// Ref function button row
   ///
   /// Token: `surface.toolbar`
   final Color surfaceToolbar;
 
-  /// IPA A/B button
+  /// Ref A/B button
   ///
   /// Token: `surface.bankButton`
   final Color surfaceBankButton;
@@ -899,12 +899,12 @@ class UpSemantic {
   /// Token: `surface.padContainer`
   final Color surfacePadContainer;
 
-  /// IPA tutorial / full-page overlay 70%
+  /// Ref tutorial / full-page overlay 70%
   ///
   /// Token: `surface.scrim`
   final Color surfaceScrim;
 
-  /// IPA info overlay 50%
+  /// Ref info overlay 50%
   ///
   /// Token: `surface.dim`
   final Color surfaceDim;
@@ -912,32 +912,32 @@ class UpSemantic {
   /// Token: `surface.overlayDownload`
   final Color surfaceOverlayDownload;
 
-  /// IPA kit preview overlay 80%
+  /// Ref kit preview overlay 80%
   ///
   /// Token: `surface.scrimStrong`
   final Color surfaceScrimStrong;
 
-  /// IPA kit editor page background
+  /// Ref kit editor page background
   ///
   /// Token: `surface.kitEditor`
   final Color surfaceKitEditor;
 
-  /// IPA social bar
+  /// Ref social bar
   ///
   /// Token: `surface.social`
   final Color surfaceSocial;
 
-  /// IPA tab bar
+  /// Ref tab bar
   ///
   /// Token: `surface.tabBar`
   final Color surfaceTabBar;
 
-  /// IPA nav bar shadow
+  /// Ref nav bar shadow
   ///
   /// Token: `surface.navShadow`
   final Color surfaceNavShadow;
 
-  /// IPA dividers (white 10%)
+  /// Ref dividers (white 10%)
   ///
   /// Token: `border.subtle`
   final Color borderSubtle;
@@ -948,7 +948,7 @@ class UpSemantic {
   /// Token: `border.strong`
   final Color borderStrong;
 
-  /// IPA tab bar top line / list separators
+  /// Ref tab bar top line / list separators
   ///
   /// Token: `border.divider`
   final Color borderDivider;
@@ -956,7 +956,7 @@ class UpSemantic {
   /// Token: `border.inverse`
   final Color borderInverse;
 
-  /// IPA kit editor separator
+  /// Ref kit editor separator
   ///
   /// Token: `border.dark`
   final Color borderDark;
@@ -964,12 +964,12 @@ class UpSemantic {
   /// Token: `text.primary`
   final Color textPrimary;
 
-  /// IPA INSPIRED BY α0.6
+  /// Ref INSPIRED BY α0.6
   ///
   /// Token: `text.secondary`
   final Color textSecondary;
 
-  /// IPA section titles
+  /// Ref section titles
   ///
   /// Token: `text.muted`
   final Color textMuted;
@@ -989,12 +989,12 @@ class UpSemantic {
   /// Token: `text.link`
   final Color textLink;
 
-  /// IPA library section titles
+  /// Ref library section titles
   ///
   /// Token: `text.section`
   final Color textSection;
 
-  /// IPA dark text on white buttons
+  /// Ref dark text on white buttons
   ///
   /// Token: `text.dark`
   final Color textDark;
@@ -1011,7 +1011,7 @@ class UpSemantic {
   /// Token: `icon.onAccent`
   final Color iconOnAccent;
 
-  /// IPA #FD1A68 main accent
+  /// Ref #FD1A68 main accent
   ///
   /// Token: `accent.primary`
   final Color accentPrimary;
@@ -1022,12 +1022,12 @@ class UpSemantic {
   /// Token: `accent.primaryMuted`
   final Color accentPrimaryMuted;
 
-  /// IPA genre check / skin price
+  /// Ref genre check / skin price
   ///
   /// Token: `accent.selected`
   final Color accentSelected;
 
-  /// IPA divider under skin panel title, SAVE text, input focus
+  /// Ref divider under skin panel title, SAVE text, input focus
   ///
   /// Token: `accent.secondary`
   final Color accentSecondary;
@@ -1035,17 +1035,17 @@ class UpSemantic {
   /// Token: `accent.preview`
   final Color accentPreview;
 
-  /// IPA NO / CANCEL outline
+  /// Ref NO / CANCEL outline
   ///
   /// Token: `accent.alert`
   final Color accentAlert;
 
-  /// IPA kit editor accent
+  /// Ref kit editor accent
   ///
   /// Token: `accent.create`
   final Color accentCreate;
 
-  /// IPA PERFECT feedback
+  /// Ref PERFECT feedback
   ///
   /// Token: `status.success`
   final Color statusSuccess;
@@ -1053,7 +1053,7 @@ class UpSemantic {
   /// Token: `status.warning`
   final Color statusWarning;
 
-  /// IPA wrong-pad cross
+  /// Ref wrong-pad cross
   ///
   /// Token: `status.danger`
   final Color statusDanger;
@@ -1061,7 +1061,7 @@ class UpSemantic {
   /// Token: `status.info`
   final Color statusInfo;
 
-  /// IPA record button / timer
+  /// Ref record button / timer
   ///
   /// Token: `status.recording`
   final Color statusRecording;
@@ -1075,17 +1075,17 @@ class UpSemantic {
   /// Token: `focus.ringWidth`
   final double focusRingWidth;
 
-  /// IPA PERFECT circle
+  /// Ref PERFECT circle
   ///
   /// Token: `feedback.perfect`
   final Color feedbackPerfect;
 
-  /// IPA wrong cross
+  /// Ref wrong cross
   ///
   /// Token: `feedback.wrong`
   final Color feedbackWrong;
 
-  /// IPA first-open bubble
+  /// Ref first-open bubble
   ///
   /// Token: `feedback.bubble`
   final Color feedbackBubble;
@@ -1195,12 +1195,12 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'transport.progressFill',
       UpSemanticType.color,
-      'IPA progress bar',
+      'Ref progress bar',
     ),
     UpSemanticTokenInfo(
       'transport.thumb',
       UpSemanticType.color,
-      'IPA slider grip',
+      'Ref slider grip',
     ),
     UpSemanticTokenInfo(
       'transport.speedBackground',
@@ -1210,19 +1210,19 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'transport.speedText',
       UpSemanticType.color,
-      'IPA speed digits #282828',
+      'Ref speed digits #282828',
     ),
     UpSemanticTokenInfo(
       'chip.background',
       UpSemanticType.color,
-      'IPA tutorial button block',
+      'Ref tutorial button block',
     ),
     UpSemanticTokenInfo('chip.foreground', UpSemanticType.color, null),
     UpSemanticTokenInfo('chip.iconBox', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'chip.selectedBackground',
       UpSemanticType.color,
-      'IPA SONGS button',
+      'Ref SONGS button',
     ),
     UpSemanticTokenInfo('chip.selectedForeground', UpSemanticType.color, null),
     UpSemanticTokenInfo(
@@ -1233,49 +1233,49 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'chip.hintBackground',
       UpSemanticType.color,
-      'APK A/B tutorial hint inverts to white',
+      'Old ref A/B tutorial hint inverts to white',
     ),
     UpSemanticTokenInfo('chip.hintForeground', UpSemanticType.color, null),
-    UpSemanticTokenInfo('card.background', UpSemanticType.color, 'IPA kit row'),
+    UpSemanticTokenInfo('card.background', UpSemanticType.color, 'Ref kit row'),
     UpSemanticTokenInfo(
       'card.backgroundSelected',
       UpSemanticType.color,
-      'IPA kit row pressed',
+      'Ref kit row pressed',
     ),
     UpSemanticTokenInfo('card.border', UpSemanticType.color, null),
     UpSemanticTokenInfo('card.title', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'card.subtitle',
       UpSemanticType.color,
-      'IPA INSPIRED BY',
+      'Ref INSPIRED BY',
     ),
     UpSemanticTokenInfo('card.overline', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'card.selectedIndicator',
       UpSemanticType.color,
-      'IPA kit row selection bar',
+      'Ref kit row selection bar',
     ),
     UpSemanticTokenInfo(
       'card.placeholder',
       UpSemanticType.color,
-      'IPA featured placeholder',
+      'Ref featured placeholder',
     ),
     UpSemanticTokenInfo(
       'card.counter',
       UpSemanticType.color,
-      'IPA download counter',
+      'Ref download counter',
     ),
     UpSemanticTokenInfo('banner.scrim', UpSemanticType.gradient, null),
     UpSemanticTokenInfo(
       'banner.indicator',
       UpSemanticType.color,
-      'IPA pagination dot',
+      'Ref pagination dot',
     ),
     UpSemanticTokenInfo('banner.indicatorActive', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'sheet.background',
       UpSemanticType.color,
-      'IPA skin panel',
+      'Ref skin panel',
     ),
     UpSemanticTokenInfo('sheet.header', UpSemanticType.color, null),
     UpSemanticTokenInfo('sheet.handle', UpSemanticType.color, null),
@@ -1285,7 +1285,7 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'sheet.underline',
       UpSemanticType.color,
-      'IPA skin panel title divider #F73873',
+      'Ref skin panel title divider #F73873',
     ),
     UpSemanticTokenInfo('list.item', UpSemanticType.color, null),
     UpSemanticTokenInfo('list.itemPressed', UpSemanticType.color, null),
@@ -1293,7 +1293,7 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'badge.background',
       UpSemanticType.color,
-      'IPA notification dot',
+      'Ref notification dot',
     ),
     UpSemanticTokenInfo('badge.foreground', UpSemanticType.color, null),
     UpSemanticTokenInfo('badge.new', UpSemanticType.color, null),
@@ -1305,7 +1305,7 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'button.secondaryBackground',
       UpSemanticType.color,
-      'IPA unlock / action sheet button',
+      'Ref unlock / action sheet button',
     ),
     UpSemanticTokenInfo(
       'button.secondaryForeground',
@@ -1328,17 +1328,17 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'button.alertBorder',
       UpSemanticType.color,
-      'IPA NO / CANCEL outline',
+      'Ref NO / CANCEL outline',
     ),
     UpSemanticTokenInfo(
       'button.whiteBackground',
       UpSemanticType.color,
-      'IPA SAVE bar / pill buttons',
+      'Ref SAVE bar / pill buttons',
     ),
     UpSemanticTokenInfo(
       'button.whiteForeground',
       UpSemanticType.color,
-      'IPA SAVE text #F73873',
+      'Ref SAVE text #F73873',
     ),
     UpSemanticTokenInfo('input.background', UpSemanticType.color, null),
     UpSemanticTokenInfo('input.foreground', UpSemanticType.color, null),
@@ -1347,30 +1347,30 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'input.border',
       UpSemanticType.color,
-      'IPA search field outline α0.5',
+      'Ref search field outline α0.5',
     ),
     UpSemanticTokenInfo(
       'input.focus',
       UpSemanticType.color,
-      'IPA label/underline focus #F73873',
+      'Ref label/underline focus #F73873',
     ),
     UpSemanticTokenInfo('slider.track', UpSemanticType.color, null),
     UpSemanticTokenInfo('slider.fill', UpSemanticType.color, null),
-    UpSemanticTokenInfo('slider.thumb', UpSemanticType.color, 'IPA grip'),
+    UpSemanticTokenInfo('slider.thumb', UpSemanticType.color, 'Ref grip'),
     UpSemanticTokenInfo(
       'dialog.background',
       UpSemanticType.color,
-      'IPA kit preview modal',
+      'Ref kit preview modal',
     ),
     UpSemanticTokenInfo(
       'dialog.scrim',
       UpSemanticType.color,
-      'IPA kit preview overlay',
+      'Ref kit preview overlay',
     ),
     UpSemanticTokenInfo(
       'dialog.light',
       UpSemanticType.color,
-      'IPA rate dialog',
+      'Ref rate dialog',
     ),
     UpSemanticTokenInfo('dialog.lightTitle', UpSemanticType.color, null),
     UpSemanticTokenInfo('dialog.lightText', UpSemanticType.color, null),
@@ -1386,7 +1386,7 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'waveform.selection',
       UpSemanticType.color,
-      'IPA area outside trim selection',
+      'Ref area outside trim selection',
     ),
     UpSemanticTokenInfo('waveform.marker', UpSemanticType.color, null),
     UpSemanticTokenInfo('progressRing.track', UpSemanticType.color, null),
@@ -1395,11 +1395,11 @@ class UpSemantic {
     UpSemanticTokenInfo('record.trackCard', UpSemanticType.color, null),
     UpSemanticTokenInfo('genre.label', UpSemanticType.color, null),
     UpSemanticTokenInfo('genre.ring', UpSemanticType.color, null),
-    UpSemanticTokenInfo('genre.check', UpSemanticType.color, 'IPA genre check'),
+    UpSemanticTokenInfo('genre.check', UpSemanticType.color, 'Ref genre check'),
     UpSemanticTokenInfo(
       'genre.tabSelected',
       UpSemanticType.color,
-      'IPA tab selected circle',
+      'Ref tab selected circle',
     ),
     UpSemanticTokenInfo('swatch.ring', UpSemanticType.color, null),
     UpSemanticTokenInfo('hub.online', UpSemanticType.color, null),
@@ -1448,18 +1448,18 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'pad.shape.radiusRatio',
       UpSemanticType.number,
-      'Corner radius = pad short side * ratio (IPA ~10%; Circle skin 0.5)',
+      'Corner radius = pad short side * ratio (Ref ~10%; Circle skin 0.5)',
     ),
     UpSemanticTokenInfo('pad.fill.radial', UpSemanticType.number, null),
     UpSemanticTokenInfo(
       'pad.showNumber',
       UpSemanticType.number,
-      '1 = draw the pad number (IPA Number skin)',
+      '1 = draw the pad number (Ref Number skin)',
     ),
     UpSemanticTokenInfo(
       'pad.flash',
       UpSemanticType.color,
-      'Default flash colour (IPA white overlay). Per-role colour: pad.palette.<i>.pressed.',
+      'Default flash colour (Ref white overlay). Per-role colour: pad.palette.<i>.pressed.',
     ),
     UpSemanticTokenInfo('pad.border', UpSemanticType.color, null),
     UpSemanticTokenInfo('pad.label', UpSemanticType.color, null),
@@ -1475,19 +1475,19 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'pad.pressed.flashOpacity',
       UpSemanticType.number,
-      'Peak alpha of the palette \'pressed\' layer (IPA white overlay 0.8; tint-swap skins use 1)',
+      'Peak alpha of the palette \'pressed\' layer (Ref white overlay 0.8; tint-swap skins use 1)',
     ),
     UpSemanticTokenInfo('pad.pressed.glow', UpSemanticType.number, null),
     UpSemanticTokenInfo(
       'pad.pressed.scale',
       UpSemanticType.number,
-      'IPA Default does not scale; Circle / Square skins 0.9',
+      'Ref Default does not scale; Circle / Square skins 0.9',
     ),
     UpSemanticTokenInfo('pad.playing.fillOpacity', UpSemanticType.number, null),
     UpSemanticTokenInfo(
       'pad.playing.flashOpacity',
       UpSemanticType.number,
-      'IPA loop flash peak (yoyo 0 <-> 0.8)',
+      'Ref loop flash peak (yoyo 0 <-> 0.8)',
     ),
     UpSemanticTokenInfo('pad.playing.glow', UpSemanticType.number, null),
     UpSemanticTokenInfo(
@@ -1516,134 +1516,134 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'pad.loop.icon',
       UpSemanticType.color,
-      'IPA loop glyph (white, α ~0.58 in Default bitmap)',
+      'Ref loop glyph (white, α ~0.58 in Default bitmap)',
     ),
     UpSemanticTokenInfo('pad.loop.iconOpacity', UpSemanticType.number, null),
     UpSemanticTokenInfo('pad.empty.fill', UpSemanticType.gradient, null),
     UpSemanticTokenInfo(
       'pad.empty.border',
       UpSemanticType.color,
-      'IPA dashed rounded frame',
+      'Ref dashed rounded frame',
     ),
     UpSemanticTokenInfo(
       'pad.empty.opacity',
       UpSemanticType.number,
-      'IPA empty pad frame alpha 0.2',
+      'Ref empty pad frame alpha 0.2',
     ),
     UpSemanticTokenInfo(
       'pad.tutorial.dimOpacity',
       UpSemanticType.number,
-      'APK non-target pad alpha',
+      'Old ref non-target pad alpha',
     ),
     UpSemanticTokenInfo('pad.tutorial.highlight', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'pad.tutorial.fill',
       UpSemanticType.color,
-      'IPA tutorial pad fill (fills bottom->top in 1 s)',
+      'Ref tutorial pad fill (fills bottom->top in 1 s)',
     ),
     UpSemanticTokenInfo('pad.tutorial.outline', UpSemanticType.color, null),
     UpSemanticTokenInfo('pad.tutorial.loopIcon', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'surface.app',
       UpSemanticType.color,
-      'IPA nav bars / window',
+      'Ref nav bars / window',
     ),
     UpSemanticTokenInfo(
       'surface.pads',
       UpSemanticType.color,
-      'IPA perform page',
+      'Ref perform page',
     ),
     UpSemanticTokenInfo(
       'surface.page',
       UpSemanticType.color,
-      'IPA library / search / save-kit pages',
+      'Ref library / search / save-kit pages',
     ),
     UpSemanticTokenInfo(
       'surface.raised',
       UpSemanticType.color,
-      'IPA list rows',
+      'Ref list rows',
     ),
     UpSemanticTokenInfo(
       'surface.raisedHigh',
       UpSemanticType.color,
-      'IPA secondary modal button / action sheet',
+      'Ref secondary modal button / action sheet',
     ),
     UpSemanticTokenInfo(
       'surface.sunken',
       UpSemanticType.color,
-      'IPA placeholders / wells',
+      'Ref placeholders / wells',
     ),
     UpSemanticTokenInfo(
       'surface.toolbar',
       UpSemanticType.color,
-      'IPA function button row',
+      'Ref function button row',
     ),
     UpSemanticTokenInfo(
       'surface.bankButton',
       UpSemanticType.color,
-      'IPA A/B button',
+      'Ref A/B button',
     ),
     UpSemanticTokenInfo('surface.padContainer', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'surface.scrim',
       UpSemanticType.color,
-      'IPA tutorial / full-page overlay 70%',
+      'Ref tutorial / full-page overlay 70%',
     ),
     UpSemanticTokenInfo(
       'surface.dim',
       UpSemanticType.color,
-      'IPA info overlay 50%',
+      'Ref info overlay 50%',
     ),
     UpSemanticTokenInfo('surface.overlayDownload', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'surface.scrimStrong',
       UpSemanticType.color,
-      'IPA kit preview overlay 80%',
+      'Ref kit preview overlay 80%',
     ),
     UpSemanticTokenInfo(
       'surface.kitEditor',
       UpSemanticType.color,
-      'IPA kit editor page background',
+      'Ref kit editor page background',
     ),
     UpSemanticTokenInfo(
       'surface.social',
       UpSemanticType.color,
-      'IPA social bar',
+      'Ref social bar',
     ),
-    UpSemanticTokenInfo('surface.tabBar', UpSemanticType.color, 'IPA tab bar'),
+    UpSemanticTokenInfo('surface.tabBar', UpSemanticType.color, 'Ref tab bar'),
     UpSemanticTokenInfo(
       'surface.navShadow',
       UpSemanticType.color,
-      'IPA nav bar shadow',
+      'Ref nav bar shadow',
     ),
     UpSemanticTokenInfo(
       'border.subtle',
       UpSemanticType.color,
-      'IPA dividers (white 10%)',
+      'Ref dividers (white 10%)',
     ),
     UpSemanticTokenInfo('border.default', UpSemanticType.color, null),
     UpSemanticTokenInfo('border.strong', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'border.divider',
       UpSemanticType.color,
-      'IPA tab bar top line / list separators',
+      'Ref tab bar top line / list separators',
     ),
     UpSemanticTokenInfo('border.inverse', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'border.dark',
       UpSemanticType.color,
-      'IPA kit editor separator',
+      'Ref kit editor separator',
     ),
     UpSemanticTokenInfo('text.primary', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'text.secondary',
       UpSemanticType.color,
-      'IPA INSPIRED BY α0.6',
+      'Ref INSPIRED BY α0.6',
     ),
     UpSemanticTokenInfo(
       'text.muted',
       UpSemanticType.color,
-      'IPA section titles',
+      'Ref section titles',
     ),
     UpSemanticTokenInfo('text.faint', UpSemanticType.color, null),
     UpSemanticTokenInfo('text.disabled', UpSemanticType.color, null),
@@ -1653,12 +1653,12 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'text.section',
       UpSemanticType.color,
-      'IPA library section titles',
+      'Ref library section titles',
     ),
     UpSemanticTokenInfo(
       'text.dark',
       UpSemanticType.color,
-      'IPA dark text on white buttons',
+      'Ref dark text on white buttons',
     ),
     UpSemanticTokenInfo('icon.primary', UpSemanticType.color, null),
     UpSemanticTokenInfo('icon.secondary', UpSemanticType.color, null),
@@ -1667,47 +1667,47 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'accent.primary',
       UpSemanticType.color,
-      'IPA #FD1A68 main accent',
+      'Ref #FD1A68 main accent',
     ),
     UpSemanticTokenInfo('accent.primaryPressed', UpSemanticType.color, null),
     UpSemanticTokenInfo('accent.primaryMuted', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'accent.selected',
       UpSemanticType.color,
-      'IPA genre check / skin price',
+      'Ref genre check / skin price',
     ),
     UpSemanticTokenInfo(
       'accent.secondary',
       UpSemanticType.color,
-      'IPA divider under skin panel title, SAVE text, input focus',
+      'Ref divider under skin panel title, SAVE text, input focus',
     ),
     UpSemanticTokenInfo('accent.preview', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'accent.alert',
       UpSemanticType.color,
-      'IPA NO / CANCEL outline',
+      'Ref NO / CANCEL outline',
     ),
     UpSemanticTokenInfo(
       'accent.create',
       UpSemanticType.color,
-      'IPA kit editor accent',
+      'Ref kit editor accent',
     ),
     UpSemanticTokenInfo(
       'status.success',
       UpSemanticType.color,
-      'IPA PERFECT feedback',
+      'Ref PERFECT feedback',
     ),
     UpSemanticTokenInfo('status.warning', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'status.danger',
       UpSemanticType.color,
-      'IPA wrong-pad cross',
+      'Ref wrong-pad cross',
     ),
     UpSemanticTokenInfo('status.info', UpSemanticType.color, null),
     UpSemanticTokenInfo(
       'status.recording',
       UpSemanticType.color,
-      'IPA record button / timer',
+      'Ref record button / timer',
     ),
     UpSemanticTokenInfo('brand.background', UpSemanticType.gradient, null),
     UpSemanticTokenInfo('focus.ring', UpSemanticType.color, null),
@@ -1715,17 +1715,17 @@ class UpSemantic {
     UpSemanticTokenInfo(
       'feedback.perfect',
       UpSemanticType.color,
-      'IPA PERFECT circle',
+      'Ref PERFECT circle',
     ),
     UpSemanticTokenInfo(
       'feedback.wrong',
       UpSemanticType.color,
-      'IPA wrong cross',
+      'Ref wrong cross',
     ),
     UpSemanticTokenInfo(
       'feedback.bubble',
       UpSemanticType.color,
-      'IPA first-open bubble',
+      'Ref first-open bubble',
     ),
     UpSemanticTokenInfo('feedback.bubbleText', UpSemanticType.color, null),
   ];

@@ -5,7 +5,7 @@ import 'package:up_tokens/up_tokens.dart';
 import '../util.dart';
 
 /// 录音按钮：点击开始 → 过渡动画（recTransition）→ 循环脉冲（recLoop），
-/// 与 APK `bt_rec_transition` / `bt_rec_animation` 时序一致。
+/// 与旧版参考 `bt_rec_transition` / `bt_rec_animation` 时序一致。
 /// 私有 Lottie 可用时由应用通过 [lottieTransition]/[lottieLoop] 传入。
 class RecordButton extends StatefulWidget {
   const RecordButton({

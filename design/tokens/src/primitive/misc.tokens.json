@@ -12,7 +12,7 @@
     },
     "dim": {
       "$value": 0.2,
-      "$description": "APK tutorial non-target pad alpha; skin panel dim"
+      "$description": "Old ref tutorial non-target pad alpha; skin panel dim"
     },
     "disabled": {
       "$value": 0.35
@@ -25,22 +25,22 @@
     },
     "flash": {
       "$value": 0.8,
-      "$description": "IPA pad press / loop flash white overlay peak (orange 0.8, green/pink 0.7)"
+      "$description": "Ref pad press / loop flash white overlay peak (orange 0.8, green/pink 0.7)"
     },
     "full": {
       "$value": 1
     },
     "flashSoft": {
       "$value": 0.7,
-      "$description": "IPA green / pink press overlay peak"
+      "$description": "Ref green / pink press overlay peak"
     },
     "secondary": {
       "$value": 0.6,
-      "$description": "IPA INSPIRED BY"
+      "$description": "Ref INSPIRED BY"
     },
     "emptyPad": {
       "$value": 0.2,
-      "$description": "IPA empty pad dashed frame alpha"
+      "$description": "Ref empty pad dashed frame alpha"
     }
   },
   "blur": {
@@ -122,42 +122,42 @@
         "value": 1,
         "unit": "px"
       },
-      "$description": "APK pad border_black"
+      "$description": "Old ref pad border_black"
     },
     "regular": {
       "$value": {
         "value": 2,
         "unit": "px"
       },
-      "$description": "APK selected pad 2dp; IPA skin panel divider 2px->1pt uses hairline"
+      "$description": "Old ref selected pad 2dp; Ref skin panel divider 2px->1pt uses hairline"
     },
     "thick": {
       "$value": {
         "value": 3,
         "unit": "px"
       },
-      "$description": "APK kit selected indicator"
+      "$description": "Old ref kit selected indicator"
     },
     "heavy": {
       "$value": {
         "value": 4,
         "unit": "px"
       },
-      "$description": "APK selected swatch"
+      "$description": "Old ref selected swatch"
     },
     "tab": {
       "$value": {
         "value": 1.5,
         "unit": "px"
       },
-      "$description": "IPA tab underline 3px"
+      "$description": "Ref tab underline 3px"
     },
     "selection": {
       "$value": {
         "value": 4.5,
         "unit": "px"
       },
-      "$description": "IPA kit row selection bar 9px"
+      "$description": "Ref kit row selection bar 9px"
     }
   }
 }

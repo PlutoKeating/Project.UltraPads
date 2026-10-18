@@ -4,7 +4,7 @@ import 'package:up_tokens/up_tokens.dart';
 
 void main() {
   group('generated tokens', () {
-    test('APK-calibrated values reach Dart', () {
+    test('calibrated values reach Dart', () {
       // Reference design values.
       final UpSemantic c = UpThemes.neon.colors;
       expect(c.surfacePads, const Color(0xFF242B2E));
@@ -199,7 +199,7 @@ void main() {
       }
     });
 
-    test('preset values come from the IPA analysis', () {
+    test('preset values come from the reference design', () {
       final UpSemantic circle = UpSkinPresets.byId('circle')!.toTheme().colors;
       expect(circle.padShapeRadiusRatio, 0.5);
       expect(circle.padPressedScale, 0.9);

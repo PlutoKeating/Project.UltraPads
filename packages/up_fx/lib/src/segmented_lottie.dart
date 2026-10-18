@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'motion.dart';
 import 'tier.dart';
 
-/// Pad 按下的分段 Lottie 播放器（与 APK `Pad.java` 一致）：
+/// Pad 按下的分段 Lottie 播放器（与旧版参考一致）：
 ///
 /// - 按下（[pressed] false→true）：从 0 播到 [split]；
 /// - 松手（true→false）：从 [split] 播到 1，结束后回到 0；
@@ -28,7 +28,7 @@ class SegmentedLottie extends StatefulWidget {
   final String asset;
   final String? package;
 
-  /// 分段点（APK：0.5）。来自 token。
+  /// 分段点（旧版参考：0.5）。来自 token。
   final double split;
   final bool pressed;
   final bool looping;

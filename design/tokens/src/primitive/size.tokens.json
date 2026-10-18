@@ -1,21 +1,21 @@
 {
   "size": {
     "$type": "dimension",
-    "$description": "Sizes (logical px). IPA = FairyGUI design px / 2 (canvas 828x1472 -> 414x736).",
+    "$description": "Sizes (logical px). Ref = FairyGUI design px / 2 (canvas 828x1472 -> 414x736).",
     "canvas": {
       "width": {
         "$value": {
           "value": 414,
           "unit": "px"
         },
-        "$description": "IPA design canvas 828px"
+        "$description": "Ref design canvas 828px"
       },
       "height": {
         "$value": {
           "value": 736,
           "unit": "px"
         },
-        "$description": "IPA design canvas 1472px"
+        "$description": "Ref design canvas 1472px"
       }
     },
     "icon": {
@@ -42,7 +42,7 @@
           "value": 23.5,
           "unit": "px"
         },
-        "$description": "IPA tab bar icon 47px"
+        "$description": "Ref tab bar icon 47px"
       },
       "xl": {
         "$value": {
@@ -69,7 +69,7 @@
           "value": 50,
           "unit": "px"
         },
-        "$description": "IPA function buttons 100px"
+        "$description": "Ref function buttons 100px"
       }
     },
     "bar": {
@@ -78,49 +78,49 @@
           "value": 50,
           "unit": "px"
         },
-        "$description": "IPA library / kit editor navigation bar 100px"
+        "$description": "Ref library / kit editor navigation bar 100px"
       },
       "tabbar": {
         "$value": {
           "value": 50,
           "unit": "px"
         },
-        "$description": "IPA tab bar 100px"
+        "$description": "Ref tab bar 100px"
       },
       "functionRow": {
         "$value": {
           "value": 50,
           "unit": "px"
         },
-        "$description": "IPA perform function button row 100px"
+        "$description": "Ref perform function button row 100px"
       },
       "banner": {
         "$value": {
           "value": 51.5,
           "unit": "px"
         },
-        "$description": "IPA ads banner 103px"
+        "$description": "Ref ads banner 103px"
       },
       "bottom": {
         "$value": {
           "value": 53,
           "unit": "px"
         },
-        "$description": "IPA perform bottom logo area 106px"
+        "$description": "Ref perform bottom logo area 106px"
       },
       "toolbar": {
         "$value": {
           "value": 56,
           "unit": "px"
         },
-        "$description": "APK toolbar (old)"
+        "$description": "Old ref toolbar (old)"
       },
       "menu": {
         "$value": {
           "value": 36,
           "unit": "px"
         },
-        "$description": "APK menu / tutorial bar (old)"
+        "$description": "Old ref menu / tutorial bar (old)"
       }
     },
     "control": {
@@ -129,77 +129,77 @@
           "value": 20,
           "unit": "px"
         },
-        "$description": "APK seekbar thumb"
+        "$description": "Old ref seekbar thumb"
       },
       "slider": {
         "$value": {
           "value": 25,
           "unit": "px"
         },
-        "$description": "IPA tutorial slider grip 50px"
+        "$description": "Ref tutorial slider grip 50px"
       },
       "swatch": {
         "$value": {
           "value": 35,
           "unit": "px"
         },
-        "$description": "IPA colour dot 70px"
+        "$description": "Ref colour dot 70px"
       },
       "sm": {
         "$value": {
           "value": 31.5,
           "unit": "px"
         },
-        "$description": "IPA SONGS button height 63px"
+        "$description": "Ref SONGS button height 63px"
       },
       "md": {
         "$value": {
           "value": 42,
           "unit": "px"
         },
-        "$description": "IPA function button inner block 84px"
+        "$description": "Ref function button inner block 84px"
       },
       "mdBox": {
         "$value": {
           "value": 40,
           "unit": "px"
         },
-        "$description": "IPA nav close / search button 80px"
+        "$description": "Ref nav close / search button 80px"
       },
       "lg": {
         "$value": {
           "value": 50,
           "unit": "px"
         },
-        "$description": "IPA generic btn 100px"
+        "$description": "Ref generic btn 100px"
       },
       "xl": {
         "$value": {
           "value": 62,
           "unit": "px"
         },
-        "$description": "IPA modal buttons 124px"
+        "$description": "Ref modal buttons 124px"
       },
       "row": {
         "$value": {
           "value": 66,
           "unit": "px"
         },
-        "$description": "IPA kit / LOAD SOUND row 132px"
+        "$description": "Ref kit / LOAD SOUND row 132px"
       },
       "ab": {
         "$value": {
           "value": 64.5,
           "unit": "px"
         },
-        "$description": "IPA A/B button 129x126px"
+        "$description": "Ref A/B button 129x126px"
       },
       "rec": {
         "$value": {
           "value": 85,
           "unit": "px"
         },
-        "$description": "IPA microphone record button 170px"
+        "$description": "Ref microphone record button 170px"
       }
     },
     "content": {
@@ -208,14 +208,14 @@
           "value": 89.5,
           "unit": "px"
         },
-        "$description": "IPA SONGS button 179px"
+        "$description": "Ref SONGS button 179px"
       },
       "youtubeWidth": {
         "$value": {
           "value": 71,
           "unit": "px"
         },
-        "$description": "IPA YouTube button 142x88px"
+        "$description": "Ref YouTube button 142x88px"
       },
       "youtubeHeight": {
         "$value": {
@@ -228,21 +228,21 @@
           "value": 210,
           "unit": "px"
         },
-        "$description": "IPA LEARN TO PLAY button 420px"
+        "$description": "Ref LEARN TO PLAY button 420px"
       },
       "moreButtonWidth": {
         "$value": {
           "value": 32.5,
           "unit": "px"
         },
-        "$description": "IPA more button 65px"
+        "$description": "Ref more button 65px"
       },
       "speedButtonWidth": {
         "$value": {
           "value": 73,
           "unit": "px"
         },
-        "$description": "IPA speed button 146x78px"
+        "$description": "Ref speed button 146x78px"
       },
       "speedButtonHeight": {
         "$value": {
@@ -255,7 +255,7 @@
           "value": 113,
           "unit": "px"
         },
-        "$description": "IPA speed picker 226x280px"
+        "$description": "Ref speed picker 226x280px"
       },
       "speedModalHeight": {
         "$value": {
@@ -268,28 +268,28 @@
           "value": 255.5,
           "unit": "px"
         },
-        "$description": "IPA tutorial slider 511px"
+        "$description": "Ref tutorial slider 511px"
       },
       "sliderHeight": {
         "$value": {
           "value": 5,
           "unit": "px"
         },
-        "$description": "IPA slider bar 10px"
+        "$description": "Ref slider bar 10px"
       },
       "buttonWidth": {
         "$value": {
           "value": 250,
           "unit": "px"
         },
-        "$description": "IPA btn 500px"
+        "$description": "Ref btn 500px"
       },
       "modalWidth": {
         "$value": {
           "value": 337.5,
           "unit": "px"
         },
-        "$description": "IPA kit preview modal 675x924px"
+        "$description": "Ref kit preview modal 675x924px"
       },
       "modalHeight": {
         "$value": {
@@ -302,21 +302,21 @@
           "value": 207,
           "unit": "px"
         },
-        "$description": "IPA modal thumbnail 414px"
+        "$description": "Ref modal thumbnail 414px"
       },
       "modalButtonWidth": {
         "$value": {
           "value": 277.5,
           "unit": "px"
         },
-        "$description": "IPA modal button 555px"
+        "$description": "Ref modal button 555px"
       },
       "kitThumbWidth": {
         "$value": {
           "value": 73.5,
           "unit": "px"
         },
-        "$description": "IPA kit row thumbnail 147x109px"
+        "$description": "Ref kit row thumbnail 147x109px"
       },
       "kitThumbHeight": {
         "$value": {
@@ -329,14 +329,14 @@
           "value": 86,
           "unit": "px"
         },
-        "$description": "IPA kit row text x 172px"
+        "$description": "Ref kit row text x 172px"
       },
       "featuredWidth": {
         "$value": {
           "value": 244.5,
           "unit": "px"
         },
-        "$description": "IPA featured card 489x274px"
+        "$description": "Ref featured card 489x274px"
       },
       "featuredHeight": {
         "$value": {
@@ -349,7 +349,7 @@
           "value": 202.5,
           "unit": "px"
         },
-        "$description": "IPA latest card 405x301px"
+        "$description": "Ref latest card 405x301px"
       },
       "kitBigHeight": {
         "$value": {
@@ -362,7 +362,7 @@
           "value": 69.5,
           "unit": "px"
         },
-        "$description": "IPA artist card 139x174px"
+        "$description": "Ref artist card 139x174px"
       },
       "kitSmallHeight": {
         "$value": {
@@ -375,7 +375,7 @@
           "value": 168,
           "unit": "px"
         },
-        "$description": "IPA SEE ALL 336x67px"
+        "$description": "Ref SEE ALL 336x67px"
       },
       "seeAllHeight": {
         "$value": {
@@ -388,49 +388,49 @@
           "value": 104,
           "unit": "px"
         },
-        "$description": "IPA subscription banner 208px"
+        "$description": "Ref subscription banner 208px"
       },
       "skinPanelHeight": {
         "$value": {
           "value": 244,
           "unit": "px"
         },
-        "$description": "IPA skin panel 488px"
+        "$description": "Ref skin panel 488px"
       },
       "skinItem": {
         "$value": {
           "value": 115,
           "unit": "px"
         },
-        "$description": "IPA skin item 230px"
+        "$description": "Ref skin item 230px"
       },
       "skinThumb": {
         "$value": {
           "value": 75,
           "unit": "px"
         },
-        "$description": "IPA skin thumbnail 150px"
+        "$description": "Ref skin thumbnail 150px"
       },
       "miniPad": {
         "$value": {
           "value": 45,
           "unit": "px"
         },
-        "$description": "IPA kit editor mini pad 90px"
+        "$description": "Ref kit editor mini pad 90px"
       },
       "miniPadGap": {
         "$value": {
           "value": 4,
           "unit": "px"
         },
-        "$description": "IPA mini pad gap 8px"
+        "$description": "Ref mini pad gap 8px"
       },
       "miniPanelWidth": {
         "$value": {
           "value": 165,
           "unit": "px"
         },
-        "$description": "IPA mini pad panel 330x429px"
+        "$description": "Ref mini pad panel 330x429px"
       },
       "miniPanelHeight": {
         "$value": {
@@ -443,14 +443,14 @@
           "value": 375,
           "unit": "px"
         },
-        "$description": "IPA edit pad panel 750x533px"
+        "$description": "Ref edit pad panel 750x533px"
       },
       "waveformWidth": {
         "$value": {
           "value": 390.5,
           "unit": "px"
         },
-        "$description": "IPA trim waveform 781x222px"
+        "$description": "Ref trim waveform 781x222px"
       },
       "waveformHeight": {
         "$value": {
@@ -463,7 +463,7 @@
           "value": 375,
           "unit": "px"
         },
-        "$description": "IPA search 750x72px"
+        "$description": "Ref search 750x72px"
       },
       "searchFieldHeight": {
         "$value": {
@@ -476,7 +476,7 @@
           "value": 333.5,
           "unit": "px"
         },
-        "$description": "IPA save-kit input 667x121px"
+        "$description": "Ref save-kit input 667x121px"
       },
       "inputHeight": {
         "$value": {
@@ -489,7 +489,7 @@
           "value": 210.5,
           "unit": "px"
         },
-        "$description": "IPA first-open bubble 421x265px"
+        "$description": "Ref first-open bubble 421x265px"
       },
       "bubbleHeight": {
         "$value": {
@@ -502,14 +502,14 @@
           "value": 31.5,
           "unit": "px"
         },
-        "$description": "IPA tab selected circle 63px"
+        "$description": "Ref tab selected circle 63px"
       },
       "subTabWidth": {
         "$value": {
           "value": 115.5,
           "unit": "px"
         },
-        "$description": "IPA profile sub tab 231x62px"
+        "$description": "Ref profile sub tab 231x62px"
       },
       "subTabHeight": {
         "$value": {
@@ -522,7 +522,7 @@
           "value": 303,
           "unit": "px"
         },
-        "$description": "IPA rate dialog 606x873px"
+        "$description": "Ref rate dialog 606x873px"
       },
       "tabletMaxWidth": {
         "$value": {

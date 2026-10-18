@@ -1,10 +1,10 @@
 {
-  "$description": "Component layer: theme-independent geometry / motion / glow recipes (IPA layout px / 2 unless noted). Colours are NOT allowed here.",
+  "$description": "Component layer: theme-independent geometry / motion / glow recipes (Ref layout px / 2 unless noted). Colours are NOT allowed here.",
   "pad": {
     "gap": {
       "$type": "dimension",
       "$value": "{spacing.xxs}",
-      "$description": "IPA 4px between pads"
+      "$description": "Ref 4px between pads"
     },
     "minSize": {
       "$type": "dimension",
@@ -16,7 +16,7 @@
         "value": 128,
         "unit": "px"
       },
-      "$description": "IPA pad component 256px (scaled to the cell)"
+      "$description": "Ref pad component 256px (scaled to the cell)"
     },
     "cellWidth": {
       "$type": "dimension",
@@ -24,7 +24,7 @@
         "value": 133.5,
         "unit": "px"
       },
-      "$description": "IPA cell 267/268 x 255-257 px (not square)"
+      "$description": "Ref cell 267/268 x 255-257 px (not square)"
     },
     "cellHeight": {
       "$type": "dimension",
@@ -48,7 +48,7 @@
     "loopIconRatio": {
       "$type": "number",
       "$value": 0.47,
-      "$description": "IPA loop glyph 120x136 on a 256 pad"
+      "$description": "Ref loop glyph 120x136 on a 256 pad"
     },
     "glowPressed": {
       "$type": "shadow",
@@ -67,12 +67,12 @@
     "pressAttack": {
       "$type": "duration",
       "$value": "{motion.duration.frame}",
-      "$description": "IPA: lit state on the next frame (no tween)"
+      "$description": "Ref: lit state on the next frame (no tween)"
     },
     "pressRelease": {
       "$type": "duration",
       "$value": "{motion.duration.fast}",
-      "$description": "IPA: 0.1 s QuadOut back to idle"
+      "$description": "Ref: 0.1 s QuadOut back to idle"
     },
     "pressCurve": {
       "$type": "cubicBezier",
@@ -81,7 +81,7 @@
     "loopFlashHalf": {
       "$type": "duration",
       "$value": "{motion.duration.loopHalf}",
-      "$description": "IPA: 0.6 s one way, yoyo, infinite (1.2 s period)"
+      "$description": "Ref: 0.6 s one way, yoyo, infinite (1.2 s period)"
     },
     "loopFlashCurve": {
       "$type": "cubicBezier",
@@ -90,7 +90,7 @@
     "loopRevolution": {
       "$type": "duration",
       "$value": "{motion.duration.loopCycle}",
-      "$description": "IPA: loop icon 360° per 1.2 s"
+      "$description": "Ref: loop icon 360° per 1.2 s"
     },
     "loopCurve": {
       "$type": "cubicBezier",
@@ -107,12 +107,12 @@
         "value": 50,
         "unit": "ms"
       },
-      "$description": "IPA Square skin: layer shrink 0.05 s, stagger 17 ms"
+      "$description": "Ref Square skin: layer shrink 0.05 s, stagger 17 ms"
     },
     "pressScaleOut": {
       "$type": "duration",
       "$value": "{motion.duration.fast}",
-      "$description": "IPA Circle/Square: back to 1.0 in 0.1 s QuadOut"
+      "$description": "Ref Circle/Square: back to 1.0 in 0.1 s QuadOut"
     },
     "scaleSpring": {
       "$type": "number",
@@ -129,7 +129,7 @@
     "loopFlashCycle": {
       "$type": "duration",
       "$value": "{motion.duration.loopCycle}",
-      "$description": "IPA loop flash period 1.2 s"
+      "$description": "Ref loop flash period 1.2 s"
     }
   },
   "padGrid": {
@@ -164,7 +164,7 @@
     "pageInset": {
       "$type": "dimension",
       "$value": "{spacing.edge}",
-      "$description": "IPA pad area x 9..819 px"
+      "$description": "Ref pad area x 9..819 px"
     },
     "top": {
       "$type": "dimension",
@@ -172,7 +172,7 @@
         "value": 143,
         "unit": "px"
       },
-      "$description": "IPA pad area y 286 px"
+      "$description": "Ref pad area y 286 px"
     },
     "bottomInset": {
       "$type": "dimension",
@@ -180,7 +180,7 @@
         "value": 75.5,
         "unit": "px"
       },
-      "$description": "IPA pad area ends at y 1321 of 1472 px"
+      "$description": "Ref pad area ends at y 1321 of 1472 px"
     },
     "maxWidth": {
       "$type": "dimension",
@@ -189,7 +189,7 @@
     "bankSwitch": {
       "$type": "duration",
       "$value": "{motion.duration.short}",
-      "$description": "IPA A/B 0.2 s QuadOut, page slides 100%"
+      "$description": "Ref A/B 0.2 s QuadOut, page slides 100%"
     },
     "bankSwitchCurve": {
       "$type": "cubicBezier",
@@ -198,12 +198,12 @@
     "marginTop": {
       "$type": "dimension",
       "$value": "{spacing.sm}",
-      "$description": "APK 6dp (old; IPA uses absolute y 286px)"
+      "$description": "Old ref 6dp (old; Ref uses absolute y 286px)"
     },
     "marginBottom": {
       "$type": "dimension",
       "$value": "{spacing.xl}",
-      "$description": "APK 12dp (old)"
+      "$description": "Old ref 12dp (old)"
     }
   },
   "topBar": {
@@ -221,7 +221,7 @@
         "value": 10,
         "unit": "px"
       },
-      "$description": "IPA (20,33) px"
+      "$description": "Ref (20,33) px"
     },
     "songsY": {
       "$type": "dimension",
@@ -236,7 +236,7 @@
         "value": 108,
         "unit": "px"
       },
-      "$description": "IPA KIT title at (216,45) px"
+      "$description": "Ref KIT title at (216,45) px"
     },
     "youtubeWidth": {
       "$type": "dimension",
@@ -252,7 +252,7 @@
         "value": 63,
         "unit": "px"
       },
-      "$description": "IPA function row y 126 px"
+      "$description": "Ref function row y 126 px"
     },
     "functionRowHeight": {
       "$type": "dimension",
@@ -261,12 +261,12 @@
     "functionButton": {
       "$type": "dimension",
       "$value": "{size.touch.comfortable}",
-      "$description": "IPA 100x100 px"
+      "$description": "Ref 100x100 px"
     },
     "functionButtonInner": {
       "$type": "dimension",
       "$value": "{size.control.md}",
-      "$description": "IPA inner block 84 px"
+      "$description": "Ref inner block 84 px"
     },
     "tutorialWidth": {
       "$type": "dimension",
@@ -286,7 +286,7 @@
         "value": 63,
         "unit": "px"
       },
-      "$description": "IPA 129x126 px"
+      "$description": "Ref 129x126 px"
     },
     "iconSize": {
       "$type": "dimension",
@@ -295,12 +295,12 @@
     "songsBreathe": {
       "$type": "duration",
       "$value": "{motion.duration.breathe}",
-      "$description": "IPA SONGS glow 1 -> 0.5 -> 1 per 0.783 s linear"
+      "$description": "Ref SONGS glow 1 -> 0.5 -> 1 per 0.783 s linear"
     },
     "collapse": {
       "$type": "duration",
       "$value": "{motion.duration.medium}",
-      "$description": "IPA function row collapse CircIn / return CircOut"
+      "$description": "Ref function row collapse CircIn / return CircOut"
     },
     "collapseCurve": {
       "$type": "cubicBezier",
@@ -316,12 +316,12 @@
         "value": 56.5,
         "unit": "px"
       },
-      "$description": "IPA top region above the function row (0..113px)"
+      "$description": "Ref top region above the function row (0..113px)"
     },
     "paddingX": {
       "$type": "dimension",
       "$value": "{spacing.lg}",
-      "$description": "IPA SONGS x 20px"
+      "$description": "Ref SONGS x 20px"
     },
     "gap": {
       "$type": "dimension",
@@ -330,12 +330,12 @@
     "bankButtonSize": {
       "$type": "dimension",
       "$value": "{size.control.ab}",
-      "$description": "IPA A/B 129px"
+      "$description": "Ref A/B 129px"
     },
     "recIconSize": {
       "$type": "dimension",
       "$value": "{size.control.md}",
-      "$description": "IPA record block 84px"
+      "$description": "Ref record block 84px"
     }
   },
   "navBar": {
@@ -368,7 +368,7 @@
     "indicatorHeight": {
       "$type": "dimension",
       "$value": "{borderWidth.tab}",
-      "$description": "IPA underline 3 px"
+      "$description": "Ref underline 3 px"
     },
     "subTabWidth": {
       "$type": "dimension",
@@ -383,7 +383,7 @@
     "height": {
       "$type": "dimension",
       "$value": "{size.control.sm}",
-      "$description": "IPA SONGS button 63 px"
+      "$description": "Ref SONGS button 63 px"
     },
     "radius": {
       "$type": "dimension",
@@ -410,7 +410,7 @@
     "height": {
       "$type": "dimension",
       "$value": "{size.control.row}",
-      "$description": "IPA kit row 132 px"
+      "$description": "Ref kit row 132 px"
     },
     "thumbWidth": {
       "$type": "dimension",
@@ -431,7 +431,7 @@
     "indicatorWidth": {
       "$type": "dimension",
       "$value": "{borderWidth.selection}",
-      "$description": "IPA selection bar 9 px"
+      "$description": "Ref selection bar 9 px"
     },
     "radius": {
       "$type": "dimension",
@@ -460,7 +460,7 @@
     "bigLabelAngle": {
       "$type": "number",
       "$value": 6.8,
-      "$description": "IPA KIT stamp rotation (degrees)"
+      "$description": "Ref KIT stamp rotation (degrees)"
     },
     "padding": {
       "$type": "dimension",
@@ -477,22 +477,22 @@
     "coverSize": {
       "$type": "dimension",
       "$value": "{size.content.kitThumbHeight}",
-      "$description": "IPA thumbnail height 109px"
+      "$description": "Ref thumbnail height 109px"
     },
     "coverSizeLarge": {
       "$type": "dimension",
       "$value": "{size.content.kitThumbWidth}",
-      "$description": "IPA thumbnail width 147px"
+      "$description": "Ref thumbnail width 147px"
     },
     "heightLarge": {
       "$type": "dimension",
       "$value": "{size.control.row}",
-      "$description": "IPA kit row 132px"
+      "$description": "Ref kit row 132px"
     },
     "marginTop": {
       "$type": "dimension",
       "$value": "{spacing.sm}",
-      "$description": "APK (old)"
+      "$description": "Old ref (old)"
     },
     "focusScale": {
       "$type": "number",
@@ -519,7 +519,7 @@
         "value": 25,
         "unit": "px"
       },
-      "$description": "IPA pagination 50x10 px"
+      "$description": "Ref pagination 50x10 px"
     },
     "indicatorHeight": {
       "$type": "dimension",
@@ -562,14 +562,14 @@
         "value": 5,
         "unit": "px"
       },
-      "$description": "IPA pagination dot height 10px"
+      "$description": "Ref pagination dot height 10px"
     }
   },
   "sheet": {
     "height": {
       "$type": "dimension",
       "$value": "{size.content.skinPanelHeight}",
-      "$description": "IPA skin panel 488 px, slides from the bottom"
+      "$description": "Ref skin panel 488 px, slides from the bottom"
     },
     "radius": {
       "$type": "dimension",
@@ -590,7 +590,7 @@
     "dividerHeight": {
       "$type": "dimension",
       "$value": "{borderWidth.thin}",
-      "$description": "IPA pink 2 px divider"
+      "$description": "Ref pink 2 px divider"
     },
     "handleWidth": {
       "$type": "dimension",
@@ -607,7 +607,7 @@
     "enter": {
       "$type": "duration",
       "$value": "{motion.duration.slow}",
-      "$description": "IPA 0.4 s QuadOut"
+      "$description": "Ref 0.4 s QuadOut"
     },
     "exit": {
       "$type": "duration",
@@ -635,7 +635,7 @@
         "value": 4,
         "unit": "px"
       },
-      "$description": "IPA LOAD SOUND row step 140 - row 132 px = 8px"
+      "$description": "Ref LOAD SOUND row step 140 - row 132 px = 8px"
     },
     "footerHeight": {
       "$type": "dimension",
@@ -678,12 +678,12 @@
     "speedIn": {
       "$type": "duration",
       "$value": "{motion.duration.modalIn}",
-      "$description": "IPA speed picker in 0.5 s"
+      "$description": "Ref speed picker in 0.5 s"
     },
     "speedOut": {
       "$type": "duration",
       "$value": "{motion.duration.slower}",
-      "$description": "IPA out 1.0 s"
+      "$description": "Ref out 1.0 s"
     },
     "curve": {
       "$type": "cubicBezier",
@@ -709,7 +709,7 @@
     "height": {
       "$type": "dimension",
       "$value": "{size.control.row}",
-      "$description": "IPA LOAD SOUND row 132 px"
+      "$description": "Ref LOAD SOUND row 132 px"
     },
     "step": {
       "$type": "dimension",
@@ -717,7 +717,7 @@
         "value": 70,
         "unit": "px"
       },
-      "$description": "IPA row step 140 px"
+      "$description": "Ref row step 140 px"
     },
     "paddingX": {
       "$type": "dimension",
@@ -745,7 +745,7 @@
         "value": 55.5,
         "unit": "px"
       },
-      "$description": "IPA profile entry 111 px"
+      "$description": "Ref profile entry 111 px"
     }
   },
   "kitEditor": {
@@ -779,7 +779,7 @@
         "value": 75,
         "unit": "px"
       },
-      "$description": "IPA SALVAR 150x60 px"
+      "$description": "Ref SALVAR 150x60 px"
     },
     "saveHeight": {
       "$type": "dimension",
@@ -794,7 +794,7 @@
         "value": 47.5,
         "unit": "px"
       },
-      "$description": "IPA close 95 px"
+      "$description": "Ref close 95 px"
     },
     "maxTrim": {
       "$type": "duration",
@@ -802,7 +802,7 @@
         "value": 30000,
         "unit": "ms"
       },
-      "$description": "IPA trim max 30 s"
+      "$description": "Ref trim max 30 s"
     }
   },
   "waveform": {
@@ -879,7 +879,7 @@
         "value": 64,
         "unit": "px"
       },
-      "$description": "APK circular.xml (old)"
+      "$description": "Old ref circular.xml (old)"
     },
     "thickness": {
       "$type": "dimension",
@@ -888,7 +888,7 @@
     "loadingStep": {
       "$type": "duration",
       "$value": "{motion.duration.fast}",
-      "$description": "IPA 3x3 loading grid shifts alpha every 0.1 s"
+      "$description": "Ref 3x3 loading grid shifts alpha every 0.1 s"
     },
     "duration": {
       "$type": "duration",
@@ -911,7 +911,7 @@
     "thumbSize": {
       "$type": "dimension",
       "$value": "{size.control.slider}",
-      "$description": "IPA grip 50 px"
+      "$description": "Ref grip 50 px"
     },
     "thumbSizeActive": {
       "$type": "dimension",
@@ -926,7 +926,7 @@
     "width": {
       "$type": "dimension",
       "$value": "{size.content.buttonWidth}",
-      "$description": "IPA btn 500x100 px"
+      "$description": "Ref btn 500x100 px"
     },
     "height": {
       "$type": "dimension",
@@ -988,7 +988,7 @@
     "wideWidth": {
       "$type": "dimension",
       "$value": "{size.content.buttonWidth}",
-      "$description": "IPA btn 500px"
+      "$description": "Ref btn 500px"
     }
   },
   "iconButton": {
@@ -1005,7 +1005,7 @@
     "width": {
       "$type": "dimension",
       "$value": "{size.content.dialogWidth}",
-      "$description": "IPA rate dialog 606 px"
+      "$description": "Ref rate dialog 606 px"
     },
     "radius": {
       "$type": "dimension",
@@ -1063,7 +1063,7 @@
         "value": 48,
         "unit": "px"
       },
-      "$description": "IPA genre list 659x96 px"
+      "$description": "Ref genre list 659x96 px"
     },
     "rowWidth": {
       "$type": "dimension",
@@ -1077,7 +1077,7 @@
     "size": {
       "$type": "dimension",
       "$value": "{size.control.swatch}",
-      "$description": "IPA 70 px colour dots, 8 colours"
+      "$description": "Ref 70 px colour dots, 8 colours"
     },
     "ringWidth": {
       "$type": "dimension",
@@ -1122,12 +1122,12 @@
     "height": {
       "$type": "dimension",
       "$value": "{size.bar.functionRow}",
-      "$description": "IPA tutorial row 100px"
+      "$description": "Ref tutorial row 100px"
     },
     "stopSize": {
       "$type": "dimension",
       "$value": "{size.control.md}",
-      "$description": "IPA play/stop block 84px"
+      "$description": "Ref play/stop block 84px"
     }
   },
   "record": {
@@ -1138,7 +1138,7 @@
     "pulse": {
       "$type": "duration",
       "$value": "{motion.duration.loopHalf}",
-      "$description": "IPA 0.6 s QuadOut: ring x1.2 red, dot x0.5"
+      "$description": "Ref 0.6 s QuadOut: ring x1.2 red, dot x0.5"
     },
     "pulseScale": {
       "$type": "number",
@@ -1151,7 +1151,7 @@
     "ripple": {
       "$type": "duration",
       "$value": "{motion.duration.slower}",
-      "$description": "IPA ripple 1.0 s CircOut to 4x, alpha 1 -> 0"
+      "$description": "Ref ripple 1.0 s CircOut to 4x, alpha 1 -> 0"
     },
     "rippleScale": {
       "$type": "number",
@@ -1167,7 +1167,7 @@
         "value": 55,
         "unit": "px"
       },
-      "$description": "IPA save recording play button 110 px"
+      "$description": "Ref save recording play button 110 px"
     }
   },
   "trackCard": {
@@ -1190,12 +1190,12 @@
     "recTransition": {
       "$type": "duration",
       "$value": "{motion.duration.loopHalf}",
-      "$description": "IPA record pulse 0.6 s"
+      "$description": "Ref record pulse 0.6 s"
     },
     "recLoop": {
       "$type": "duration",
       "$value": "{motion.duration.slower}",
-      "$description": "IPA record ripple 1.0 s"
+      "$description": "Ref record ripple 1.0 s"
     }
   },
   "toast": {
@@ -1216,7 +1216,7 @@
     "fill": {
       "$type": "duration",
       "$value": "{motion.duration.slower}",
-      "$description": "IPA tutorial pad fills bottom->top in 1.0 s linear"
+      "$description": "Ref tutorial pad fills bottom->top in 1.0 s linear"
     },
     "fillCurve": {
       "$type": "cubicBezier",
@@ -1233,7 +1233,7 @@
     "highlightHole": {
       "$type": "dimension",
       "$value": "{size.touch.comfortable}",
-      "$description": "IPA 100 px cut-out"
+      "$description": "Ref 100 px cut-out"
     },
     "handTravel": {
       "$type": "dimension",
@@ -1241,7 +1241,7 @@
         "value": 100,
         "unit": "px"
       },
-      "$description": "IPA hand moves 200 px"
+      "$description": "Ref hand moves 200 px"
     },
     "hand": {
       "$type": "duration",
@@ -1257,7 +1257,7 @@
         "value": 27.5,
         "unit": "px"
       },
-      "$description": "IPA PERFECT rises 55 px in 0.3 s"
+      "$description": "Ref PERFECT rises 55 px in 0.3 s"
     },
     "perfectDuration": {
       "$type": "duration",
@@ -1266,7 +1266,7 @@
     "perfectCircleScale": {
       "$type": "number",
       "$value": 20,
-      "$description": "IPA green circle grows to 20x in 0.4 s"
+      "$description": "Ref green circle grows to 20x in 0.4 s"
     },
     "perfectCircle": {
       "$type": "duration",
@@ -1275,7 +1275,7 @@
     "missTilt": {
       "$type": "number",
       "$value": 6,
-      "$description": "IPA TOO FAST/SLOW tilt degrees"
+      "$description": "Ref TOO FAST/SLOW tilt degrees"
     },
     "wrongIn": {
       "$type": "duration",
@@ -1295,7 +1295,7 @@
         "value": 80,
         "unit": "px"
       },
-      "$description": "IPA step label slides in 160 px"
+      "$description": "Ref step label slides in 160 px"
     },
     "textIn": {
       "$type": "duration",
@@ -1316,7 +1316,7 @@
     "pulse": {
       "$type": "duration",
       "$value": "{motion.duration.slower}",
-      "$description": "IPA tutorial pad fill 1.0 s"
+      "$description": "Ref tutorial pad fill 1.0 s"
     }
   },
   "searchField": {
@@ -1349,7 +1349,7 @@
     "labelFloat": {
       "$type": "duration",
       "$value": "{motion.duration.slow}",
-      "$description": "IPA label move + colour 0.4 s QuadOut"
+      "$description": "Ref label move + colour 0.4 s QuadOut"
     },
     "curve": {
       "$type": "cubicBezier",
@@ -1372,12 +1372,12 @@
     "marginStart": {
       "$type": "dimension",
       "$value": "{spacing.xxxl}",
-      "$description": "APK (old)"
+      "$description": "Old ref (old)"
     },
     "marginY": {
       "$type": "dimension",
       "$value": "{spacing.lg}",
-      "$description": "APK (old)"
+      "$description": "Old ref (old)"
     }
   }
 }

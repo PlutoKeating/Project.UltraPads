@@ -22,7 +22,7 @@ import '../state/settings_state.dart';
 import 'routes.dart';
 import 'wide_body.dart';
 
-/// 子页从右侧推入（APK motion.pushRight，300ms → token page.push）。
+/// 子页从右侧推入（旧版参考 motion.pushRight，300ms → token page.push）。
 CustomTransitionPage<T> pushPage<T>(GoRouterState s, Widget child) =>
     CustomTransitionPage<T>(
       key: s.pageKey,
@@ -42,7 +42,7 @@ CustomTransitionPage<T> pushPage<T>(GoRouterState s, Widget child) =>
       },
     );
 
-/// 曲库、编辑器等全屏面板从底部滑入（APK motion.sheetUp → token sheet.enter）。
+/// 曲库、编辑器等全屏面板从底部滑入（旧版参考 motion.sheetUp → token sheet.enter）。
 CustomTransitionPage<T> sheetPage<T>(GoRouterState s, Widget child) =>
     CustomTransitionPage<T>(
       key: s.pageKey,

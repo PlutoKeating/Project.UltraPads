@@ -21,25 +21,25 @@
     },
     "progressFill": {
       "$value": "{color.brand.pink}",
-      "$description": "IPA progress bar"
+      "$description": "Ref progress bar"
     },
     "thumb": {
       "$value": "{color.base.white}",
-      "$description": "IPA slider grip"
+      "$description": "Ref slider grip"
     },
     "speedBackground": {
       "$value": "{color.base.white}"
     },
     "speedText": {
       "$value": "{color.ui.textDark}",
-      "$description": "IPA speed digits #282828"
+      "$description": "Ref speed digits #282828"
     }
   },
   "chip": {
     "$type": "color",
     "background": {
       "$value": "{color.ui.bgPads}",
-      "$description": "IPA tutorial button block"
+      "$description": "Ref tutorial button block"
     },
     "foreground": {
       "$value": "{color.base.white}"
@@ -49,7 +49,7 @@
     },
     "selectedBackground": {
       "$value": "{color.brand.pink}",
-      "$description": "IPA SONGS button"
+      "$description": "Ref SONGS button"
     },
     "selectedForeground": {
       "$value": "{color.base.white}"
@@ -60,7 +60,7 @@
     },
     "hintBackground": {
       "$value": "{color.base.white}",
-      "$description": "APK A/B tutorial hint inverts to white"
+      "$description": "Old ref A/B tutorial hint inverts to white"
     },
     "hintForeground": {
       "$value": "{color.base.black}"
@@ -70,11 +70,11 @@
     "$type": "color",
     "background": {
       "$value": "{color.ui.cell}",
-      "$description": "IPA kit row"
+      "$description": "Ref kit row"
     },
     "backgroundSelected": {
       "$value": "{color.ui.cellPressed}",
-      "$description": "IPA kit row pressed"
+      "$description": "Ref kit row pressed"
     },
     "border": {
       "$value": "{color.alpha.white.10}"
@@ -84,22 +84,22 @@
     },
     "subtitle": {
       "$value": "{color.alpha.white.60}",
-      "$description": "IPA INSPIRED BY"
+      "$description": "Ref INSPIRED BY"
     },
     "overline": {
       "$value": "{color.ui.textSection}"
     },
     "selectedIndicator": {
       "$value": "{color.brand.pink}",
-      "$description": "IPA kit row selection bar"
+      "$description": "Ref kit row selection bar"
     },
     "placeholder": {
       "$value": "{color.ui.placeholder}",
-      "$description": "IPA featured placeholder"
+      "$description": "Ref featured placeholder"
     },
     "counter": {
       "$value": "{color.ui.textMuted}",
-      "$description": "IPA download counter"
+      "$description": "Ref download counter"
     }
   },
   "banner": {
@@ -110,7 +110,7 @@
     "indicator": {
       "$type": "color",
       "$value": "{color.ui.paginationDot}",
-      "$description": "IPA pagination dot"
+      "$description": "Ref pagination dot"
     },
     "indicatorActive": {
       "$type": "color",
@@ -121,7 +121,7 @@
     "$type": "color",
     "background": {
       "$value": "{color.ui.bgPads}",
-      "$description": "IPA skin panel"
+      "$description": "Ref skin panel"
     },
     "header": {
       "$value": "{color.ui.bgPads}"
@@ -140,7 +140,7 @@
     },
     "underline": {
       "$value": "{color.brand.rose}",
-      "$description": "IPA skin panel title divider #F73873"
+      "$description": "Ref skin panel title divider #F73873"
     }
   },
   "list": {
@@ -159,7 +159,7 @@
     "$type": "color",
     "background": {
       "$value": "{color.brand.pink}",
-      "$description": "IPA notification dot"
+      "$description": "Ref notification dot"
     },
     "foreground": {
       "$value": "{color.base.white}"
@@ -187,7 +187,7 @@
     },
     "secondaryBackground": {
       "$value": "{color.ui.modalButton}",
-      "$description": "IPA unlock / action sheet button"
+      "$description": "Ref unlock / action sheet button"
     },
     "secondaryForeground": {
       "$value": "{color.base.white}"
@@ -209,15 +209,15 @@
     },
     "alertBorder": {
       "$value": "{color.brand.alert}",
-      "$description": "IPA NO / CANCEL outline"
+      "$description": "Ref NO / CANCEL outline"
     },
     "whiteBackground": {
       "$value": "{color.base.white}",
-      "$description": "IPA SAVE bar / pill buttons"
+      "$description": "Ref SAVE bar / pill buttons"
     },
     "whiteForeground": {
       "$value": "{color.brand.rose}",
-      "$description": "IPA SAVE text #F73873"
+      "$description": "Ref SAVE text #F73873"
     }
   },
   "input": {
@@ -236,11 +236,11 @@
     },
     "border": {
       "$value": "{color.alpha.white.50}",
-      "$description": "IPA search field outline α0.5"
+      "$description": "Ref search field outline α0.5"
     },
     "focus": {
       "$value": "{color.brand.rose}",
-      "$description": "IPA label/underline focus #F73873"
+      "$description": "Ref label/underline focus #F73873"
     }
   },
   "slider": {
@@ -253,22 +253,22 @@
     },
     "thumb": {
       "$value": "{color.base.white}",
-      "$description": "IPA grip"
+      "$description": "Ref grip"
     }
   },
   "dialog": {
     "$type": "color",
     "background": {
       "$value": "{color.ui.bgPads}",
-      "$description": "IPA kit preview modal"
+      "$description": "Ref kit preview modal"
     },
     "scrim": {
       "$value": "{color.alpha.black.80}",
-      "$description": "IPA kit preview overlay"
+      "$description": "Ref kit preview overlay"
     },
     "light": {
       "$value": "{color.base.white}",
-      "$description": "IPA rate dialog"
+      "$description": "Ref rate dialog"
     },
     "lightTitle": {
       "$value": "{color.brand.pink}"
@@ -314,7 +314,7 @@
     },
     "selection": {
       "$value": "{color.alpha.black.40}",
-      "$description": "IPA area outside trim selection"
+      "$description": "Ref area outside trim selection"
     },
     "marker": {
       "$value": "{color.base.white}"
@@ -348,11 +348,11 @@
     },
     "check": {
       "$value": "{color.brand.rosePad}",
-      "$description": "IPA genre check"
+      "$description": "Ref genre check"
     },
     "tabSelected": {
       "$value": "{color.brand.pink}",
-      "$description": "IPA tab selected circle"
+      "$description": "Ref tab selected circle"
     }
   },
   "swatch": {

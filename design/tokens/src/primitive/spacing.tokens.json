@@ -12,14 +12,14 @@
         "value": 1,
         "unit": "px"
       },
-      "$description": "APK pad cell margin"
+      "$description": "Old ref pad cell margin"
     },
     "xxs": {
       "$value": {
         "value": 2,
         "unit": "px"
       },
-      "$description": "IPA gap between pads (4px)"
+      "$description": "Ref gap between pads (4px)"
     },
     "xs": {
       "$value": {
@@ -44,7 +44,7 @@
         "value": 10,
         "unit": "px"
       },
-      "$description": "APK pads page margin; IPA top bar x (20px)"
+      "$description": "Old ref pads page margin; Ref top bar x (20px)"
     },
     "xl": {
       "$value": {
@@ -57,7 +57,7 @@
         "value": 16,
         "unit": "px"
       },
-      "$description": "APK fab_margin / text_margin"
+      "$description": "Old ref fab_margin / text_margin"
     },
     "xxxl": {
       "$value": {
@@ -83,20 +83,20 @@
         "unit": "px"
       }
     },
-    "$description": "Spacing scale (logical px). IPA = FairyGUI px / 2.",
+    "$description": "Spacing scale (logical px). Ref = FairyGUI px / 2.",
     "edge": {
       "$value": {
         "value": 4.5,
         "unit": "px"
       },
-      "$description": "IPA pad area side margin (9px)"
+      "$description": "Ref pad area side margin (9px)"
     },
     "kitRowInset": {
       "$value": {
         "value": 5.5,
         "unit": "px"
       },
-      "$description": "IPA kit row thumbnail inset (11px)"
+      "$description": "Ref kit row thumbnail inset (11px)"
     }
   }
 }

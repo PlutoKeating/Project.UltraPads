@@ -66,7 +66,7 @@ PadVisualState padVisual(PadPlayState s) => switch (s) {
   PadPlayState.stopping => PadVisualState.stopping,
 };
 
-/// pad 编号：1–9、A、B、C（APK NUMBER 皮肤，两页都从 1 开始）。
+/// pad 编号：1–9、A、B、C（旧版参考 NUMBER 皮肤，两页都从 1 开始）。
 String padNumberLabel(int index) =>
     index < 9 ? '${index + 1}' : String.fromCharCode(0x41 + index - 9);
 
@@ -82,8 +82,8 @@ List<PadData> padDataFrom(List<PadParams> pads, List<PadPlayState> states) => [
           ),
 ];
 
-/// APK「NORMAL」皮肤 Lottie（`normal_<blue|green|orange|pink>.json`），
-/// 只有注入了 APK 素材且用户开启「经典 pad 动画」时使用。
+/// 旧版参考「NORMAL」皮肤 Lottie（`normal_<blue|green|orange|pink>.json`），
+/// 只有注入了 Android 格式素材且用户开启「经典 pad 动画」时使用。
 PadLottieSkin? classicLottieSkin(PrivateAssets assets) {
   String? color(int role) => switch (ColorRole.fromPalette(role)) {
     ColorRole.blue ||

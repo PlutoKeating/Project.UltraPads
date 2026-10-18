@@ -2,7 +2,7 @@
   "pad": {
     "palette": {
       "$type": "color",
-      "$description": "Ordered pad colour roles; Kits store a role index (wraps modulo the palette length), never RGB. Roles 0-3 = Kit config colours rosa / amarelo / verde / azul(_loop) (pink / orange / green / blue, IPA). Roles 4-7 are UltraPads extensions (store-screenshot neon hues). Each role: core (gradient stop 0 / radial centre), mid (0.5 / flat body), edge (1 / rim), glow, pressed (colour of the press / loop flash layer).",
+      "$description": "Ordered pad colour roles; Kits store a role index (wraps modulo the palette length), never RGB. Roles 0-3 = Kit config colours rosa / amarelo / verde / azul(_loop) (pink / orange / green / blue, Ref). Roles 4-7 are UltraPads extensions (store-screenshot neon hues). Each role: core (gradient stop 0 / radial centre), mid (0.5 / flat body), edge (1 / rim), glow, pressed (colour of the press / loop flash layer).",
       "0": {
         "core": {
           "$value": "{color.pad.pink.highlight}"
@@ -144,7 +144,7 @@
       "radiusRatio": {
         "$type": "number",
         "$value": "{ratio.padRadius}",
-        "$description": "Corner radius = pad short side * ratio (IPA ~10%; Circle skin 0.5)"
+        "$description": "Corner radius = pad short side * ratio (Ref ~10%; Circle skin 0.5)"
       }
     },
     "fill": {
@@ -157,12 +157,12 @@
     "showNumber": {
       "$type": "number",
       "$value": 0,
-      "$description": "1 = draw the pad number (IPA Number skin)"
+      "$description": "1 = draw the pad number (Ref Number skin)"
     },
     "flash": {
       "$type": "color",
       "$value": "{color.base.white}",
-      "$description": "Default flash colour (IPA white overlay). Per-role colour: pad.palette.<i>.pressed."
+      "$description": "Default flash colour (Ref white overlay). Per-role colour: pad.palette.<i>.pressed."
     },
     "border": {
       "$type": "color",
@@ -199,7 +199,7 @@
       "flashOpacity": {
         "$type": "number",
         "$value": "{opacity.flash}",
-        "$description": "Peak alpha of the palette 'pressed' layer (IPA white overlay 0.8; tint-swap skins use 1)"
+        "$description": "Peak alpha of the palette 'pressed' layer (Ref white overlay 0.8; tint-swap skins use 1)"
       },
       "glow": {
         "$type": "number",
@@ -209,7 +209,7 @@
       "scale": {
         "$type": "number",
         "$value": 1,
-        "$description": "IPA Default does not scale; Circle / Square skins 0.9"
+        "$description": "Ref Default does not scale; Circle / Square skins 0.9"
       }
     },
     "playing": {
@@ -220,7 +220,7 @@
       "flashOpacity": {
         "$type": "number",
         "$value": "{opacity.flash}",
-        "$description": "IPA loop flash peak (yoyo 0 <-> 0.8)"
+        "$description": "Ref loop flash peak (yoyo 0 <-> 0.8)"
       },
       "glow": {
         "$type": "number",
@@ -267,7 +267,7 @@
       "icon": {
         "$type": "color",
         "$value": "{color.base.white}",
-        "$description": "IPA loop glyph (white, α ~0.58 in Default bitmap)"
+        "$description": "Ref loop glyph (white, α ~0.58 in Default bitmap)"
       },
       "iconOpacity": {
         "$type": "number",
@@ -282,19 +282,19 @@
       "border": {
         "$type": "color",
         "$value": "{color.base.white}",
-        "$description": "IPA dashed rounded frame"
+        "$description": "Ref dashed rounded frame"
       },
       "opacity": {
         "$type": "number",
         "$value": "{opacity.emptyPad}",
-        "$description": "IPA empty pad frame alpha 0.2"
+        "$description": "Ref empty pad frame alpha 0.2"
       }
     },
     "tutorial": {
       "dimOpacity": {
         "$type": "number",
         "$value": "{opacity.dim}",
-        "$description": "APK non-target pad alpha"
+        "$description": "Old ref non-target pad alpha"
       },
       "highlight": {
         "$type": "color",
@@ -303,7 +303,7 @@
       "fill": {
         "$type": "color",
         "$value": "{color.ui.tutorialFill}",
-        "$description": "IPA tutorial pad fill (fills bottom->top in 1 s)"
+        "$description": "Ref tutorial pad fill (fills bottom->top in 1 s)"
       },
       "outline": {
         "$type": "color",

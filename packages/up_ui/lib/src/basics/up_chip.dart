@@ -10,7 +10,7 @@ enum UpChipVariant {
   /// 品牌粉（SONGS / MENU）。
   selected,
 
-  /// 教程提示：白底黑字（APK A/B 反色提示）。
+  /// 教程提示：白底黑字（旧版参考 A/B 反色提示）。
   hint,
 }
 

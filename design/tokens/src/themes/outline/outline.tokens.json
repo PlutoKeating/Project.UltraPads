@@ -1,5 +1,5 @@
 {
-  "$description": "Outline skin: dark cells with role-coloured strokes; uses the classic APK pad gradients.",
+  "$description": "Outline skin: dark cells with role-coloured strokes; uses the classic Old ref pad gradients.",
   "surface": {
     "$type": "color",
     "pads": { "$value": "{color.grey.950}" },
