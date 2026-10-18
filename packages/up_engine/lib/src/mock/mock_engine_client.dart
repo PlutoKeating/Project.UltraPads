@@ -17,6 +17,8 @@ class MockEngineClient implements EngineClient {
     this.tick = const Duration(milliseconds: 16),
     List<DemoKit>? kits,
     String? initialKit,
+    this.appVersion = '0.0.0',
+    this.availableUpdate,
   }) : _kits = {for (final k in kits ?? DemoLibrary.kits()) k.summary.id: k} {
     final first = initialKit ?? _kits.keys.first;
     _applyKit(first, emit: false);
@@ -27,6 +29,14 @@ class MockEngineClient implements EngineClient {
 
   final bool realtime;
   final Duration tick;
+
+  @override
+  final String appVersion;
+
+  /// 测试 / 演示：[updateCheck] 返回它，[updateDownload] 模拟下载到一个假路径。
+  final UpdateInfo? availableUpdate;
+  final List<String> appliedUpdates = [];
+  int relaunches = 0;
 
   final Map<String, DemoKit> _kits;
   final _events = StreamController<EngineEvent>.broadcast();
@@ -806,6 +816,42 @@ class MockEngineClient implements EngineClient {
 
   @override
   void hubControllerSetLocalEcho(bool enabled) => _localEcho = enabled;
+
+  @override
+  Future<UpdateInfo> updateCheck({String? site}) async =>
+      availableUpdate ??
+      UpdateInfo(
+        current: appVersion,
+        latest: appVersion,
+        available: false,
+        notesUrl: '',
+        installMode: UpdateInstallMode.manual,
+      );
+
+  @override
+  Stream<UpdateProgress> updateDownload() async* {
+    final u = availableUpdate;
+    if (u == null || !u.available) {
+      yield const UpdateFailed(
+        EngineException(ErrorCode.busy, '[no_update] call updateCheck first'),
+      );
+      return;
+    }
+    final total = u.assetSize ?? 100;
+    yield UpdateDownloading(0, total);
+    yield UpdateDownloading(total ~/ 2, total);
+    yield UpdateDownloading(total, total);
+    yield UpdateReady('/tmp/${u.assetName ?? 'update'}');
+  }
+
+  @override
+  void updateCancel() {}
+
+  @override
+  Future<void> updateApply(String path) async => appliedUpdates.add(path);
+
+  @override
+  Future<void> updateRelaunch() async => relaunches++;
 
   @override
   Future<void> dispose() async {

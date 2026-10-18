@@ -4192,6 +4192,7 @@ dependencies = [
  "up-library",
  "up-model",
  "up-protocol",
+ "up-update",
 ]
 
 [[package]]

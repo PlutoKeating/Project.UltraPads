@@ -8,6 +8,7 @@ import 'api/hub.dart';
 import 'api/library.dart';
 import 'api/tracks.dart';
 import 'api/types.dart';
+import 'api/update.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -32,6 +33,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RustStreamSink<HubPeerEvent> dco_decode_StreamSink_hub_peer_event_Sse(
+    dynamic raw,
+  );
+
+  @protected
+  RustStreamSink<UpdateProgress> dco_decode_StreamSink_update_progress_Sse(
     dynamic raw,
   );
 
@@ -371,6 +377,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   UpError dco_decode_up_error(dynamic raw);
 
   @protected
+  UpdateInfo dco_decode_update_info(dynamic raw);
+
+  @protected
+  UpdateInstallMode dco_decode_update_install_mode(dynamic raw);
+
+  @protected
+  UpdateProgress dco_decode_update_progress(dynamic raw);
+
+  @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
@@ -380,6 +395,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RustStreamSink<HubPeerEvent> sse_decode_StreamSink_hub_peer_event_Sse(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RustStreamSink<UpdateProgress> sse_decode_StreamSink_update_progress_Sse(
     SseDeserializer deserializer,
   );
 
@@ -751,6 +771,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   UpError sse_decode_up_error(SseDeserializer deserializer);
 
   @protected
+  UpdateInfo sse_decode_update_info(SseDeserializer deserializer);
+
+  @protected
+  UpdateInstallMode sse_decode_update_install_mode(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  UpdateProgress sse_decode_update_progress(SseDeserializer deserializer);
+
+  @protected
   void sse_encode_AnyhowException(
     AnyhowException self,
     SseSerializer serializer,
@@ -765,6 +796,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_StreamSink_hub_peer_event_Sse(
     RustStreamSink<HubPeerEvent> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_StreamSink_update_progress_Sse(
+    RustStreamSink<UpdateProgress> self,
     SseSerializer serializer,
   );
 
@@ -1226,6 +1263,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_up_error(UpError self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_update_info(UpdateInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_update_install_mode(
+    UpdateInstallMode self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_update_progress(
+    UpdateProgress self,
+    SseSerializer serializer,
+  );
 }
 
 // Section: wire_class

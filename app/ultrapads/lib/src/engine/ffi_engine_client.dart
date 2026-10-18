@@ -9,6 +9,7 @@ import '../rust/api/hub.dart' as ffi_hub;
 import '../rust/api/library.dart' as ffi_lib;
 import '../rust/api/tracks.dart' as ffi_tracks;
 import '../rust/api/types.dart' as t;
+import '../rust/api/update.dart' as ffi_update;
 import '../rust/frb_generated.dart';
 
 /// 基于 flutter_rust_bridge 生成绑定（`lib/src/rust/`，引擎代理维护）的 [EngineClient]。
@@ -1011,6 +1012,79 @@ class FfiEngineClient implements EngineClient {
       _reportOnce('hub_controller_set_local_echo', e);
     }
   }
+
+  // ------------------------------------------------------- update
+
+  @override
+  String get appVersion {
+    try {
+      return ffi_update.appVersion();
+    } catch (e) {
+      _reportOnce('app_version', e);
+      return '0.0.0';
+    }
+  }
+
+  @override
+  Future<UpdateInfo> updateCheck({String? site}) =>
+      _call('update_check', () async {
+        final u = await ffi_update.updateCheck(site: site);
+        return UpdateInfo(
+          current: u.current,
+          latest: u.latest,
+          available: u.available,
+          notesUrl: u.notesUrl,
+          assetName: u.assetName,
+          assetSize: u.assetSize?.toInt(),
+          installMode: switch (u.installMode) {
+            ffi_update.UpdateInstallMode.selfUpdate =>
+              UpdateInstallMode.selfUpdate,
+            ffi_update.UpdateInstallMode.apkInstaller =>
+              UpdateInstallMode.apkInstaller,
+            ffi_update.UpdateInstallMode.manual => UpdateInstallMode.manual,
+          },
+        );
+      });
+
+  @override
+  Stream<UpdateProgress> updateDownload() async* {
+    try {
+      await for (final p in ffi_update.updateDownload()) {
+        yield switch (p) {
+          ffi_update.UpdateProgress_Downloading(
+            :final done,
+            :final total,
+            :final mirror,
+          ) =>
+            UpdateDownloading(done.toInt(), total?.toInt(), mirror: mirror),
+          ffi_update.UpdateProgress_Ready(:final path) => UpdateReady(path),
+          ffi_update.UpdateProgress_Failed(:final error) => UpdateFailed(
+            _error(error, 'update_download'),
+          ),
+        };
+        if (p is! ffi_update.UpdateProgress_Downloading) return;
+      }
+    } catch (e) {
+      yield UpdateFailed(_error(e, 'update_download'));
+    }
+  }
+
+  @override
+  void updateCancel() {
+    try {
+      ffi_update.updateCancel();
+    } catch (e) {
+      _reportOnce('update_cancel', e);
+    }
+  }
+
+  @override
+  Future<void> updateApply(String path) =>
+      _call('update_apply', () => ffi_update.updateApply(path: path));
+
+  @override
+  Future<void> updateRelaunch() =>
+      _call('update_relaunch', ffi_update.updateRelaunch);
 
   @override
   Future<void> dispose() async {

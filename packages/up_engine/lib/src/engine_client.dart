@@ -124,6 +124,23 @@ abstract class EngineClient {
   /// 控制器模式下本机是否同时发声（默认关）。
   void hubControllerSetLocalEcho(bool enabled);
 
+  // ---- 应用内更新（docs/API.md §6） ----
+  /// 当前应用版本（`X.Y.Z`）。
+  String get appVersion;
+
+  /// 查询最新正式版；`site` 为空时用正式站点。只发 GET，不上报设备信息。
+  Future<UpdateInfo> updateCheck({String? site});
+
+  /// 下载最近一次 [updateCheck] 找到的发布包，以 [UpdateReady] / [UpdateFailed] 结束。
+  Stream<UpdateProgress> updateDownload();
+  void updateCancel();
+
+  /// Linux（[UpdateInstallMode.selfUpdate]）：装入下载好的包并切换版本。
+  Future<void> updateApply(String path);
+
+  /// Linux：约 1 秒后启动新版本；调用方随即停止音频并退出。
+  Future<void> updateRelaunch();
+
   /// 释放资源。
   Future<void> dispose();
 }

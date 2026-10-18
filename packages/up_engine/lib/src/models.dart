@@ -724,6 +724,70 @@ final class ControllerSession {
   final int heldPads;
 }
 
+// ---- 应用内更新（docs/API.md §6） ----
+
+/// 本平台怎样完成更新。
+enum UpdateInstallMode {
+  /// Linux，由安装脚本安装：应用内下载、切换版本并重启。
+  selfUpdate,
+
+  /// Android：下载 APK 后交给系统安装器。
+  apkInstaller,
+
+  /// 其它（手动解压的包、开发构建）：只提示，打开下载页。
+  manual,
+}
+
+/// 一次更新检查的结果（`update_check`）。
+class UpdateInfo {
+  const UpdateInfo({
+    required this.current,
+    required this.latest,
+    required this.available,
+    required this.notesUrl,
+    required this.installMode,
+    this.assetName,
+    this.assetSize,
+  });
+  final String current;
+  final String latest;
+
+  /// 有更新且本平台有发布包。
+  final bool available;
+  final String notesUrl;
+  final UpdateInstallMode installMode;
+  final String? assetName;
+  final int? assetSize;
+}
+
+/// 下载进度（`update_download` 流），以 [UpdateReady] 或 [UpdateFailed] 结束。
+sealed class UpdateProgress {
+  const UpdateProgress();
+}
+
+final class UpdateDownloading extends UpdateProgress {
+  const UpdateDownloading(this.done, this.total, {this.mirror = true});
+  final int done;
+  final int? total;
+
+  /// `false` = 镜像不可用，已回退 GitHub 直链。
+  final bool mirror;
+}
+
+/// 已下载并通过 SHA-256 校验。
+final class UpdateReady extends UpdateProgress {
+  const UpdateReady(this.path);
+  final String path;
+}
+
+final class UpdateFailed extends UpdateProgress {
+  const UpdateFailed(this.error);
+  final EngineException error;
+
+  /// 用户取消（`update_cancel`）。
+  bool get cancelled => error.message.startsWith('[cancelled]');
+}
+
 enum ErrorCode {
   unknown,
   notImplemented,

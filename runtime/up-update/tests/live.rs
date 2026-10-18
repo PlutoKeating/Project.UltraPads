@@ -12,7 +12,10 @@ fn live_check_and_download_linux_x64() {
     let asset = c.asset.unwrap();
     let dir = tempfile::tempdir().unwrap();
     let mut last = None;
-    let path = download(&asset, dir.path(), &AtomicBool::new(false), |p| last = Some(p)).unwrap();
+    let path = download(&asset, dir.path(), &AtomicBool::new(false), |p| {
+        last = Some(p)
+    })
+    .unwrap();
     assert_eq!(std::fs::metadata(&path).unwrap().len(), asset.size.unwrap());
     let p = last.unwrap();
     assert!(p.mirror);
