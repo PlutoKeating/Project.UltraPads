@@ -1489,5 +1489,36 @@
     }
   },
   "settingsAudioStopped": "Audio output is not running",
-  "@settingsAudioStopped": {}
+  "@settingsAudioStopped": {},
+  "performVideoPlatform": "YouTube",
+  "@performVideoPlatform": {
+    "description": "Video platform shown on the perform-page video tutorial button (BiliBili in China, YouTube elsewhere)."
+  },
+  "performVideoOpenFailed": "Couldn't open the video link",
+  "@performVideoOpenFailed": {},
+  "tutorialFirstGuideStep": "STEP {step}/{total}",
+  "@tutorialFirstGuideStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialFirstGuidePad": "Tap a pad to start your first beat!",
+  "@tutorialFirstGuidePad": {},
+  "tutorialFirstGuideLearn": "Tap LEARN TO PLAY to learn the whole song step by step.",
+  "@tutorialFirstGuideLearn": {},
+  "tutorialFirstGuideMore": "Recording, skins, kit editing and settings live under ⋮.",
+  "@tutorialFirstGuideMore": {},
+  "tutorialFirstGuideSongs": "Tap SONGS to open the library and pick more kits.",
+  "@tutorialFirstGuideSongs": {},
+  "tutorialFirstGuideDone": "LET'S PLAY",
+  "@tutorialFirstGuideDone": {},
+  "settingsReplayGuide": "Show the first-run guide again",
+  "@settingsReplayGuide": {},
+  "settingsReplayGuideDone": "The guide will show on the perform screen",
+  "@settingsReplayGuideDone": {}
 }

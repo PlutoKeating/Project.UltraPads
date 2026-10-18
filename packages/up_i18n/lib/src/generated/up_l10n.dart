@@ -2717,6 +2717,66 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'Audio output is not running'**
   String get settingsAudioStopped;
+
+  /// Video platform shown on the perform-page video tutorial button (BiliBili in China, YouTube elsewhere).
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube'**
+  String get performVideoPlatform;
+
+  /// No description provided for @performVideoOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the video link'**
+  String get performVideoOpenFailed;
+
+  /// No description provided for @tutorialFirstGuideStep.
+  ///
+  /// In en, this message translates to:
+  /// **'STEP {step}/{total}'**
+  String tutorialFirstGuideStep(int step, int total);
+
+  /// No description provided for @tutorialFirstGuidePad.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a pad to start your first beat!'**
+  String get tutorialFirstGuidePad;
+
+  /// No description provided for @tutorialFirstGuideLearn.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap LEARN TO PLAY to learn the whole song step by step.'**
+  String get tutorialFirstGuideLearn;
+
+  /// No description provided for @tutorialFirstGuideMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording, skins, kit editing and settings live under ⋮.'**
+  String get tutorialFirstGuideMore;
+
+  /// No description provided for @tutorialFirstGuideSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap SONGS to open the library and pick more kits.'**
+  String get tutorialFirstGuideSongs;
+
+  /// No description provided for @tutorialFirstGuideDone.
+  ///
+  /// In en, this message translates to:
+  /// **'LET\'S PLAY'**
+  String get tutorialFirstGuideDone;
+
+  /// No description provided for @settingsReplayGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the first-run guide again'**
+  String get settingsReplayGuide;
+
+  /// No description provided for @settingsReplayGuideDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The guide will show on the perform screen'**
+  String get settingsReplayGuideDone;
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

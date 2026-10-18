@@ -1579,4 +1579,40 @@ class UpL10nEn extends UpL10n {
 
   @override
   String get settingsAudioStopped => 'Audio output is not running';
+
+  @override
+  String get performVideoPlatform => 'YouTube';
+
+  @override
+  String get performVideoOpenFailed => 'Couldn\'t open the video link';
+
+  @override
+  String tutorialFirstGuideStep(int step, int total) {
+    return 'STEP $step/$total';
+  }
+
+  @override
+  String get tutorialFirstGuidePad => 'Tap a pad to start your first beat!';
+
+  @override
+  String get tutorialFirstGuideLearn =>
+      'Tap LEARN TO PLAY to learn the whole song step by step.';
+
+  @override
+  String get tutorialFirstGuideMore =>
+      'Recording, skins, kit editing and settings live under ⋮.';
+
+  @override
+  String get tutorialFirstGuideSongs =>
+      'Tap SONGS to open the library and pick more kits.';
+
+  @override
+  String get tutorialFirstGuideDone => 'LET\'S PLAY';
+
+  @override
+  String get settingsReplayGuide => 'Show the first-run guide again';
+
+  @override
+  String get settingsReplayGuideDone =>
+      'The guide will show on the perform screen';
 }

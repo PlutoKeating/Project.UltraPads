@@ -280,6 +280,7 @@ final class KitSummary {
     this.source = KitSource.builtin,
     this.color = ColorRole.pink,
     this.coverAsset,
+    this.videoUrl,
   });
 
   final String id;
@@ -303,6 +304,9 @@ final class KitSummary {
   /// 可选的封面资源键（相对素材清单），缺失时 UI 用渐变占位。
   final String? coverAsset;
 
+  /// Kit 自带的视频教程链接（原 App 目录的 videoUrl）；null 时演奏页按配置搜索。
+  final String? videoUrl;
+
   bool get hasBankB => padCount > PadId.padsPerBank;
 
   KitSummary copyWith({bool? downloaded, String? name}) => KitSummary(
@@ -320,6 +324,7 @@ final class KitSummary {
     source: source,
     color: color,
     coverAsset: coverAsset,
+    videoUrl: videoUrl,
   );
 }
 

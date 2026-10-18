@@ -171,3 +171,49 @@ class SpeedPill extends StatelessWidget {
     );
   }
 }
+
+/// 演奏页顶栏右侧的视频教程按钮（4.7.0 `btnYoutube` 142×88 px @(662,21)；
+/// 中文区为 BiliBili）。[label] 是平台名（由 i18n 传入）。
+class VideoTutorialButton extends StatelessWidget {
+  const VideoTutorialButton({
+    super.key,
+    required this.label,
+    required this.semanticLabel,
+    this.onTap,
+  });
+
+  final String label;
+  final String semanticLabel;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.upColors;
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      child: PressScale(
+        onTap: onTap,
+        child: Container(
+          width: UpTopBarTokens.youtubeWidth,
+          height: UpTopBarTokens.youtubeHeight,
+          decoration: BoxDecoration(
+            color: c.surfaceSunken,
+            borderRadius: BorderRadius.circular(UpRadii.md),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.smart_display_rounded,
+                size: UpSizes.iconSm,
+                color: c.accentPrimary,
+              ),
+              UpText(label, role: UpTextRole.caption, color: c.textPrimary),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

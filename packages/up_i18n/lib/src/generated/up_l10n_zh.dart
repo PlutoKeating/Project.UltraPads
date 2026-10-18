@@ -1555,4 +1555,36 @@ class UpL10nZh extends UpL10n {
 
   @override
   String get settingsAudioStopped => '音频输出未运行';
+
+  @override
+  String get performVideoPlatform => 'BiliBili';
+
+  @override
+  String get performVideoOpenFailed => '无法打开视频链接';
+
+  @override
+  String tutorialFirstGuideStep(int step, int total) {
+    return '第 $step/$total 步';
+  }
+
+  @override
+  String get tutorialFirstGuidePad => '按下 Pad，开始你的第一段节奏！';
+
+  @override
+  String get tutorialFirstGuideLearn => '点「学习演奏」，跟着教程一步步弹完整首歌。';
+
+  @override
+  String get tutorialFirstGuideMore => '⋮ 里有录音、皮肤、编辑 Kit 和设置。';
+
+  @override
+  String get tutorialFirstGuideSongs => '点 SONGS 打开曲库，挑选更多 Kit。';
+
+  @override
+  String get tutorialFirstGuideDone => '开始演奏';
+
+  @override
+  String get settingsReplayGuide => '重新显示新手引导';
+
+  @override
+  String get settingsReplayGuideDone => '回到演奏页即可看到引导';
 }

@@ -30,6 +30,7 @@ dependencies:
   permission_handler: ^13.0.0
   share_plus: ^13.0.0
   freezed_annotation: ^3.1.0
+  url_launcher: ^6.3.3
 
 dev_dependencies:
   flutter_test:
@@ -46,3 +47,5 @@ flutter:
     - assets/private_manifest/
     # CC0 示例 Kit（content/kits/*.upkit 的副本，测试保证一致），首次启动导入曲库。
     - assets/kits/
+    # 外部链接配置（视频教程等），见 lib/src/config/app_links.dart。
+    - assets/config/

@@ -435,5 +435,15 @@
   "hubErrorOp": "Hub 操作失败（{op}）",
   "settingsAudioStatus": "音频状态",
   "settingsAudioStatusValue": "{host} · {device} · {channels} 声道 {format}",
-  "settingsAudioStopped": "音频输出未运行"
+  "settingsAudioStopped": "音频输出未运行",
+  "performVideoPlatform": "BiliBili",
+  "performVideoOpenFailed": "无法打开视频链接",
+  "tutorialFirstGuideStep": "第 {step}/{total} 步",
+  "tutorialFirstGuidePad": "按下 Pad，开始你的第一段节奏！",
+  "tutorialFirstGuideLearn": "点「学习演奏」，跟着教程一步步弹完整首歌。",
+  "tutorialFirstGuideMore": "⋮ 里有录音、皮肤、编辑 Kit 和设置。",
+  "tutorialFirstGuideSongs": "点 SONGS 打开曲库，挑选更多 Kit。",
+  "tutorialFirstGuideDone": "开始演奏",
+  "settingsReplayGuide": "重新显示新手引导",
+  "settingsReplayGuideDone": "回到演奏页即可看到引导"
 }

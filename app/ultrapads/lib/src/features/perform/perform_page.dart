@@ -6,11 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:up_engine/up_engine.dart';
 import 'package:up_i18n/up_i18n.dart';
 import 'package:up_tokens/up_tokens.dart';
 import 'package:up_ui/up_ui.dart';
 
+import '../../config/app_links.dart';
 import '../../routing/routes.dart';
 import '../../state/engine_state.dart';
 import '../../state/perform_state.dart';
@@ -214,6 +216,18 @@ class _PerformPageState extends ConsumerState<PerformPage>
 
   final _speedKey = GlobalKey(debugLabel: 'speed-pill');
 
+  /// 视频教程（外部浏览器 / App 打开；链接来自 assets/config/links.json）。
+  Future<void> _openVideo(Uri uri) async {
+    final l10n = context.l10n;
+    var ok = false;
+    try {
+      ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      ok = false;
+    }
+    if (!ok && mounted) showUpToast(context, l10n.performVideoOpenFailed);
+  }
+
   /// 速度（4.7.0 只在教程模式出现）：引擎 SetSpeed 实时变速播放，
   /// 教程时间轴同比缩放（见 TutorialController.setSpeed）。
   Future<void> _pickSpeed() async {
@@ -239,6 +253,14 @@ class _PerformPageState extends ConsumerState<PerformPage>
     final tutorial = ref.watch(tutorialProvider);
     final settings = ref.watch(settingsProvider);
     final assets = ref.watch(privateAssetsProvider);
+    final videoUri = ref
+        .watch(appLinksProvider)
+        .value
+        ?.videoFor(
+          languageCode: Localizations.localeOf(context).languageCode,
+          kitName: view.kit?.name,
+          kitVideoUrl: view.kit?.videoUrl,
+        );
 
     final pads = padDataFrom(view.pads, view.padStates);
     final hasBankB =
@@ -329,6 +351,13 @@ class _PerformPageState extends ConsumerState<PerformPage>
                             key: _speedKey,
                             label: l10n.performSpeedValue(tutorial.speed),
                             onTap: _pickSpeed,
+                          ),
+                        // 4.7.0 btnYoutube：顶栏最右（教程模式时速度按钮在它左边）。
+                        if (videoUri != null)
+                          VideoTutorialButton(
+                            label: l10n.performVideoPlatform,
+                            semanticLabel: l10n.performVideoTutorial,
+                            onTap: () => _openVideo(videoUri),
                           ),
                       ],
                     ),
