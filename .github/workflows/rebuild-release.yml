@@ -1,0 +1,230 @@
+# 重建已发布版本的安装包并替换 GitHub Release 附件（手动触发）。
+#   检出指定 tag 的源码，按 release.yml 的方式构建 Linux tar.gz ×2、Android APK ×3，重新生成 SHA256SUMS.txt，
+#   再用 `gh release upload --clobber` 覆盖同名附件。Release 说明不变。
+#   linux_env：debian12 = 与 release.yml 相同（Debian 12 容器，glibc 2.36、PipeWire 原生）；
+#              ubuntu2204 = v0.1.0 当时的环境（Ubuntu 22.04 主机，glibc 2.35，只有 ALSA）。
+# 站点 /dl/ 镜像的缓存键含 sha256，附件替换后旧副本自动失效；/api/version 的清单缓存 5 分钟。
+# 需要的仓库 Secret 与 release.yml 相同。
+name: Rebuild release assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "要重建的 tag（vX.Y.Z，Release 必须已存在）"
+        required: true
+        type: string
+      linux_env:
+        description: "Linux 构建环境"
+        required: true
+        default: debian12
+        type: choice
+        options: [debian12, ubuntu2204]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rebuild-${{ inputs.tag }}
+  cancel-in-progress: false
+
+env:
+  FLUTTER_VERSION: "3.47.7"
+  ANDROID_CERT_SHA256: "bb7dd4d80da6d07da0b43267081b95ac69b46aeb85f51409aad803caf8362816"
+  TAG: ${{ inputs.tag }}
+
+jobs:
+  check:
+    name: Check tag and release
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - id: v
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::tag must look like vX.Y.Z"; exit 1; }
+          tools/release/check-version.sh "$TAG"
+          gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json tagName > /dev/null
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+  linux-debian12:
+    name: Linux ${{ matrix.arch }} (Debian 12)
+    if: inputs.linux_env == 'debian12'
+    needs: check
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    container: debian:12
+    steps:
+      - name: System packages
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends \
+            git curl ca-certificates unzip xz-utils zip file \
+            clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev \
+            libasound2-dev libpipewire-0.3-dev libspa-0.2-dev libdbus-1-dev
+          git config --global --add safe.directory '*'
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: linux-${{ matrix.arch }}-debian12
+      - name: Flutter ${{ env.FLUTTER_VERSION }}
+        run: |
+          git clone --depth 1 --branch "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Build
+        working-directory: app/ultrapads
+        run: |
+          flutter config --no-analytics --enable-linux-desktop
+          flutter pub get
+          flutter build linux --release
+      - name: Package
+        run: tools/release/package-linux.sh "${{ needs.check.outputs.version }}" "${{ matrix.arch }}" "app/ultrapads/build/linux/${{ matrix.arch }}/release/bundle" dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.arch }}
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  linux-ubuntu2204:
+    name: Linux ${{ matrix.arch }} (Ubuntu 22.04)
+    if: inputs.linux_env == 'ubuntu2204'
+    needs: check
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-22.04
+          - arch: arm64
+            runner: ubuntu-22.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - name: System packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev libasound2-dev
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: linux-${{ matrix.arch }}
+      - name: Flutter ${{ env.FLUTTER_VERSION }}
+        run: |
+          git clone --depth 1 --branch "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Build
+        working-directory: app/ultrapads
+        run: |
+          flutter config --no-analytics --enable-linux-desktop
+          flutter pub get
+          flutter build linux --release
+      - name: Package
+        run: tools/release/package-linux.sh "${{ needs.check.outputs.version }}" "${{ matrix.arch }}" "app/ultrapads/build/linux/${{ matrix.arch }}/release/bundle" dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.arch }}
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  android:
+    name: Android
+    needs: check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: android
+      - name: cargo-ndk
+        run: cargo install cargo-ndk --locked
+      - name: Flutter ${{ env.FLUTTER_VERSION }}
+        run: |
+          git clone --depth 1 --branch "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          umask 077
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          printf 'storeFile=%s\nstorePassword=%s\nkeyPassword=%s\nkeyAlias=%s\n' \
+            "$RUNNER_TEMP/release.jks" "$KEYSTORE_PASSWORD" "$KEYSTORE_PASSWORD" "$KEY_ALIAS" > "$RUNNER_TEMP/key.properties"
+          echo "UP_KEY_PROPERTIES=$RUNNER_TEMP/key.properties" >> "$GITHUB_ENV"
+      - name: Build
+        working-directory: app/ultrapads
+        run: |
+          flutter config --no-analytics
+          flutter pub get
+          flutter build apk --release --split-per-abi
+      - name: Rename and verify signatures
+        run: |
+          v="${{ needs.check.outputs.version }}"
+          mkdir -p dist
+          apksigner="$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)"
+          for abi in arm64-v8a armeabi-v7a x86_64; do
+            out="dist/ultrapads-$v-android-$abi.apk"
+            cp "app/ultrapads/build/app/outputs/flutter-apk/app-$abi-release.apk" "$out"
+            cert="$("$apksigner" verify --print-certs "$out" | sed -nE 's/.*certificate SHA-256 digest: ([0-9a-f]+).*/\1/p' | head -1)"
+            if [ "$cert" != "$ANDROID_CERT_SHA256" ]; then
+              echo "::error::$out is signed by $cert, expected $ANDROID_CERT_SHA256"
+              exit 1
+            fi
+          done
+      - name: Remove signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks" "$RUNNER_TEMP/key.properties"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: dist/*.apk
+          if-no-files-found: error
+
+  replace:
+    name: Replace release assets
+    needs: [check, linux-debian12, linux-ubuntu2204, android]
+    # 两个 Linux 任务只会跑一个，另一个是 skipped
+    if: >-
+      always() && needs.check.result == 'success' && needs.android.result == 'success' &&
+      (needs.linux-debian12.result == 'success' || needs.linux-ubuntu2204.result == 'success')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksums
+        run: (cd dist && sha256sum ultrapads-* > SHA256SUMS.txt && cat SHA256SUMS.txt)
+      - name: Upload (replace same-named assets)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" dist/* --clobber -R "$GITHUB_REPOSITORY"

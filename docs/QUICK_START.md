@@ -159,6 +159,10 @@ just release             # 核对版本后打 tag v0.1.1 并推送 → CI：Linu
 ```
 
 - 发布后立即生效：官网 `/api/version`、安装脚本与应用内更新都读取 GitHub 最新正式版（边缘缓存最多 5 分钟），不需要重新部署站点。
+- **重建已发布版本的附件**：Actions →「Rebuild release assets」（`.github/workflows/rebuild-release.yml`，手动触发），
+  或 `gh workflow run rebuild-release.yml -f tag=v0.2.1 -f linux_env=debian12`。检出该 tag 的源码重新构建，
+  `gh release upload --clobber` 覆盖同名附件与 `SHA256SUMS.txt`，Release 说明不变。`linux_env=ubuntu2204` 用于 v0.1.0
+  （当时在 Ubuntu 22.04 主机上构建，只有 ALSA）。`/dl/` 镜像的缓存键含 sha256，替换后旧副本自动失效。
 - **Android 签名密钥**：`~/.config/ultrapads/release.jks` 与 `key.properties`（不入库，**请异地备份**；丢失后新版本无法覆盖安装）。
   CI 使用仓库 Secret `ANDROID_KEYSTORE_BASE64`（`base64 -w0 release.jks`）、`ANDROID_KEYSTORE_PASSWORD`、`ANDROID_KEY_ALIAS`，
   并核对 APK 证书 SHA-256 等于 `release.yml` 中的 `ANDROID_CERT_SHA256`。

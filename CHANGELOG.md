@@ -10,6 +10,8 @@
 - 私有素材包导入器改用中性命名：来源 ID 为 `compat-android` / `compat-ios`，私有素材目录改为
   `private-assets/compat-android/`、`private-assets/compat-ios/`（本机已有的目录需要手动改名）。
   来源 ID 参与 Kit ID 派生，所以已导入的私有 Kit 重新导入后会得到新 ID（旧 Kit 保留，可手动删除）。
+- 官网 `/dl/` 镜像的缓存键加入 GitHub 记录的 sha256：同一版本的附件被替换后不再返回旧副本（此前安装脚本会因校验不符而失败）。
+- 新增手动触发的「Rebuild release assets」流水线：按 tag 重新构建安装包并替换 Release 附件。
 
 ## [0.2.1] - 2026-10-18
 
