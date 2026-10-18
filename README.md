@@ -1,50 +1,160 @@
 # UltraPads
 
-Flutter + Rust 实现的打击垫与音乐创作软件，一份代码多端打包（Linux、Android、Windows、Web、macOS/iOS 预留）。
-以学习研究为目的复刻 Ref 的界面和交互，并扩展为兼顾随手创作和复杂编曲的工具。
+[![License](https://img.shields.io/github/license/PlutoKeating/Project.UltraPads)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/PlutoKeating/Project.UltraPads?include_prereleases)](https://github.com/PlutoKeating/Project.UltraPads/releases)
+![Platforms](https://img.shields.io/badge/verified-Linux%20x64%20%7C%20Android%208%2B-informational)
+![Stack](https://img.shields.io/badge/stack-Flutter%20%2B%20Rust-blueviolet)
 
-> ⚠️ 代码仓库以 Apache-2.0 公开开源（2026-10-18 起）。原 App 素材（图标、Kit 音频、封面等）仍只存放在被 gitignore 的 `private-assets/` 与 `references/` 中，不随仓库分发；没有这些素材时应用使用开源占位资源和 CC0 示例 Kit。
+UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter 写界面、Rust 写实时音频引擎，一份代码打包到多个平台。
+
+项目以学习研究为目的，高保真复刻 Ref 4.7.0 的界面、交互和动效。在此基础上，它扩展为一个既能随手玩、也能承载复杂编曲的工具：
+
+- 引擎和界面完全解耦；
+- 曲库使用开放格式；
+- 支持个人多设备在局域网内协同。
+
+<p align="center">
+  <img src="app/ultrapads/test/goldens/perform_neon.png" width="240" alt="演奏页（霓虹主题）">
+  &nbsp;
+  <img src="app/ultrapads/test/goldens/gallery_neon.png" width="240" alt="应用内设计画廊">
+</p>
+
+> [!NOTE]
+> 仓库只包含代码和 CC0 示例 Kit。原 App 的素材（图标、Kit 音频、封面）**不随仓库分发**，没有这些素材时，应用使用开源占位资源。上图截自仓库内的 golden 测试，用的就是占位资源。
+
+## 功能
+
+- **演奏**：每组 12 个 pad，共 A、B 两组 24 个。
+  - 支持多点触控，每个 pad 可设为 One-shot、Loop 或 Gate。
+  - 支持 choke 组和按小节量化启动。
+  - 可实时变速（1.0 / 0.7 / 0.5），每个 pad 可单独变调（±12 半音）。
+- **教程**：时间轴提示下一个要按的 pad，判定 PERFECT / TOO FAST / TOO SLOW / MISS，教程时间轴随变速同比缩放。
+- **曲库**：
+  - Kit 格式为 `.upkit`，即 SFZ 加 JSON 旁挂文件，用 BLAKE3 做内容寻址。
+  - 可导入 SFZ、WAV 文件夹，也有原 App 素材导入器。
+  - 项目可导出为 DAWproject。
+- **编辑 Kit**：给 pad 换音色（内置、麦克风、本地文件、其他 Kit、录音），调整 pad 属性，裁剪和试听样本。
+- **录音与作品**：录下主输出生成作品，作品卡带波形，可循环播放、导出 WAV 和分享。
+- **皮肤**：3 套主题（霓虹、描边、浅色）、16 套原版风格预设，另有自定义皮肤编辑器。
+- **个人多设备协同（Hub）**：
+  - 设备在局域网内通过 mDNS 自动发现，用 6 位配对码配对，配对过程基于 SPAKE2 加双向 TLS。
+  - 曲库在设备间增量同步。
+  - 手机可以当作电脑的实时打击垫控制器。
+  - 不依赖任何公共服务器。
+- **国际化**：中文和英文。文案集中在独立的 i18n 包里，页面中不硬编码任何语言。
+- **设计系统**：
+  - 设计 token 按 W3C DTCG 格式编写，生成 Dart 和 CSS 代码。
+  - 应用内有组件画廊（Design Gallery）。
+  - 用 lint 保证全仓库不硬编码颜色或外形值。
+- **无头 CLI**：`up-cli` 支持离线渲染、单 pad 播放、延迟探针和 WAV 检查。
+
+全部需求见 [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md)，版本记录见 [`CHANGELOG.md`](CHANGELOG.md)。
+
+## 下载
+
+在 [Releases](https://github.com/PlutoKeating/Project.UltraPads/releases) 页面下载对应平台的安装包。
+
+| 平台 | 文件 | 说明 |
+|---|---|---|
+| Linux x64 | `ultrapads-<版本>-linux-x64.tar.gz` | 解压后运行 `./ultrapads`，需要 GTK 3 和 ALSA（PipeWire / PulseAudio 的兼容层即可） |
+| Android 8.0+ | `ultrapads-<版本>-android-arm64-v8a.apk` | 大多数手机用这个包；另提供 `armeabi-v7a`、`x86_64` |
+| 无头 CLI | `ghcr.io/plutokeating/ultrapads-cli` | 容器镜像，见下文 |
+
+> [!IMPORTANT]
+> v0.0.1 只在 **Linux x64** 和 **Android 模拟器（x86_64）** 上验证过。Windows、Web、macOS 和 iOS 的代码可以编译开发，但还没有验证。Android 包目前用调试密钥签名，后续版本换成正式密钥后，需要先卸载旧版再安装。
+
+## 从源码构建
+
+需要 Flutter 3.47、Rust stable、just、pnpm；构建 Android 还需要 NDK 28.2 和 cargo-ndk。完整的版本要求见 [`docs/QUICK_START.md`](docs/QUICK_START.md)。
+
+```bash
+git clone https://github.com/PlutoKeating/Project.UltraPads.git
+cd Project.UltraPads
+just bootstrap      # 拉取 Dart、Node、Rust 依赖
+just run-linux      # 运行 Linux 版（真实引擎）
+just run-mock       # 不编译 Rust，用 Mock 引擎运行界面
+```
+
+常用命令（`just --list` 可查看全部）：
+
+| 命令 | 作用 |
+|---|---|
+| `just check` | Rust 和 Dart 全量检查：fmt、clippy、测试、analyze、硬编码 lint、i18n 检查 |
+| `just build-linux` | 构建 Linux release |
+| `just build-android` | 构建 Android release APK（按 ABI 拆分） |
+| `just tokens` / `just codegen` | 重新生成设计 token 和 Rust↔Dart 绑定 |
+| `just cli <参数>` | 运行无头 CLI |
+| `just inject-assets` | 可选：把本机自备的原 App 素材注入应用（不入库） |
+
+### 无头 CLI 容器
+
+```bash
+docker run --rm ghcr.io/plutokeating/ultrapads-cli:0.0.1 --help
+# 离线渲染：音频文件夹（按文件名依次对应 pad A0..B11）+ 事件脚本 → WAV
+docker run --rm -v "$PWD:/work" -w /work ghcr.io/plutokeating/ultrapads-cli:0.0.1 \
+  render --kit-dir samples/ --events events.json --out out.wav
+```
+
+## 架构
+
+```
+┌─────────────────────────────────────────────┐
+│ ③ 前端  app/ultrapads + packages/up_*      │  Flutter：页面、组件、主题、动效、i18n
+│         只发 Command、订阅 Event/快照      │
+├──────────────── bridge/up-ffi ──────────────┤  flutter_rust_bridge，Dart 的唯一入口
+│ ② 运行基座  runtime/                        │  up-host 音频设备与存储 · up-library 曲库
+│                                             │  up-hub 多设备协同 · up-cli 无头工具
+├─────────────────────────────────────────────┤
+│ ① 纯引擎  engine/                           │  音频图、采样器、传输、混音、录音、
+│         零平台依赖、音频线程零分配零锁      │  数据模型、文件格式、协议
+└─────────────────────────────────────────────┘
+```
+
+- 引擎是业务状态的唯一事实源，界面只持有只读投影。
+- 按 pad 时，Flutter 的原始指针事件通过同步 FFI 直接写入 Rust 的无锁队列。
+- 音频后端用 cpal：Linux 上走 ALSA，Android 上走 AAudio。音频图基于 Firewheel，外面包了一层自研抽象。
+
+详见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
+
+## 仓库结构
+
+```
+engine/        ① 纯引擎（Rust crates：core、dsp、graph、sampler、transport、mixer、recorder、model、format…）
+runtime/       ② 运行基座：up-host、up-library、up-hub、up-cli
+bridge/up-ffi  Rust ↔ Dart 的 FFI 接口
+app/ultrapads  ③ Flutter 应用
+packages/      up_tokens（设计 token）up_ui（组件）up_fx（光效）up_i18n（多语言）up_engine（引擎客户端契约）
+design/tokens  W3C DTCG token 源 + Style Dictionary 构建
+content/       Kit schema 与 CC0 示例 Kit
+tools/         lint、素材注入
+docs/          架构、API、需求、ADR、调研
+```
 
 ## 文档
 
 | 文档 | 内容 |
 |---|---|
-| `docs/ARCHITECTURE.md` | 分层、线程模型、平台适配、设计系统、多设备协同 |
-| `docs/API.md` | 引擎协议、FFI 接口、Hub 协议 |
-| `docs/REQUIREMENTS.md` | 功能和非功能需求 |
-| `docs/QUICK_START.md` | 环境准备、构建、运行 |
-| `docs/adr/` | 架构决策记录 |
-| `docs/research/` | 竞品拆解、格式调研、延迟实测 |
+| [`docs/QUICK_START.md`](docs/QUICK_START.md) | 环境准备、构建运行、Android 模拟器、Hub 联调 |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | 分层、线程模型、平台适配、设计系统、多设备协同 |
+| [`docs/API.md`](docs/API.md) | 引擎协议、FFI 接口、Hub 协议 |
+| [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) | 功能和非功能需求 |
+| [`docs/adr/`](docs/adr/) | 架构决策记录 |
+| [`docs/research/`](docs/research/) | 竞品拆解、格式调研、v0.0.1 验证记录 |
 
-## 仓库结构
+## 当前状态
 
-```
-engine/        ① 纯引擎（Rust，零平台依赖）
-runtime/       ② 运行基座：up-host（音频/存储/MIDI）up-library（曲库）up-hub（多设备协同）up-cli
-bridge/up-ffi  FRB API 面（Dart 的唯一入口）
-app/ultrapads  ③ Flutter 应用（rust_builder = cargokit 构建胶水）
-packages/      up_tokens up_ui up_fx up_i18n up_engine
-design/tokens  W3C DTCG token 源 + Style Dictionary 构建
-content/       Kit schema 与可公开的示例 Kit
-tools/         lint、kit 打包、latency-probe
-```
+v0.0.1 是首个可用版本。已知限制见 [`docs/research/v0.0.1-verification.md`](docs/research/v0.0.1-verification.md#6-已知问题)，主要有：
 
-## 常用命令
+- 只在模拟器上验证过，还没有真机延迟数据。
+- 作品播放没有实时进度条。
+- 进阶创作功能（Step Seq、时间线、效果链、插件宿主）目前只有数据模型，还没有界面。
 
-```bash
-just bootstrap     # 拉依赖
-just tokens        # 生成设计 token
-just codegen       # 生成 Rust↔Dart 绑定
-just check         # Rust + Dart 全量检查
-just run-linux     # 运行 Linux 版
-just build-android # 构建 Android APK（release，按 ABI 拆分）
-just build-linux   # 构建 Linux release
-just inject-assets # 可选：注入本机的原 App 素材（不入库），含 4.7.0 的 6 个内置 Kit
-just bundle-kits   # 把 content/kits 的 CC0 示例 Kit 同步为应用资源
-```
+## 参与贡献
 
-环境要求、构建运行、Android 模拟器与 Hub 联调见 `docs/QUICK_START.md`；版本记录见 `CHANGELOG.md`。
+欢迎提 Issue 和 Pull Request。提交前请运行 `just check` 并确保全部通过；涉及界面的改动不得硬编码颜色、尺寸或文案，应复用 `up_tokens` / `up_i18n`。
 
-## 许可证
+## 许可证与声明
 
-代码采用 Apache-2.0。可选的 GPL 组件（如 Ableton Link）默认关闭。
+代码以 [Apache-2.0](LICENSE) 许可发布。可选的 GPL 组件（如 Ableton Link）默认关闭。
+
+本项目与原 App 的开发者没有任何关联，复刻部分只用于学习和研究；仓库不包含、也不分发原 App 的任何素材。
