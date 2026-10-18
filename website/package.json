@@ -1,0 +1,11 @@
+{
+  "name": "ultrapads-website",
+  "private": true,
+  "type": "module",
+  "description": "ultrapads.plutokeating.beer：安装脚本、下载落地页与发布镜像 Worker（无构建步骤，wrangler 直接部署）",
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "dev": "npx wrangler dev",
+    "deploy": "npx wrangler deploy"
+  }
+}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UltraPads</title>
+<meta name="description" content="UltraPads：打击垫演奏与音乐创作。Linux 一键安装，Android APK 下载。">
+<meta name="theme-color" content="#1b1f21">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<main>
+  <header class="hero">
+    <img class="logo" src="/icon.svg" width="96" height="96" alt="">
+    <h1>UltraPads</h1>
+    <p class="tagline" data-zh="打击垫演奏与音乐创作。Flutter 界面 + Rust 实时音频引擎。" data-en="Launchpad playing and music creation. Flutter UI + a real-time Rust audio engine.">打击垫演奏与音乐创作。Flutter 界面 + Rust 实时音频引擎。</p>
+    <p class="version"><span data-zh="最新版本" data-en="Latest">最新版本</span> <strong id="version">—</strong> · <a id="notes" href="https://github.com/PlutoKeating/Project.UltraPads/releases/latest" data-zh="更新记录" data-en="Release notes">更新记录</a></p>
+  </header>
+
+  <section class="card">
+    <h2>Linux <small>x86_64 · arm64</small></h2>
+    <p data-zh="在终端运行（不需要 sudo；再次运行即更新）：" data-en="Run in a terminal (no sudo needed; run again to update):">在终端运行（不需要 sudo；再次运行即更新）：</p>
+    <div class="cmd">
+      <code id="cmd">curl -fsSL https://ultrapads.plutokeating.beer/install | bash</code>
+      <button type="button" id="copy" data-zh="复制" data-en="Copy">复制</button>
+    </div>
+    <details>
+      <summary data-zh="选项与卸载" data-en="Options and uninstall">选项与卸载</summary>
+      <pre>curl -fsSL https://ultrapads.plutokeating.beer/install | bash -s -- --version 0.1.0
+curl -fsSL https://ultrapads.plutokeating.beer/install | bash -s -- --prefix ~/apps/ultrapads
+curl -fsSL https://ultrapads.plutokeating.beer/install | bash -s -- --no-desktop --no-modify-path
+curl -fsSL https://ultrapads.plutokeating.beer/install | bash -s -- --uninstall</pre>
+      <p class="muted" data-zh="安装到 ~/.local/opt/ultrapads，命令为 ~/.local/bin/ultrapads。卸载会保留曲库与设置。需要 GTK 3 与 ALSA（PipeWire / PulseAudio 兼容层即可），缺失时脚本会询问是否安装。" data-en="Installs to ~/.local/opt/ultrapads with the command at ~/.local/bin/ultrapads. Uninstalling keeps your library and settings. Needs GTK 3 and ALSA (the PipeWire / PulseAudio compatibility layer is fine); the script offers to install missing libraries.">安装到 ~/.local/opt/ultrapads，命令为 ~/.local/bin/ultrapads。卸载会保留曲库与设置。需要 GTK 3 与 ALSA（PipeWire / PulseAudio 兼容层即可），缺失时脚本会询问是否安装。</p>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>Android <small>8.0+</small></h2>
+    <p data-zh="大多数手机选 arm64-v8a。安装后应用内会提示新版本。" data-en="Most phones need arm64-v8a. The app notifies you of new versions after install.">大多数手机选 arm64-v8a。安装后应用内会提示新版本。</p>
+    <div class="buttons">
+      <a class="btn primary" href="/dl/latest/android-arm64-v8a" data-asset="android-arm64-v8a">arm64-v8a</a>
+      <a class="btn" href="/dl/latest/android-armeabi-v7a" data-asset="android-armeabi-v7a">armeabi-v7a</a>
+      <a class="btn" href="/dl/latest/android-x86_64" data-asset="android-x86_64">x86_64</a>
+    </div>
+    <p class="muted" data-zh="从 0.0.1 升级：0.1.0 起改用正式签名，请先卸载旧版再安装（曲库会清空，可先用 Hub 同步到电脑）。" data-en="Upgrading from 0.0.1: releases are now signed with a permanent key, so uninstall the old version first (this clears its library; sync it to a computer with Hub beforehand).">从 0.0.1 升级：0.1.0 起改用正式签名，请先卸载旧版再安装（曲库会清空，可先用 Hub 同步到电脑）。</p>
+  </section>
+
+  <footer>
+    <a href="https://github.com/PlutoKeating/Project.UltraPads">GitHub</a>
+    <span>·</span>
+    <a href="https://github.com/PlutoKeating/Project.UltraPads/releases">Releases</a>
+    <span>·</span>
+    <button type="button" id="lang" class="link">English</button>
+    <p class="muted" data-zh="Apache-2.0 开源。学习研究项目。" data-en="Open source under Apache-2.0. A study project.">Apache-2.0 开源。学习研究项目。</p>
+  </footer>
+</main>
+<script src="/site.js" defer></script>
+</body>
+</html>

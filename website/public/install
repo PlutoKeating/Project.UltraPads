@@ -1,0 +1,407 @@
+#!/usr/bin/env bash
+# UltraPads 一键安装 / 更新（Linux x86_64 / arm64）：
+#   curl -fsSL https://ultrapads.plutokeating.beer/install | bash
+#
+# 幂等：再运行一次即升级到最新正式版（已是最新则只修复链接与桌面项）。
+#   1. 识别架构 → 查询 /api/version 得到版本、下载地址与 SHA-256
+#   2. 下载发布包（优先 /dl/ 边缘镜像，失败回退 GitHub Release 直链）并核对 SHA-256
+#   3. 解压到 <前缀>/versions/<版本>，原子切换 <前缀>/current，保留上一版用于回滚
+#   4. 写 ~/.local/bin/ultrapads、桌面项与图标；检查运行库（GTK3、ALSA），缺失时询问是否用 sudo 安装
+# 布局与应用内更新共用（docs/ARCHITECTURE.md §10），不需要 root。
+#
+# 选项（curl -fsSL https://ultrapads.plutokeating.beer/install | bash -s -- <选项>）：
+#   --version X.Y.Z    安装指定版本（回滚 / 固定版本）
+#   --prefix DIR       安装目录（默认 ~/.local/opt/ultrapads）
+#   --no-desktop       不写桌面项与图标
+#   --no-modify-path   ~/.local/bin 不在 PATH 时不修改 shell 配置（只提示）
+#   --uninstall        卸载（保留曲库与设置，在 ~/.local/share/dev.ultrapads.ultrapads）
+#   --yes              依赖缺失时不询问，直接用 sudo 安装
+#   --lang zh|en       输出语言（默认跟随 LANG）
+#
+# 整段逻辑包在 main 里，最后一行才调用：下载中断时不会执行半截脚本。
+
+set -euo pipefail
+
+SITE="${UP_SITE:-https://ultrapads.plutokeating.beer}"
+APP_ID="dev.ultrapads.ultrapads"
+ZH=0
+TMP_DIR=""
+PATH_BEGIN="# >>> ultrapads >>>"
+PATH_END="# <<< ultrapads <<<"
+
+cleanup() {
+  if [ -n "${TMP_DIR:-}" ] && [ -d "$TMP_DIR" ]; then rm -rf "$TMP_DIR"; fi
+}
+trap cleanup EXIT
+
+pick_lang() {
+  local l="${UP_LANG:-${LANGUAGE:-${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}}}"
+  case "$l" in zh*|ZH*) ZH=1 ;; *) ZH=0 ;; esac
+}
+
+t() { if [ "$ZH" -eq 1 ]; then printf '%s' "$1"; else printf '%s' "$2"; fi; }
+
+setup_term() {
+  if [ -t 2 ] && [ -z "${NO_COLOR:-}" ] && [ "${TERM:-dumb}" != "dumb" ]; then
+    R=$'\e[0m'; B=$'\e[1m'; PINK=$'\e[38;5;204m'; OK=$'\e[38;5;114m'; BAD=$'\e[38;5;167m'; MUTE=$'\e[38;5;245m'
+  else
+    R=""; B=""; PINK=""; OK=""; BAD=""; MUTE=""
+  fi
+}
+
+banner() { printf '\n  %s■■■%s  %sUltraPads%s %s%s%s\n\n' "$PINK" "$R" "$B" "$R" "$MUTE" "$(t '打击垫与音乐创作' 'launchpad & music creation')" "$R" >&2; }
+step() { printf '  %s▸%s %s\n' "$PINK" "$R" "$*" >&2; }
+ok()   { printf '  %s✓%s %s\n' "$OK" "$R" "$*" >&2; }
+warn() { printf '  %s!%s %s\n' "$BAD" "$R" "$*" >&2; }
+note() { printf '    %s%s%s\n' "$MUTE" "$*" "$R" >&2; }
+die()  { printf '  %s✗%s %s\n\n' "$BAD" "$R" "$*" >&2; exit 1; }
+
+need() { command -v "$1" >/dev/null 2>&1 || die "$(t "需要 $1" "$1 is required")"; }
+
+sha256_file() {
+  if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | awk '{print $1}'
+  elif command -v shasum >/dev/null 2>&1; then shasum -a 256 "$1" | awk '{print $1}'
+  else openssl dgst -sha256 "$1" | awk '{print $NF}'
+  fi
+}
+
+# 从终端读取 y/n（脚本经管道执行时 stdin 是脚本本身，所以读 /dev/tty）；没有终端返回 1
+confirm() {
+  local prompt="$1" ans=""
+  [ -r /dev/tty ] || return 1
+  printf '  %s?%s %s [Y/n] ' "$PINK" "$R" "$prompt" > /dev/tty
+  read -r ans < /dev/tty || return 1
+  case "$ans" in ""|y|Y|yes|YES) return 0 ;; *) return 1 ;; esac
+}
+
+detect_platform() {
+  [ "$(uname -s)" = "Linux" ] || die "$(t "只支持 Linux（当前：$(uname -s)）。Android 请到 $SITE 下载 APK" "Linux only (found $(uname -s)). For Android, download the APK at $SITE")"
+  case "$(uname -m)" in
+    x86_64|amd64) echo "linux-x64" ;;
+    aarch64|arm64) echo "linux-arm64" ;;
+    *) die "$(t "不支持的架构：$(uname -m)（支持 x86_64 / arm64）" "Unsupported architecture: $(uname -m) (x86_64 / arm64 only)")" ;;
+  esac
+}
+
+# /api/version?format=sh 的 UP_KEY=value 行 → 全局变量（逐行按前缀匹配，不 eval）
+fetch_meta() {
+  local platform="$1" tag="$2" query meta line
+  query="format=sh&platform=$platform"
+  if [ -n "$tag" ]; then query="$query&tag=$tag"; fi
+  meta="$(curl -fsSL --retry 2 "$SITE/api/version?$query")" \
+    || die "$(t "查询版本失败（$SITE/api/version）" "Failed to query $SITE/api/version")"
+  UP_VERSION=""; UP_NAME=""; UP_SHA256=""; UP_URL=""; UP_FALLBACK_URL=""
+  while IFS= read -r line; do
+    case "$line" in
+      UP_VERSION=*) UP_VERSION="${line#*=}" ;;
+      UP_NAME=*) UP_NAME="${line#*=}" ;;
+      UP_SHA256=*) UP_SHA256="${line#*=}" ;;
+      UP_URL=*) UP_URL="${line#*=}" ;;
+      UP_FALLBACK_URL=*) UP_FALLBACK_URL="${line#*=}" ;;
+    esac
+  done <<< "$meta"
+  [[ "$UP_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "$(t '版本信息格式不对' 'Malformed version metadata')"
+  [[ "$UP_SHA256" =~ ^[0-9a-f]{64}$ ]] || die "$(t '版本信息缺少 SHA-256' 'Version metadata has no SHA-256')"
+  [[ "$UP_NAME" =~ ^ultrapads-[0-9.]+-linux-[a-z0-9]+\.tar\.gz$ ]] || die "$(t '发布包文件名异常' 'Unexpected package name')"
+}
+
+download() {
+  local out="$1"
+  if ! curl -fL --retry 2 --progress-bar "$UP_URL" -o "$out"; then
+    step "$(t '镜像不可用，改用 GitHub 直链…' 'Mirror unavailable, falling back to GitHub...')"
+    curl -fL --retry 2 --progress-bar "$UP_FALLBACK_URL" -o "$out" || die "$(t '下载失败' 'Download failed')"
+  fi
+  local actual
+  actual="$(sha256_file "$out")"
+  [ "$actual" = "$UP_SHA256" ] || die "$(t "SHA-256 不符（期望 $UP_SHA256，实际 $actual）" "SHA-256 mismatch (expected $UP_SHA256, got $actual)")"
+  ok "$(t 'SHA-256 校验通过' 'SHA-256 verified')"
+}
+
+# 解压到 versions/<版本>，再原子切换 current（rename(2) 覆盖符号链接）
+install_version() {
+  local archive="$1" prefix="$2" version="$3"
+  local versions="$prefix/versions" staging
+  mkdir -p "$versions"
+  staging="$(mktemp -d "$versions/.staging-XXXXXX")"
+  tar -xzf "$archive" -C "$staging" --strip-components=1 || { rm -rf "$staging"; die "$(t '解压失败' 'Extraction failed')"; }
+  [ -x "$staging/ultrapads" ] || { rm -rf "$staging"; die "$(t '发布包结构异常（缺少 ultrapads）' 'Invalid package layout (no ultrapads binary)')"; }
+  if [ -e "$versions/$version" ]; then
+    mv "$versions/$version" "$versions/.replaced-$version-$$"
+  fi
+  mv "$staging" "$versions/$version"
+  ln -sfn "versions/$version" "$prefix/.current-new"
+  mv -Tf "$prefix/.current-new" "$prefix/current"
+  rm -rf "$versions/.replaced-$version-$$"
+}
+
+# 只保留 current 与上一版（回滚用）
+prune_versions() {
+  local prefix="$1" keep_prev="$2" current d name
+  current="$(readlink "$prefix/current" 2>/dev/null || true)"
+  current="${current#versions/}"
+  for d in "$prefix/versions"/* "$prefix/versions"/.staging-*; do
+    [ -e "$d" ] || continue
+    name="$(basename "$d")"
+    [ "$name" = "$current" ] && continue
+    if [ -n "$keep_prev" ] && [ "$name" = "$keep_prev" ]; then continue; fi
+    rm -rf "$d"
+  done
+}
+
+write_marker() {
+  local prefix="$1" version="$2" platform="$3" bin_link="$4" desktop="$5"
+  # 应用内更新据此识别"由安装脚本管理"（runtime/up-update），字段见 docs/API.md §6
+  cat > "$prefix/install.json.tmp" <<EOF
+{
+  "installer": "install.sh",
+  "schema": 1,
+  "version": "$version",
+  "platform": "$platform",
+  "bin_link": "$bin_link",
+  "desktop": $desktop
+}
+EOF
+  mv -f "$prefix/install.json.tmp" "$prefix/install.json"
+}
+
+install_desktop() {
+  local prefix="$1"
+  local share="$prefix/current/share"
+  local apps="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+  local icons="${XDG_DATA_HOME:-$HOME/.local/share}/icons/hicolor/512x512/apps"
+  if [ ! -f "$share/applications/$APP_ID.desktop" ]; then
+    warn "$(t '该版本没有桌面项，跳过' 'This version ships no desktop entry; skipped')"
+    return
+  fi
+  mkdir -p "$apps" "$icons"
+  sed -e "s|^Exec=.*$|Exec=\"$prefix/current/ultrapads\"|" "$share/applications/$APP_ID.desktop" > "$apps/$APP_ID.desktop"
+  chmod 644 "$apps/$APP_ID.desktop"
+  if [ -f "$share/icons/hicolor/512x512/apps/$APP_ID.png" ]; then
+    cp -f "$share/icons/hicolor/512x512/apps/$APP_ID.png" "$icons/$APP_ID.png"
+  fi
+  if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -f -t "${XDG_DATA_HOME:-$HOME/.local/share}/icons/hicolor" >/dev/null 2>&1 || true
+  fi
+  if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database "$apps" >/dev/null 2>&1 || true
+  fi
+}
+
+rc_files() {
+  local shell_name
+  shell_name="$(basename "${SHELL:-bash}")"
+  echo "$HOME/.profile"
+  case "$shell_name" in
+    bash) echo "$HOME/.bashrc" ;;
+    zsh) echo "${ZDOTDIR:-$HOME}/.zshrc" ;;
+  esac
+}
+
+ensure_path() {
+  local bin_dir="$1" modify="$2" f
+  case ":$PATH:" in *":$bin_dir:"*) return ;; esac
+  if [ "$modify" -eq 0 ]; then
+    warn "$(t "$bin_dir 不在 PATH 中，可手动加入：" "$bin_dir is not on PATH; add it with:")"
+    note "export PATH=\"$bin_dir:\$PATH\""
+    return
+  fi
+  if [ "$(basename "${SHELL:-}")" = "fish" ]; then
+    mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/fish/conf.d"
+    printf '%s\nfish_add_path -g "%s"\n%s\n' "$PATH_BEGIN" "$bin_dir" "$PATH_END" > "${XDG_CONFIG_HOME:-$HOME/.config}/fish/conf.d/ultrapads.fish"
+  fi
+  while IFS= read -r f; do
+    if [ ! -f "$f" ] && [ "$f" != "$HOME/.profile" ]; then continue; fi
+    if grep -qF "$PATH_BEGIN" "$f" 2>/dev/null; then continue; fi
+    printf '\n%s\ncase ":$PATH:" in *":%s:"*) ;; *) export PATH="%s:$PATH" ;; esac\n%s\n' \
+      "$PATH_BEGIN" "$bin_dir" "$bin_dir" "$PATH_END" >> "$f"
+  done < <(rc_files)
+  ok "$(t "已把 $bin_dir 加入 PATH（新开终端生效）" "Added $bin_dir to PATH (takes effect in new shells)")"
+}
+
+remove_path_blocks() {
+  local f
+  for f in "$HOME/.profile" "$HOME/.bashrc" "${ZDOTDIR:-$HOME}/.zshrc"; do
+    if [ ! -f "$f" ] || ! grep -qF "$PATH_BEGIN" "$f"; then continue; fi
+    sed -i "/^$PATH_BEGIN\$/,/^$PATH_END\$/d" "$f"
+  done
+  rm -f "${XDG_CONFIG_HOME:-$HOME/.config}/fish/conf.d/ultrapads.fish"
+}
+
+# ---- 运行库检查：ldd 找缺失的 .so，按包管理器换算包名 ----
+
+# ldd 对非 ELF 文件或缺失的库会返回非 0：逐个忽略退出码，只看输出里的 "not found"
+missing_libs() {
+  local dir="$1" f
+  {
+    ldd "$dir/ultrapads" 2>/dev/null || true
+    for f in "$dir"/lib/*.so; do
+      [ -e "$f" ] || continue
+      ldd "$f" 2>/dev/null || true
+    done
+  } | awk '/not found/ {print $1}' | sort -u
+}
+
+pkg_manager() {
+  for pm in apt-get dnf pacman zypper; do
+    command -v "$pm" >/dev/null 2>&1 && { echo "$pm"; return; }
+  done
+}
+
+# .so → 包名（未知的库返回空，由用户自行处理）
+lib_package() {
+  local pm="$1" lib="$2"
+  case "$pm:$lib" in
+    apt-get:libgtk-3.so*) echo libgtk-3-0t64 ;;
+    apt-get:libasound.so*) echo libasound2t64 ;;
+    apt-get:libstdc++.so*) echo libstdc++6 ;;
+    apt-get:libepoxy.so*) echo libepoxy0 ;;
+    apt-get:libblkid.so*) echo libblkid1 ;;
+    apt-get:liblzma.so*) echo liblzma5 ;;
+    dnf:libgtk-3.so*|pacman:libgtk-3.so*) echo gtk3 ;;
+    dnf:libasound.so*|pacman:libasound.so*) echo alsa-lib ;;
+    dnf:libstdc++.so*) echo libstdc++ ;;
+    pacman:libstdc++.so*) echo gcc-libs ;;
+    dnf:libepoxy.so*|pacman:libepoxy.so*) echo libepoxy ;;
+    zypper:libgtk-3.so*) echo libgtk-3-0 ;;
+    zypper:libasound.so*) echo libasound2 ;;
+    zypper:libstdc++.so*) echo libstdc++6 ;;
+    zypper:libepoxy.so*) echo libepoxy0 ;;
+  esac
+}
+
+# Debian/Ubuntu 的 t64 改名：旧发行版没有 *t64 包时退回原名
+apt_resolve() {
+  local p="$1"
+  if [[ "$p" == *t64 ]] && ! apt-cache show "$p" >/dev/null 2>&1; then echo "${p%t64}"; else echo "$p"; fi
+}
+
+check_deps() {
+  local dir="$1" auto_yes="$2" libs pm pkgs=() unknown=() lib p cmd
+  command -v ldd >/dev/null 2>&1 || return 0
+  libs="$(missing_libs "$dir")"
+  [ -n "$libs" ] || { ok "$(t '运行库齐全' 'Runtime libraries present')"; return 0; }
+  pm="$(pkg_manager)"
+  while IFS= read -r lib; do
+    p=""
+    if [ -n "$pm" ]; then p="$(lib_package "$pm" "$lib")"; fi
+    if [ -n "$p" ]; then
+      if [ "$pm" = "apt-get" ]; then p="$(apt_resolve "$p")"; fi
+      [[ " ${pkgs[*]-} " == *" $p "* ]] || pkgs+=("$p")
+    else
+      unknown+=("$lib")
+    fi
+  done <<< "$libs"
+  warn "$(t '缺少运行库：' 'Missing runtime libraries: ')$(echo "$libs" | tr '\n' ' ')"
+  if [ "${#pkgs[@]}" -gt 0 ]; then
+    case "$pm" in
+      apt-get) cmd="sudo apt-get install -y ${pkgs[*]}" ;;
+      dnf) cmd="sudo dnf install -y ${pkgs[*]}" ;;
+      pacman) cmd="sudo pacman -S --needed --noconfirm ${pkgs[*]}" ;;
+      zypper) cmd="sudo zypper install -y ${pkgs[*]}" ;;
+    esac
+    if [ "$auto_yes" -eq 1 ] || confirm "$(t "用 sudo 安装：${pkgs[*]}？" "Install with sudo: ${pkgs[*]}?")"; then
+      if [ "$pm" = "apt-get" ]; then sudo apt-get update -qq || true; fi
+      if $cmd; then ok "$(t '运行库已安装' 'Runtime libraries installed')"; else warn "$(t '安装失败，可稍后手动执行：' 'Install failed; run it later yourself:')"; note "$cmd"; fi
+    else
+      note "$(t '稍后可手动执行：' 'Run this later:') $cmd"
+    fi
+  fi
+  if [ "${#unknown[@]}" -gt 0 ]; then
+    note "$(t '以下库请用系统包管理器自行安装：' 'Install these with your package manager:') ${unknown[*]}"
+  fi
+}
+
+uninstall() {
+  local prefix="$1" bin_dir="$2"
+  step "$(t '正在卸载 UltraPads…' 'Uninstalling UltraPads...')"
+  local link="$bin_dir/ultrapads"
+  if [ -L "$link" ] && [[ "$(readlink "$link")" == "$prefix"/* ]]; then rm -f "$link"; fi
+  rm -f "${XDG_DATA_HOME:-$HOME/.local/share}/applications/$APP_ID.desktop" \
+        "${XDG_DATA_HOME:-$HOME/.local/share}/icons/hicolor/512x512/apps/$APP_ID.png"
+  remove_path_blocks
+  if [ -f "$prefix/install.json" ] || [ -d "$prefix/versions" ]; then rm -rf "$prefix"; fi
+  ok "$(t '已卸载。曲库与设置保留在：' 'Uninstalled. Your library and settings are kept in: ')${XDG_DATA_HOME:-$HOME/.local/share}/$APP_ID"
+}
+
+main() {
+  pick_lang
+  setup_term
+  local version="" prefix="$HOME/.local/opt/ultrapads" desktop=1 modify_path=1 do_uninstall=0 auto_yes=0
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --version) version="${2:-}"; shift 2 || true ;;
+      --version=*) version="${1#*=}"; shift ;;
+      --prefix) prefix="${2:-}"; shift 2 || true ;;
+      --prefix=*) prefix="${1#*=}"; shift ;;
+      --no-desktop) desktop=0; shift ;;
+      --no-modify-path) modify_path=0; shift ;;
+      --uninstall) do_uninstall=1; shift ;;
+      --yes|-y) auto_yes=1; shift ;;
+      --lang) case "${2:-}" in zh*) ZH=1 ;; *) ZH=0 ;; esac; shift 2 || true ;;
+      -h|--help) sed -n '2,25p' "${BASH_SOURCE[0]:-/dev/null}" 2>/dev/null || true; exit 0 ;;
+      *) die "$(t "未知选项：$1" "Unknown option: $1")" ;;
+    esac
+  done
+  banner
+
+  [ -n "$prefix" ] || die "$(t '--prefix 不能为空' '--prefix must not be empty')"
+  case "$prefix" in /*) ;; *) prefix="$PWD/$prefix" ;; esac
+  prefix="${prefix%/}"
+  local bin_dir="$HOME/.local/bin"
+
+  if [ "$do_uninstall" -eq 1 ]; then
+    uninstall "$prefix" "$bin_dir"
+    exit 0
+  fi
+
+  need curl; need tar; need uname
+  local platform tag=""
+  platform="$(detect_platform)"
+  if [ -n "$version" ]; then
+    version="${version#v}"
+    [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "$(t '--version 应形如 0.1.0' '--version must look like 0.1.0')"
+    tag="v$version"
+  fi
+
+  step "$(t '查询版本…' 'Checking version...')"
+  fetch_meta "$platform" "$tag"
+
+  local previous=""
+  if [ -L "$prefix/current" ]; then
+    previous="$(readlink "$prefix/current")"; previous="${previous#versions/}"
+  fi
+  if [ "$previous" = "$UP_VERSION" ] && [ -x "$prefix/current/ultrapads" ]; then
+    ok "$(t "已是 v$UP_VERSION，修复链接与桌面项" "Already on v$UP_VERSION; repairing links and desktop entry")"
+  else
+    if [ -n "$previous" ]; then
+      step "$(t "从 v$previous 更新到 v$UP_VERSION（$platform）" "Updating v$previous → v$UP_VERSION ($platform)")"
+    else
+      step "$(t "安装 v$UP_VERSION（$platform）" "Installing v$UP_VERSION ($platform)")"
+    fi
+    TMP_DIR="$(mktemp -d)"
+    download "$TMP_DIR/$UP_NAME"
+    mkdir -p "$prefix"
+    install_version "$TMP_DIR/$UP_NAME" "$prefix" "$UP_VERSION"
+    ok "$(t "已安装到 $prefix/versions/$UP_VERSION" "Installed to $prefix/versions/$UP_VERSION")"
+  fi
+  if [ "$previous" = "$UP_VERSION" ]; then previous=""; fi
+  prune_versions "$prefix" "$previous"
+
+  mkdir -p "$bin_dir"
+  ln -sfn "$prefix/current/ultrapads" "$bin_dir/ultrapads"
+  local desktop_json=false
+  if [ "$desktop" -eq 1 ]; then
+    install_desktop "$prefix"
+    desktop_json=true
+  fi
+  write_marker "$prefix" "$UP_VERSION" "$platform" "$bin_dir/ultrapads" "$desktop_json"
+  ensure_path "$bin_dir" "$modify_path"
+  check_deps "$prefix/current" "$auto_yes"
+
+  printf '\n' >&2
+  ok "$(t "UltraPads v$UP_VERSION 就绪：从应用菜单打开，或运行 ultrapads" "UltraPads v$UP_VERSION is ready: open it from your app menu or run ultrapads")"
+  note "$(t '再次运行本命令即可更新；应用内也会提示新版本。' 'Run this command again to update; the app also notifies you of new versions.')"
+  printf '\n' >&2
+}
+
+main "$@"
