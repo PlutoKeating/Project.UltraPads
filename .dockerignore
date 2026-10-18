@@ -5,4 +5,5 @@
 !engine/
 !runtime/
 !bridge/
+!third_party/
 **/target

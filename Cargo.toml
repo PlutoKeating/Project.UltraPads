@@ -1,5 +1,7 @@
 [workspace]
 resolver = "3"
+# third_party/ 下是打了补丁的上游 crate（经下方 [patch.crates-io] 引用），不是工作区成员
+exclude = ["third_party"]
 members = [
   "engine/*",
   "runtime/up-host",
@@ -43,3 +45,7 @@ debug = "line-tables-only"
 
 [profile.dev.package."*"]
 opt-level = 2
+
+# cpal 补丁版：Android 输出流请求 AAudio EXCLUSIVE（MMAP）模式，见 third_party/cpal/ULTRAPADS_PATCH.md
+[patch.crates-io]
+cpal = { path = "third_party/cpal" }

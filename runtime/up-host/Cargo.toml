@@ -14,9 +14,14 @@ up-model = { workspace = true }
 up-recorder = { workspace = true }
 # `realtime`: AAudio requests PERFORMANCE_MODE_LOW_LATENCY (without it Android
 # streams take the normal mixer path, tens of ms slower) and the callback
-# thread is promoted to real-time priority (Android / Windows / ALSA when the
-# rlimit allows).
-cpal = { version = "0.18", features = ["realtime"] }
+# thread is promoted to real-time priority.
+# `pipewire` (Linux): native PipeWire host, preferred by `default_host()` when
+# a PipeWire daemon runs (falls back to ALSA): no ALSA-plugin ring buffer,
+# ~3.8 ms command → DAC instead of ~10–18 ms. Builds need libpipewire-0.3-dev
+# + libspa-0.2-dev (≥ 0.3.65, Debian 12) and clang.
+# `realtime-dbus` (Linux): real-time priority for the stream thread via rtkit
+# (unprivileged users have RLIMIT_RTPRIO 0); needs libdbus-1-dev.
+cpal = { version = "0.18", features = ["realtime", "realtime-dbus", "pipewire"] }
 blake3 = "1"
 uuid = { version = "1", features = ["v7"] }
 serde = { version = "1", features = ["derive"] }
