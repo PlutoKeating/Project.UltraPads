@@ -17,6 +17,10 @@ bootstrap:
 tokens:
     cd design/tokens && pnpm run build
 
+# 由 design/brand/ultrapads-mark.svg 生成图标 SVG 与全平台位图（需 magick + Chromium）
+icons:
+    node tools/brand/build_icons.mjs
+
 # 由 Rust API 生成 FRB 绑定
 codegen:
     cd {{app}} && flutter_rust_bridge_codegen generate
