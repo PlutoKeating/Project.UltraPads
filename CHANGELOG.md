@@ -2,6 +2,16 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循语义化版本。
 
+## [Unreleased]
+
+### 改进
+
+- 按键响应延迟：
+  - Android：启用 cpal `realtime` feature，AAudio 流请求 `PERFORMANCE_MODE_LOW_LATENCY`（之前为 NONE，走普通混音路径，
+    拿不到 FAST 轨道）；缓冲始终交给 AAudio 按 burst 回调，不再接受固定缓冲请求。设置页在 Android 上不再显示缓冲档位。
+  - 桌面默认缓冲 256 → 128 帧（本机 PipeWire 实测：命令 → DAC 估计由约 18 ms 降到约 10 ms，无 xrun）。
+  - UI：演奏页不再随走带位置（播放时约 60 Hz）整页重建；FFI 客户端不再为每个 Transport 事件同步调用一次 `snapshot()`。
+
 ## [0.0.1] - 2026-10-18
 
 首个可用版本：在 **Linux x64** 与 **Android**（API 26+，模拟器验证）上构建、运行并验证。验证记录见
