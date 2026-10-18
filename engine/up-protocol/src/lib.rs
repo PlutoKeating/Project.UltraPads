@@ -96,7 +96,15 @@ pub struct PadParams {
     /// Overrides the global quantize for this pad. `None` = follow global for
     /// loops; one-shot/gate pads always start immediately unless overridden.
     pub quantize_override: Option<Quantize>,
+    /// Realtime pitch in semitones (`-12.0..=12.0`). Implemented as a
+    /// playback-rate multiplier `2^(pitch/12)` on top of the speed ratio
+    /// (varispeed: length changes with pitch).
+    pub pitch: f32,
 }
+
+/// Pitch bounds for [`PadParams::pitch`] (semitones).
+pub const PITCH_MIN: f32 = -12.0;
+pub const PITCH_MAX: f32 = 12.0;
 
 impl Default for PadParams {
     fn default() -> Self {
@@ -116,6 +124,7 @@ impl Default for PadParams {
             loop_start: None,
             loop_end: None,
             quantize_override: None,
+            pitch: 0.0,
         }
     }
 }
@@ -340,6 +349,7 @@ mod tests {
         let p: PadParams = serde_json::from_str(r#"{"mode":"Gate"}"#).unwrap();
         assert_eq!(p.mode, PadMode::Gate);
         assert_eq!(p.gain, 1.0);
+        assert_eq!(p.pitch, 0.0);
     }
 
     #[test]

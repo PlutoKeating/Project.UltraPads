@@ -856,6 +856,9 @@ class PadParams {
   final BigInt? loopEnd;
   final Quantize? quantizeOverride;
 
+  /// Realtime pitch in semitones (-12..=12), multiplied with the speed ratio.
+  final double pitch;
+
   const PadParams({
     required this.mode,
     required this.gain,
@@ -872,6 +875,7 @@ class PadParams {
     this.loopStart,
     this.loopEnd,
     this.quantizeOverride,
+    required this.pitch,
   });
 
   @override
@@ -890,7 +894,8 @@ class PadParams {
       endFrame.hashCode ^
       loopStart.hashCode ^
       loopEnd.hashCode ^
-      quantizeOverride.hashCode;
+      quantizeOverride.hashCode ^
+      pitch.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -911,7 +916,8 @@ class PadParams {
           endFrame == other.endFrame &&
           loopStart == other.loopStart &&
           loopEnd == other.loopEnd &&
-          quantizeOverride == other.quantizeOverride;
+          quantizeOverride == other.quantizeOverride &&
+          pitch == other.pitch;
 }
 
 enum PadPlayState { idle, pending, playing, stopping }

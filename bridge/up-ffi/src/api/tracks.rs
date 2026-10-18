@@ -41,13 +41,14 @@ pub fn tracks_list() -> R<Vec<TrackInfo>> {
         .collect())
 }
 
-/// Play a track on the preview voice (emits `TrackPlayback`).
-pub fn track_play(id: String) -> R<()> {
+/// Play a track on the preview voice (emits `TrackPlayback`). With
+/// `looping` it repeats until `track_stop`.
+pub fn track_play(id: String, looping: bool) -> R<()> {
     let lib = state::library()?;
     let path = lib.track_path(&id).map_err(lib_err)?;
     let f = std::fs::File::open(path).map_err(|e| UpError::from(up_core::UpError::from(e)))?;
     let audio = up_codec::decode(f, Some("wav"))?;
-    Ok(state::core()?.play_audio(&TrackId(id), &audio)?)
+    Ok(state::core()?.play_audio(&TrackId(id), &audio, looping)?)
 }
 
 pub fn track_stop() -> R<()> {

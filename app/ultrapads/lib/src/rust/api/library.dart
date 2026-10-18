@@ -7,7 +7,7 @@ import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'types.dart';
 
-// These functions are ignored because they are not marked as `pub`: `pcm_to_buffer`
+// These functions are ignored because they are not marked as `pub`: `pcm_to_buffer`, `report`
 
 /// All kits, sorted by name.
 Future<List<KitSummary>> libraryListKits() =>
@@ -54,6 +54,17 @@ Future<KitSummary> libraryLoadKit({required String kit}) =>
 /// (stored as a sample) or the original app's asset folder.
 Future<ImportReport> libraryImport({required String path}) =>
     RustLib.instance.api.crateApiLibraryLibraryImport(path: path);
+
+/// Import from in-memory bytes (`.upkit`/ZIP, e.g. a kit bundled as an app
+/// asset). `name` is the file name: a `.upkit` suffix forces the upkit
+/// reader, anything else is auto-detected (also the original app's assets).
+Future<ImportReport> libraryImportBytes({
+  required String name,
+  required List<int> bytes,
+}) => RustLib.instance.api.crateApiLibraryLibraryImportBytes(
+  name: name,
+  bytes: bytes,
+);
 
 /// Export a kit. `format`: `upkit` | `upkit-folder` | `sfz` | `dawproject`.
 /// Returns the written path.

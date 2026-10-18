@@ -34,6 +34,19 @@ pub struct RtPadParams {
     pub loop_start: Option<u64>,
     pub loop_end: Option<u64>,
     pub quantize_override: Option<Quantize>,
+    /// Pitch in semitones (`-12..=12`), applied as a rate multiplier.
+    pub pitch: f32,
+}
+
+/// Playback-rate multiplier for `semitones` (clamped to ±12).
+#[inline]
+pub fn pitch_ratio(semitones: f32) -> f64 {
+    let s = if semitones.is_finite() {
+        semitones.clamp(-12.0, 12.0)
+    } else {
+        0.0
+    };
+    2f64.powf(f64::from(s) / 12.0)
 }
 
 impl Default for RtPadParams {
@@ -52,6 +65,7 @@ impl Default for RtPadParams {
             loop_start: None,
             loop_end: None,
             quantize_override: None,
+            pitch: 0.0,
         }
     }
 }
@@ -82,7 +96,14 @@ pub enum SamplerCmd {
     },
     SetQuantize(Quantize),
     SetSpeed(f64),
-    PlayPreview(SampleArc),
+    /// Play a sample on the preview voice (track playback, editor audition).
+    PlayPreview {
+        sample: SampleArc,
+        start: u64,
+        /// Exclusive end frame (`None` = sample end).
+        end: Option<u64>,
+        looping: bool,
+    },
     StopPreview,
 }
 
@@ -255,7 +276,12 @@ impl Sampler {
                     transport.set_speed(self.speed);
                 }
             }
-            SamplerCmd::PlayPreview(sample) => self.play_preview(sample, ev),
+            SamplerCmd::PlayPreview {
+                sample,
+                start,
+                end,
+                looping,
+            } => self.play_preview(sample, start, end, looping, ev),
             SamplerCmd::StopPreview => {
                 if self.preview.active && !self.preview.fade.is_fading_out() {
                     self.preview.fade.start_fade_out(self.fade_out_frames);
@@ -288,9 +314,13 @@ impl Sampler {
             }
         }
         self.pads[pad].params = params;
-        // Live gain/pan update for a voice that keeps playing.
+        // Live gain/pan/pitch update for a voice that keeps playing.
         if let Some(vi) = self.pads[pad].voice {
             let v = &mut self.voices[vi];
+            if let Some(s) = v.sample.as_ref() {
+                v.rate =
+                    s.sample_rate as f64 / self.cfg.sample_rate as f64 * pitch_ratio(params.pitch);
+            }
             let (pl, pr) = pan_gains_unity_centre(params.pan);
             let g = params.gain.clamp(0.0, 4.0) * v.vel_gain;
             v.gain_l = g * pl;
@@ -464,23 +494,32 @@ impl Sampler {
         }
     }
 
-    fn play_preview(&mut self, sample: SampleArc, ev: &mut impl SamplerEvents) {
+    fn play_preview(
+        &mut self,
+        sample: SampleArc,
+        start: u64,
+        end: Option<u64>,
+        looping: bool,
+        ev: &mut impl SamplerEvents,
+    ) {
         if let Some(old) = self.preview.sample.take() {
             self.retirer.retire(old);
             ev.emit(SamplerEvent::PreviewEnded);
         }
         let frames = sample.frames();
+        let start = (start as usize).min(frames);
+        let end = end.map_or(frames, |e| (e as usize).clamp(start, frames));
         let rate = sample.sample_rate as f64 / self.cfg.sample_rate as f64;
         self.preview = Voice {
-            active: frames > 0,
+            active: end > start,
             pad: PREVIEW_PAD,
             sample: Some(sample),
-            pos: 0.0,
-            start: 0,
-            end: frames,
-            loop_start: 0,
-            loop_end: frames,
-            looping: false,
+            pos: start as f64,
+            start,
+            end,
+            loop_start: start,
+            loop_end: end,
+            looping,
             gain_l: 1.0,
             gain_r: 1.0,
             vel_gain: 1.0,
@@ -609,7 +648,7 @@ impl Sampler {
             up_dsp::Fade::steady()
         };
         self.age += 1;
-        let rate = sample.sample_rate as f64 / self.cfg.sample_rate as f64;
+        let rate = sample.sample_rate as f64 / self.cfg.sample_rate as f64 * pitch_ratio(p.pitch);
         let old = std::mem::replace(
             &mut self.voices[vi],
             Voice {

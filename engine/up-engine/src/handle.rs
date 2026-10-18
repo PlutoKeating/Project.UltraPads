@@ -362,6 +362,13 @@ impl EngineHandle {
         }
         params.gain = params.gain.clamp(0.0, 4.0);
         params.pan = params.pan.clamp(-1.0, 1.0);
+        params.pitch = if params.pitch.is_finite() {
+            params
+                .pitch
+                .clamp(up_protocol::PITCH_MIN, up_protocol::PITCH_MAX)
+        } else {
+            0.0
+        };
         let slot = &self.shared.pad_samples[flat as usize];
         let current = slot.load_full();
         let update = match (&params.sample, current.as_deref()) {
@@ -387,6 +394,7 @@ impl EngineHandle {
             loop_start: params.loop_start,
             loop_end: params.loop_end,
             quantize_override: params.quantize_override,
+            pitch: params.pitch,
         };
         self.push(RtCommand::Sampler(SamplerCmd::SetPad {
             pad: flat,
@@ -441,7 +449,27 @@ impl EngineHandle {
 
     /// Play a recorded track (or any sample) on the preview voice.
     pub fn play_preview(&self, track: TrackId, sample: SampleArc) -> UpResult<()> {
-        self.push(RtCommand::Sampler(SamplerCmd::PlayPreview(sample)))?;
+        self.play_preview_region(Some(track), sample, 0, None, false)
+    }
+
+    /// Play `start..end` of a sample on the preview voice, optionally
+    /// looping. `track` = `Some` reports `TrackPlayback` events (track
+    /// playback); `None` is a silent audition (editor `sample_preview`).
+    /// The preview voice never occupies a pad.
+    pub fn play_preview_region(
+        &self,
+        track: Option<TrackId>,
+        sample: SampleArc,
+        start: u64,
+        end: Option<u64>,
+        looping: bool,
+    ) -> UpResult<()> {
+        self.push(RtCommand::Sampler(SamplerCmd::PlayPreview {
+            sample,
+            start,
+            end,
+            looping,
+        }))?;
         let _ = self.shared.ctl.send(ControlMsg::PreviewStarted(track));
         Ok(())
     }

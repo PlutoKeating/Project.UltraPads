@@ -158,7 +158,8 @@ pub struct PadDoc {
     pub seq_length: Option<u32>,
     /// Launch quantize; `None` = follow the global quantize.
     pub quantize: Option<Quantize>,
-    /// Offline pitch shift applied at load/edit time (semitones, -12..=12).
+    /// Pitch shift in semitones (-12..=12). The v0.0.1 engine applies it in
+    /// realtime as a playback-rate multiplier (`PadParams::pitch`).
     pub pitch_semitones: f32,
     /// Offline time ratio applied at load/edit time (0.5..=2.0).
     pub time_ratio: f32,
@@ -257,6 +258,7 @@ impl PadDoc {
             loop_start: primary.and_then(|l| l.loop_start),
             loop_end: primary.and_then(|l| l.loop_end.map(|e| e.saturating_add(1))),
             quantize_override: self.quantize,
+            pitch: self.pitch_semitones.clamp(-12.0, 12.0),
         }
     }
 }

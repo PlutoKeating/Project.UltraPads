@@ -117,11 +117,15 @@ pub fn library_load_kit(kit: String) -> R<KitSummary> {
 pub fn library_import(path: String) -> R<ImportReport> {
     let lib = state::library()?;
     let rep = lib.import(Path::new(&path)).map_err(lib_err)?;
+    report(&lib, &rep)
+}
+
+fn report(lib: &up_library::Library, rep: &up_library::ImportReport) -> R<ImportReport> {
     let kits = rep
         .kits
         .iter()
         .map(|k| match lib.kit_summary(&k.kit_id) {
-            Ok(s) => kit_summary_from_library(&s, &lib),
+            Ok(s) => kit_summary_from_library(&s, lib),
             Err(_) => KitSummary {
                 id: k.kit_id.clone(),
                 name: k.name.clone(),
@@ -146,6 +150,15 @@ pub fn library_import(path: String) -> R<ImportReport> {
         catalog_entries: rep.catalog_entries as u32,
         warnings: rep.warnings.iter().map(ToString::to_string).collect(),
     })
+}
+
+/// Import from in-memory bytes (`.upkit`/ZIP, e.g. a kit bundled as an app
+/// asset). `name` is the file name: a `.upkit` suffix forces the upkit
+/// reader, anything else is auto-detected (also the original app's assets).
+pub fn library_import_bytes(name: String, bytes: Vec<u8>) -> R<ImportReport> {
+    let lib = state::library()?;
+    let rep = lib.import_zip_bytes(&name, &bytes).map_err(lib_err)?;
+    report(&lib, &rep)
 }
 
 /// Export a kit. `format`: `upkit` | `upkit-folder` | `sfz` | `dawproject`.

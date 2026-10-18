@@ -88,6 +88,24 @@ Future<Float32List> sampleWaveform({
   buckets: buckets,
 );
 
+/// Audition `start_frame..end_frame` (engine-rate frames, `None` = to the
+/// end) of a sample on the preview voice without occupying a pad. Library
+/// samples that are not loaded yet are registered first. Stop with
+/// `sample_preview_stop` (or `track_stop`).
+Future<void> samplePreview({
+  required String sample,
+  required BigInt startFrame,
+  BigInt? endFrame,
+}) => RustLib.instance.api.crateApiEngineSamplePreview(
+  sample: sample,
+  startFrame: startFrame,
+  endFrame: endFrame,
+);
+
+/// Stop a `sample_preview` audition.
+Future<void> samplePreviewStop() =>
+    RustLib.instance.api.crateApiEngineSamplePreviewStop();
+
 /// Start microphone sampling. On Android, request RECORD_AUDIO first via
 /// the `dev.ultrapads/permissions` MethodChannel (`requestRecordAudio`).
 Future<void> samplerRecordStart({String? inputDevice}) => RustLib.instance.api

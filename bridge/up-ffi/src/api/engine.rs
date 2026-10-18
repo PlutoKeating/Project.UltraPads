@@ -206,6 +206,24 @@ pub fn sample_waveform(sample: String, buckets: u32) -> R<Vec<f32>> {
     }
 }
 
+/// Audition `start_frame..end_frame` (engine-rate frames, `None` = to the
+/// end) of a sample on the preview voice without occupying a pad. Library
+/// samples that are not loaded yet are registered first. Stop with
+/// `sample_preview_stop` (or `track_stop`).
+pub fn sample_preview(sample: String, start_frame: u64, end_frame: Option<u64>) -> R<()> {
+    let core = state::core()?;
+    let id = up_core::SampleId(sample.clone());
+    if core.handle()?.sample(&id).is_none() {
+        crate::api::library::library_use_sample(sample)?;
+    }
+    Ok(core.preview_sample(&id, start_frame, end_frame)?)
+}
+
+/// Stop a `sample_preview` audition.
+pub fn sample_preview_stop() -> R<()> {
+    Ok(state::core()?.track_stop()?)
+}
+
 /// Start microphone sampling. On Android, request RECORD_AUDIO first via
 /// the `dev.ultrapads/permissions` MethodChannel (`requestRecordAudio`).
 pub fn sampler_record_start(input_device: Option<String>) -> R<()> {

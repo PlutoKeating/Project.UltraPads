@@ -25,7 +25,8 @@ pub(crate) enum ControlMsg {
     Emit(EngineEvent),
     SetKit(Option<KitSummary>),
     SetTakeHandler(Option<TakeHandler>),
-    PreviewStarted(TrackId),
+    /// Preview voice started: `Some` = track playback, `None` = audition.
+    PreviewStarted(Option<TrackId>),
     /// Process everything pending, then acknowledge.
     Flush(Sender<()>),
 }
@@ -135,9 +136,15 @@ impl Control {
                 }
             }
             ControlMsg::SetTakeHandler(h) => self.take_handler = h,
-            ControlMsg::PreviewStarted(id) => {
+            ControlMsg::PreviewStarted(Some(id)) => {
                 self.preview = Some(id.clone());
                 self.emit(EngineEvent::TrackPlayback { track: Some(id) });
+            }
+            ControlMsg::PreviewStarted(None) => {
+                // An audition replaces a playing track.
+                if self.preview.take().is_some() {
+                    self.emit(EngineEvent::TrackPlayback { track: None });
+                }
             }
             ControlMsg::Flush(ack) => {
                 self.pump();

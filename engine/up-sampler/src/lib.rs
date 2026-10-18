@@ -21,7 +21,7 @@ mod voice;
 pub use sample::{SampleArc, SampleData};
 pub use sampler::{
     PREVIEW_OUTPUTS, PadState, RtPadParams, SampleUpdate, Sampler, SamplerCmd, SamplerConfig,
-    SamplerEvent, SamplerEvents, outputs_needed,
+    SamplerEvent, SamplerEvents, outputs_needed, pitch_ratio,
 };
 pub use up_core::{PadMode, PadPlayState, Quantize};
 pub use up_rt::retire::Retirer;

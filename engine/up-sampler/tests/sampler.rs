@@ -468,12 +468,83 @@ fn sample_replacement_retires_old_arc() {
 #[test]
 fn preview_plays_and_ends() {
     let mut r = Rig::default();
-    r.cmd(SamplerCmd::PlayPreview(dc_sample(BLOCK * 2, 0.3)));
+    r.cmd(SamplerCmd::PlayPreview {
+        sample: dc_sample(BLOCK * 2, 0.3),
+        start: 0,
+        end: None,
+        looping: false,
+    });
     r.block();
     assert!((r.bufs[48][5] - 0.3).abs() < 1e-6);
     r.blocks(3);
     assert!(!r.s.preview_active());
     assert!(r.ev.contains(&SamplerEvent::PreviewEnded));
+}
+
+#[test]
+fn preview_region_loops_without_a_pad() {
+    let mut r = Rig::default();
+    r.cmd(SamplerCmd::PlayPreview {
+        sample: dc_sample(BLOCK * 4, 0.3),
+        start: 10,
+        end: Some(30),
+        looping: true,
+    });
+    r.blocks(20);
+    assert!(r.s.preview_active(), "looping preview keeps playing");
+    assert!((r.bufs[48][5] - 0.3).abs() < 1e-6);
+    for pad in 0..24 {
+        assert_eq!(r.state(pad), PadPlayState::Idle, "no pad is occupied");
+    }
+    r.cmd(SamplerCmd::StopPreview);
+    r.blocks(10);
+    assert!(!r.s.preview_active());
+}
+
+/// Ramp sample: value = frame index; reading position reveals the rate.
+fn ramp_sample(frames: usize) -> SampleArc {
+    Arc::new(SampleData::new(
+        SampleId::new("ramp"),
+        "ramp",
+        SR,
+        vec![(0..frames).map(|i| i as f32).collect()],
+    ))
+}
+
+#[test]
+fn pitch_scales_playback_rate_and_multiplies_with_speed() {
+    let rate_after_block = |pitch: f32, speed: f64| {
+        let mut r = Rig::default();
+        r.cmd(SamplerCmd::SetSpeed(speed));
+        let params = RtPadParams {
+            pitch,
+            ..Default::default()
+        };
+        r.cmd(SamplerCmd::SetPad {
+            pad: 0,
+            params,
+            sample: SampleUpdate::Set(ramp_sample(BLOCK * 8)),
+        });
+        r.down(0);
+        r.block();
+        // Sample value at output frame 32 = read position at frame 32.
+        f64::from(r.pad_out(0)[32]) / 32.0
+    };
+    assert!((rate_after_block(0.0, 1.0) - 1.0).abs() < 1e-3);
+    assert!(
+        (rate_after_block(12.0, 1.0) - 2.0).abs() < 1e-3,
+        "+12 = octave up"
+    );
+    assert!((rate_after_block(-12.0, 1.0) - 0.5).abs() < 1e-3);
+    assert!(
+        (rate_after_block(12.0, 0.5) - 1.0).abs() < 1e-3,
+        "pitch × speed"
+    );
+    assert!(
+        (rate_after_block(24.0, 1.0) - 2.0).abs() < 1e-3,
+        "clamped to ±12"
+    );
+    assert!((pitch_ratio(7.0) - 1.4983).abs() < 1e-3);
 }
 
 #[test]

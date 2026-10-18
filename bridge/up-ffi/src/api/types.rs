@@ -119,6 +119,8 @@ pub struct PadParams {
     pub loop_start: Option<u64>,
     pub loop_end: Option<u64>,
     pub quantize_override: Option<Quantize>,
+    /// Realtime pitch in semitones (-12..=12), multiplied with the speed ratio.
+    pub pitch: f32,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -675,6 +677,7 @@ impl From<proto::PadParams> for PadParams {
             loop_start: p.loop_start,
             loop_end: p.loop_end,
             quantize_override: p.quantize_override.map(Into::into),
+            pitch: p.pitch,
         }
     }
 }
@@ -697,6 +700,7 @@ impl From<PadParams> for proto::PadParams {
             loop_start: p.loop_start,
             loop_end: p.loop_end,
             quantize_override: p.quantize_override.map(Into::into),
+            pitch: p.pitch,
         }
     }
 }

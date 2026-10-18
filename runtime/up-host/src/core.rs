@@ -356,8 +356,14 @@ impl AppCore {
         Ok(())
     }
 
-    /// Play arbitrary audio (e.g. a library track) on the preview voice.
-    pub fn play_audio(&self, track: &TrackId, audio: &up_codec::AudioBuffer) -> UpResult<()> {
+    /// Play arbitrary audio (e.g. a library track) on the preview voice,
+    /// optionally looping until `track_stop`.
+    pub fn play_audio(
+        &self,
+        track: &TrackId,
+        audio: &up_codec::AudioBuffer,
+        looping: bool,
+    ) -> UpResult<()> {
         let handle = self.handle()?;
         let rs = up_codec::resample(audio, handle.sample_rate())?;
         let s = SampleData::new(
@@ -366,7 +372,17 @@ impl AppCore {
             handle.sample_rate(),
             rs.to_planar(),
         );
-        handle.play_preview(track.clone(), Arc::new(s))
+        handle.play_preview_region(Some(track.clone()), Arc::new(s), 0, None, looping)
+    }
+
+    /// Audition `start..end` (engine-rate frames) of a registered sample on
+    /// the preview voice (does not occupy a pad). Stop with `track_stop`.
+    pub fn preview_sample(&self, id: &SampleId, start: u64, end: Option<u64>) -> UpResult<()> {
+        let handle = self.handle()?;
+        let s = handle
+            .sample(id)
+            .ok_or_else(|| UpError::not_found(format!("sample {id} is not registered")))?;
+        handle.play_preview_region(None, s, start, end, false)
     }
 
     pub fn current_kit(&self) -> UpResult<Option<up_model::KitDoc>> {

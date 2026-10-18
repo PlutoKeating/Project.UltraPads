@@ -13,9 +13,10 @@ import 'types.dart';
 Future<List<TrackInfo>> tracksList() =>
     RustLib.instance.api.crateApiTracksTracksList();
 
-/// Play a track on the preview voice (emits `TrackPlayback`).
-Future<void> trackPlay({required String id}) =>
-    RustLib.instance.api.crateApiTracksTrackPlay(id: id);
+/// Play a track on the preview voice (emits `TrackPlayback`). With
+/// `looping` it repeats until `track_stop`.
+Future<void> trackPlay({required String id, required bool looping}) =>
+    RustLib.instance.api.crateApiTracksTrackPlay(id: id, looping: looping);
 
 Future<void> trackStop() => RustLib.instance.api.crateApiTracksTrackStop();
 
