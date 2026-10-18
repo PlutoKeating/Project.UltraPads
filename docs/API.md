@@ -398,3 +398,77 @@ Manifest 声明 `REQUEST_INSTALL_PACKAGES`。
 Dart：`EngineClient.appVersion` / `updateCheck` / `updateDownload` / `updateCancel` / `updateApply` / `updateRelaunch`，
 数据类 `UpdateInfo`、`UpdateInstallMode`、`UpdateProgress`（`UpdateDownloading` / `UpdateReady` / `UpdateFailed`）。
 
+
+## 7. 官方曲库目录与账号接口（`website/worker`、`data/`）
+
+决策见 `docs/adr/0005-catalog-and-accounts.md`。站点 `https://ultrapads.plutokeating.beer`。目录与详情**匿名可读**；登录（PlutoKeating 账号）后解锁云端收藏、最近使用、下载记录。文件只经 Worker 透传，客户端从不直连数据服务。
+
+### 7.1 账号
+
+- 签发方 `https://id.plutokeating.beer/`（Ory Hydra）。App 客户端 `ultrapads-app`：公共客户端、授权码 + PKCE，scope `openid profile email offline_access`，回调 `com.plutokeating.ultrapads://callback`（Android）与 `http://127.0.0.1/callback`（桌面回环）。
+- Worker 用 `jose` 对 `<issuer>/.well-known/jwks.json` 本地验签，校验 `iss` 与 `client_id ∈ {ultrapads-app}`（不校验 `aud`）。需要登录的接口：无令牌 → `401 {"error":"missing_token"}`；验签失败或过期 → `401 {"error":"invalid_token"}`；`client_id` 不在名单 → `403 {"error":"client_not_allowed"}`。
+- 带有效令牌访问匿名接口时不影响结果，只有 `/api/catalog/:id/download` 会因此写入下载记录。
+
+### 7.2 目录（匿名可读）
+
+| 请求 | 响应 |
+|---|---|
+| `GET /api/catalog?q=&license=&genre=&origin=&bpm_min=&bpm_max=&sort=new\|bpm\|title&cursor=&limit=` | `{ items: [CatalogItem], next_cursor: string\|null, total }`。`license` 可重复或逗号分隔；`limit` 默认 30、最大 50；`q` 在标题、作者、标签里匹配 |
+| `GET /api/catalog/facets` | `{ licenses: [{id,count}], genres: [{id,count}], origins: [{id,count}] }` |
+| `GET /api/catalog/<id>` | `CatalogItem`；不存在 `404 {"error":"not_found"}` |
+| `GET /api/catalog/<id>/download` | `.upkit`（`application/zip`）字节流，支持 `Range`，头 `X-Digest: sha256:<hex>`、`Content-Disposition: attachment; filename="<id>.upkit"`。传了有效令牌时记入下载历史 |
+
+```jsonc
+// CatalogItem
+{
+  "id": "synth-dusk-run",              // [a-z0-9][a-z0-9-]{2,63}，目录内唯一且不变
+  "title": "Dusk Run",
+  "artist": "UltraPads",
+  "description": "…",
+  "origin": "synth",                   // album | online | synth | ugc（ugc 暂未开放）
+  "license": "CC0-1.0",                // CC0-1.0 | CC-BY-4.0 | CC-BY-3.0 | CC-BY-SA-4.0 | CC-BY-SA-3.0 | CC-BY-NC-4.0 | CC-BY-NC-SA-4.0 | PD
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "attribution": "“Dusk Run” by UltraPads, CC0 1.0",   // 应用内与 Kit 元数据里原样展示
+  "source_url": "https://…",
+  "commercial_ok": true,               // 由 license 推出：不含 NC
+  "share_alike": false,                // 由 license 推出：含 SA
+  "bpm": 112,
+  "genres": ["house"],
+  "tags": ["drums","bass"],
+  "group_count": 4,                    // 音色组数 1..=7
+  "pad_count": 44,
+  "duration_secs": 17.1,               // 单个循环的时长
+  "size": 5234567,                     // .upkit 字节数
+  "sha256": "<64 位小写十六进制>",
+  "theme_color": "#f0a35e",
+  "updated_at_ms": 1760000000000
+}
+```
+
+### 7.3 账号数据（需要登录）
+
+| 请求 | 响应 |
+|---|---|
+| `GET /api/me` | `{ sub, email?, name? }` |
+| `GET /api/me/state` | `{ favorites: [id], recent: [{id,at_ms}], downloads: [{id,at_ms}] }`（最近使用与下载各保留最近 100 条，新→旧） |
+| `PUT /api/me/favorites/<id>` / `DELETE /api/me/favorites/<id>` | `204`，幂等；`id` 必须是目录里存在的条目，否则 `404` |
+| `POST /api/me/recent` `{ id }` | `204`，同一 id 只保留最新一条 |
+| `DELETE /api/me` | `204`，级联删除该账号的全部数据 |
+
+所有 JSON 错误体统一 `{ "error": <code>, "message"?: string }`。目录与详情响应带 `Cache-Control: public, max-age=60`；账号数据 `no-store`。无 CORS 要求（原生 App 调用），沿用 `/api/version` 的宽松 CORS 头即可。
+
+### 7.4 数据服务（`data/`，只给 Worker）
+
+`ultrapads-data`：Node 24 + Hono + `node:sqlite` + 本地流式文件，Docker 部署，只监听 `127.0.0.1:8791`，经 Cloudflare Tunnel 对 Worker 开放（路径前缀 `/ultrapads`，服务自己剥掉）。所有路径支持可选的 `/ultrapads` 前缀。
+
+| 请求 | 说明 |
+|---|---|
+| `GET /health` | 无需密钥 |
+| `GET /v1/catalog`、`/v1/catalog/facets`、`/v1/catalog/<id>` | 与 §7.2 的查询参数和响应体一致（只含 `status = published` 的条目） |
+| `GET /v1/catalog/<id>/file` | 流式返回 `.upkit`，支持 `Range`，`ETag: "<sha256>"` |
+| `GET /v1/users/<sub>/state`、`PUT\|DELETE /v1/users/<sub>/favorites/<id>`、`POST /v1/users/<sub>/recent`、`POST /v1/users/<sub>/downloads`、`DELETE /v1/users/<sub>` | 与 §7.3 对应，按 `sub` 严格隔离 |
+| `PUT /v1/admin/catalog/<id>` | 创建或更新元数据（CatalogItem 去掉 `size`/`sha256`，加 `status: draft\|published`）；`license` 之外的派生字段由服务计算 |
+| `PUT /v1/admin/catalog/<id>/file` | 流式上传 `.upkit`，服务计算 `size` 与 `sha256`（带 `x-sha256` 头时核对，不符 `422`）；上传成功才允许 `published` |
+| `DELETE /v1/admin/catalog/<id>` | 删除条目与文件 |
+
+鉴权：普通接口 `Authorization: Bearer <ULTRAPADS_DATA_KEY>`（只在 Worker Secret 中）；`/v1/admin/*` 额外要求 `X-Up-Admin: <ULTRAPADS_ADMIN_KEY>`（只在运营者本机与服务器 `.env`，Worker 不持有）。数据与文件目录 `/data`：`ultrapads.sqlite`（WAL）、`files/<hh>/<sha256>`、每日 `VACUUM INTO` 备份。
