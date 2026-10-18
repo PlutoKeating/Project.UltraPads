@@ -10,6 +10,9 @@ import 'package:up_engine/up_engine.dart';
 ///   把端口、地址和配对码打印到 stdout（无界面的 Hub 联调与截图）；
 /// - `ULTRAPADS_LOG_EVENTS=1`：把 pad 状态、Hub 事件和非零电平（≤ 4 次/秒）
 ///   打印到 stdout，用来确认引擎确实在发声。
+///
+/// 没有环境变量的平台（Android）用编译期开关：`--dart-define=UP_LOG_EVENTS=true`
+/// 与 `--dart-define=UP_HUB_AUTOSTART=<名字>`（日志进 logcat 的 `flutter` 标签）。
 abstract final class DevHooks {
   /// 电平日志节流（日志频率，不是界面动效）。
   // up-lint-ignore: 调试日志节流间隔，与界面动效无关
@@ -19,8 +22,12 @@ abstract final class DevHooks {
       kIsWeb ? const {} : Platform.environment;
 
   static Future<void> run(EngineClient engine) async {
-    if (_env['ULTRAPADS_LOG_EVENTS'] == '1') _logEvents(engine);
-    final hubName = _env['ULTRAPADS_HUB_AUTOSTART'];
+    const logDefine = bool.fromEnvironment('UP_LOG_EVENTS');
+    const hubDefine = String.fromEnvironment('UP_HUB_AUTOSTART');
+    if (logDefine || _env['ULTRAPADS_LOG_EVENTS'] == '1') _logEvents(engine);
+    final hubName = hubDefine.isNotEmpty
+        ? hubDefine
+        : _env['ULTRAPADS_HUB_AUTOSTART'];
     if (hubName != null && hubName.isNotEmpty) {
       try {
         final s = await engine.hubStartServer(hubName);
