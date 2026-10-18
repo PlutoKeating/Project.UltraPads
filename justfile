@@ -81,3 +81,22 @@ run-mock:
 # 构建无头 CLI 容器镜像（发布到 ghcr.io/plutokeating/ultrapads-cli）
 docker-cli tag="dev":
     docker build -f runtime/up-cli/Dockerfile -t ghcr.io/plutokeating/ultrapads-cli:{{tag}} .
+
+# 统一修改版本号（Cargo workspace + pubspec，构建号 +1）：just bump 0.1.1
+bump version:
+    tools/release/bump.sh {{version}}
+
+# 本地打 Linux 发布包到 dist/（CI 用同一脚本）：just package-linux（默认当前版本、x64）
+package-linux arch="x64":
+    cd {{app}} && flutter build linux --release
+    tools/release/package-linux.sh "$(tools/release/check-version.sh | cut -d' ' -f2)" {{arch}}
+
+# 发布：核对版本后打 tag 并推送，GitHub Actions（.github/workflows/release.yml）构建并创建 Release
+release:
+    tools/release/check-version.sh
+    git tag "v$(tools/release/check-version.sh | cut -d' ' -f2)"
+    git push origin "v$(tools/release/check-version.sh | cut -d' ' -f2)"
+
+# 站点（website/）测试：安装脚本端到端 + 发布清单
+website-test:
+    cd website && npm test

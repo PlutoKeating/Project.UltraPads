@@ -1,0 +1,175 @@
+# 发布：推送 tag vX.Y.Z（与 Cargo.toml / pubspec.yaml 的版本一致，tools/release/bump.sh 修改）后构建并创建 GitHub Release。
+#   Linux  x64 / arm64：ultrapads-<版本>-linux-<架构>.tar.gz（tools/release/package-linux.sh 布局）
+#   Android：ultrapads-<版本>-android-<abi>.apk（正式签名，证书指纹在下方 ANDROID_CERT_SHA256 核对）
+#   SHA256SUMS.txt
+# 站点 ultrapads.plutokeating.beer 的 /api/version 与安装脚本读取 GitHub 记录的资产 sha256，发布后即生效，无需另外部署。
+# 需要的仓库 Secret：ANDROID_KEYSTORE_BASE64、ANDROID_KEYSTORE_PASSWORD、ANDROID_KEY_ALIAS（见 docs/QUICK_START.md「发布」）。
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FLUTTER_VERSION: "3.47.7"
+  # 正式签名证书（~/.config/ultrapads/release.jks）的 SHA-256；APK 不是这个证书签的就不发布
+  ANDROID_CERT_SHA256: "bb7dd4d80da6d07da0b43267081b95ac69b46aeb85f51409aad803caf8362816"
+
+jobs:
+  check:
+    name: Check version
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        run: |
+          tools/release/check-version.sh "$GITHUB_REF_NAME"
+          echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+      - name: CHANGELOG has a section for this version
+        run: grep -q "^## \[${GITHUB_REF_NAME#v}\]" CHANGELOG.md
+
+  linux:
+    name: Linux ${{ matrix.arch }}
+    needs: check
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-22.04
+          - arch: arm64
+            runner: ubuntu-22.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: System packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev libasound2-dev
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: linux-${{ matrix.arch }}
+      - name: Flutter ${{ env.FLUTTER_VERSION }}
+        # git 检出可同时用于 x64 与 arm64 主机（官方压缩包只有 x64）
+        run: |
+          git clone --depth 1 --branch "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Build
+        working-directory: app/ultrapads
+        run: |
+          flutter --version
+          flutter config --no-analytics --enable-linux-desktop
+          flutter pub get
+          flutter build linux --release
+      - name: Package
+        run: tools/release/package-linux.sh "${{ needs.check.outputs.version }}" "${{ matrix.arch }}" "app/ultrapads/build/linux/${{ matrix.arch }}/release/bundle" dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.arch }}
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  android:
+    name: Android
+    needs: check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: android
+      - name: cargo-ndk
+        run: cargo install cargo-ndk --locked
+      - name: Flutter ${{ env.FLUTTER_VERSION }}
+        run: |
+          git clone --depth 1 --branch "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          umask 077
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          printf 'storeFile=%s\nstorePassword=%s\nkeyPassword=%s\nkeyAlias=%s\n' \
+            "$RUNNER_TEMP/release.jks" "$KEYSTORE_PASSWORD" "$KEYSTORE_PASSWORD" "$KEY_ALIAS" > "$RUNNER_TEMP/key.properties"
+          echo "UP_KEY_PROPERTIES=$RUNNER_TEMP/key.properties" >> "$GITHUB_ENV"
+      - name: Build
+        working-directory: app/ultrapads
+        run: |
+          flutter config --no-analytics
+          flutter pub get
+          flutter build apk --release --split-per-abi
+      - name: Rename and verify signatures
+        run: |
+          v="${{ needs.check.outputs.version }}"
+          mkdir -p dist
+          apksigner="$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)"
+          for abi in arm64-v8a armeabi-v7a x86_64; do
+            out="dist/ultrapads-$v-android-$abi.apk"
+            cp "app/ultrapads/build/app/outputs/flutter-apk/app-$abi-release.apk" "$out"
+            cert="$("$apksigner" verify --print-certs "$out" | sed -nE 's/.*certificate SHA-256 digest: ([0-9a-f]+).*/\1/p' | head -1)"
+            if [ "$cert" != "$ANDROID_CERT_SHA256" ]; then
+              echo "::error::$out is signed by $cert, expected $ANDROID_CERT_SHA256"
+              exit 1
+            fi
+          done
+      - name: Remove signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks" "$RUNNER_TEMP/key.properties"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: dist/*.apk
+          if-no-files-found: error
+
+  release:
+    name: Publish
+    needs: [check, linux, android]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksums and notes
+        run: |
+          v="${{ needs.check.outputs.version }}"
+          (cd dist && sha256sum ultrapads-* > SHA256SUMS.txt && cat SHA256SUMS.txt)
+          # CHANGELOG 中本版本的一节（到下一个 "## [" 为止）作为发布说明
+          awk -v h="## [$v]" 'index($0, h) == 1 { on = 1; next } on && /^## \[/ { exit } on' CHANGELOG.md > notes.md
+          cat >> notes.md <<EOF
+
+          ---
+          **Linux**：\`curl -fsSL https://ultrapads.plutokeating.beer/install | bash\`（再次运行即更新；应用内也会提示新版本）
+          **Android**：下载对应 ABI 的 APK（大多数手机选 arm64-v8a），或访问 https://ultrapads.plutokeating.beer
+          EOF
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "UltraPads $GITHUB_REF_NAME" \
+            --notes-file notes.md \
+            --verify-tag
