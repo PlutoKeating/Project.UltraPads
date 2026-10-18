@@ -147,6 +147,23 @@ just check            # = rust-check + dart-check
 
 **同一台 Linux 上的两个进程 / 集成测试**：`cargo test -p up_ffi --test ffi_hub`（FFI 全流程：服务、配对、同步、控制器转发）。
 
+## 6.1 官方曲库（数据服务与素材管线）
+
+```bash
+# 数据服务（data/）：本地开发与测试
+cd data && npm ci && npm run typecheck && npm test
+npm run dev                      # 127.0.0.1:8791，数据在 .dev/（不入库）
+# 部署：把 data/ 同步到服务器后 ./start.sh（首次生成 .env 与两把密钥；./start.sh --key / --admin-key 打印）
+# Worker 需要 Secret：cd website && npx wrangler secret put ULTRAPADS_DATA_KEY
+
+# 素材入库管线（tools/catalog，详见其 README）
+just catalog-test
+cd tools/catalog && python3 -m upcatalog build --source synth    # 生成 → out/，预览 out/preview/index.html
+ULTRAPADS_DATA_URL=… ULTRAPADS_DATA_KEY=… ULTRAPADS_ADMIN_KEY=… python3 -m upcatalog publish --id <id> [--publish]
+```
+
+应用内站点地址在 `app/ultrapads/assets/config/links.json`，调试时可用 `--dart-define=UP_SITE=<url>` 覆盖。
+
 ## 7. 发布
 
 一次发布 = 改版本号 → 写 CHANGELOG → 推送 tag，其余由 `.github/workflows/release.yml` 完成（约 20–30 分钟）。

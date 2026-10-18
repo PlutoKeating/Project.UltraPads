@@ -168,3 +168,22 @@ ultrapads.plutokeating.beer（website/，Cloudflare Worker，推送 main 由 Wor
   发布流水线核对 APK 证书 SHA-256，必须与 `release.yml` 中的 `ANDROID_CERT_SHA256` 一致（签名一变，用户就得卸载重装）。
 - **版本号**：Cargo `[workspace.package] version`（FFI `app_version()` 读取）与 pubspec `version: X.Y.Z+构建号`（构建号即 Android versionCode）
   由 `tools/release/bump.sh` 同时修改，`check-version.sh` 与 CI 核对两者及 tag 一致。
+
+## 11. 官方曲库与账号
+
+决策见 `docs/adr/0005-catalog-and-accounts.md`，接口见 `docs/API.md` §7。
+
+```
+App ──HTTPS──► ultrapads.plutokeating.beer（Cloudflare Worker：验签、缓存、纯透传）
+                  │  Authorization: Bearer <ULTRAPADS_DATA_KEY>（Worker Secret）
+                  ▼
+               ultrapads-data（data/，Docker，127.0.0.1:8791，经 Cloudflare Tunnel 只对 Worker 开放）
+                  SQLite（条目、收藏、最近使用、下载记录）+ files/<hh>/<sha256>（.upkit）
+tools/catalog ──管理接口（X-Up-Admin）──► ultrapads-data     素材入库管线（本机运行）
+```
+
+- **账号**：PlutoKeating 账号（`id.plutokeating.beer`，Ory Hydra）。App 是公共客户端 `ultrapads-app`，授权码 + PKCE：Android 用 `flutter_appauth`，Linux 桌面在 `127.0.0.1` 随机端口起一次性监听，系统浏览器完成授权。令牌存应用私有目录（0600）。Worker 用 `jose` 对 JWKS 本地验签，按 `sub` 隔离数据。
+- **目录与下载匿名可用**，登录后才有云端收藏、最近使用、下载记录。Worker 对目录响应做 60 秒边缘缓存；下载纯透传（每请求 CPU 仅 10 ms，不碰字节），完整响应按 `sha256` 缓存。完整性由客户端用目录里的 `sha256` 核对。
+- **素材**：`.upkit`（内含 FLAC，导入时引擎按内容解码），Kit 元数据里写入作者、许可证、来源和署名。许可证白名单：CC0、CC BY、CC BY-SA、CC BY-NC（3.0 / 4.0）、PD；其他一律拒绝入库。NC / SA 条目在 UI 里有徽标，保存与分享录音时带署名。
+- **入库管线** `tools/catalog`：synth（原创 MIDI + MuseScore_General 渲染，CC0）、album（AlbumDB，HTTP Range 只取需要的分轨）、online（ccMixter，逐条核对许可证）→ 分析 BPM → 按小节切片 → 打包 `.upkit` → 质检 → 预览 → 发布（默认 draft）。
+- 数据服务与运维细节（服务器、隧道、密钥）记在私有运维仓库，不进本仓库。

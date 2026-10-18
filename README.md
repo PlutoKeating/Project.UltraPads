@@ -38,6 +38,7 @@ UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter �
   - 项目可导出为 DAWproject。
 - **编辑 Kit**：新增、删除、调整音色组顺序，给 pad 换音色（内置、麦克风、本地文件、其他 Kit、录音），调整 pad 属性，裁剪和试听样本。
 - **录音与作品**：录下主输出生成作品，作品卡带波形，可循环播放、导出 WAV 和分享。
+- **官方曲库**：应用内浏览、搜索、筛选并按需下载大量现成曲目（原创 CC0 合成曲、AlbumDB、ccMixter 等），每首都是按乐器分音色组、按小节切好循环的 Kit，开箱即可即兴重排；逐条标注许可证与署名。登录 PlutoKeating 账号后云端同步收藏、最近使用与下载记录。
 - **皮肤**：3 套主题（霓虹、描边、浅色）、16 套内置皮肤预设，另有自定义皮肤编辑器。
 - **个人多设备协同（Hub）**：
   - 设备在局域网内通过 mDNS 自动发现，用 6 位配对码配对，配对过程基于 SPAKE2 加双向 TLS。
@@ -151,8 +152,9 @@ packages/      up_tokens（设计 token）up_ui（组件）up_fx（光效）up_i
 design/tokens  W3C DTCG token 源 + Style Dictionary 构建
 design/brand   品牌标志（UP 组合字）与应用图标 SVG
 content/       Kit schema 与 CC0 示例 Kit
-tools/         lint、素材注入、图标生成、发布脚本
-website/       官网 ultrapads.plutokeating.beer：安装脚本、下载页、发布接口与镜像（Cloudflare Worker）
+tools/         lint、素材注入、图标生成、发布脚本、catalog（官方曲库素材入库管线）
+website/       官网 ultrapads.plutokeating.beer：安装脚本、下载页、发布接口与镜像、官方曲库目录与账号数据接口（Cloudflare Worker）
+data/          ultrapads-data：官方曲库目录与账号数据服务（Node + SQLite，Docker）
 docs/          架构、API、需求、ADR、调研
 ```
 
@@ -164,7 +166,7 @@ docs/          架构、API、需求、ADR、调研
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | 分层、线程模型、平台适配、设计系统、多设备协同 |
 | [`docs/API.md`](docs/API.md) | 引擎协议、FFI 接口、Hub 协议、发布与更新接口 |
 | [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) | 功能和非功能需求 |
-| [`docs/adr/`](docs/adr/) | 架构决策记录 |
+| [`docs/adr/`](docs/adr/) | 架构决策记录（含 ADR-0005 官方曲库与账号） |
 | [`docs/research/`](docs/research/) | 格式调研、v0.0.1 验证记录 |
 
 ## 当前状态
