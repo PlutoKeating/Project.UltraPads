@@ -135,9 +135,10 @@ class _FirstGuideOverlayState extends State<FirstGuideOverlay>
             ),
             if (hole != null) ..._pointer(hole),
             if (hole != null) _bubble(context, size, hole, last),
+            // 避开状态栏 / 刘海（浮层铺满整个页面，不在 SafeArea 内）。
             Positioned(
-              top: UpSpacing.lg,
-              right: UpSpacing.lg,
+              top: MediaQuery.paddingOf(context).top + UpSpacing.lg,
+              right: MediaQuery.paddingOf(context).right + UpSpacing.lg,
               child: SlideTransition(
                 position: Tween(begin: const Offset(1, 0), end: Offset.zero)
                     .animate(
