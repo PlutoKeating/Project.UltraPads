@@ -2580,6 +2580,143 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'Pressed'**
   String get settingsGalleryPressed;
+
+  /// No description provided for @hubLocalAddresses.
+  ///
+  /// In en, this message translates to:
+  /// **'Addresses of this device'**
+  String get hubLocalAddresses;
+
+  /// No description provided for @hubAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If your phone can\'t find this device, enter one of these addresses on it.'**
+  String get hubAddressHint;
+
+  /// No description provided for @pairingNewCode.
+  ///
+  /// In en, this message translates to:
+  /// **'New code'**
+  String get pairingNewCode;
+
+  /// No description provided for @pairingValidUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until {time}, up to 5 attempts'**
+  String pairingValidUntil(String time);
+
+  /// No description provided for @hubTrustedDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted devices'**
+  String get hubTrustedDevices;
+
+  /// No description provided for @hubRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get hubRevoke;
+
+  /// No description provided for @hubRevokeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke {deviceName}? It will no longer be able to sync with or control this device.'**
+  String hubRevokeConfirm(String deviceName);
+
+  /// No description provided for @hubRemoteControlling.
+  ///
+  /// In en, this message translates to:
+  /// **'{deviceName} is controlling this device'**
+  String hubRemoteControlling(String deviceName);
+
+  /// No description provided for @hubManualAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter address manually'**
+  String get hubManualAddress;
+
+  /// No description provided for @hubManualAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'IP or IP:port, e.g. 192.168.1.10:47100'**
+  String get hubManualAddressHint;
+
+  /// No description provided for @hubConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get hubConnect;
+
+  /// No description provided for @hubProbeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach {address}'**
+  String hubProbeFailed(String address);
+
+  /// No description provided for @hubLocalEcho.
+  ///
+  /// In en, this message translates to:
+  /// **'Also play on this device'**
+  String get hubLocalEcho;
+
+  /// No description provided for @hubLocalEchoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'By default only the controlled device plays'**
+  String get hubLocalEchoHint;
+
+  /// No description provided for @hubStopControlling.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop controlling'**
+  String get hubStopControlling;
+
+  /// No description provided for @hubSyncFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync finished: {down} downloaded, {up} uploaded'**
+  String hubSyncFinished(int down, int up);
+
+  /// No description provided for @hubSyncStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing sync…'**
+  String get hubSyncStarting;
+
+  /// No description provided for @hubDeviceId.
+  ///
+  /// In en, this message translates to:
+  /// **'Device ID: {id}'**
+  String hubDeviceId(String id);
+
+  /// No description provided for @hubErrorOp.
+  ///
+  /// In en, this message translates to:
+  /// **'Hub operation failed ({op})'**
+  String hubErrorOp(String op);
+
+  /// No description provided for @settingsAudioStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio status'**
+  String get settingsAudioStatus;
+
+  /// No description provided for @settingsAudioStatusValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{host} · {device} · {channels} ch {format}'**
+  String settingsAudioStatusValue(
+    String host,
+    String device,
+    int channels,
+    String format,
+  );
+
+  /// No description provided for @settingsAudioStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio output is not running'**
+  String get settingsAudioStopped;
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

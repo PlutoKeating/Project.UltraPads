@@ -308,7 +308,7 @@ class _SkinEditorPageState extends ConsumerState<SkinEditorPage> {
   static final List<PadData> _previewPads = [
     for (var i = 0; i < PadId.total; i++)
       PadData(
-        role: i % ColorRole.values.length,
+        role: i % ColorRole.palette.length,
         loop: i % PadId.columns == 1,
         state: i == 4 ? PadVisualState.playing : PadVisualState.idle,
         label: padNumberLabel(i % PadId.padsPerBank),

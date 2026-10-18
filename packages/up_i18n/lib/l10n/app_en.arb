@@ -1385,5 +1385,109 @@
   "settingsGalleryPressed": "Pressed",
   "@settingsGalleryPressed": {
     "description": "Component state: pressed."
-  }
+  },
+  "hubLocalAddresses": "Addresses of this device",
+  "@hubLocalAddresses": {},
+  "hubAddressHint": "If your phone can't find this device, enter one of these addresses on it.",
+  "@hubAddressHint": {},
+  "pairingNewCode": "New code",
+  "@pairingNewCode": {},
+  "pairingValidUntil": "Valid until {time}, up to 5 attempts",
+  "@pairingValidUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hubTrustedDevices": "Trusted devices",
+  "@hubTrustedDevices": {},
+  "hubRevoke": "Revoke",
+  "@hubRevoke": {},
+  "hubRevokeConfirm": "Revoke {deviceName}? It will no longer be able to sync with or control this device.",
+  "@hubRevokeConfirm": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "hubRemoteControlling": "{deviceName} is controlling this device",
+  "@hubRemoteControlling": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "hubManualAddress": "Enter address manually",
+  "@hubManualAddress": {},
+  "hubManualAddressHint": "IP or IP:port, e.g. 192.168.1.10:47100",
+  "@hubManualAddressHint": {},
+  "hubConnect": "Connect",
+  "@hubConnect": {},
+  "hubProbeFailed": "Couldn't reach {address}",
+  "@hubProbeFailed": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "hubLocalEcho": "Also play on this device",
+  "@hubLocalEcho": {},
+  "hubLocalEchoHint": "By default only the controlled device plays",
+  "@hubLocalEchoHint": {},
+  "hubStopControlling": "Stop controlling",
+  "@hubStopControlling": {},
+  "hubSyncFinished": "Sync finished: {down} downloaded, {up} uploaded",
+  "@hubSyncFinished": {
+    "placeholders": {
+      "down": {
+        "type": "int"
+      },
+      "up": {
+        "type": "int"
+      }
+    }
+  },
+  "hubSyncStarting": "Preparing sync…",
+  "@hubSyncStarting": {},
+  "hubDeviceId": "Device ID: {id}",
+  "@hubDeviceId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "hubErrorOp": "Hub operation failed ({op})",
+  "@hubErrorOp": {
+    "placeholders": {
+      "op": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAudioStatus": "Audio status",
+  "@settingsAudioStatus": {},
+  "settingsAudioStatusValue": "{host} · {device} · {channels} ch {format}",
+  "@settingsAudioStatusValue": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "channels": {
+        "type": "int"
+      },
+      "format": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAudioStopped": "Audio output is not running",
+  "@settingsAudioStopped": {}
 }

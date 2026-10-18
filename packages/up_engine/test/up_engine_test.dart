@@ -110,7 +110,78 @@ void main() {
     final peer = DemoLibrary.peers.first;
     expect(() => engine.hubPair(peer, '12'), throwsA(isA<EngineException>()));
     final d = await engine.hubPair(peer, '123456');
-    expect(d.peer.paired, isTrue);
+    expect(d.id, peer.id);
+    expect((await engine.hubTrustedDevices()).single.id, peer.id);
+    expect((await engine.hubKnownPeers()).single.paired, isTrue);
+    expect(await engine.hubRevoke(peer.id), isTrue);
+    expect(await engine.hubTrustedDevices(), isEmpty);
+  });
+
+  test('controller local echo also plays locally', () async {
+    await engine.hubControllerConnect(DemoLibrary.peers.first);
+    engine.hubControllerSetLocalEcho(true);
+    expect(engine.hubControllerStatus().localEcho, isTrue);
+    engine.padDown(const PadId(0, 0));
+    expect(engine.forwardedPadEvents, 1);
+    expect(engine.snapshot().stateOf(const PadId(0, 0)), PadPlayState.playing);
+    await engine.hubControllerDisconnect();
+    expect(engine.hubControllerStatus().connected, isFalse);
+  });
+
+  test(
+    'hub server issues pairing codes, probe and sync report progress',
+    () async {
+      await expectLater(
+        engine.hubNewPairingCode(),
+        throwsA(isA<EngineException>()),
+      );
+      final s = await engine.hubStartServer('Desk');
+      expect(s.addresses, isNotEmpty);
+      expect((await engine.hubNewPairingCode()).code, hasLength(6));
+      expect((await engine.hubServerInfo())?.name, 'Desk');
+      final peer = await engine.hubProbe('10.0.2.2:47100');
+      expect(peer.port, 47100);
+      final events = <HubEvent>[];
+      final sub = engine.events.listen((e) {
+        if (e is HubEventWrapper) events.add(e.event);
+      });
+      await engine.hubSync(peer);
+      await Future<void>.delayed(Duration.zero);
+      await sub.cancel();
+      expect(events.first, isA<HubSyncStarted>());
+      expect(events.whereType<HubSyncProgress>().last.fraction, 1);
+      expect(events.last, isA<HubSyncFinished>());
+      await engine.hubStopServer();
+      expect(await engine.hubServerInfo(), isNull);
+    },
+  );
+
+  test('discover emits found events and stops', () async {
+    final first = await engine.hubDiscover().first;
+    expect(first, isA<HubPeerFound>());
+    await engine.hubDiscoverStop();
+  });
+
+  test('color roles map to the token palette in one place', () {
+    expect(ColorRole.pink.paletteIndex, 0);
+    expect(ColorRole.orange.paletteIndex, 1);
+    expect(ColorRole.blue.paletteIndex, 3);
+    for (var i = 0; i < ColorRole.palette.length; i++) {
+      expect(ColorRole.palette[i].paletteIndex, i);
+    }
+    expect(ColorRole.fromPalette(9), ColorRole.orange);
+  });
+
+  test('sample preview does not occupy a pad', () async {
+    final kit = engine.snapshot().pads.firstWhere((p) => !p.isEmpty);
+    await engine.samplePreview(kit.sample!);
+    expect(engine.previewSample, kit.sample);
+    expect(
+      engine.snapshot().padStates.every((s) => s == PadPlayState.idle),
+      isTrue,
+    );
+    await engine.samplePreviewStop();
+    expect(engine.previewSample, isNull);
   });
 
   test('waveform deterministic', () {

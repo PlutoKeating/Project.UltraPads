@@ -83,3 +83,6 @@ GoogleService-Info.plist
 *.db
 *.sqlite
 *.sqlite3
+
+# golden 测试失败时生成的对比图
+**/test/failures/

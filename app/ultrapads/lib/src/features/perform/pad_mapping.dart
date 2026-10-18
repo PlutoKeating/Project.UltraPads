@@ -20,7 +20,7 @@ List<PadData> padDataFrom(List<PadParams> pads, List<PadPlayState> states) => [
     pads[i].isEmpty
         ? PadData.empty
         : PadData(
-            role: pads[i].color.index,
+            role: pads[i].color.paletteIndex,
             loop: pads[i].mode == PadMode.loop,
             state: padVisual(states[i]),
             label: padNumberLabel(i % PadId.padsPerBank),
@@ -30,13 +30,15 @@ List<PadData> padDataFrom(List<PadParams> pads, List<PadPlayState> states) => [
 /// APK「NORMAL」皮肤 Lottie（`normal_<blue|green|orange|pink>.json`），
 /// 只有注入了 APK 素材且用户开启「经典 pad 动画」时使用。
 PadLottieSkin? classicLottieSkin(PrivateAssets assets) {
-  String? color(int role) =>
-      switch (ColorRole.values[role % ColorRole.values.length]) {
-        ColorRole.blue || ColorRole.cyan => 'blue',
-        ColorRole.green => 'green',
-        ColorRole.yellow || ColorRole.orange => 'orange',
-        ColorRole.pink || ColorRole.magenta || ColorRole.rose => 'pink',
-      };
+  String? color(int role) => switch (ColorRole.fromPalette(role)) {
+    ColorRole.blue ||
+    ColorRole.cyan ||
+    ColorRole.grey ||
+    ColorRole.neutral => 'blue',
+    ColorRole.green || ColorRole.lime => 'green',
+    ColorRole.yellow || ColorRole.orange => 'orange',
+    ColorRole.pink || ColorRole.purple || ColorRole.red => 'pink',
+  };
   if (assets.key('apk/lottie/normal_blue.json') == null) return null;
   return PadLottieSkin(
     assetFor: (role, {required loop}) =>

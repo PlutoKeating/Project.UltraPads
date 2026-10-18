@@ -19,10 +19,10 @@ import '../rust/frb_generated.dart';
 /// - 热路径（[padDown] / [padUp] / [send] / [snapshot]）是 FRB `sync` 调用，
 ///   出错时不抛异常，只上报一次 [ErrorEvent]。
 ///
-/// 与 `docs/API.md` 的差异（以生成绑定为准，见 app/ultrapads/docs/ARCHITECTURE.md「引擎适配」）：
+/// 说明（以生成绑定为准，见 app/ultrapads/docs/ARCHITECTURE.md「引擎适配」）：
 /// 编辑 Kit 通过 `library_kit_json` / `library_save_kit(kitJson)` 交换
-/// `up_model::KitDoc` JSON；`ColorRole` 是命名枚举（映射到 token 调色板下标）；
-/// Hub 服务启动后不返回配对码；采样试听、`sample_info` 尚无对应函数。
+/// `up_model::KitDoc` JSON；`ColorRole` 与引擎同名一一对应（调色板映射见
+/// `ColorRole.paletteIndex`）；`sample_info` 由 `library_list_samples` 查找。
 class FfiEngineClient implements EngineClient {
   FfiEngineClient._();
 
@@ -39,7 +39,6 @@ class FfiEngineClient implements EngineClient {
   /// 编辑中的 Kit 原始 JSON（保存时就地修改，保留 UI 不认识的字段）。
   final Map<String, Map<String, dynamic>> _kitJson = {};
 
-  HubServerStatus _hub = const HubServerStatus(running: false);
   final Map<String, HubPeer> _peers = {};
 
   @override
@@ -95,8 +94,6 @@ class FfiEngineClient implements EngineClient {
     }
   }
 
-  Never _unimplemented(String fn) => throw EngineNotImplemented(fn);
-
   /// 热路径不能抛异常：出错时只报告一次错误事件。
   void _reportOnce(String fn, Object e) {
     if (_reported.add(fn)) {
@@ -107,29 +104,10 @@ class FfiEngineClient implements EngineClient {
 
   // ------------------------------------------------------------ mapping
 
-  static ColorRole _color(t.ColorRole c) => switch (c) {
-    t.ColorRole.blue => ColorRole.blue,
-    t.ColorRole.orange => ColorRole.orange,
-    t.ColorRole.pink => ColorRole.pink,
-    t.ColorRole.green || t.ColorRole.lime => ColorRole.green,
-    t.ColorRole.purple => ColorRole.magenta,
-    t.ColorRole.yellow => ColorRole.yellow,
-    t.ColorRole.red => ColorRole.rose,
-    t.ColorRole.cyan ||
-    t.ColorRole.grey ||
-    t.ColorRole.neutral => ColorRole.cyan,
-  };
+  static ColorRole _color(t.ColorRole c) => ColorRole.values.byName(c.name);
 
-  static t.ColorRole _colorOut(ColorRole c) => switch (c) {
-    ColorRole.blue => t.ColorRole.blue,
-    ColorRole.orange => t.ColorRole.orange,
-    ColorRole.pink => t.ColorRole.pink,
-    ColorRole.green => t.ColorRole.green,
-    ColorRole.magenta => t.ColorRole.purple,
-    ColorRole.yellow => t.ColorRole.yellow,
-    ColorRole.rose => t.ColorRole.red,
-    ColorRole.cyan => t.ColorRole.cyan,
-  };
+  static t.ColorRole _colorOut(ColorRole c) =>
+      t.ColorRole.values.byName(c.name);
 
   /// KitDoc JSON 里的颜色名（PascalCase）。
   static String _colorJson(ColorRole c) {
@@ -203,6 +181,7 @@ class FfiEngineClient implements EngineClient {
     quantizeOverride: p.quantizeOverride == null
         ? null
         : _quantize(p.quantizeOverride!),
+    pitch: p.pitch,
   );
 
   static t.PadParams _paramsOut(PadParams p) => t.PadParams(
@@ -219,6 +198,7 @@ class FfiEngineClient implements EngineClient {
     quantizeOverride: p.quantizeOverride == null
         ? null
         : _quantizeOut(p.quantizeOverride!),
+    pitch: p.pitch,
   );
 
   static KitSummary _kit(t.KitSummary k) => KitSummary(
@@ -237,7 +217,7 @@ class FfiEngineClient implements EngineClient {
       'compat' || 'builtin' || 'generated' => KitSource.builtin,
       _ => KitSource.imported,
     },
-    color: ColorRole.values[k.id.hashCode.abs() % ColorRole.values.length],
+    color: ColorRole.fromPalette(k.id.hashCode.abs()),
     coverAsset: k.coverPath,
   );
 
@@ -259,9 +239,49 @@ class FfiEngineClient implements EngineClient {
   static HubPeer _peer(t.HubPeer p) => HubPeer(
     id: p.id,
     name: p.name,
-    address: '${p.address}:${p.port}',
+    address: p.address,
+    port: p.port,
+    addresses: p.addresses,
     paired: p.paired,
   );
+
+  static PairedDevice _device(t.PairedDevice d) => PairedDevice(
+    id: d.id,
+    name: d.name,
+    pairedAt: DateTime.fromMillisecondsSinceEpoch(d.pairedUnixMs.toInt()),
+  );
+
+  static HubServerStatus _server(t.HubServerInfo i) => HubServerStatus(
+    running: true,
+    id: i.id,
+    name: i.name,
+    port: i.port,
+    udpPort: i.udpPort,
+    addresses: i.addresses,
+    advertising: i.advertising,
+  );
+
+  static SyncReport _report(t.SyncReport r) => SyncReport(
+    pulled: r.pulled,
+    pushed: r.pushed,
+    conflicts: r.conflicts,
+    bytes: r.bytes.toInt(),
+    uploadedBlobs: r.uploadedBlobs,
+    downloadedBlobs: r.downloadedBlobs,
+    durationMs: r.durationMs.toInt(),
+  );
+
+  static HubControllerStatus _controller(t.HubControllerStatus s) =>
+      HubControllerStatus(
+        connected: s.connected,
+        peerId: s.peer,
+        peerName: s.peerName,
+        localEcho: s.localEcho,
+        rttMs: s.latency == null || s.latency!.samples == 0
+            ? null
+            : s.latency!.rttP50Us.toDouble() /
+                  Duration.microsecondsPerMillisecond,
+      );
 
   EngineEvent? _event(t.EngineEvent e) => switch (e) {
     t.EngineEvent_PadState(:final pad, :final state) => PadStateEvent(
@@ -319,29 +339,42 @@ class FfiEngineClient implements EngineClient {
 
   EngineEvent? _hubEvent(t.HubEvent e) {
     final HubEvent? mapped = switch (e) {
+      // 端口等完整信息由 hub_server_info 读取；事件只触发刷新。
       t.HubEvent_ServerStarted(:final port) => HubServerChanged(
-        _hub = HubServerStatus(running: true, name: _hub.name, port: port),
+        HubServerStatus(running: true, port: port),
       ),
-      t.HubEvent_ServerStopped() => HubServerChanged(
-        _hub = const HubServerStatus(running: false),
+      t.HubEvent_ServerStopped() => const HubServerChanged(
+        HubServerStatus(running: false),
       ),
       t.HubEvent_Paired(:final id, :final name) => HubPeerPaired(
-        PairedDevice(
-          peer: HubPeer(id: id, name: name, paired: true),
-          token: '',
-        ),
+        PairedDevice(id: id, name: name),
       ),
+      t.HubEvent_SyncStarted(:final peer) => HubSyncStarted(peer),
       t.HubEvent_SyncProgress(:final peer, :final done, :final total) =>
-        HubSyncProgress(
-          peer,
-          total == BigInt.zero ? 1 : done.toDouble() / total.toDouble(),
-        ),
+        HubSyncProgress(peer, done.toInt(), total.toInt()),
+      t.HubEvent_SyncFinished(:final peer, :final report) => HubSyncFinished(
+        peer,
+        _report(report),
+      ),
       t.HubEvent_ControllerConnected(:final peer) => HubControllerChanged(
         connected: true,
-        peer: _peers[peer],
+        peer: _peers[peer] ?? HubPeer(id: peer, name: peer),
       ),
       t.HubEvent_ControllerDisconnected() => const HubControllerChanged(
         connected: false,
+      ),
+      t.HubEvent_RemoteControllerConnected(:final device, :final name) =>
+        HubRemoteControllerChanged(
+          connected: true,
+          deviceId: device,
+          name: name,
+        ),
+      t.HubEvent_RemoteControllerDisconnected(:final device) =>
+        HubRemoteControllerChanged(connected: false, deviceId: device),
+      t.HubEvent_Error(:final op, :final peer, :final error) => HubErrorEvent(
+        op,
+        _error(error, 'hub_$op'),
+        peerId: peer,
       ),
       t.HubEvent_PeerDiscovered() || t.HubEvent_PeerLost() => null,
     };
@@ -374,6 +407,9 @@ class FfiEngineClient implements EngineClient {
     sampleRate: s.sampleRate,
     bufferFrames: s.bufferFrames ?? 0,
     device: s.device,
+    host: s.host,
+    channels: s.channels,
+    sampleFormat: s.sampleFormat,
     latencyMs:
         s.outputLatencyMs ??
         ((s.bufferFrames ?? 0) / s.sampleRate * Duration.millisecondsPerSecond),
@@ -394,6 +430,10 @@ class FfiEngineClient implements EngineClient {
 
   @override
   Future<void> audioStop() => _call('audio_stop', ffi.audioStop);
+
+  @override
+  Future<AudioStatus> audioStatus() =>
+      _call('audio_status', () async => _status(await ffi.audioStatus()));
 
   @override
   Future<List<AudioDeviceInfo>> audioDevices() =>
@@ -437,6 +477,7 @@ class FfiEngineClient implements EngineClient {
         ),
         kit: s.kit == null ? null : _kit(s.kit!),
         recorder: _recorder(s.recorder),
+        controllerMode: hubControllerStatus().connected,
       );
     } catch (e) {
       _reportOnce('snapshot', e);
@@ -511,21 +552,36 @@ class FfiEngineClient implements EngineClient {
       _call('library_load_kit', () => ffi_lib.libraryLoadKit(kit: kitId));
 
   @override
-  Future<ImportReport> libraryImport(String path) =>
-      _call('library_import', () async {
-        final r = await ffi_lib.libraryImport(path: path);
-        final samples = r.samples.isEmpty
-            ? const <t.SampleInfo>[]
-            : await ffi_lib.libraryListSamples();
-        return ImportReport(
-          kits: [for (final k in r.kits) _kit(k)],
-          samples: [
-            for (final s in samples)
-              if (r.samples.contains(s.id)) _sample(s),
-          ],
-          warnings: r.warnings,
-        );
-      });
+  Future<ImportReport> libraryImport(String path) => _call(
+    'library_import',
+    () async => _importReport(await ffi_lib.libraryImport(path: path)),
+  );
+
+  @override
+  Future<ImportReport> libraryImportBytes(String name, List<int> bytes) =>
+      _call(
+        'library_import_bytes',
+        () async => _importReport(
+          await ffi_lib.libraryImportBytes(
+            name: name,
+            bytes: bytes is Uint8List ? bytes : Uint8List.fromList(bytes),
+          ),
+        ),
+      );
+
+  Future<ImportReport> _importReport(t.ImportReport r) async {
+    final samples = r.samples.isEmpty
+        ? const <t.SampleInfo>[]
+        : await ffi_lib.libraryListSamples();
+    return ImportReport(
+      kits: [for (final k in r.kits) _kit(k)],
+      samples: [
+        for (final s in samples)
+          if (r.samples.contains(s.id)) _sample(s),
+      ],
+      warnings: r.warnings,
+    );
+  }
 
   @override
   Future<void> libraryExportKit(
@@ -604,6 +660,7 @@ class FfiEngineClient implements EngineClient {
         sample: layerSample ?? sample,
         startFrame: (p['startFrame'] as num?)?.toInt() ?? 0,
         endFrame: (p['endFrame'] as num?)?.toInt(),
+        pitch: (p['pitchSemitones'] as num?)?.toDouble() ?? 0,
       );
     }
     final meta = json['meta'] as Map<String, dynamic>? ?? const {};
@@ -657,7 +714,8 @@ class FfiEngineClient implements EngineClient {
         ..['chokeGroup'] = p.chokeGroup
         ..['color'] = _colorJson(p.color)
         ..['startFrame'] = p.startFrame
-        ..['endFrame'] = p.endFrame;
+        ..['endFrame'] = p.endFrame
+        ..['pitchSemitones'] = p.pitch;
       if (prevSample != p.sample) {
         // 换了采样：清掉旧的分层，按单层 sample 引用保存。
         out
@@ -710,7 +768,18 @@ class FfiEngineClient implements EngineClient {
     String sampleId, {
     int startFrame = 0,
     int? endFrame,
-  }) async => _unimplemented('sample_preview');
+  }) => _call(
+    'sample_preview',
+    () => ffi.samplePreview(
+      sample: sampleId,
+      startFrame: BigInt.from(startFrame),
+      endFrame: endFrame == null ? null : BigInt.from(endFrame),
+    ),
+  );
+
+  @override
+  Future<void> samplePreviewStop() =>
+      _call('sample_preview_stop', ffi.samplePreviewStop);
 
   // ----------------------------------------------------------- tracks
 
@@ -721,8 +790,10 @@ class FfiEngineClient implements EngineClient {
   );
 
   @override
-  Future<void> trackPlay(String trackId, {bool loop = false}) =>
-      _call('track_play', () => ffi_tracks.trackPlay(id: trackId));
+  Future<void> trackPlay(String trackId, {bool loop = false}) => _call(
+    'track_play',
+    () => ffi_tracks.trackPlay(id: trackId, looping: loop),
+  );
 
   @override
   Future<void> trackStop() => _call('track_stop', ffi_tracks.trackStop);
@@ -777,10 +848,7 @@ class FfiEngineClient implements EngineClient {
   @override
   Future<HubServerStatus> hubStartServer(String name) => _call(
     'hub_start_server',
-    () async {
-      await ffi_hub.hubStartServer(name: name);
-      return _hub = HubServerStatus(running: true, name: name, port: _hub.port);
-    },
+    () async => _server(await ffi_hub.hubStartServer(name: name)),
   );
 
   @override
@@ -788,12 +856,72 @@ class FfiEngineClient implements EngineClient {
       _call('hub_stop_server', ffi_hub.hubStopServer);
 
   @override
-  Stream<HubPeer> hubDiscover() async* {
+  Future<HubServerStatus?> hubServerInfo() =>
+      _call('hub_server_info', () async {
+        final i = await ffi_hub.hubServerInfo();
+        return i == null ? null : _server(i);
+      });
+
+  @override
+  Future<PairingCode> hubNewPairingCode() => _call(
+    'hub_new_pairing_code',
+    () async {
+      final c = await ffi_hub.hubNewPairingCode();
+      return PairingCode(
+        code: c.code,
+        expiresAt: DateTime.fromMillisecondsSinceEpoch(c.expiresUnixMs.toInt()),
+        ttl: Duration(seconds: c.ttlSecs),
+      );
+    },
+  );
+
+  @override
+  Future<void> hubCancelPairing() =>
+      _call('hub_cancel_pairing', ffi_hub.hubCancelPairing);
+
+  @override
+  Future<List<PairedDevice>> hubTrustedDevices() => _call(
+    'hub_trusted_devices',
+    () async => [for (final d in await ffi_hub.hubTrustedDevices()) _device(d)],
+  );
+
+  @override
+  Future<bool> hubRevoke(String deviceId) =>
+      _call('hub_revoke', () => ffi_hub.hubRevoke(id: deviceId));
+
+  @override
+  Future<List<ControllerSession>> hubControllerStats() => _call(
+    'hub_controller_stats',
+    () async => [
+      for (final s in await ffi_hub.hubControllerStats())
+        ControllerSession(
+          deviceId: s.deviceId,
+          name: s.name,
+          packets: s.packets.toInt(),
+          heldPads: s.heldPads,
+        ),
+    ],
+  );
+
+  @override
+  Future<void> hubSetDeviceName(String name) =>
+      _call('hub_set_device_name', () => ffi_hub.hubSetDeviceName(name: name));
+
+  @override
+  Future<String> hubDeviceId() => _call('hub_device_id', ffi_hub.hubDeviceId);
+
+  @override
+  Stream<HubPeerEvent> hubDiscover() async* {
     try {
-      await for (final p in ffi_hub.hubDiscover()) {
-        final peer = _peer(p);
-        _peers[peer.id] = peer;
-        yield peer;
+      await for (final e in ffi_hub.hubDiscover()) {
+        switch (e) {
+          case t.HubPeerEvent_Found(:final field0):
+            final peer = _peer(field0);
+            _peers[peer.id] = peer;
+            yield HubPeerFound(peer);
+          case t.HubPeerEvent_Lost(:final id):
+            yield HubPeerLost(id);
+        }
       }
     } catch (e) {
       throw _error(e, 'hub_discover');
@@ -801,40 +929,72 @@ class FfiEngineClient implements EngineClient {
   }
 
   @override
-  Future<PairedDevice> hubPair(HubPeer peer, String code) =>
-      _call('hub_pair', () async {
-        final d = await ffi_hub.hubPair(peer: peer.id, code: code);
-        return PairedDevice(
-          peer: HubPeer(
-            id: d.id,
-            name: d.name,
-            address: peer.address,
-            paired: true,
-          ),
-          token: '',
-        );
-      });
+  Future<void> hubDiscoverStop() =>
+      _call('hub_discover_stop', ffi_hub.hubDiscoverStop);
 
   @override
-  Future<SyncReport> hubSync(HubPeer peer) => _call('hub_sync', () async {
-    final r = await ffi_hub.hubSync(peer: peer.id);
-    return SyncReport(
-      pulled: r.pulled,
-      pushed: r.pushed,
-      conflicts: r.conflicts,
-      bytes: r.bytes.toInt(),
-    );
+  Future<HubPeer> hubProbe(String address) => _call('hub_probe', () async {
+    final peer = _peer(await ffi_hub.hubProbe(address: address));
+    return _peers[peer.id] = peer;
   });
 
   @override
-  Future<void> hubControllerConnect(HubPeer peer) => _call(
-    'hub_controller_connect',
-    () => ffi_hub.hubControllerConnect(peer: peer.id),
+  Future<List<HubPeer>> hubKnownPeers() => _call('hub_known_peers', () async {
+    final out = [for (final p in await ffi_hub.hubKnownPeers()) _peer(p)];
+    for (final p in out) {
+      _peers[p.id] = p;
+    }
+    return out;
+  });
+
+  @override
+  Future<PairedDevice> hubPair(HubPeer peer, String code) => _call(
+    'hub_pair',
+    () async => _device(await ffi_hub.hubPair(peer: peer.id, code: code)),
   );
+
+  @override
+  Future<bool> hubForget(String peerId) =>
+      _call('hub_forget', () => ffi_hub.hubForget(peer: peerId));
+
+  @override
+  Future<SyncReport> hubSync(HubPeer peer) => _call(
+    'hub_sync',
+    () async => _report(await ffi_hub.hubSync(peer: peer.id)),
+  );
+
+  @override
+  Future<HubControllerStatus> hubControllerConnect(HubPeer peer) {
+    _peers[peer.id] = peer;
+    return _call(
+      'hub_controller_connect',
+      () async =>
+          _controller(await ffi_hub.hubControllerConnect(peer: peer.id)),
+    );
+  }
 
   @override
   Future<void> hubControllerDisconnect() =>
       _call('hub_controller_disconnect', ffi_hub.hubControllerDisconnect);
+
+  @override
+  HubControllerStatus hubControllerStatus() {
+    try {
+      return _controller(ffi_hub.hubControllerStatus());
+    } catch (e) {
+      _reportOnce('hub_controller_status', e);
+      return HubControllerStatus.disconnected;
+    }
+  }
+
+  @override
+  void hubControllerSetLocalEcho(bool enabled) {
+    try {
+      ffi_hub.hubControllerSetLocalEcho(enabled: enabled);
+    } catch (e) {
+      _reportOnce('hub_controller_set_local_echo', e);
+    }
+  }
 
   @override
   Future<void> dispose() async {

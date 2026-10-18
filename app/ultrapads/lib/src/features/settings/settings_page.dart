@@ -154,6 +154,21 @@ class SettingsPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: UpSheetTokens.itemGap),
                   UpListItem(
+                    icon: Icons.speaker_rounded,
+                    title: l10n.settingsAudioStatus,
+                    subtitle: switch (status.value) {
+                      null => l10n.errorEngineUnsupported,
+                      final st when !st.running => l10n.settingsAudioStopped,
+                      final st => l10n.settingsAudioStatusValue(
+                        st.host,
+                        st.device,
+                        st.channels,
+                        st.sampleFormat,
+                      ),
+                    },
+                  ),
+                  const SizedBox(height: UpSheetTokens.itemGap),
+                  UpListItem(
                     icon: Icons.timer_rounded,
                     title: l10n.settingsLatency,
                     subtitle: status.value == null
@@ -265,15 +280,10 @@ class SettingsPage extends ConsumerWidget {
   }
 }
 
-final _audioStatusProvider = FutureProvider<AudioStatus?>((ref) async {
-  final engine = ref.watch(engineProvider);
-  final s = ref.read(settingsProvider);
-  return tryEngine(
-    () => engine.audioStart(
-      AudioConfig(bufferFrames: s.bufferFrames, outputDevice: s.outputDevice),
-    ),
-  );
-});
+/// 只读当前状态（`audio_status`），不再为了读状态而重启音频。
+final _audioStatusProvider = FutureProvider<AudioStatus?>(
+  (ref) => tryEngine(ref.watch(engineProvider).audioStatus),
+);
 
 final _devicesProvider = FutureProvider<List<AudioDeviceInfo>>(
   (ref) async =>

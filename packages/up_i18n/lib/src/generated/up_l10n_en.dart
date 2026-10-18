@@ -1491,4 +1491,92 @@ class UpL10nEn extends UpL10n {
 
   @override
   String get settingsGalleryPressed => 'Pressed';
+
+  @override
+  String get hubLocalAddresses => 'Addresses of this device';
+
+  @override
+  String get hubAddressHint =>
+      'If your phone can\'t find this device, enter one of these addresses on it.';
+
+  @override
+  String get pairingNewCode => 'New code';
+
+  @override
+  String pairingValidUntil(String time) {
+    return 'Valid until $time, up to 5 attempts';
+  }
+
+  @override
+  String get hubTrustedDevices => 'Trusted devices';
+
+  @override
+  String get hubRevoke => 'Revoke';
+
+  @override
+  String hubRevokeConfirm(String deviceName) {
+    return 'Revoke $deviceName? It will no longer be able to sync with or control this device.';
+  }
+
+  @override
+  String hubRemoteControlling(String deviceName) {
+    return '$deviceName is controlling this device';
+  }
+
+  @override
+  String get hubManualAddress => 'Enter address manually';
+
+  @override
+  String get hubManualAddressHint => 'IP or IP:port, e.g. 192.168.1.10:47100';
+
+  @override
+  String get hubConnect => 'Connect';
+
+  @override
+  String hubProbeFailed(String address) {
+    return 'Couldn\'t reach $address';
+  }
+
+  @override
+  String get hubLocalEcho => 'Also play on this device';
+
+  @override
+  String get hubLocalEchoHint => 'By default only the controlled device plays';
+
+  @override
+  String get hubStopControlling => 'Stop controlling';
+
+  @override
+  String hubSyncFinished(int down, int up) {
+    return 'Sync finished: $down downloaded, $up uploaded';
+  }
+
+  @override
+  String get hubSyncStarting => 'Preparing sync…';
+
+  @override
+  String hubDeviceId(String id) {
+    return 'Device ID: $id';
+  }
+
+  @override
+  String hubErrorOp(String op) {
+    return 'Hub operation failed ($op)';
+  }
+
+  @override
+  String get settingsAudioStatus => 'Audio status';
+
+  @override
+  String settingsAudioStatusValue(
+    String host,
+    String device,
+    int channels,
+    String format,
+  ) {
+    return '$host · $device · $channels ch $format';
+  }
+
+  @override
+  String get settingsAudioStopped => 'Audio output is not running';
 }

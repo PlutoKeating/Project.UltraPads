@@ -184,65 +184,156 @@ final waveformProvider =
       (ref, a) => ref.watch(engineProvider).sampleWaveform(a.sample, a.buckets),
     );
 
-/// Hub 投影。
+/// Hub 投影（只读）：事件增量更新，再按需从引擎重读服务信息与受信列表。
 class HubView {
   const HubView({
     this.server = const HubServerStatus(running: false),
-    this.paired = const [],
-    this.syncProgress = const {},
+    this.pairingCode,
+    this.trusted = const [],
+    this.sync = const {},
     this.lastSync,
+    this.controller = HubControllerStatus.disconnected,
     this.controllerPeer,
+    this.remoteControllers = const {},
   });
 
   final HubServerStatus server;
-  final List<PairedDevice> paired;
-  final Map<String, double> syncProgress;
+
+  /// 当前配对码（本机为 Hub 时）。
+  final PairingCode? pairingCode;
+  final List<PairedDevice> trusted;
+
+  /// 进行中的同步：peerId → 进度。
+  final Map<String, HubSyncProgress> sync;
   final SyncReport? lastSync;
+
+  /// 本机作为控制器。
+  final HubControllerStatus controller;
   final HubPeer? controllerPeer;
+
+  /// 本机作为 Hub：正在控制本机的设备（id → 名称）。
+  final Map<String, String> remoteControllers;
 
   HubView copyWith({
     HubServerStatus? server,
-    List<PairedDevice>? paired,
-    Map<String, double>? syncProgress,
+    PairingCode? Function()? pairingCode,
+    List<PairedDevice>? trusted,
+    Map<String, HubSyncProgress>? sync,
     SyncReport? lastSync,
+    HubControllerStatus? controller,
     HubPeer? Function()? controllerPeer,
+    Map<String, String>? remoteControllers,
   }) => HubView(
     server: server ?? this.server,
-    paired: paired ?? this.paired,
-    syncProgress: syncProgress ?? this.syncProgress,
+    pairingCode: pairingCode != null ? pairingCode() : this.pairingCode,
+    trusted: trusted ?? this.trusted,
+    sync: sync ?? this.sync,
     lastSync: lastSync ?? this.lastSync,
+    controller: controller ?? this.controller,
     controllerPeer: controllerPeer != null
         ? controllerPeer()
         : this.controllerPeer,
+    remoteControllers: remoteControllers ?? this.remoteControllers,
   );
 }
 
 class HubProjection extends Notifier<HubView> {
+  EngineClient get _engine => ref.read(engineProvider);
+
   @override
   HubView build() {
     final sub = ref.watch(engineEventsProvider).listen((e) {
-      if (e is! HubEventWrapper) return;
-      switch (e.event) {
-        case HubServerChanged(:final status):
-          state = state.copyWith(server: status);
-        case HubPeerPaired(:final device):
-          state = state.copyWith(
-            paired: [
-              ...state.paired.where((d) => d.peer.id != device.peer.id),
-              device,
-            ],
-          );
-        case HubSyncProgress(:final peerId, :final progress, :final report):
-          state = state.copyWith(
-            syncProgress: {...state.syncProgress, peerId: progress},
-            lastSync: report,
-          );
-        case HubControllerChanged(:final connected, :final peer):
-          state = state.copyWith(controllerPeer: () => connected ? peer : null);
-      }
+      if (e is HubEventWrapper) _on(e.event);
     });
     ref.onDispose(sub.cancel);
-    return const HubView();
+    Future.microtask(refresh);
+    return HubView(controller: ref.read(engineProvider).hubControllerStatus());
+  }
+
+  void _on(HubEvent e) {
+    switch (e) {
+      case HubServerChanged(:final status):
+        state = state.copyWith(
+          server: status,
+          pairingCode: status.running ? null : () => null,
+        );
+        refresh();
+      case HubPeerPaired():
+        refresh();
+      case HubSyncStarted(:final peerId):
+        state = state.copyWith(
+          sync: {...state.sync, peerId: HubSyncProgress(peerId, 0, 0)},
+        );
+      case HubSyncProgress(:final peerId):
+        state = state.copyWith(sync: {...state.sync, peerId: e});
+      case HubSyncFinished(:final peerId, :final report):
+        state = state.copyWith(
+          sync: {...state.sync}..remove(peerId),
+          lastSync: report,
+        );
+      case HubErrorEvent(:final op, :final peerId):
+        if (op == 'sync' && peerId != null) {
+          state = state.copyWith(sync: {...state.sync}..remove(peerId));
+        }
+        if (op == 'controller') _refreshController(null);
+      case HubControllerChanged(:final connected, :final peer):
+        _refreshController(connected ? peer : null);
+      case HubRemoteControllerChanged(:final connected, :final deviceId):
+        final next = {...state.remoteControllers};
+        if (connected) {
+          next[deviceId] = e.name.isEmpty ? deviceId : e.name;
+        } else {
+          next.remove(deviceId);
+        }
+        state = state.copyWith(remoteControllers: next);
+    }
+  }
+
+  void _refreshController(HubPeer? peer) {
+    if (!ref.mounted) return;
+    final status = _engine.hubControllerStatus();
+    state = state.copyWith(
+      controller: status,
+      controllerPeer: () => status.connected
+          ? (peer ??
+                state.controllerPeer ??
+                HubPeer(
+                  id: status.peerId ?? '',
+                  name: status.peerName ?? status.peerId ?? '',
+                ))
+          : null,
+    );
+  }
+
+  /// 从引擎重读服务信息、受信设备与控制器状态（失败时保留旧值）。
+  Future<void> refresh() async {
+    if (!ref.mounted) return;
+    final engine = _engine;
+    final info = await tryEngine(engine.hubServerInfo);
+    final trusted = await tryEngine(engine.hubTrustedDevices);
+    if (!ref.mounted) return;
+    state = state.copyWith(
+      server: info ?? const HubServerStatus(running: false),
+      trusted: trusted,
+      pairingCode: info == null ? () => null : null,
+    );
+    _refreshController(null);
+  }
+
+  Future<PairingCode?> newPairingCode() async {
+    final code = await tryEngine(_engine.hubNewPairingCode);
+    if (code != null) state = state.copyWith(pairingCode: () => code);
+    return code;
+  }
+
+  Future<void> revoke(String deviceId) async {
+    await tryEngine(() => _engine.hubRevoke(deviceId));
+    await refresh();
+  }
+
+  void setLocalEcho(bool enabled) {
+    _engine.hubControllerSetLocalEcho(enabled);
+    _refreshController(null);
   }
 }
 

@@ -1467,4 +1467,91 @@ class UpL10nZh extends UpL10n {
 
   @override
   String get settingsGalleryPressed => '按下';
+
+  @override
+  String get hubLocalAddresses => '本机地址';
+
+  @override
+  String get hubAddressHint => '手机没有自动发现本机时，在手机上手动输入下面任一地址。';
+
+  @override
+  String get pairingNewCode => '生成新配对码';
+
+  @override
+  String pairingValidUntil(String time) {
+    return '$time 前有效，最多尝试 5 次';
+  }
+
+  @override
+  String get hubTrustedDevices => '受信设备';
+
+  @override
+  String get hubRevoke => '撤销';
+
+  @override
+  String hubRevokeConfirm(String deviceName) {
+    return '撤销对 $deviceName 的信任？它将不能再同步或控制本机。';
+  }
+
+  @override
+  String hubRemoteControlling(String deviceName) {
+    return '$deviceName 正在控制本机';
+  }
+
+  @override
+  String get hubManualAddress => '手动输入地址';
+
+  @override
+  String get hubManualAddressHint => 'IP 或 IP:端口，例如 192.168.1.10:47100';
+
+  @override
+  String get hubConnect => '连接';
+
+  @override
+  String hubProbeFailed(String address) {
+    return '无法连接 $address';
+  }
+
+  @override
+  String get hubLocalEcho => '本机同时发声';
+
+  @override
+  String get hubLocalEchoHint => '默认只在被控制的设备上发声';
+
+  @override
+  String get hubStopControlling => '退出控制器模式';
+
+  @override
+  String hubSyncFinished(int down, int up) {
+    return '同步完成：下载 $down 个、上传 $up 个文件';
+  }
+
+  @override
+  String get hubSyncStarting => '正在准备同步…';
+
+  @override
+  String hubDeviceId(String id) {
+    return '设备 ID：$id';
+  }
+
+  @override
+  String hubErrorOp(String op) {
+    return 'Hub 操作失败（$op）';
+  }
+
+  @override
+  String get settingsAudioStatus => '音频状态';
+
+  @override
+  String settingsAudioStatusValue(
+    String host,
+    String device,
+    int channels,
+    String format,
+  ) {
+    return '$host · $device · $channels 声道 $format';
+  }
+
+  @override
+  String get settingsAudioStopped => '音频输出未运行';
 }

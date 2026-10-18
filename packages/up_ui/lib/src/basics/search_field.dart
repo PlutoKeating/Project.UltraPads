@@ -3,6 +3,8 @@ import 'package:up_tokens/up_tokens.dart';
 
 import '../util.dart';
 
+/// 单行输入框（搜索框样式）。[icon] / [keyboardType] / [textInputAction]
+/// 可改为其它用途（例如 Hub 手动输入地址）。
 class UpSearchField extends StatelessWidget {
   const UpSearchField({
     super.key,
@@ -11,7 +13,14 @@ class UpSearchField extends StatelessWidget {
     this.onChanged,
     this.onSubmitted,
     this.autofocus = false,
+    this.icon = Icons.search_rounded,
+    this.keyboardType,
+    this.textInputAction = TextInputAction.search,
   });
+
+  final IconData icon;
+  final TextInputType? keyboardType;
+  final TextInputAction textInputAction;
 
   final String hint;
   final TextEditingController? controller;
@@ -37,7 +46,7 @@ class UpSearchField extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            Icons.search_rounded,
+            icon,
             size: UpSizes.iconSm,
             color: c.inputPlaceholder,
           ),
@@ -50,7 +59,8 @@ class UpSearchField extends StatelessWidget {
               onSubmitted: onSubmitted,
               cursorColor: c.inputCursor,
               style: style,
-              textInputAction: TextInputAction.search,
+              textInputAction: textInputAction,
+              keyboardType: keyboardType,
               decoration: InputDecoration.collapsed(
                 hintText: hint,
                 hintStyle: style.copyWith(color: c.inputPlaceholder),

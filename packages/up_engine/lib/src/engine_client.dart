@@ -15,6 +15,9 @@ abstract class EngineClient {
   Future<EngineInfo> init(AppDirs dirs);
   Future<AudioStatus> audioStart(AudioConfig cfg);
   Future<void> audioStop();
+
+  /// 当前音频设备状态（`audio_status`）。
+  Future<AudioStatus> audioStatus();
   Future<List<AudioDeviceInfo>> audioDevices();
 
   // ---- 事件 / 快照 ----
@@ -31,6 +34,9 @@ abstract class EngineClient {
   Future<List<KitSummary>> libraryListKits();
   Future<void> libraryLoadKit(String kitId);
   Future<ImportReport> libraryImport(String path);
+
+  /// 从内存字节导入（`.upkit` / ZIP；打包在应用资源里的内置 Kit）。
+  Future<ImportReport> libraryImportBytes(String name, List<int> bytes);
   Future<void> libraryExportKit(String kitId, String path, ExportFormat format);
   Future<void> librarySaveKit(KitDoc kit);
 
@@ -46,12 +52,15 @@ abstract class EngineClient {
   Future<void> samplerRecordStart({String? inputDevice});
   Future<SampleInfo> samplerRecordStop();
 
-  /// 试听采样（编辑页）。
+  /// 试听采样（编辑页）：在试听声部播放，不占用 pad。
   Future<void> samplePreview(
     String sampleId, {
     int startFrame = 0,
     int? endFrame,
   });
+
+  /// 停止试听。
+  Future<void> samplePreviewStop();
 
   // ---- 作品 ----
   Future<List<TrackInfo>> tracksList();
@@ -64,14 +73,53 @@ abstract class EngineClient {
   // ---- 教程 ----
   Future<TutorialChart?> tutorialGet(String kitId);
 
-  // ---- Hub ----
+  // ---- Hub（API.md §3.1）----
+  /// 启动本机 Hub（TLS 控制面 + 控制器 UDP + mDNS 广播）。
   Future<HubServerStatus> hubStartServer(String name);
   Future<void> hubStopServer();
-  Stream<HubPeer> hubDiscover();
+
+  /// 正在运行的 Hub；未运行时为 null。
+  Future<HubServerStatus?> hubServerInfo();
+
+  /// 新的 6 位一次性配对码（作废旧码）。
+  Future<PairingCode> hubNewPairingCode();
+  Future<void> hubCancelPairing();
+
+  /// 受信设备（新→旧）。
+  Future<List<PairedDevice>> hubTrustedDevices();
+
+  /// 撤销信任；返回之前是否受信。
+  Future<bool> hubRevoke(String deviceId);
+
+  /// 本机 Hub 上的远端控制器会话。
+  Future<List<ControllerSession>> hubControllerStats();
+
+  /// 配对时发送给 Hub 的本机名。
+  Future<void> hubSetDeviceName(String name);
+  Future<String> hubDeviceId();
+
+  /// mDNS 发现；同一时刻只有一个会话，用 [hubDiscoverStop] 停止。
+  Stream<HubPeerEvent> hubDiscover();
+  Future<void> hubDiscoverStop();
+
+  /// 手动输入地址（`ip`、`ip:port`、`host[:port]`）。
+  Future<HubPeer> hubProbe(String address);
+
+  /// 本次发现 / 探测到的与以前配对过的 Hub。
+  Future<List<HubPeer>> hubKnownPeers();
   Future<PairedDevice> hubPair(HubPeer peer, String code);
+
+  /// 本地取消对某 Hub 的信任。
+  Future<bool> hubForget(String peerId);
   Future<SyncReport> hubSync(HubPeer peer);
-  Future<void> hubControllerConnect(HubPeer peer);
+  Future<HubControllerStatus> hubControllerConnect(HubPeer peer);
   Future<void> hubControllerDisconnect();
+
+  /// 同步读取（热路径可调用）。
+  HubControllerStatus hubControllerStatus();
+
+  /// 控制器模式下本机是否同时发声（默认关）。
+  void hubControllerSetLocalEcho(bool enabled);
 
   /// 释放资源。
   Future<void> dispose();

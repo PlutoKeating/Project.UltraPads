@@ -90,9 +90,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
         sample: () => s.id,
         startFrame: 0,
         endFrame: () => s.frames > maxFrames ? maxFrames : null,
-        color: _pad.isEmpty
-            ? ColorRole.values[_selected % ColorRole.values.length]
-            : null,
+        color: _pad.isEmpty ? ColorRole.fromPalette(_selected) : null,
       ),
     );
     setState(() => _tab = 1);
@@ -480,11 +478,12 @@ class _EditPadPanel extends StatelessWidget {
         const SizedBox(height: UpSpacing.sm),
         UpSwatchRow(
           colors: [
-            for (final r in ColorRole.values) theme.padRole(r.index).mid,
+            for (final r in ColorRole.palette)
+              theme.padRole(r.paletteIndex).mid,
           ],
-          selected: params.color.index,
+          selected: params.color.paletteIndex,
           onSelected: (i) =>
-              onChanged(params.copyWith(color: ColorRole.values[i])),
+              onChanged(params.copyWith(color: ColorRole.fromPalette(i))),
         ),
         const SizedBox(height: UpSpacing.lg),
         UpSwitchRow(
@@ -535,6 +534,31 @@ class _EditPadPanel extends StatelessWidget {
               : () => onChanged(
                   params.copyWith(
                     gain: (params.gain + volumeStep).clamp(0.0, 1.0),
+                  ),
+                ),
+        ),
+        // 4.7.0 EDIT PAD：PITCH ±（半音，引擎以播放速率实时实现）。
+        stepper(
+          l10n.kitEditorPitch,
+          l10n.kitEditorPitchValue(_signed(params.pitch.round())),
+          params.pitch <= PadParams.pitchMin
+              ? null
+              : () => onChanged(
+                  params.copyWith(
+                    pitch: (params.pitch.roundToDouble() - 1).clamp(
+                      PadParams.pitchMin,
+                      PadParams.pitchMax,
+                    ),
+                  ),
+                ),
+          params.pitch >= PadParams.pitchMax
+              ? null
+              : () => onChanged(
+                  params.copyWith(
+                    pitch: (params.pitch.roundToDouble() + 1).clamp(
+                      PadParams.pitchMin,
+                      PadParams.pitchMax,
+                    ),
                   ),
                 ),
         ),
@@ -675,3 +699,6 @@ class _TrimView extends ConsumerWidget {
 final _sampleInfoProvider = FutureProvider.family<SampleInfo?, String>(
   (ref, id) => tryEngine(() => ref.watch(engineProvider).sampleInfo(id)),
 );
+
+/// `3` → `+3`，`-2` → `-2`，`0` → `0`（数字格式，非文案）。
+String _signed(int v) => v > 0 ? '+$v' : '$v';

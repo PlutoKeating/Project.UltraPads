@@ -57,7 +57,14 @@ class MockEngineClient implements EngineClient {
 
   HubServerStatus _hub = const HubServerStatus(running: false);
   bool _controller = false;
+  bool _localEcho = false;
   HubPeer? _controllerPeer;
+  PairingCode? _pairingCode;
+  String _deviceName = 'UltraPads mock';
+  final Map<String, PairedDevice> _trusted = {};
+  final Map<String, HubPeer> _knownPeers = {};
+  StreamController<HubPeerEvent>? _discovery;
+  String? _previewSample;
 
   /// 控制器模式下被转发到远端的 pad 事件计数（测试可读）。
   int forwardedPadEvents = 0;
@@ -195,6 +202,15 @@ class MockEngineClient implements EngineClient {
   Future<void> audioStop() async {}
 
   @override
+  Future<AudioStatus> audioStatus() async => const AudioStatus(
+    running: true,
+    device: 'mock-out',
+    host: 'mock',
+    sampleFormat: 'f32',
+    latencyMs: 256 / 48000 * 1000,
+  );
+
+  @override
   Future<List<AudioDeviceInfo>> audioDevices() async => const [
     AudioDeviceInfo(id: 'mock-out', name: 'Mock Output', isDefault: true),
     AudioDeviceInfo(id: 'mock-usb', name: 'Mock USB Interface'),
@@ -217,7 +233,7 @@ class MockEngineClient implements EngineClient {
   void padDown(PadId pad, {double velocity = 1.0}) {
     if (_controller) {
       forwardedPadEvents++;
-      return;
+      if (!_localEcho) return;
     }
     final i = pad.flat;
     final p = _pads[i];
@@ -280,7 +296,7 @@ class MockEngineClient implements EngineClient {
   void padUp(PadId pad) {
     if (_controller) {
       forwardedPadEvents++;
-      return;
+      if (!_localEcho) return;
     }
     final i = pad.flat;
     if (_pads[i].mode == PadMode.gate) _setState(i, PadPlayState.idle);
@@ -407,6 +423,10 @@ class MockEngineClient implements EngineClient {
   }
 
   @override
+  Future<ImportReport> libraryImportBytes(String name, List<int> bytes) =>
+      libraryImport(name);
+
+  @override
   Future<void> libraryExportKit(
     String kitId,
     String path,
@@ -518,7 +538,16 @@ class MockEngineClient implements EngineClient {
     String sampleId, {
     int startFrame = 0,
     int? endFrame,
-  }) async {}
+  }) async {
+    _sample(sampleId);
+    _previewSample = sampleId;
+  }
+
+  /// 正在试听的采样（测试可读）。
+  String? get previewSample => _previewSample;
+
+  @override
+  Future<void> samplePreviewStop() async => _previewSample = null;
 
   // --------------------------------------------------------------- 作品
 
@@ -587,70 +616,172 @@ class MockEngineClient implements EngineClient {
 
   // ----------------------------------------------------------------- Hub
 
+  void _hubEmit(HubEvent e) => _emit(HubEventWrapper(e));
+
   @override
   Future<HubServerStatus> hubStartServer(String name) async {
-    final code = (100000 + (name.hashCode.abs() % 900000)).toString();
     _hub = HubServerStatus(
       running: true,
+      id: 'mock-hub-id',
       name: name,
-      pairingCode: code,
-      port: 47800,
+      port: 47100,
+      udpPort: 47101,
+      addresses: const ['192.168.1.10:47100'],
+      advertising: true,
     );
-    _emit(HubEventWrapper(HubServerChanged(_hub)));
+    _hubEmit(HubServerChanged(_hub));
     return _hub;
   }
 
   @override
   Future<void> hubStopServer() async {
     _hub = const HubServerStatus(running: false);
-    _emit(HubEventWrapper(HubServerChanged(_hub)));
+    _pairingCode = null;
+    _hubEmit(HubServerChanged(_hub));
   }
 
   @override
-  Stream<HubPeer> hubDiscover() async* {
-    for (final p in DemoLibrary.peers) {
-      await Future<void>.delayed(
-        realtime ? const Duration(milliseconds: 400) : Duration.zero,
-      );
-      yield p;
+  Future<HubServerStatus?> hubServerInfo() async => _hub.running ? _hub : null;
+
+  @override
+  Future<PairingCode> hubNewPairingCode() async {
+    if (!_hub.running) {
+      throw const EngineException(ErrorCode.busy, '[closed] hub not running');
     }
+    final code = (100000 + (_hub.name.hashCode.abs() % 900000)).toString();
+    return _pairingCode = PairingCode(
+      code: code,
+      expiresAt: DateTime.fromMillisecondsSinceEpoch(1760000000000 + 5 * 60000),
+      ttl: const Duration(minutes: 5),
+    );
   }
+
+  /// 当前配对码（测试可读）。
+  PairingCode? get pairingCode => _pairingCode;
+
+  @override
+  Future<void> hubCancelPairing() async => _pairingCode = null;
+
+  @override
+  Future<List<PairedDevice>> hubTrustedDevices() async =>
+      _trusted.values.toList().reversed.toList(growable: false);
+
+  @override
+  Future<bool> hubRevoke(String deviceId) async {
+    final had = _trusted.remove(deviceId) != null;
+    final peer = _knownPeers[deviceId];
+    if (peer != null) _knownPeers[deviceId] = peer.copyWith(paired: false);
+    return had;
+  }
+
+  @override
+  Future<List<ControllerSession>> hubControllerStats() async => const [];
+
+  @override
+  Future<void> hubSetDeviceName(String name) async => _deviceName = name;
+
+  /// 配对时发送的本机名（测试可读）。
+  String get deviceName => _deviceName;
+
+  @override
+  Future<String> hubDeviceId() async => 'mock-device-id';
+
+  @override
+  Stream<HubPeerEvent> hubDiscover() {
+    _discovery?.close();
+    final c = _discovery = StreamController<HubPeerEvent>();
+    () async {
+      for (final p in DemoLibrary.peers) {
+        await Future<void>.delayed(
+          realtime ? const Duration(milliseconds: 400) : Duration.zero,
+        );
+        if (c.isClosed) return;
+        final known = _knownPeers[p.id] ?? p;
+        _knownPeers[p.id] = known;
+        c.add(HubPeerFound(known));
+      }
+    }();
+    return c.stream;
+  }
+
+  @override
+  Future<void> hubDiscoverStop() async {
+    await _discovery?.close();
+    _discovery = null;
+  }
+
+  @override
+  Future<HubPeer> hubProbe(String address) async {
+    final host = address.split(':').first;
+    if (!RegExp(r'^[\w.-]+$').hasMatch(host) || host.isEmpty) {
+      throw const EngineException(ErrorCode.invalidArgument, '[invalid_input]');
+    }
+    final port = address.contains(':')
+        ? int.tryParse(address.split(':').last) ?? 47100
+        : 47100;
+    final peer = HubPeer(
+      id: 'probe:$host',
+      name: host,
+      address: host,
+      port: port,
+      addresses: ['$host:$port'],
+      paired: _trusted.containsKey('probe:$host'),
+    );
+    return _knownPeers[peer.id] = peer;
+  }
+
+  @override
+  Future<List<HubPeer>> hubKnownPeers() async =>
+      _knownPeers.values.toList(growable: false);
 
   @override
   Future<PairedDevice> hubPair(HubPeer peer, String code) async {
     if (!RegExp(r'^\d{6}$').hasMatch(code)) {
-      throw const EngineException(ErrorCode.pairingFailed, 'bad code');
+      throw const EngineException(
+        ErrorCode.pairingFailed,
+        '[pairing_failed] bad code',
+      );
     }
     final device = PairedDevice(
-      peer: HubPeer(
-        id: peer.id,
-        name: peer.name,
-        kind: peer.kind,
-        address: peer.address,
-        paired: true,
-      ),
-      token: 'mock-token-${peer.id}',
+      id: peer.id,
+      name: peer.name,
+      pairedAt: DateTime.fromMillisecondsSinceEpoch(1760000000000),
     );
-    _emit(HubEventWrapper(HubPeerPaired(device)));
+    _trusted[peer.id] = device;
+    _knownPeers[peer.id] = peer.copyWith(paired: true);
+    _hubEmit(HubPeerPaired(device));
     return device;
   }
 
   @override
+  Future<bool> hubForget(String peerId) => hubRevoke(peerId);
+
+  @override
   Future<SyncReport> hubSync(HubPeer peer) async {
-    for (final p in const [0.25, 0.5, 0.75]) {
-      _emit(HubEventWrapper(HubSyncProgress(peer.id, p)));
+    _hubEmit(HubSyncStarted(peer.id));
+    for (var done = 1; done <= 3; done++) {
+      _hubEmit(HubSyncProgress(peer.id, done, 4));
       await Future<void>.delayed(Duration.zero);
     }
-    const report = SyncReport(pulled: 3, pushed: 1, bytes: 4 << 20);
-    _emit(HubEventWrapper(HubSyncProgress(peer.id, 1, report: report)));
+    const report = SyncReport(
+      pulled: 3,
+      pushed: 1,
+      bytes: 4 << 20,
+      downloadedBlobs: 3,
+      uploadedBlobs: 1,
+    );
+    _hubEmit(HubSyncProgress(peer.id, 4, 4));
+    _hubEmit(HubSyncFinished(peer.id, report));
+    _emit(const LibraryChangedEvent());
     return report;
   }
 
   @override
-  Future<void> hubControllerConnect(HubPeer peer) async {
+  Future<HubControllerStatus> hubControllerConnect(HubPeer peer) async {
     _controller = true;
     _controllerPeer = peer;
-    _emit(HubEventWrapper(HubControllerChanged(connected: true, peer: peer)));
+    _hubEmit(HubControllerChanged(connected: true, peer: peer));
+    return hubControllerStatus();
   }
 
   @override
@@ -658,12 +789,25 @@ class MockEngineClient implements EngineClient {
     _controller = false;
     final peer = _controllerPeer;
     _controllerPeer = null;
-    _emit(HubEventWrapper(HubControllerChanged(connected: false, peer: peer)));
+    _hubEmit(HubControllerChanged(connected: false, peer: peer));
   }
+
+  @override
+  HubControllerStatus hubControllerStatus() => HubControllerStatus(
+    connected: _controller,
+    peerId: _controllerPeer?.id,
+    peerName: _controllerPeer?.name,
+    localEcho: _localEcho,
+    rttMs: _controller ? 1.2 : null,
+  );
+
+  @override
+  void hubControllerSetLocalEcho(bool enabled) => _localEcho = enabled;
 
   @override
   Future<void> dispose() async {
     _timer?.cancel();
+    await _discovery?.close();
     await _events.close();
   }
 }

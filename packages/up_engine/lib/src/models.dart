@@ -54,11 +54,65 @@ enum PadPlayState { idle, pending, playing, stopping }
 
 enum Quantize { none, beat, bar }
 
-/// Pad 颜色角色：引用 token 的语义角色，而不是 RGB（API.md `ColorRole`）。
+/// Pad 颜色角色：引用 token 的语义角色，而不是 RGB（API.md §2 `ColorRole`）。
 ///
-/// 顺序与 `design/tokens/src/semantic/pad.tokens.json` 的 `pad.palette.N`
-/// 一致：[index] 就是调色板下标（APK 的 rosa/amarelo/verde/azul = 0..3）。
-enum ColorRole { pink, yellow, green, blue, magenta, cyan, orange, rose }
+/// 与引擎 `up_core::ColorRole` **同名同序**（FFI 按名字一一映射，不再有损转换）。
+/// 引擎角色比 token 调色板（`pad.palette.0..7`，见
+/// `design/tokens/src/semantic/pad.tokens.json`）多，UI 一律经 [paletteIndex]
+/// 取调色板下标——**这是 ColorRole ↔ token 调色板映射的唯一定义处**：
+///
+/// | 角色 | 调色板 | token |
+/// |---|---|---|
+/// | pink | 0 | `color.pad.pink`（原 Kit `rosa`） |
+/// | orange | 1 | `color.pad.orange`（`amarelo`） |
+/// | green | 2 | `color.pad.green`（`verde`） |
+/// | blue | 3 | `color.pad.blue`（`azul` / `azul_loop`） |
+/// | red | 4 | `color.neon.magenta`（霓虹主题没有纯红） |
+/// | yellow | 5 | `color.neon.yellow` |
+/// | cyan | 6 | `color.neon.cyan` |
+/// | purple | 7 | `color.skin.halloween.purple` |
+/// | lime | 2 | 同 green |
+/// | grey / neutral | 6 | 同 cyan（空 pad 不显示颜色） |
+enum ColorRole {
+  blue,
+  orange,
+  pink,
+  green,
+  purple,
+  yellow,
+  red,
+  cyan,
+  lime,
+  grey,
+  neutral;
+
+  /// token 调色板（`UpTheme.padRole(i)`）下标，见类型文档的映射表。
+  int get paletteIndex => switch (this) {
+    ColorRole.pink => 0,
+    ColorRole.orange => 1,
+    ColorRole.green || ColorRole.lime => 2,
+    ColorRole.blue => 3,
+    ColorRole.red => 4,
+    ColorRole.yellow => 5,
+    ColorRole.cyan || ColorRole.grey || ColorRole.neutral => 6,
+    ColorRole.purple => 7,
+  };
+
+  /// 调色板每个下标的代表角色（编辑器色板、皮肤预览按此顺序）。
+  static const List<ColorRole> palette = [
+    ColorRole.pink,
+    ColorRole.orange,
+    ColorRole.green,
+    ColorRole.blue,
+    ColorRole.red,
+    ColorRole.yellow,
+    ColorRole.cyan,
+    ColorRole.purple,
+  ];
+
+  /// 调色板下标 → 代表角色（越界取模）。
+  static ColorRole fromPalette(int index) => palette[index % palette.length];
+}
 
 final class PadParams {
   const PadParams({
@@ -71,7 +125,12 @@ final class PadParams {
     this.startFrame = 0,
     this.endFrame,
     this.quantizeOverride,
+    this.pitch = 0,
   });
+
+  /// pitch 的范围（半音）。
+  static const double pitchMin = -12;
+  static const double pitchMax = 12;
 
   /// 没有采样的空 pad。
   static const PadParams empty = PadParams();
@@ -86,6 +145,9 @@ final class PadParams {
   final int? endFrame;
   final Quantize? quantizeOverride;
 
+  /// 实时移调（半音，±12）：引擎以播放速率实现（`2^(pitch/12)`），与速度相乘。
+  final double pitch;
+
   bool get isEmpty => sample == null;
 
   PadParams copyWith({
@@ -98,6 +160,7 @@ final class PadParams {
     int? startFrame,
     int? Function()? endFrame,
     Quantize? Function()? quantizeOverride,
+    double? pitch,
   }) => PadParams(
     mode: mode ?? this.mode,
     gain: gain ?? this.gain,
@@ -110,11 +173,13 @@ final class PadParams {
     quantizeOverride: quantizeOverride != null
         ? quantizeOverride()
         : this.quantizeOverride,
+    pitch: pitch ?? this.pitch,
   );
 
   @override
   bool operator ==(Object other) =>
       other is PadParams &&
+      other.pitch == pitch &&
       other.mode == mode &&
       other.gain == gain &&
       other.pan == pan &&
@@ -136,6 +201,7 @@ final class PadParams {
     startFrame,
     endFrame,
     quantizeOverride,
+    pitch,
   );
 }
 
@@ -461,12 +527,20 @@ final class AudioStatus {
     this.bufferFrames = 256,
     this.device = '',
     this.latencyMs = 0,
+    this.host = '',
+    this.channels = 2,
+    this.sampleFormat = '',
   });
   final bool running;
   final int sampleRate;
   final int bufferFrames;
   final String device;
   final double latencyMs;
+
+  /// 音频后端（ALSA / AAudio / …）。
+  final String host;
+  final int channels;
+  final String sampleFormat;
 }
 
 final class AudioDeviceInfo {
@@ -484,25 +558,75 @@ final class AudioDeviceInfo {
 
 enum HubPeerKind { desktop, phone, tablet }
 
+/// 发现 / 探测到的 Hub（API.md §3.1 `HubPeer`）。
 final class HubPeer {
   const HubPeer({
     required this.id,
     required this.name,
     this.kind = HubPeerKind.desktop,
     this.address = '',
+    this.port = 0,
+    this.addresses = const [],
     this.paired = false,
   });
   final String id;
   final String name;
   final HubPeerKind kind;
+
+  /// 首选 IP（不含端口）。
   final String address;
+  final int port;
+
+  /// 全部候选 `ip:port`。
+  final List<String> addresses;
+
+  /// 本机信任该 Hub（配对过）。
   final bool paired;
+
+  /// 显示用 `ip:port`。
+  String get endpoint =>
+      address.isEmpty ? '' : (port == 0 ? address : '$address:$port');
+
+  HubPeer copyWith({bool? paired, String? name}) => HubPeer(
+    id: id,
+    name: name ?? this.name,
+    kind: kind,
+    address: address,
+    port: port,
+    addresses: addresses,
+    paired: paired ?? this.paired,
+  );
 }
 
-final class PairedDevice {
-  const PairedDevice({required this.peer, required this.token});
+/// `hub_discover` 流的事件。
+sealed class HubPeerEvent {
+  const HubPeerEvent();
+}
+
+final class HubPeerFound extends HubPeerEvent {
+  const HubPeerFound(this.peer);
   final HubPeer peer;
-  final String token;
+}
+
+final class HubPeerLost extends HubPeerEvent {
+  const HubPeerLost(this.id);
+  final String id;
+}
+
+/// 受信设备（配对过的手机 / Hub，`PairedDevice`）。
+final class PairedDevice {
+  const PairedDevice({required this.id, required this.name, this.pairedAt});
+  final String id;
+  final String name;
+  final DateTime? pairedAt;
+}
+
+/// Hub 上的一次性 6 位配对码。
+final class PairingCode {
+  const PairingCode({required this.code, required this.expiresAt, this.ttl});
+  final String code;
+  final DateTime expiresAt;
+  final Duration? ttl;
 }
 
 final class SyncReport {
@@ -511,26 +635,84 @@ final class SyncReport {
     this.pushed = 0,
     this.conflicts = 0,
     this.bytes = 0,
+    this.uploadedBlobs = 0,
+    this.downloadedBlobs = 0,
+    this.durationMs = 0,
   });
+
+  /// 本地变化的条目数。
   final int pulled;
+
+  /// Hub 上变化的条目数。
   final int pushed;
   final int conflicts;
   final int bytes;
+  final int uploadedBlobs;
+  final int downloadedBlobs;
+  final int durationMs;
 }
 
+/// 本机 Hub 服务（`HubServerInfo`）。
 final class HubServerStatus {
   const HubServerStatus({
     required this.running,
+    this.id = '',
     this.name = '',
-    this.pairingCode = '',
     this.port = 0,
+    this.udpPort = 0,
+    this.addresses = const [],
+    this.advertising = false,
   });
   final bool running;
-  final String name;
 
-  /// 6 位配对码。
-  final String pairingCode;
+  /// 本机设备 ID。
+  final String id;
+  final String name;
   final int port;
+  final int udpPort;
+
+  /// 本机局域网 `ip:port`（供手机手动输入）。
+  final List<String> addresses;
+
+  /// mDNS 广播中。
+  final bool advertising;
+}
+
+/// 本机作为控制器的连接状态（`HubControllerStatus`）。
+final class HubControllerStatus {
+  const HubControllerStatus({
+    this.connected = false,
+    this.peerId,
+    this.peerName,
+    this.localEcho = false,
+    this.rttMs,
+  });
+
+  static const HubControllerStatus disconnected = HubControllerStatus();
+
+  final bool connected;
+  final String? peerId;
+  final String? peerName;
+
+  /// 连接时本机是否同时发声。
+  final bool localEcho;
+
+  /// 往返延迟中位数（毫秒），尚无样本时为 null。
+  final double? rttMs;
+}
+
+/// Hub 上的远端控制器会话（`ControllerSessionStats`）。
+final class ControllerSession {
+  const ControllerSession({
+    required this.deviceId,
+    required this.name,
+    this.packets = 0,
+    this.heldPads = 0,
+  });
+  final String deviceId;
+  final String name;
+  final int packets;
+  final int heldPads;
 }
 
 enum ErrorCode {

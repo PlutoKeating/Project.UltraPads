@@ -30,9 +30,9 @@ const genreSpecs = <GenreSpec>[
   GenreSpec('funkbr', Icons.flag_rounded, ColorRole.green),
   GenreSpec('kpop', Icons.favorite_rounded, ColorRole.yellow),
   GenreSpec('rock', Icons.bolt_rounded, ColorRole.blue),
-  GenreSpec('disco', Icons.album_rounded, ColorRole.magenta),
+  GenreSpec('disco', Icons.album_rounded, ColorRole.purple),
   GenreSpec('edm', Icons.graphic_eq_rounded, ColorRole.cyan),
-  GenreSpec('pop', Icons.star_rounded, ColorRole.rose),
+  GenreSpec('pop', Icons.star_rounded, ColorRole.red),
   GenreSpec('trap', Icons.speaker_rounded, ColorRole.orange),
 ];
 

@@ -90,7 +90,7 @@ abstract final class DemoLibrary {
       song: 'House Music',
       genre: 'disco',
       bpm: 126,
-      color: ColorRole.magenta,
+      color: ColorRole.purple,
       featured: true,
       downloaded: false,
     ),
@@ -230,13 +230,17 @@ abstract final class DemoLibrary {
       id: 'peer-desktop-1',
       name: 'Studio PC',
       kind: HubPeerKind.desktop,
-      address: '192.168.1.20:47800',
+      address: '192.168.1.20',
+      port: 47100,
+      addresses: ['192.168.1.20:47100'],
     ),
     HubPeer(
       id: 'peer-laptop-2',
       name: 'Laptop',
       kind: HubPeerKind.desktop,
-      address: '192.168.1.31:47800',
+      address: '192.168.1.31',
+      port: 47100,
+      addresses: ['192.168.1.31:47100'],
     ),
   ];
 }

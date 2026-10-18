@@ -127,31 +127,68 @@ final class ErrorEvent extends EngineEvent {
   final EngineException error;
 }
 
+/// Hub 事件（API.md §3.1 `HubEvent`，经 [HubEventWrapper] 推送）。
 sealed class HubEvent {
   const HubEvent();
 }
 
+/// 本机 Hub 服务启动 / 停止。
 final class HubServerChanged extends HubEvent {
   const HubServerChanged(this.status);
   final HubServerStatus status;
 }
 
+/// 配对成功：本机作为客户端配对了 Hub，或作为 Hub 时有设备用配对码配对。
 final class HubPeerPaired extends HubEvent {
   const HubPeerPaired(this.device);
   final PairedDevice device;
 }
 
-final class HubSyncProgress extends HubEvent {
-  const HubSyncProgress(this.peerId, this.progress, {this.report});
+final class HubSyncStarted extends HubEvent {
+  const HubSyncStarted(this.peerId);
   final String peerId;
-
-  /// 0..1；完成时为 1 并携带 [report]。
-  final double progress;
-  final SyncReport? report;
 }
 
+/// 同步进度：已传输 [done] / 已知需要传输 [total] 个 blob（total 会增长）。
+final class HubSyncProgress extends HubEvent {
+  const HubSyncProgress(this.peerId, this.done, this.total);
+  final String peerId;
+  final int done;
+  final int total;
+
+  /// 0..1。
+  double get fraction => total <= 0 ? 0 : (done / total).clamp(0.0, 1.0);
+}
+
+final class HubSyncFinished extends HubEvent {
+  const HubSyncFinished(this.peerId, this.report);
+  final String peerId;
+  final SyncReport report;
+}
+
+/// 本机作为控制器连接 / 断开。
 final class HubControllerChanged extends HubEvent {
   const HubControllerChanged({required this.connected, this.peer});
   final bool connected;
   final HubPeer? peer;
+}
+
+/// 本机作为 Hub：远端控制器（手机）连接 / 断开。
+final class HubRemoteControllerChanged extends HubEvent {
+  const HubRemoteControllerChanged({
+    required this.connected,
+    required this.deviceId,
+    this.name = '',
+  });
+  final bool connected;
+  final String deviceId;
+  final String name;
+}
+
+/// 后台 Hub 操作失败（`op`：discover / sync / controller / server）。
+final class HubErrorEvent extends HubEvent {
+  const HubErrorEvent(this.op, this.error, {this.peerId});
+  final String op;
+  final String? peerId;
+  final EngineException error;
 }
