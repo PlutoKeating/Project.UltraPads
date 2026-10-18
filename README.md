@@ -11,7 +11,7 @@
 
 UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter 写界面、Rust 写实时音频引擎，一份代码打包到多个平台。
 
-项目以学习研究为目的，高保真复刻 Ref 4.7.0 的界面、交互和动效。在此基础上，它扩展为一个既能随手玩、也能承载复杂编曲的工具：
+项目以学习研究为目的，目标是一个既能随手玩、也能承载复杂编曲的工具：
 
 - 引擎和界面完全解耦；
 - 曲库使用开放格式；
@@ -24,7 +24,7 @@ UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter �
 </p>
 
 > [!NOTE]
-> 仓库只包含代码和 CC0 示例 Kit。原 App 的素材（图标、Kit 音频、封面）**不随仓库分发**，没有这些素材时，应用使用开源占位资源。上图截自仓库内的 golden 测试，用的就是占位资源。
+> 仓库只包含代码和 CC0 示例 Kit。可选的私有素材包（图标、Kit 音频、封面）**不随仓库分发**，没有这些素材时，应用使用开源占位资源。上图截自仓库内的 golden 测试，用的就是占位资源。
 
 ## 功能
 
@@ -34,11 +34,11 @@ UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter �
   - Linux 走 PipeWire 原生音频通路 + 实时优先级（指令到发声约 4 ms），Android 走 AAudio 低延迟模式。
 - **曲库**：
   - Kit 格式为 `.upkit`，即 SFZ 加 JSON 旁挂文件，用 BLAKE3 做内容寻址。
-  - 可导入 SFZ、WAV 文件夹，也有原 App 素材导入器。
+  - 可导入 SFZ、WAV 文件夹，也有私有素材包导入器。
   - 项目可导出为 DAWproject。
 - **编辑 Kit**：新增、删除、调整音色组顺序，给 pad 换音色（内置、麦克风、本地文件、其他 Kit、录音），调整 pad 属性，裁剪和试听样本。
 - **录音与作品**：录下主输出生成作品，作品卡带波形，可循环播放、导出 WAV 和分享。
-- **皮肤**：3 套主题（霓虹、描边、浅色）、16 套原版风格预设，另有自定义皮肤编辑器。
+- **皮肤**：3 套主题（霓虹、描边、浅色）、16 套内置皮肤预设，另有自定义皮肤编辑器。
 - **个人多设备协同（Hub）**：
   - 设备在局域网内通过 mDNS 自动发现，用 6 位配对码配对，配对过程基于 SPAKE2 加双向 TLS。
   - 曲库在设备间增量同步。
@@ -107,7 +107,7 @@ just run-mock       # 不编译 Rust，用 Mock 引擎运行界面
 | `just bump <X.Y.Z>` / `just release` | 统一修改版本号 / 打 tag 推送，由 GitHub Actions 构建并发布（见 QUICK_START「发布」） |
 | `just package-linux` / `just website-test` | 本地打 Linux 发布包 / 运行官网与安装脚本测试 |
 | `just cli <参数>` | 运行无头 CLI |
-| `just inject-assets` | 可选：把本机自备的原 App 素材注入应用（不入库） |
+| `just inject-assets` | 可选：把本机自备的私有素材包注入应用（不入库） |
 
 ### 无头 CLI 容器
 
@@ -165,7 +165,7 @@ docs/          架构、API、需求、ADR、调研
 | [`docs/API.md`](docs/API.md) | 引擎协议、FFI 接口、Hub 协议、发布与更新接口 |
 | [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) | 功能和非功能需求 |
 | [`docs/adr/`](docs/adr/) | 架构决策记录 |
-| [`docs/research/`](docs/research/) | 竞品拆解、格式调研、v0.0.1 验证记录 |
+| [`docs/research/`](docs/research/) | 格式调研、v0.0.1 验证记录 |
 
 ## 当前状态
 
@@ -183,4 +183,4 @@ docs/          架构、API、需求、ADR、调研
 
 代码以 [Apache-2.0](LICENSE) 许可发布。可选的 GPL 组件（如 Ableton Link）默认关闭。
 
-本项目与原 App 的开发者没有任何关联，复刻部分只用于学习和研究；仓库不包含、也不分发原 App 的任何素材。
+本项目只用于学习和研究；仓库不包含、也不分发任何第三方私有素材。

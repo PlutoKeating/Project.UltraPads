@@ -1,7 +1,7 @@
 # UltraPads 应用（app/ultrapads）
 
 Flutter 应用组装层：页面、路由、Riverpod 状态、引擎接入、私有素材注入。
-架构与复刻取舍见 [`ARCHITECTURE.md`](ARCHITECTURE.md)，视觉对比见 [`visual-review.md`](visual-review.md)。
+架构与设计取舍见 [`ARCHITECTURE.md`](ARCHITECTURE.md)，视觉对比见 [`visual-review.md`](visual-review.md)。
 
 ## 运行
 
@@ -19,17 +19,17 @@ just run-linux                 # Linux + FFI 引擎（加载失败自动回退 M
 | `--dart-define=UP_GALLERY=true` | 启动直接进入设计画廊 `/dev/gallery` |
 
 设计画廊也可从「设置 → 开发者 → 设计画廊」进入：token 浏览、全部组件状态、3 个主题 + 16 套
-4.7.0 皮肤预设实时切换、动效演示。
+内置皮肤预设实时切换、动效演示。
 
 ## 私有素材
 
-原 App 素材不入库、不随（公开的）仓库分发。`assets/private_manifest/` 是**入库**的目录，只含：
+私有素材包不入库、不随（公开的）仓库分发。`assets/private_manifest/` 是**入库**的目录，只含：
 
 - `manifest.json`：占位清单（`available: false`）
 - `.gitignore`：忽略该目录下其它所有文件
 
-`just inject-assets` 会把 `private-assets/compat-ios/`（4.7.0，优先）和
-`private-assets/compat/`（APK 3.7.6）中 UI 需要的素材平铺复制到这个目录并生成
+`just inject-assets` 会把 `private-assets/compat-ios/`（iOS 格式，优先）和
+`private-assets/compat-android/`（Android 格式）中 UI 需要的素材平铺复制到这个目录并生成
 `injected.json`；`just clean-assets` 删除。pubspec 只声明这个永远存在的目录，所以
 **没有私有素材时构建和运行都正常**，应用回退到开源占位（Open Sans、Material Icons、程序化绘制）。
 详见 `ARCHITECTURE.md` §6。

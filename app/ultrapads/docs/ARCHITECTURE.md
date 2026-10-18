@@ -1,7 +1,6 @@
 # UltraPads 前端架构（app/ultrapads）
 
-> 全局架构见仓库根 `docs/ARCHITECTURE.md`；接口契约见 `docs/API.md`；复刻依据见
-> `docs/research/compat-ipa-4.7.0-analysis.md`（第一基准）和 `compat-apk-analysis.md`（补充）。
+> 全局架构见仓库根 `docs/ARCHITECTURE.md`；接口契约见 `docs/API.md`。
 
 ## 1. 分层与依赖
 
@@ -29,7 +28,7 @@ lib/
    ├─ app/app.dart           MaterialApp.router、主题（AnimatedTheme 皮肤过渡）、i18n、FxScope
    ├─ assets/private_assets.dart  私有素材清单解析（见 §6）
    ├─ engine/                engine_bootstrap.dart（UP_ENGINE=mock|ffi）、ffi_engine_client.dart
-   ├─ library/first_run.dart 首次启动：导入内置 Kit（CC0 资源 / 注入的 4.7.0 Kit）并加载默认 Kit
+   ├─ library/first_run.dart 首次启动：导入内置 Kit（CC0 资源 / 注入的私有素材包 Kit）并加载默认 Kit
    ├─ config/app_links.dart  外部链接（assets/config/links.json：下载页；页面不写 URL）
    ├─ dev/dev_hooks.dart     开发/验证环境变量（ULTRAPADS_HUB_AUTOSTART、ULTRAPADS_LOG_EVENTS、ULTRAPADS_UPDATE_SELFTEST）
    ├─ update/                应用内更新：update_controller.dart（状态机）、apk_installer.dart（Android 安装通道）
@@ -53,15 +52,15 @@ lib/
 
 | 路由 | 页面 | 转场 | 来源 |
 |---|---|---|---|
-| `/` | `PerformPage` 演奏页 | — | 4.7.0 `ScreenPads/Main` |
-| `/onboarding` | `OnboardingPage` | 无 | 4.7.0 Walkthrough + CategoryPreference（试用页不做） |
-| `/kits` | `LibraryPage`（KITS / FEED / PROFILE + 搜索） | 底部滑入 `sheet.enter` | 4.7.0 `MenuScene` |
-| `/kits/:id` | `KitDetailPage` Kit 预览 | 右侧推入 `page.push` | 4.7.0 `modalUnlockKit`（去掉解锁/付费） |
-| `/edit` | `EditorPage` 编辑 Kit | 底部滑入 | 4.7.0 `CreateKit/Main` |
-| `/edit/mic` | `MicSamplerPage` 麦克风采样（返回 `SampleInfo`） | 推入 | 4.7.0 mic 面板 |
-| `/tracks` | `TracksPage` 我的录音 | 推入 | 4.7.0 PROFILE → 我的录音 |
+| `/` | `PerformPage` 演奏页 | — | 参考设计 `ScreenPads/Main` |
+| `/onboarding` | `OnboardingPage` | 无 | 参考设计 Walkthrough + CategoryPreference（试用页不做） |
+| `/kits` | `LibraryPage`（KITS / FEED / PROFILE + 搜索） | 底部滑入 `sheet.enter` | 参考设计 `MenuScene` |
+| `/kits/:id` | `KitDetailPage` Kit 预览 | 右侧推入 `page.push` | 参考设计 `modalUnlockKit`（去掉解锁/付费） |
+| `/edit` | `EditorPage` 编辑 Kit | 底部滑入 | 参考设计 `CreateKit/Main` |
+| `/edit/mic` | `MicSamplerPage` 麦克风采样（返回 `SampleInfo`） | 推入 | 参考设计 mic 面板 |
+| `/tracks` | `TracksPage` 我的录音 | 推入 | 参考设计 PROFILE → 我的录音 |
 | `/skins/editor?id=` | `SkinEditorPage` 自定义皮肤 | 推入 | 新增 |
-| `/settings` | `SettingsPage` | 推入 | 新增（4.7.0 无设置页） |
+| `/settings` | `SettingsPage` | 推入 | 新增（参考设计无设置页） |
 | `/hub` | `HubPage` 多设备协同 | 推入 | 新增（F10） |
 | `/dev/gallery?tab=&skin=` | `DesignGalleryPage` | 推入 | 新增（ADR-0001 #13 修订：替代 Figma） |
 
@@ -87,14 +86,14 @@ PadGrid 3×4（当前音色组；组间横移 0.2 s QuadOut）
 - **音色组**：一首歌有 `KitSummary.groupCount` 组（A–G，最多 7 组），`PadGroupSwitcher` 点击切换（`bankProvider`）。
   切换只改变接下来触摸的 pad，已经在播放的声音（包括 Loop）继续——引擎始终为全部组的 pad 留位。键盘 Tab 依次切到下一组。
 - **学习演奏 / 教程模式与速度控件已移除**（v0.2.0）；引擎与 FFI 的教程能力（`tutorial_get` 等）保留。
-- **首次引导**（`features/onboarding/first_guide.dart`，4.7.0 FirstGuide）：70% 遮罩挖洞、手指 1.0 s QuadIn
+- **首次引导**（`features/onboarding/first_guide.dart`，参考设计 FirstGuide）：70% 遮罩挖洞、手指 1.0 s QuadIn
   上移、白色气泡、STEP x/4（从右滑入）、SKIP（0.25 s 滑入）；4 步：pad → 音色组切换条 → ⋮ → SONGS。
   完成或跳过后写入设置 `firstGuideSeen`；设置页「开发者 → 重新显示新手引导」可重置。
 
 ### 3.2 宽屏布局（`features/perform/perform_layout.dart`）
 
-4.7.0 用 FairyGUI `fixed_height` 适配（画布 828×1472 px 按高度等比缩放）。手机布局不变；宽高比超过画布时，
-pad 网格按 4.7.0 cell 几何的宽高比（约 0.78）由可用高度算出宽度并水平居中，顶栏与功能行与网格同宽。
+参考设计用 FairyGUI `fixed_height` 适配（画布 828×1472 px 按高度等比缩放）。手机布局不变；宽高比超过画布时，
+pad 网格按参考设计 cell 几何的宽高比（约 0.78）由可用高度算出宽度并水平居中，顶栏与功能行与网格同宽。
 golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tablet_768x1024`、`settings_desktop_1280x800`。
 
 ## 4. 状态流（引擎为唯一事实源）
@@ -143,7 +142,7 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 - 入库：`assets/private_manifest/manifest.json`（占位，`available: false`）+ 目录内 `.gitignore`。
   pubspec 只声明这一个目录，**它永远存在**，所以没有私有素材时构建照常通过。
 - 注入：`just inject-assets`（`tools/assets/inject_private_assets.dart`）把
-  `private-assets/compat-ios/`（4.7.0，优先）和 `private-assets/compat/`（APK，补充）
+  `private-assets/compat-ios/`（iOS 格式，优先）和 `private-assets/compat-android/`（Android 格式，补充）
   中 UI 需要的素材**平铺**复制到同一目录（`<来源>_<类别>__<路径>`，被 `.gitignore` 忽略），
   并生成 `injected.json`（`priority: [ios, apk]`、`entries: {ios/skin/…: assets/private_manifest/…}`）。
   付费墙 / GDPR / IDFA / 广告相关包不注入。`just clean-assets` 删除。
@@ -153,27 +152,27 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
   注册为 `UpFonts.privateFiles` 的家族名）、APK `normal_*` Lottie（设置「经典 Pad 动画」开启时）、
   image 类皮肤（Christmas / Pets / Muertos / Halloween）的整张 pad 位图（`PadImageSkin`：常态位图 +
   按下 / Loop 闪烁时淡入的亮态位图，`BoxFit.fill`，缺色退回 pink；未注入时保持 token 绘制）、
-  4.7.0 的 6 个内置 Kit（`privateKits`，首次启动导入，见 §8.1）。
+  私有素材包的 6 个内置 Kit（`privateKits`，首次启动导入，见 §8.1）。
 
-## 7. 复刻取舍（截图 / 4.7.0 IPA / 3.7.6 APK 冲突时的决定）
+## 7. 设计取舍（截图 / IPA 参考设计 / APK 旧版参考冲突时的决定）
 
 | 方面 | 决定 | 依据 / 原因 |
 |---|---|---|
-| 第一基准 | **4.7.0 IPA（FairyGUI 数据）+ App Store 截图**；APK 只补充 | 主代理通知；4.7.0 与截图一致 |
-| Pad 外观 | 程序化绘制（token 渐变 + 白色/浅色覆盖层 + 光晕），不用 4.7.0 的 72px 位图 | 位图是 9 宫格小图，程序化能跟随皮肤 token 与 lerp；16 套预设由 token 代理转成 semantic 覆盖 |
-| 默认皮肤 | `neon`（截图的霓虹径向渐变 + 光晕）；4.7.0 `Default` 等 16 套作为预设可选 | 用户要求以截图为准 |
-| Pad 动效 | 按下 1 帧变亮（`pad.pressAttack` 17 ms），松开 0.1 s QuadOut；Loop 白色闪烁 0.6 s yoyo + 图标 1.2 s 一圈 | 4.7.0 Transition |
-| Lottie | 保留 `SegmentedLottie`（按下播 0→0.5、松开 0.5→1），仅在设置「经典 Pad 动画」+ 注入了 APK 素材时使用 | 4.7.0 没有 Lottie；APK 的效果作为可选旧版皮肤 |
-| Fragment Shader | 霓虹 bloom / 按下波纹 / Loop 描边呼吸作为光效增强（低端机和测试回退 BoxShadow） | 用户要求光效；原 App 没有 shader |
-| ⋮ 菜单 | 整行横移展开（录音 / 皮肤 / 编辑 / 分享 / 返回），不是弹出菜单；设置入口在顶栏右上角 | 4.7.0 `navMoreButtons`；v0.2.0 用户要求 |
-| 功能行 / 顶栏 | 4.7.0 的 LEARN TO PLAY 与视频教程按钮移除，改为音色组切换条与设置入口；顶栏只显示歌名 | v0.2.0 用户要求 |
-| 停止全部 | 键盘 Space；`StopAllCmd`。演奏页没有常驻停止按钮 | 4.7.0 没有 |
-| 教程 / 速度 | 界面移除（v0.2.0）；引擎仍解析 4.7.0 `tutorial.json`、提供 `SetSpeed` 与 `tutorial_judge` | v0.2.0 用户要求 |
+| 第一基准 | **IPA 参考设计（FairyGUI 数据）+ 商店截图**；APK 只补充 | 主代理通知；IPA 与截图一致 |
+| Pad 外观 | 程序化绘制（token 渐变 + 白色/浅色覆盖层 + 光晕），不用参考设计的 72px 位图 | 位图是 9 宫格小图，程序化能跟随皮肤 token 与 lerp；16 套预设由 token 代理转成 semantic 覆盖 |
+| 默认皮肤 | `neon`（截图的霓虹径向渐变 + 光晕）；参考设计 `Default` 等 16 套作为预设可选 | 用户要求以截图为准 |
+| Pad 动效 | 按下 1 帧变亮（`pad.pressAttack` 17 ms），松开 0.1 s QuadOut；Loop 白色闪烁 0.6 s yoyo + 图标 1.2 s 一圈 | 参考设计 Transition |
+| Lottie | 保留 `SegmentedLottie`（按下播 0→0.5、松开 0.5→1），仅在设置「经典 Pad 动画」+ 注入了 APK 素材时使用 | IPA 没有 Lottie；APK 的效果作为可选旧版皮肤 |
+| Fragment Shader | 霓虹 bloom / 按下波纹 / Loop 描边呼吸作为光效增强（低端机和测试回退 BoxShadow） | 用户要求光效；参考设计没有 shader |
+| ⋮ 菜单 | 整行横移展开（录音 / 皮肤 / 编辑 / 分享 / 返回），不是弹出菜单；设置入口在顶栏右上角 | 参考设计 `navMoreButtons`；v0.2.0 用户要求 |
+| 功能行 / 顶栏 | 参考设计的 LEARN TO PLAY 与视频教程按钮移除，改为音色组切换条与设置入口；顶栏只显示歌名 | v0.2.0 用户要求 |
+| 停止全部 | 键盘 Space；`StopAllCmd`。演奏页没有常驻停止按钮 | 参考设计没有 |
+| 教程 / 速度 | 界面移除（v0.2.0）；引擎仍解析参考设计 `tutorial.json`、提供 `SetSpeed` 与 `tutorial_judge` | v0.2.0 用户要求 |
 | 曲库 | 3 个 Tab（KITS / FEED / PROFILE）+ 搜索；订阅横幅换成「新曲推送卡」；解锁弹窗去掉付费按钮 | ADR-0001 #4 |
-| 编辑 Kit | 整页 `#EE4286` 粉底（primitive `swatch.mediumPink`，暂无 semantic token）；pad 区左侧为当前音色组的 12 个迷你 pad，右侧为组切换与新增 / 左移 / 右移 / 删除（删除有声音的组需确认，组结构变化实时同步引擎，保存时组数变化则重载 Kit）；EDIT PAD 含颜色 / Loop / Hold / 分组 / 音量 / PITCH ±（半音 ±12）/ 声像 / 裁剪 / 复制 / 清空；试听走 `sample_preview`（不占用 pad） | 4.7.0 |
-| 录音 | 录音结束弹「保存录音」面板，导出 `.flac` 后分享 | 4.7.0 |
-| 引导 | Walkthrough 4 页 + 风格选择；Splash 用系统启动页 | 4.7.0（试用 / 订阅页不做） |
-| 设置 / Hub / 皮肤编辑器 / 画廊 | 原 App 没有，按设计系统新做 | 需求 F7、F8、F10、ADR-0001 #13 |
+| 编辑 Kit | 整页 `#EE4286` 粉底（primitive `swatch.mediumPink`，暂无 semantic token）；pad 区左侧为当前音色组的 12 个迷你 pad，右侧为组切换与新增 / 左移 / 右移 / 删除（删除有声音的组需确认，组结构变化实时同步引擎，保存时组数变化则重载 Kit）；EDIT PAD 含颜色 / Loop / Hold / 分组 / 音量 / PITCH ±（半音 ±12）/ 声像 / 裁剪 / 复制 / 清空；试听走 `sample_preview`（不占用 pad） | 参考设计 |
+| 录音 | 录音结束弹「保存录音」面板，导出 `.flac` 后分享 | 参考设计 |
+| 引导 | Walkthrough 4 页 + 风格选择；Splash 用系统启动页 | 参考设计（试用 / 订阅页不做） |
+| 设置 / Hub / 皮肤编辑器 / 画廊 | 参考设计没有，按设计系统新做 | 需求 F7、F8、F10、ADR-0001 #13 |
 
 ## 8. 引擎适配（FFI）
 
@@ -199,9 +198,9 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 `runApp` 之后在后台执行，每一步失败只记日志：
 
 1. 曲库为空 → 导入 `assets/kits/*.upkit`（CC0，`content/kits` 的副本）：`library_import_bytes`；
-2. 注入了私有素材（`injected.json` 有 `privateKits`）且该次注入尚未导入 → 把 4.7.0 内置 Kit 的文件按原目录结构还原到临时目录，`library_import(dir)`（原 App 素材导入器），记录注入时间戳；
+2. 注入了私有素材（`injected.json` 有 `privateKits`）且该次注入尚未导入 → 把私有素材包内置 Kit 的文件按原目录结构还原到临时目录，`library_import(dir)`（私有素材包导入器），记录注入时间戳；
 3. 桌面开发便利：`--dart-define=UP_PRIVATE_KITS=<dir>` 直接 `library_import(dir)`；
-4. 引擎还没有 Kit → 默认加载：原版 Sunset → CC0 `UltraPads Starter` → 第一个。
+4. 引擎还没有 Kit → 默认加载：私有素材包的 Sunset → CC0 `UltraPads Starter` → 第一个。
 
 ## 9. 动效分级（up_fx）
 

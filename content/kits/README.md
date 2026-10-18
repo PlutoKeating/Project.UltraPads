@@ -15,4 +15,4 @@ cargo run -p up-library --example kitgen -- content/kits
 
 输出是确定性的（固定 ID、固定时间戳、ZIP 时间戳为 1980-01-01）；`up-library` 的测试会检查这里提交的文件与生成器输出一致。
 
-> 原 App的素材只能放在被 gitignore 的 `private-assets/` 中，通过曲库导入器导入到本机数据目录，**永不复制到这里**。
+> 私有素材包只能放在被 gitignore 的 `private-assets/` 中，通过曲库导入器导入到本机数据目录，**永不复制到这里**。

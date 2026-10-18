@@ -14,7 +14,7 @@
    - pad 对应 MIDI 音符 36 + 平铺序号；没有 JSON 时按默认布局降级加载
 2. **项目 `.ultrapads`**：ZIP 包，其中 `project.xml` 和 `metadata.xml` 严格遵循 DAWproject 1.0；UltraPads 独有数据放在 `ultrapads/*.json`，通过 `id` 关联；用 `project.xml` 哈希检测外部修改，修改过则以 XML 为准降级加载。
 3. **导入/导出分批**
-   - v0.0.1：`.upkit`、SFZ、WAV 文件夹、原 App 素材导入器、SMF
+   - v0.0.1：`.upkit`、SFZ、WAV 文件夹、私有素材包导入器、SMF
    - 后续：DAWproject 导出/导入、`.multisample`、DecentSampler、SF2/SF3、MPC `.xpm`、Ableton `.adg`
 4. **自研**：SFZ 解析器（以 sfizz 行为为对照，有 opcode 白名单）、DAWproject serde 模型（CI 中用 XSD 校验）、WAV 元数据 chunk 读写。
 5. **许可证闸门**：用 cargo-deny 禁止 GPL/LGPL 依赖进入默认构建。

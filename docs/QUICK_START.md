@@ -107,19 +107,19 @@ just docker-cli 0.0.1           # 构建 ghcr.io/plutokeating/ultrapads-cli:0.0.
 ## 4. 首次启动与内置 Kit
 
 - 曲库为空时自动导入应用资源中的 CC0 示例 Kit（`app/ultrapads/assets/kits/`，是 `content/kits/*.upkit` 的副本；`just bundle-kits` 同步，测试校验一致）。
-- 默认加载顺序：原版 Sunset（注入了私有素材时）→ CC0 `UltraPads Starter` → 第一个 Kit。
+- 默认加载顺序：私有素材包的 Sunset（注入了私有素材时）→ CC0 `UltraPads Starter` → 第一个 Kit。
 
 ### 私有素材注入（可选，不入库）
 
-原 App 素材只放在被 gitignore 的 `private-assets/` 和 `references/` 中，不随仓库分发。
+私有素材包只放在被 gitignore 的 `private-assets/` 和 `references/` 中，不随仓库分发。
 
 ```bash
-just inject-assets    # 把 private-assets/compat-ios（4.7.0）与 private-assets/compat（APK）中需要的文件
+just inject-assets    # 把 private-assets/compat-ios（iOS 格式）与 private-assets/compat-android（Android 格式）中需要的文件
                       # 平铺复制到 app/ultrapads/assets/private_manifest/（被忽略），生成 injected.json
 just clean-assets     # 删除注入的文件，回到纯开源占位
 ```
 
-注入后：UI 使用原版皮肤缩略图、字体、图片型皮肤位图等；`injected.json` 的 `privateKits` 记录 4.7.0 的 6 个内置 Kit（音频 + 配置 + 目录 + 教程），应用首次启动把它们还原到临时目录，交给曲库的原 App 素材导入器导入（按注入时间戳只导入一次）。桌面也可以不注入，直接 `--dart-define=UP_PRIVATE_KITS=<private-assets/compat-ios 的路径>`。
+注入后：UI 使用私有素材包的皮肤缩略图、字体、图片型皮肤位图等；`injected.json` 的 `privateKits` 记录私有素材包的 6 个内置 Kit（音频 + 配置 + 目录 + 教程），应用首次启动把它们还原到临时目录，交给曲库的私有素材包导入器导入（按注入时间戳只导入一次）。桌面也可以不注入，直接 `--dart-define=UP_PRIVATE_KITS=<private-assets/compat-ios 的路径>`。
 
 ## 5. 检查
 
@@ -131,7 +131,7 @@ just check            # = rust-check + dart-check
 
 - golden：`cd app/ultrapads && flutter test --update-goldens`（token 或界面变化后）。
 - 发声冒烟（真实音频设备）：`UP_REQUIRE_AUDIO=1 cargo test -p up_ffi --test ffi_audio -- --nocapture`。
-- 原 App 素材导入（本机）：`cargo test -p up_ffi -- --ignored private_assets`。
+- 私有素材包导入（本机）：`cargo test -p up_ffi -- --ignored private_assets`。
 
 ## 6. Hub（多设备协同）联调
 

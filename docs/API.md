@@ -21,7 +21,7 @@ pub enum Command {
     StopAll,
     SetTempo { bpm: f64 },                  // 20..=400
     SetSpeed { ratio: f64 },                // 0.5..=2.0；实时变速变调（varispeed），transport 同比缩放
-    SetQuantize { q: Quantize },            // 全局量化，默认 None（与原 App 一致：Loop 按下立即从头播）
+    SetQuantize { q: Quantize },            // 全局量化，默认 None（Loop 按下立即从头播）
     SetPadParams { pad: PadId, params: PadParams },
     SetMasterGain { gain: f32 },            // 线性 0..=4
     StartRecording, StopRecording,          // 录制主输出 → TrackSaved
@@ -72,13 +72,13 @@ pub struct EngineSnapshot { pads: Vec<PadSnapshot /*PAD_COUNT = 84*/>, transport
 pub struct RenderScript { duration_secs: f64, events: Vec<TimedCommand { at_secs: f64, cmd: Command }> }
 ```
 
-行为规则（对齐 `docs/research/compat-*-analysis.md`）：
+行为规则：
 - **Loop**：默认不量化，按下立即从头循环，再按停止（≈5 ms 淡出）。量化开启时：`Idle → Pending →`（下一个网格边界，采样级精确）`Playing`；Playing 时再按 → `Stopping`（等边界）→ `Idle`；Pending/等待中的 Stopping 再按可取消。第一个量化 Loop 会从 beat 0 启动 transport，最后一个 Loop 结束后自动停止。
 - **触发**：界面层"触摸到即触发"——指针按下落在 pad 上或滑进 pad 都发送 `PadDown`，滑出 / 抬起 / 取消发送 `PadUp`（`PadGrid`）；每次触碰都按 pad 模式处理。
 - **One-shot**：再按从头重触发（旧声部 5 ms 淡出）；**Gate**：松手淡出。
 - **Choke**：触发 pad X（组 g）时，所有 `choked_by.or(choke_group) == g` 的其它 pad 停止（Loop 也关掉，Pending 取消）。
 - **复音**：默认最多 32 个发声声部 + 16 个淡出尾巴；超限时偷取最老的 one-shot/gate（Loop 最后被偷），被偷声部淡出。
-- **速度**：`SetSpeed` 对所有声部做 4 点 Hermite 插值变速变调，transport 同比缩放；原 App 的三档 1.0 / 0.7 / 0.5 是推荐预设。当前应用界面不提供速度控件（v0.2.0 移除了教程模式），`SetSpeed` 与教程相关接口（`transport_clock`、`tutorial_get`、`tutorial_judge`）保留在引擎与 FFI 中。
+- **速度**：`SetSpeed` 对所有声部做 4 点 Hermite 插值变速变调，transport 同比缩放；1.0 / 0.7 / 0.5 三档是推荐预设。当前应用界面不提供速度控件（v0.2.0 移除了教程模式），`SetSpeed` 与教程相关接口（`transport_clock`、`tutorial_get`、`tutorial_judge`）保留在引擎与 FFI 中。
 - **Pitch**：`PadParams.pitch`（KitDoc `pitchSemitones`）在声部起播时换算为速率倍数 `2^(pitch/12)`，与 speed 相乘；对在播声部实时生效。独立变调不变速留给 `OfflineStretcher`。
 - **试听声部**：作品播放与编辑器试听共用一个不占用 pad 的立体声试听声部（不受 speed 影响）；新的试听会替换正在播放的作品（推送 `TrackPlayback { track: None }`）。离线 pitch/tempo 接口见 `up_dsp::stretch::OfflineStretcher`（后续接 Signalsmith Stretch）。
 - 事件约 60 Hz 合并：Meters 只保留最新值（无声时不重复发送）；PadState、Transport、Recorder 变化立即排队（控制线程 4 ms 轮询）。
@@ -105,8 +105,8 @@ DTO 定义在 `bridge/up-ffi/src/api/types.rs`（与引擎类型一一对应，D
 | `library_search_kits(text, genre, favorites_only, sort: KitSort, limit) -> Vec<KitSummary>` | | `KitSort { Name, RecentlyUsed, RecentlyAdded, Favorited }` |
 | `library_genres() -> Vec<String>` / `library_set_favorite(kit, bool) -> KitSummary` / `library_delete_kit(kit)` | | |
 | `library_load_kit(kit: String) -> KitSummary` | | 解码 + 重采样 + 交给引擎（先 StopAll），推送 `KitLoaded`。开发便利：若 `kit` 不是曲库 ID 而是一个文件夹路径，则按"音频文件按名排序 → pad"加载 |
-| `library_import(path) -> ImportReport` | | `.upkit`（ZIP/文件夹）、SFZ、音频文件夹、单个音频文件（入库为样本）、原 App 素材目录；`ImportReport { kind, kits, duplicates, samples, catalog_entries, warnings }` |
-| `library_import_bytes(name, bytes) -> ImportReport` | | 内存中的 `.upkit`/ZIP（应用资源里的内置 Kit）；`name` 以 `.upkit` 结尾时强制按 upkit 读取，否则自动识别（含原 App 素材 ZIP） |
+| `library_import(path) -> ImportReport` | | `.upkit`（ZIP/文件夹）、SFZ、音频文件夹、单个音频文件（入库为样本）、私有素材包目录；`ImportReport { kind, kits, duplicates, samples, catalog_entries, warnings }` |
+| `library_import_bytes(name, bytes) -> ImportReport` | | 内存中的 `.upkit`/ZIP（应用资源里的内置 Kit）；`name` 以 `.upkit` 结尾时强制按 upkit 读取，否则自动识别（含私有素材包 ZIP） |
 | `library_export_kit(kit, path, format) -> String` | | `format`：`upkit` / `upkit-folder` / `sfz` / `dawproject`；返回写出的路径 |
 | `library_save_kit(kit_json: String) -> KitSummary` | | `kit_json` = `up_model::KitDoc` 的 camelCase JSON（避免在 FFI 镜像整套文档模型） |
 | `library_current_kit_json() -> Option<String>` / `library_kit_json(kit) -> String` | | 当前 / 任意 Kit 的 `KitDoc` JSON（编辑器读取→修改→`library_save_kit`） |
@@ -136,7 +136,7 @@ pub struct TutorialEvent { time_secs: f64, pad: Option<PadId>, page_switch: Opti
                            color: Option<ColorRole>, action: TutorialAction /* Tap | LoopToggle */ }
 ```
 
-- 来源：原 App 4.x `tutorial.json` 的 `[{time, pad 1..24 | 100/101, color, state}]`（`state 0` → `LoopToggle`），`<id>_lesson.json` → `lessons`；旧版 3.x `sequence` → `timed=false`。
+- 来源：私有素材包（iOS 格式）`tutorial.json` 的 `[{time, pad 1..24 | 100/101, color, state}]`（`state 0` → `LoopToggle`），`<id>_lesson.json` → `lessons`；Android 格式的 `sequence` → `timed=false`。
 - 判定：UI 在 `Transport(Play)` 后按下 pad 时读 `transport_clock().song_secs`，与事件 `time_secs` 比较（`tutorial_judge`）。慢速练习时 `SetSpeed { ratio: 0.7 | 0.5 }`：音频变速，`song_secs` 以 `speed × 真实时间` 推进，事件时间无需换算；拖动进度条 = `Transport(Seek(time_secs × bpm / 60))`。
 
 **Android 平台通道**：`MainActivity` 在 `onCreate` 中 `System.loadLibrary("up_ffi")` 并调用 JNI `nativeInit(context)` 初始化 `ndk_context`（cpal/AAudio 需要；Dart 的 `dlopen` 不会触发 `JNI_OnLoad`），同一调用也为 Hub 组播锁保存 JavaVM 与 Context。`onStart`/`onStop` 调用 JNI `nativeSetForeground(bool)`（组播锁见 §3.1）。麦克风权限走 **MethodChannel `dev.ultrapads/permissions`**：`recordAudioStatus` → `"granted" | "denied"`，`requestRecordAudio` → `bool`；在 `sampler_record_start` 之前调用。Manifest 声明 `RECORD_AUDIO`、`INTERNET`、`ACCESS_NETWORK_STATE`、`ACCESS_WIFI_STATE`、`CHANGE_WIFI_MULTICAST_STATE`（后四个为普通权限，无需运行时申请）。
@@ -312,15 +312,15 @@ end 16B  tag       HMAC-SHA256(会话密钥, 前面所有字节) 的前 16 字�
 | `load_kit_assets(id) -> LoadedKit` / `load_kit_assets_with(id, LoadOptions)` | `library_load_kit` | `LoadedKit { doc: up_format::KitDoc, model: up_model::KitDoc, summary, samples: 包内路径 → LoadedSample { sample_id, file, sample_rate, channels, frames, pcm: Option<DecodedPcm> }, warnings }`；`model` 中 `SampleRef.id` = BLAKE3 = `LoadedSample.sample_id`；`pcm` 为交错 f32；会记为最近使用 |
 | `kit_model(id) -> up_model::KitDoc` / `save_kit_model(&up_model::KitDoc) -> KitSummary` | `library_current_kit_json` / `library_save_kit` | 保存时合并到原 Kit（模型已覆盖多采样层/轮替/loop 点/非对称 choke/细粒度量化，直接映射；教程保留在包内）；新采样用 `SampleRef.blake3`（或 `id`）引用曲库样本 |
 | `kit_doc(id)` / `save_kit(&up_format::KitDoc)` / `kit_package(id)` / `kit_manifest(id)` / `kit_tutorials(id)` | | 完整格式层文档（`.upkit` 无损） |
-| `import(path) -> ImportReport` / `import_zip_bytes(name, bytes)` / `import_fs(&dyn SourceFs, force_upkit)` | `library_import` / `library_import_bytes` | 自动识别：原 App 素材（多来源，见下）→ `.upkit`（ZIP/文件夹）→ SFZ → 音频文件夹；单个 `.wav` 作为样本入库。`ImportReport { kind, kits: [ImportedKit { kit_id, name, pad_count, pads_used, duplicate }], samples, catalog_entries, warnings }` |
+| `import(path) -> ImportReport` / `import_zip_bytes(name, bytes)` / `import_fs(&dyn SourceFs, force_upkit)` | `library_import` / `library_import_bytes` | 自动识别：私有素材包（多来源，见下）→ `.upkit`（ZIP/文件夹）→ SFZ → 音频文件夹；单个 `.wav` 作为样本入库。`ImportReport { kind, kits: [ImportedKit { kit_id, name, pad_count, pads_used, duplicate }], samples, catalog_entries, warnings }` |
 | `export_kit(id, dest, ExportFormat)` | `library_export_kit` | `ExportFormat::parse("upkit"/"upkit-folder"/"sfz"/"dawproject")` |
-| `catalog_entries(source)` / `catalog_categories(source)` | | 外部目录（原 App list.json / fetch.json）：`CatalogEntry { status: NotDownloaded / Downloaded{kitId}, genres, tags, difficulty, themeColor, videoUrl, … }` |
+| `catalog_entries(source)` / `catalog_categories(source)` | | 外部目录（私有素材包的 list.json / fetch.json）：`CatalogEntry { status: NotDownloaded / Downloaded{kitId}, genres, tags, difficulty, themeColor, videoUrl, … }` |
 | `add_sample(bytes, name, SampleOrigin)` / `add_sample_file(path, origin)` / `list_samples()` / `sample_path(id)` / `delete_sample(id)` | `sampler_record_stop` | 麦克风录音/导入的样本入库（内容寻址，`SampleId` = BLAKE3） |
 | `sample_waveform(id, buckets) -> Vec<f32>` | `sample_waveform` | 峰值概要 |
 | `tracks_list()` / `track_add(bytes, name, kit, bpm)` / `track_add_file` / `track_rename` / `track_delete` / `track_export(id, dest, TrackExportFormat::{Wav, DawProject})` / `track_to_sample(id)` / `track_path(id)` | `tracks_*` / `track_export` / `track_delete` | 录音作品；WAV 导出写 BWF `bext` |
 | `hub_store::LibraryHubStore::new(Arc<Library>, DeviceId)` | `hub_start_server` / `hub_sync` | 实现 `up_hub::LibraryStore`（feature `hub`，默认开）：Kit/样本/作品 ↔ 清单条目，blob = 内容寻址存储 |
 
-原 App 素材导入器是可插拔的 `CompatSource`（`detect` + `import(emit)`）：内置 `compat-android`（APK 3.x：WAV + `list.json` + 顺序教程）与 `compat-ios`（IPA 4.x：Ogg/MP3 入库时转 WAV + `fetch.json`/`fetch_next.json` + 计时教程 `tutorial.json` + 分课 `<id>_lesson.json`）。`library_import("private-assets/compat-ios")` 一次导入全部 6 个内置 Kit 并合并 1259 个目录条目。
+私有素材包导入器是可插拔的 `CompatSource`（`detect` + `import(emit)`）：内置 `compat-android`（Android 格式：WAV + `list.json` + 顺序教程）与 `compat-ios`（iOS 格式：Ogg/MP3 入库时转 WAV + `fetch.json`/`fetch_next.json` + 计时教程 `tutorial.json` + 分课 `<id>_lesson.json`）。`library_import("private-assets/compat-ios")` 一次导入全部 6 个内置 Kit 并合并 1259 个目录条目。
 
 格式层（无 I/O）：`up_format::sfz`（解析/白名单/序列化，`#include` 走 `IncludeResolver` 回调）、`kit_json` / `manifest` / `tutorial`（serde 模型，Schema 在 `content/schema/`）、`wav`（`smpl`/`acid`/`inst`/`cue `/`bext` 读写、PCM 编解码、loop/BPM 推断）、`smf`（教程谱）、`upkit`（`KitDoc` ↔ 包）、`model`（`KitDoc` ↔ `up_model::KitDoc`）、`dawproject`（DAWproject 1.0 导出，官方 XSD 在 `content/schema/dawproject/`）。
 
