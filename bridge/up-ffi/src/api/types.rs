@@ -38,7 +38,7 @@ impl std::error::Error for UpError {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct PadId {
-    /// 0 = A, 1 = B.
+    /// Sound group: 0 = A, 1 = B … 6 = G.
     pub bank: u8,
     /// 0..12.
     pub index: u8,
@@ -161,6 +161,8 @@ pub struct KitSummary {
     pub name: String,
     /// Pads with a sample.
     pub pad_count: u32,
+    /// Sound groups A, B, C … (12 pads each; at least 1, at most 7).
+    pub group_count: u32,
     pub bpm: Option<f64>,
     pub has_tutorial: bool,
     pub description: Option<String>,
@@ -740,6 +742,7 @@ impl From<proto::KitSummary> for KitSummary {
             id: k.id.0,
             name: k.name,
             pad_count: k.pad_count,
+            group_count: k.group_count.max(1),
             bpm: k.bpm,
             has_tutorial: k.has_tutorial,
             ..Default::default()
@@ -975,6 +978,7 @@ pub(crate) fn kit_summary_from_library(
         id: k.id.clone(),
         name: k.name.clone(),
         pad_count: u32::from(k.pads_used),
+        group_count: k.group_count(),
         bpm: k.bpm,
         has_tutorial: k.has_tutorial,
         description: k.description.clone(),

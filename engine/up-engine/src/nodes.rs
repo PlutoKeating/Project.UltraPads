@@ -1,4 +1,8 @@
-//! Graph nodes: Sampler → Mixer → Master.
+//! Graph nodes: Sampler (pads + mixer) → Master.
+//!
+//! The sampler renders every pad (all sound groups) into its own stereo bus
+//! and mixes them to stereo inside the node, so the graph's port count does
+//! not grow with the number of pads (Firewheel nodes have ≤ 64 ports).
 
 use crate::meters::{MeterBank, push_peak};
 use crate::rt::{MasterCmd, RtCommand, RtEvent};
@@ -13,7 +17,7 @@ use up_recorder::RecordWriter;
 use up_rt::mpsc::CommandQueue;
 use up_rt::param::AtomicF32;
 use up_rt::spsc::Producer;
-use up_sampler::{Sampler, SamplerEvent, SamplerEvents};
+use up_sampler::{BUS_COUNT, Sampler, SamplerEvent, SamplerEvents};
 use up_transport::Transport;
 
 /// Maximum commands applied per block (bounds worst-case block time).
@@ -53,6 +57,11 @@ pub(crate) struct SamplerNode {
     pub since_transport: u32,
     pub last_playing: bool,
     pub overflow: bool,
+    /// Pad / preview buses, planar: `BUS_COUNT` × `bus_len` frames (preallocated).
+    pub buses: Vec<f32>,
+    pub bus_len: usize,
+    pub mixer: Mixer,
+    pub levels: [f32; PAD_COUNT],
 }
 
 impl SamplerNode {
@@ -99,8 +108,26 @@ impl NodeProcessor for SamplerNode {
             tx: &mut self.events,
             overflow: &mut self.overflow,
         };
-        self.sampler
-            .process(&mut self.transport, outputs, info.frames, &mut sink);
+        let frames = info.frames.min(self.bus_len);
+        {
+            let mut chunks = self.buses.chunks_exact_mut(self.bus_len);
+            let mut buses: [&mut [f32]; BUS_COUNT] =
+                std::array::from_fn(|_| chunks.next().unwrap_or_default());
+            self.sampler
+                .process(&mut self.transport, &mut buses, frames, &mut sink);
+        }
+        // Mix every pad bus (+ preview) to the stereo output; also per-pad levels.
+        if let [l, r, ..] = outputs {
+            let mut chunks = self.buses.chunks_exact(self.bus_len);
+            let ins: [&[f32]; BUS_COUNT] =
+                std::array::from_fn(|_| chunks.next().map_or(&[][..], |c| &c[..frames]));
+            let n = frames.min(l.len()).min(r.len());
+            self.mixer.process(&ins, &mut l[..n], &mut r[..n]);
+            self.mixer.take_pad_levels(&mut self.levels);
+            for (a, v) in self.meters.pad_peaks.iter().zip(self.levels.iter()) {
+                push_peak(a, *v);
+            }
+        }
         self.transport.advance(info.frames as u32);
 
         let playing = self.transport.is_playing();
@@ -128,29 +155,6 @@ impl NodeProcessor for SamplerNode {
             self.transport.bpm(),
             self.transport.speed(),
         );
-    }
-}
-
-pub(crate) struct MixerNode {
-    pub mixer: Mixer,
-    pub meters: Arc<MeterBank>,
-    pub levels: [f32; PAD_COUNT],
-}
-
-impl NodeProcessor for MixerNode {
-    fn process(&mut self, info: &ProcessInfo, inputs: &[&[f32]], outputs: &mut [&mut [f32]]) {
-        if outputs.len() < 2 {
-            return;
-        }
-        let frames = info.frames;
-        let (l, r) = outputs.split_at_mut(1);
-        let fl = frames.min(l[0].len());
-        let fr = frames.min(r[0].len());
-        self.mixer.process(inputs, &mut l[0][..fl], &mut r[0][..fr]);
-        self.mixer.take_pad_levels(&mut self.levels);
-        for (a, v) in self.meters.pad_peaks.iter().zip(self.levels.iter()) {
-            push_peak(a, *v);
-        }
     }
 }
 

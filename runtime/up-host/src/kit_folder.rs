@@ -129,11 +129,20 @@ fn is_audio(p: &Path) -> bool {
         .is_some_and(|e| AUDIO_EXTENSIONS.contains(&e.to_ascii_lowercase().as_str()))
 }
 
-#[derive(Default)]
 struct CompatConfig {
     behaviour: [Option<i64>; PAD_COUNT],
     colors: [Option<String>; PAD_COUNT],
     groups: [Option<i64>; PAD_COUNT],
+}
+
+impl Default for CompatConfig {
+    fn default() -> Self {
+        Self {
+            behaviour: [None; PAD_COUNT],
+            colors: std::array::from_fn(|_| None),
+            groups: [None; PAD_COUNT],
+        }
+    }
 }
 
 fn read_compat_config(dir: &Path) -> Option<CompatConfig> {
@@ -459,7 +468,9 @@ mod tests {
         v.sort_by_key(|s| natural_key(s));
         assert_eq!(v, vec!["Pad1_x", "pad2_x", "pad10_x"]);
         assert_eq!(compat_pad_index("pad12_sunset"), Some(11));
-        assert_eq!(compat_pad_index("pad25_x"), None);
+        assert_eq!(compat_pad_index("pad25_x"), Some(24));
+        assert_eq!(compat_pad_index("pad84_x"), Some(83));
+        assert_eq!(compat_pad_index("pad85_x"), None);
         assert_eq!(compat_pad_index("kick"), None);
     }
 }

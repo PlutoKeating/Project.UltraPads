@@ -160,6 +160,12 @@ impl KitJson {
             sfz: default_sfz(),
             layout: Layout {
                 pad_count,
+                // 1–2 组保持历史上的 ["A","B"]（已发布的 Kit 逐字节不变），3 组起列出全部字母
+                banks: crate::kit::BANK_LETTERS
+                    .iter()
+                    .take(usize::from(pad_count.div_ceil(crate::kit::PADS_PER_BANK)).max(2))
+                    .map(|s| (*s).to_owned())
+                    .collect(),
                 ..Layout::default()
             },
             pads: Vec::new(),

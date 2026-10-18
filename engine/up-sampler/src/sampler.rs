@@ -8,11 +8,14 @@ use up_transport::Transport;
 /// Number of extra output channels used by the track preview voice.
 pub const PREVIEW_OUTPUTS: usize = 2;
 
-/// Planar output channels the sampler writes: 24 stereo pad buses followed
-/// by one stereo preview bus.
+/// Planar output channels the sampler writes: one stereo bus per pad
+/// ([`PAD_COUNT`]) followed by one stereo preview bus.
 pub const fn outputs_needed() -> usize {
     PAD_COUNT * 2 + PREVIEW_OUTPUTS
 }
+
+/// [`outputs_needed`] as a constant (for fixed-size bus arrays on the audio thread).
+pub const BUS_COUNT: usize = outputs_needed();
 
 /// Allocation-free per-pad parameters.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -196,7 +199,7 @@ impl Sampler {
                 max_voices: max,
                 ..cfg
             },
-            pads: Default::default(),
+            pads: std::array::from_fn(|_| PadState::default()),
             voices: (0..total).map(|_| Voice::default()).collect(),
             preview: Voice::default(),
             quantize: Quantize::None,

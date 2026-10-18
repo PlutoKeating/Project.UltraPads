@@ -3082,6 +3082,7 @@ impl SseDecode for crate::api::types::KitSummary {
         let mut var_id = <String>::sse_decode(deserializer);
         let mut var_name = <String>::sse_decode(deserializer);
         let mut var_padCount = <u32>::sse_decode(deserializer);
+        let mut var_groupCount = <u32>::sse_decode(deserializer);
         let mut var_bpm = <Option<f64>>::sse_decode(deserializer);
         let mut var_hasTutorial = <bool>::sse_decode(deserializer);
         let mut var_description = <Option<String>>::sse_decode(deserializer);
@@ -3098,6 +3099,7 @@ impl SseDecode for crate::api::types::KitSummary {
             id: var_id,
             name: var_name,
             pad_count: var_padCount,
+            group_count: var_groupCount,
             bpm: var_bpm,
             has_tutorial: var_hasTutorial,
             description: var_description,
@@ -4709,6 +4711,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::types::KitSummary {
             self.id.into_into_dart().into_dart(),
             self.name.into_into_dart().into_dart(),
             self.pad_count.into_into_dart().into_dart(),
+            self.group_count.into_into_dart().into_dart(),
             self.bpm.into_into_dart().into_dart(),
             self.has_tutorial.into_into_dart().into_dart(),
             self.description.into_into_dart().into_dart(),
@@ -5849,6 +5852,7 @@ impl SseEncode for crate::api::types::KitSummary {
         <String>::sse_encode(self.id, serializer);
         <String>::sse_encode(self.name, serializer);
         <u32>::sse_encode(self.pad_count, serializer);
+        <u32>::sse_encode(self.group_count, serializer);
         <Option<f64>>::sse_encode(self.bpm, serializer);
         <bool>::sse_encode(self.has_tutorial, serializer);
         <Option<String>>::sse_encode(self.description, serializer);

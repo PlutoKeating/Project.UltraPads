@@ -14,8 +14,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde_json::Value;
 use up_format::kit::{
-    ColorRole, KitDoc, KitSource, LaunchMode, MAX_PADS, PadAddr, PadColor, PadDoc, PadKind,
-    SampleLayer, TutorialRef,
+    ColorRole, KitDoc, KitSource, LaunchMode, PadAddr, PadColor, PadDoc, PadKind, SampleLayer,
+    TutorialRef,
 };
 use up_format::smf::{Chart, Marker, NoteEvent};
 use up_format::tutorial::{TutorialDoc, TutorialMode, TutorialStep};
@@ -32,6 +32,8 @@ use crate::index::{Catalog, CatalogCategory, CatalogEntry, CatalogStatus};
 pub const PRIVATE_LICENSE: &str = "LicenseRef-Private-Assets";
 
 const MAX_CONFIG_BYTES: u64 = 256 * 1024;
+/// 原 App 的固定布局：A/B 两组共 24 个 pad（与 UltraPads 自己的组数上限无关）。
+const COMPAT_PADS: u8 = 24;
 const MAX_CATALOG_BYTES: u64 = 64 * 1024 * 1024;
 
 /// 旧版 APK 3.x。
@@ -128,7 +130,7 @@ pub fn pad_file_number(path: &str) -> Option<(u8, String)> {
     }
     let n: u8 = digits.parse().ok()?;
     let ext = up_format::path::extension_lower(&name)?;
-    (1..=MAX_PADS).contains(&n).then_some((n, ext))
+    (1..=COMPAT_PADS).contains(&n).then_some((n, ext))
 }
 
 fn parent(path: &str) -> &str {
@@ -187,7 +189,7 @@ pub fn parse_config(bytes: &[u8]) -> Option<KitConfig> {
         .unwrap_or("")
         .to_string();
     let mut pads = BTreeMap::new();
-    for n in 1..=MAX_PADS {
+    for n in 1..=COMPAT_PADS {
         let key = format!("pad{n}");
         let Some(beh) = b.get(&key).and_then(Value::as_i64) else {
             continue;
@@ -1005,7 +1007,7 @@ fn events_to_chart(name: &str, bpm: f64, events: &[Value], offset_secs: f64) -> 
                 tick,
                 text: "Page B".into(),
             }),
-            p if (1..=i64::from(MAX_PADS)).contains(&p) => {
+            p if (1..=i64::from(COMPAT_PADS)).contains(&p) => {
                 let state = e.get("state").and_then(Value::as_i64).unwrap_or(1);
                 chart.notes.push(NoteEvent {
                     tick,

@@ -9,8 +9,10 @@ use serde::{Deserialize, Serialize};
 
 /// 每组（bank）的 pad 数。
 pub const PADS_PER_BANK: u8 = 12;
-/// 最大 pad 数（A/B 两组）。
-pub const MAX_PADS: u8 = 24;
+/// 最大 pad 数（引擎上限：`up_core::BANK_COUNT` 组 × 12，即 A–G 七组 84 个）。
+pub const MAX_PADS: u8 = up_core::PAD_COUNT as u8;
+/// 音色组字母（`layout.banks` 与 pad 的 `bank` 字段）。
+pub const BANK_LETTERS: [&str; up_core::BANK_COUNT] = ["A", "B", "C", "D", "E", "F", "G"];
 /// pad 0（A1）对应的 MIDI 音符。
 pub const BASE_NOTE: u8 = 36;
 
@@ -44,7 +46,10 @@ impl PadAddr {
             .map(Self::from_flat)
     }
     pub fn bank_letter(self) -> &'static str {
-        if self.bank == 0 { "A" } else { "B" }
+        BANK_LETTERS
+            .get(usize::from(self.bank))
+            .copied()
+            .unwrap_or("?")
     }
 }
 
@@ -567,9 +572,9 @@ impl KitDoc {
         if self.name.trim().is_empty() {
             return Err(InvalidKit("Kit 名称为空".into()));
         }
-        if self.pad_count != 12 && self.pad_count != 24 {
+        if self.pad_count == 0 || self.pad_count % PADS_PER_BANK != 0 || self.pad_count > MAX_PADS {
             return Err(InvalidKit(format!(
-                "padCount 只能是 12 或 24，得到 {}",
+                "padCount 必须是 12 的倍数（12–{MAX_PADS}），得到 {}",
                 self.pad_count
             )));
         }
@@ -635,7 +640,15 @@ mod tests {
         assert_eq!(a, PadAddr { bank: 1, index: 1 });
         assert_eq!(a.default_note(), 49);
         assert_eq!(PadAddr::from_default_note(36), Some(PadAddr::from_flat(0)));
-        assert_eq!(PadAddr::from_default_note(60), None);
+        assert_eq!(
+            PadAddr::from_default_note(60),
+            Some(PadAddr { bank: 2, index: 0 })
+        );
+        assert_eq!(
+            PadAddr::from_default_note(119),
+            Some(PadAddr { bank: 6, index: 11 })
+        );
+        assert_eq!(PadAddr::from_default_note(120), None);
     }
 
     #[test]

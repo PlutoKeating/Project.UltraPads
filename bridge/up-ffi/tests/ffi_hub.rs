@@ -399,7 +399,9 @@ fn hub_flow_through_ffi() {
     );
     // Out-of-range pads are still rejected.
     assert_eq!(
-        engine::pad_down(5, 0, 1.0).unwrap_err().code,
+        engine::pad_down(up_core::BANK_COUNT as u8, 0, 1.0)
+            .unwrap_err()
+            .code,
         ErrorCode::InvalidArgument
     );
 

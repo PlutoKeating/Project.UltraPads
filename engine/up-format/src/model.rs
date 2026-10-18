@@ -236,6 +236,7 @@ pub fn to_model(doc: &KitDoc, tutorial: Option<TutorialChart>) -> up_model::KitD
             denominator: u32::from(ts[1]),
         },
         tutorial,
+        group_count: doc.pad_count.div_ceil(crate::kit::PADS_PER_BANK).max(1),
         ..Default::default()
     };
     m.meta.description = doc.description.clone();
@@ -349,9 +350,7 @@ pub fn apply_model(base: &mut KitDoc, m: &up_model::KitDoc) {
     if m.meta.license.is_some() {
         base.license = m.meta.license.clone();
     }
-    if m.pads.iter().any(|p| p.pad.bank > 0) {
-        base.pad_count = 24;
-    }
+    base.pad_count = m.groups() * crate::kit::PADS_PER_BANK;
     let keep: Vec<PadAddr> = m
         .pads
         .iter()
@@ -648,6 +647,34 @@ mod tests {
         assert_eq!(lp.quantize, Some(MQuantize::Bar));
         assert_eq!(lp.loop_meta.unwrap().beats, Some(16.0));
         assert!(m.validate().is_ok());
+    }
+
+    #[test]
+    fn sound_groups_roundtrip_and_editor_can_add_or_remove_groups() {
+        let base = doc(); // 24 个 pad 的布局（A、B 两组）
+        let mut m = to_model(&base, None);
+        assert_eq!(m.group_count, 2);
+        assert_eq!(m.groups(), 2);
+
+        // 编辑器新增一个空的 C 组：布局扩到 36，kit.json 列出 A/B/C
+        m.group_count = 3;
+        let mut merged = base.clone();
+        apply_model(&mut merged, &m);
+        assert_eq!(merged.pad_count, 36);
+        merged.validate().unwrap();
+        assert_eq!(to_model(&merged, None).groups(), 3);
+        let json = crate::kit_json::KitJson::new(merged.pad_count);
+        assert_eq!(json.layout.banks, ["A", "B", "C"]);
+
+        // 删除空的 C 组：回到 24
+        m.group_count = 2;
+        apply_model(&mut merged, &m);
+        assert_eq!(merged.pad_count, 24);
+
+        // 有声音的 pad 所在的组不会被删掉
+        m.group_count = 1;
+        apply_model(&mut merged, &m);
+        assert_eq!(merged.pad_count, 24, "B 组还有 pad，组数至少为 2");
     }
 
     #[test]

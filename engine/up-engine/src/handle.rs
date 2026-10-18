@@ -1,7 +1,7 @@
 use crate::EngineConfig;
 use crate::control::{Control, ControlMsg, SUBSCRIBER_CAPACITY};
 use crate::meters::MeterBank;
-use crate::nodes::{MasterNode, MixerNode, SamplerNode};
+use crate::nodes::{MasterNode, SamplerNode};
 use crate::processor::AudioProcessor;
 use crate::rt::{MasterCmd, RtCommand};
 use arc_swap::{ArcSwap, ArcSwapOption};
@@ -12,7 +12,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use up_core::{ErrorCode, PAD_COUNT, PadId, SampleId, TrackId, UpError, UpResult};
 use up_graph::{DescNode, GraphDesc, NodeSpec, StreamConfig};
-use up_mixer::{MIXER_INPUTS, Mixer, MixerParams};
+use up_mixer::{Mixer, MixerParams};
 use up_protocol::{
     BPM_MAX, BPM_MIN, Command, EngineEvent, EngineSnapshot, KitSummary, PadParams, PadSnapshot,
     SPEED_MAX, SPEED_MIN, TransportState,
@@ -24,7 +24,6 @@ use up_rt::retire::retire_channel;
 use up_rt::spsc;
 use up_sampler::{
     RtPadParams, SampleArc, SampleData, SampleUpdate, Sampler, SamplerCmd, SamplerConfig,
-    outputs_needed,
 };
 use up_transport::Transport;
 
@@ -94,10 +93,9 @@ pub(crate) fn build(cfg: EngineConfig) -> UpResult<(EngineHandle, AudioProcessor
         since_transport: 0,
         last_playing: false,
         overflow: false,
-    };
-    let mixer_node = MixerNode {
+        buses: vec![0.0; up_sampler::BUS_COUNT * cfg.max_block_frames],
+        bus_len: cfg.max_block_frames,
         mixer: Mixer::new(sr, Arc::new(MixerParams::default())),
-        meters: Arc::clone(&meters),
         levels: [0.0; PAD_COUNT],
     };
     let master_node = MasterNode::new(
@@ -115,17 +113,9 @@ pub(crate) fn build(cfg: EngineConfig) -> UpResult<(EngineHandle, AudioProcessor
         NodeSpec {
             name: "pad_sampler",
             inputs: 0,
-            outputs: outputs_needed(),
-        },
-        Box::new(sampler_node),
-    );
-    let n_mixer = desc.add_node(
-        NodeSpec {
-            name: "mixer",
-            inputs: MIXER_INPUTS,
             outputs: 2,
         },
-        Box::new(mixer_node),
+        Box::new(sampler_node),
     );
     let n_master = desc.add_node(
         NodeSpec {
@@ -135,8 +125,7 @@ pub(crate) fn build(cfg: EngineConfig) -> UpResult<(EngineHandle, AudioProcessor
         },
         Box::new(master_node),
     );
-    desc.connect_ports(n_sampler, 0, n_mixer, 0, outputs_needed().min(MIXER_INPUTS));
-    desc.connect_ports(n_mixer, 0, n_master, 0, 2);
+    desc.connect_ports(n_sampler, 0, n_master, 0, 2);
     desc.connect_ports(n_master, 0, DescNode::OUTPUT, 0, 2);
 
     let snapshot = Arc::new(ArcSwap::from_pointee(initial_snapshot(&cfg)));

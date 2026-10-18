@@ -728,6 +728,9 @@ class KitSummary {
 
   /// Pads with a sample.
   final int padCount;
+
+  /// Sound groups A, B, C … (12 pads each; at least 1, at most 7).
+  final int groupCount;
   final double? bpm;
   final bool hasTutorial;
   final String? description;
@@ -749,6 +752,7 @@ class KitSummary {
     required this.id,
     required this.name,
     required this.padCount,
+    required this.groupCount,
     this.bpm,
     required this.hasTutorial,
     this.description,
@@ -771,6 +775,7 @@ class KitSummary {
       id.hashCode ^
       name.hashCode ^
       padCount.hashCode ^
+      groupCount.hashCode ^
       bpm.hashCode ^
       hasTutorial.hashCode ^
       description.hashCode ^
@@ -792,6 +797,7 @@ class KitSummary {
           id == other.id &&
           name == other.name &&
           padCount == other.padCount &&
+          groupCount == other.groupCount &&
           bpm == other.bpm &&
           hasTutorial == other.hasTutorial &&
           description == other.description &&
@@ -807,7 +813,7 @@ class KitSummary {
 }
 
 class PadId {
-  /// 0 = A, 1 = B.
+  /// Sound group: 0 = A, 1 = B … 6 = G.
   final int bank;
 
   /// 0..12.

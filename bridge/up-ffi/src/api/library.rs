@@ -130,6 +130,7 @@ fn report(lib: &up_library::Library, rep: &up_library::ImportReport) -> R<Import
                 id: k.kit_id.clone(),
                 name: k.name.clone(),
                 pad_count: u32::from(k.pads_used),
+                group_count: 1,
                 ..Default::default()
             },
         })

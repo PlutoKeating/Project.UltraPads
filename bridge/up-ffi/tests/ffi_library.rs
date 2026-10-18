@@ -77,7 +77,9 @@ fn library_flow_through_ffi() {
     engine::pad_down(assigned[0].pad.bank, assigned[0].pad.index, 1.0).unwrap();
     engine::pad_up(assigned[0].pad.bank, assigned[0].pad.index).unwrap();
     assert_eq!(
-        engine::pad_down(5, 0, 1.0).unwrap_err().code,
+        engine::pad_down(up_core::BANK_COUNT as u8, 0, 1.0)
+            .unwrap_err()
+            .code,
         ErrorCode::InvalidArgument
     );
     engine::send(Command::SetQuantize {

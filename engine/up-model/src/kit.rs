@@ -291,7 +291,8 @@ pub struct KitSource {
     pub original_name: Option<String>,
 }
 
-/// A kit: up to 24 pads plus metadata.
+/// A kit (one song): one or more sound groups of 12 pads (up to
+/// [`up_core::BANK_COUNT`] groups) plus metadata.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct KitDoc {
@@ -301,6 +302,10 @@ pub struct KitDoc {
     pub bpm: Option<f64>,
     pub time_signature: TimeSignature,
     pub pads: Vec<PadDoc>,
+    /// Number of sound groups (A, B, C …). `0` = derive from the pads
+    /// (highest group in use + 1); see [`KitDoc::groups`]. Set explicitly by
+    /// the editor so that a newly added, still empty group is kept.
+    pub group_count: u8,
     pub tutorial: Option<TutorialChart>,
     pub meta: KitMeta,
 }
@@ -314,6 +319,7 @@ impl Default for KitDoc {
             bpm: None,
             time_signature: TimeSignature::default(),
             pads: Vec::new(),
+            group_count: 0,
             tutorial: None,
             meta: KitMeta::default(),
         }
@@ -329,11 +335,22 @@ impl KitDoc {
         self.pads.iter_mut().find(|p| p.pad == pad)
     }
 
-    /// True if any pad lives on bank B (shows the A/B switch).
+    /// True if any pad with a sample lives outside group A.
     pub fn uses_bank_b(&self) -> bool {
         self.pads
             .iter()
-            .any(|p| p.pad.bank == 1 && p.sample.is_some())
+            .any(|p| p.pad.bank > 0 && p.sample.is_some())
+    }
+
+    /// Effective number of sound groups: the explicit [`KitDoc::group_count`],
+    /// at least as many as the pads in [`KitDoc::pads`] need (a group cannot be
+    /// dropped while it still has pads — the editor removes them first), at
+    /// least 1, at most [`up_core::BANK_COUNT`].
+    pub fn groups(&self) -> u8 {
+        let used = self.pads.iter().map(|p| p.pad.bank + 1).max().unwrap_or(1);
+        self.group_count
+            .max(used)
+            .clamp(1, up_core::BANK_COUNT as u8)
     }
 
     pub fn summary(&self) -> KitSummary {
@@ -341,6 +358,7 @@ impl KitDoc {
             id: self.id.clone(),
             name: self.name.clone(),
             pad_count: self.pads.iter().filter(|p| p.sample.is_some()).count() as u32,
+            group_count: u32::from(self.groups()),
             bpm: self.bpm,
             has_tutorial: self.tutorial.as_ref().is_some_and(|t| !t.is_empty()),
         }
@@ -348,6 +366,13 @@ impl KitDoc {
 
     /// Validate structural invariants (unique, in-range pads).
     pub fn validate(&self) -> Result<(), up_core::UpError> {
+        if self.group_count as usize > up_core::BANK_COUNT {
+            return Err(up_core::UpError::format(format!(
+                "too many sound groups: {} (max {})",
+                self.group_count,
+                up_core::BANK_COUNT
+            )));
+        }
         let mut seen = [false; up_core::PAD_COUNT];
         for p in &self.pads {
             if !p.pad.is_valid() {
@@ -392,6 +417,21 @@ mod tests {
             pads: vec![pad, PadDoc::new(PadId { bank: 0, index: 0 })],
             ..Default::default()
         }
+    }
+
+    #[test]
+    fn group_count_is_explicit_or_derived_and_capped() {
+        let mut k = KitDoc::default();
+        assert_eq!(k.groups(), 1, "空 Kit 至少一组");
+        k.pads.push(PadDoc::new(PadId { bank: 2, index: 0 }));
+        assert_eq!(k.groups(), 3, "按 pad 所在的组推断");
+        k.group_count = 5;
+        assert_eq!(k.groups(), 5, "显式组数（含空组）");
+        k.group_count = 1;
+        assert_eq!(k.groups(), 3, "不会少于用到的组");
+        k.group_count = 200;
+        assert_eq!(usize::from(k.groups()), up_core::BANK_COUNT);
+        assert!(k.validate().is_err());
     }
 
     #[test]

@@ -1,4 +1,5 @@
-//! Minimal mixer for v0.0.1: 24 pad channels (+ preview) → stereo master.
+//! Minimal mixer: one stereo channel per pad (`PAD_COUNT`, every sound group)
+//! plus the preview → stereo master.
 //!
 //! Channel gain/pan/mute live in [`MixerParams`] (atomics, written by the
 //! control thread, read by the audio thread) and are smoothed per block to
@@ -12,7 +13,7 @@ use up_dsp::gain::pan_gains_unity_centre;
 use up_dsp::{PeakMeter, SmoothedValue};
 use up_rt::param::{AtomicF32, AtomicFlag};
 
-/// Number of mixer input channels (planar): 24 stereo pads + stereo preview.
+/// Number of mixer input channels (planar): stereo pads + stereo preview.
 pub const MIXER_INPUTS: usize = PAD_COUNT * 2 + 2;
 
 /// Shared channel parameters.
@@ -34,10 +35,19 @@ impl Default for ChannelParams {
 }
 
 /// Parameters shared between control and audio threads.
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct MixerParams {
     pub pads: [ChannelParams; PAD_COUNT],
     pub preview: ChannelParams,
+}
+
+impl Default for MixerParams {
+    fn default() -> Self {
+        Self {
+            pads: std::array::from_fn(|_| ChannelParams::default()),
+            preview: ChannelParams::default(),
+        }
+    }
 }
 
 struct Strip {

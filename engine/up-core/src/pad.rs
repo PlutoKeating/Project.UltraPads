@@ -25,7 +25,8 @@ impl Bank {
     }
 }
 
-/// Pad address. `bank`: 0 = A, 1 = B; `index`: 0..12. Flat index = `bank * 12 + index`.
+/// Pad address. `bank`: sound group 0 = A, 1 = B … 6 = G; `index`: 0..12.
+/// Flat index = `bank * 12 + index`.
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Default, Serialize, Deserialize,
 )]
@@ -45,7 +46,7 @@ impl PadId {
         Ok(Self { bank, index })
     }
 
-    /// Flat index `0..24`.
+    /// Flat index `0..PAD_COUNT`.
     #[inline]
     pub const fn flat(self) -> usize {
         self.bank as usize * PADS_PER_BANK + self.index as usize
@@ -69,24 +70,31 @@ impl PadId {
         (self.bank as usize) < crate::BANK_COUNT && (self.index as usize) < PADS_PER_BANK
     }
 
-    /// Iterate all 24 pads in flat order.
+    /// Iterate all [`PAD_COUNT`] pads in flat order.
     pub fn all() -> impl Iterator<Item = PadId> {
         (0..PAD_COUNT).filter_map(PadId::from_flat)
     }
 
-    /// Default MIDI note mapping (`36 + flat`), see docs/research/kit-and-project-formats.md.
+    /// Default MIDI note mapping (`36 + flat`, capped at 127), see
+    /// docs/research/kit-and-project-formats.md.
     pub const fn default_note(self) -> u8 {
-        36 + self.flat() as u8
+        let n = 36 + self.flat();
+        if n > 127 { 127 } else { n as u8 }
     }
 
-    /// Parse labels such as `A0`, `b11`, or a flat number `0..23`.
+    /// Group letter: 0 → `A` … 6 → `G`.
+    pub const fn bank_letter(self) -> char {
+        (b'A' + self.bank) as char
+    }
+
+    /// Parse labels such as `A0`, `b11`, `C3`, or a flat number.
     pub fn parse(s: &str) -> Result<Self, UpError> {
         let s = s.trim();
         let bad = || UpError::invalid(format!("invalid pad label: {s:?}"));
         let mut chars = s.chars();
         match chars.next() {
-            Some(c @ ('A' | 'a' | 'B' | 'b')) => {
-                let bank = if c.eq_ignore_ascii_case(&'a') { 0 } else { 1 };
+            Some(c) if c.is_ascii_alphabetic() => {
+                let bank = c.to_ascii_uppercase() as u8 - b'A';
                 let index: u8 = chars.as_str().parse().map_err(|_| bad())?;
                 PadId::new(bank, index)
             }
@@ -101,8 +109,7 @@ impl PadId {
 
 impl fmt::Display for PadId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let b = if self.bank == 0 { 'A' } else { 'B' };
-        write!(f, "{b}{}", self.index)
+        write!(f, "{}{}", self.bank_letter(), self.index)
     }
 }
 
@@ -240,7 +247,10 @@ mod tests {
         assert_eq!(PadId::parse("b11").unwrap(), PadId { bank: 1, index: 11 });
         assert_eq!(PadId::parse("13").unwrap(), PadId { bank: 1, index: 1 });
         assert!(PadId::parse("A12").is_err());
-        assert!(PadId::parse("C1").is_err());
+        assert_eq!(PadId::parse("C1").unwrap(), PadId { bank: 2, index: 1 });
+        assert_eq!(PadId::parse("g11").unwrap().to_string(), "G11");
+        assert!(PadId::parse("H0").is_err());
+        assert_eq!(PadId { bank: 6, index: 11 }.default_note(), 119);
         assert!(PadId::parse("").is_err());
         assert_eq!(PadId::parse("B3").unwrap().to_string(), "B3");
     }

@@ -475,7 +475,7 @@ fn preview_plays_and_ends() {
         looping: false,
     });
     r.block();
-    assert!((r.bufs[48][5] - 0.3).abs() < 1e-6);
+    assert!((r.bufs[up_core::PAD_COUNT * 2][5] - 0.3).abs() < 1e-6);
     r.blocks(3);
     assert!(!r.s.preview_active());
     assert!(r.ev.contains(&SamplerEvent::PreviewEnded));
@@ -492,8 +492,8 @@ fn preview_region_loops_without_a_pad() {
     });
     r.blocks(20);
     assert!(r.s.preview_active(), "looping preview keeps playing");
-    assert!((r.bufs[48][5] - 0.3).abs() < 1e-6);
-    for pad in 0..24 {
+    assert!((r.bufs[up_core::PAD_COUNT * 2][5] - 0.3).abs() < 1e-6);
+    for pad in 0..up_core::PAD_COUNT {
         assert_eq!(r.state(pad), PadPlayState::Idle, "no pad is occupied");
     }
     r.cmd(SamplerCmd::StopPreview);

@@ -182,7 +182,10 @@ fn events_and_snapshot() {
 #[test]
 fn invalid_commands_are_rejected() {
     let (h, _p) = engine(GraphBackend::Serial);
-    let bad = PadId { bank: 2, index: 0 };
+    let bad = PadId {
+        bank: up_core::BANK_COUNT as u8,
+        index: 0,
+    };
     assert_eq!(
         h.pad_down(bad, 1.0).unwrap_err().code,
         ErrorCode::InvalidArgument

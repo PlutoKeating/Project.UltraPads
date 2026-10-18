@@ -490,10 +490,8 @@ fn decode_loop_mode(mode: Option<&str>, has_loop_points: bool) -> (PadKind, Laun
 
 fn bank_index(bank: Option<&str>, index: Option<u8>) -> Option<PadAddr> {
     let b = match bank.map(|s| s.trim().to_ascii_uppercase()) {
-        Some(ref s) if s == "A" => 0,
-        Some(ref s) if s == "B" => 1,
+        Some(s) => crate::kit::BANK_LETTERS.iter().position(|l| *l == s)? as u8,
         None => 0,
-        _ => return None,
     };
     let i = index?;
     (i < crate::kit::PADS_PER_BANK).then_some(PadAddr { bank: b, index: i })
@@ -780,12 +778,18 @@ pub fn kit_from_parts(
         }
     }
 
-    doc.pad_count = match json.map(|j| j.layout.pad_count) {
-        Some(24) => 24,
-        Some(12) if doc.pads.iter().all(|p| p.addr.bank == 0) => 12,
-        _ if doc.pads.iter().any(|p| p.addr.bank > 0) => 24,
-        _ => 12,
-    };
+    // 布局 = 声明的组数与 pad 实际用到的组数中较大者（12 的倍数，至少一组）
+    let declared = json
+        .map(|j| j.layout.pad_count)
+        .filter(|n| *n > 0 && n % crate::kit::PADS_PER_BANK == 0 && *n <= crate::kit::MAX_PADS)
+        .unwrap_or(crate::kit::PADS_PER_BANK);
+    let used = doc
+        .pads
+        .iter()
+        .map(|p| (p.addr.bank + 1) * crate::kit::PADS_PER_BANK)
+        .max()
+        .unwrap_or(crate::kit::PADS_PER_BANK);
+    doc.pad_count = declared.max(used);
     doc.sort_pads();
     (doc, warnings)
 }

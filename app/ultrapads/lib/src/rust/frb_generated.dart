@@ -2911,24 +2911,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   KitSummary dco_decode_kit_summary(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 15)
-      throw Exception('unexpected arr length: expect 15 but see ${arr.length}');
+    if (arr.length != 16)
+      throw Exception('unexpected arr length: expect 16 but see ${arr.length}');
     return KitSummary(
       id: dco_decode_String(arr[0]),
       name: dco_decode_String(arr[1]),
       padCount: dco_decode_u_32(arr[2]),
-      bpm: dco_decode_opt_box_autoadd_f_64(arr[3]),
-      hasTutorial: dco_decode_bool(arr[4]),
-      description: dco_decode_opt_String(arr[5]),
-      authors: dco_decode_list_String(arr[6]),
-      genres: dco_decode_list_String(arr[7]),
-      tags: dco_decode_list_String(arr[8]),
-      themeColor: dco_decode_opt_String(arr[9]),
-      inspiredBy: dco_decode_opt_String(arr[10]),
-      coverPath: dco_decode_opt_String(arr[11]),
-      favorite: dco_decode_bool(arr[12]),
-      sourceKind: dco_decode_String(arr[13]),
-      lastUsedAtMs: dco_decode_opt_box_autoadd_i_64(arr[14]),
+      groupCount: dco_decode_u_32(arr[3]),
+      bpm: dco_decode_opt_box_autoadd_f_64(arr[4]),
+      hasTutorial: dco_decode_bool(arr[5]),
+      description: dco_decode_opt_String(arr[6]),
+      authors: dco_decode_list_String(arr[7]),
+      genres: dco_decode_list_String(arr[8]),
+      tags: dco_decode_list_String(arr[9]),
+      themeColor: dco_decode_opt_String(arr[10]),
+      inspiredBy: dco_decode_opt_String(arr[11]),
+      coverPath: dco_decode_opt_String(arr[12]),
+      favorite: dco_decode_bool(arr[13]),
+      sourceKind: dco_decode_String(arr[14]),
+      lastUsedAtMs: dco_decode_opt_box_autoadd_i_64(arr[15]),
     );
   }
 
@@ -4175,6 +4176,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_id = sse_decode_String(deserializer);
     var var_name = sse_decode_String(deserializer);
     var var_padCount = sse_decode_u_32(deserializer);
+    var var_groupCount = sse_decode_u_32(deserializer);
     var var_bpm = sse_decode_opt_box_autoadd_f_64(deserializer);
     var var_hasTutorial = sse_decode_bool(deserializer);
     var var_description = sse_decode_opt_String(deserializer);
@@ -4191,6 +4193,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       id: var_id,
       name: var_name,
       padCount: var_padCount,
+      groupCount: var_groupCount,
       bpm: var_bpm,
       hasTutorial: var_hasTutorial,
       description: var_description,
@@ -5631,6 +5634,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.id, serializer);
     sse_encode_String(self.name, serializer);
     sse_encode_u_32(self.padCount, serializer);
+    sse_encode_u_32(self.groupCount, serializer);
     sse_encode_opt_box_autoadd_f_64(self.bpm, serializer);
     sse_encode_bool(self.hasTutorial, serializer);
     sse_encode_opt_String(self.description, serializer);

@@ -5,7 +5,7 @@
 use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
 use up_core::PAD_COUNT;
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub(crate) struct MeterBank {
     pub clock: ClockCell,
     pub pad_peaks: [AtomicU32; PAD_COUNT],
@@ -17,6 +17,20 @@ pub(crate) struct MeterBank {
     pub frames: AtomicU64,
     /// Number of `process` calls.
     pub callbacks: AtomicU64,
+}
+
+impl Default for MeterBank {
+    fn default() -> Self {
+        Self {
+            clock: ClockCell::default(),
+            pad_peaks: std::array::from_fn(|_| AtomicU32::new(0)),
+            master_peak: Default::default(),
+            master_rms: Default::default(),
+            active_voices: AtomicU32::new(0),
+            frames: AtomicU64::new(0),
+            callbacks: AtomicU64::new(0),
+        }
+    }
 }
 
 #[inline]

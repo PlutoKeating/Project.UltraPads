@@ -147,6 +147,8 @@ pub struct KitSummary {
     pub name: String,
     /// Number of pads with a sample assigned.
     pub pad_count: u32,
+    /// Sound groups (A, B, C …; 12 pads each), at least 1.
+    pub group_count: u32,
     pub bpm: Option<f64>,
     pub has_tutorial: bool,
 }

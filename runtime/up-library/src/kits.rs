@@ -896,12 +896,20 @@ fn tutorials_of(
 }
 
 impl KitSummary {
+    /// 音色组数（布局 pad 数 / 12，至少 1）。
+    pub fn group_count(&self) -> u32 {
+        u32::from(self.pad_count)
+            .div_ceil(up_core::PADS_PER_BANK as u32)
+            .max(1)
+    }
+
     /// 转成引擎协议的 `KitSummary`（FFI 用）。
     pub fn to_protocol(&self) -> up_protocol::KitSummary {
         up_protocol::KitSummary {
             id: up_core::KitId::new(self.id.clone()),
             name: self.name.clone(),
             pad_count: u32::from(self.pads_used),
+            group_count: self.group_count(),
             bpm: self.bpm,
             has_tutorial: self.has_tutorial,
         }
