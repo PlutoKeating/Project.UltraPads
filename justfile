@@ -73,3 +73,7 @@ clean-assets:
 # 用 MockEngineClient 运行 Linux 版（无需 Rust 引擎）
 run-mock:
     cd {{app}} && flutter run -d linux --dart-define=UP_ENGINE=mock
+
+# 构建无头 CLI 容器镜像（发布到 ghcr.io/plutokeating/ultrapads-cli）
+docker-cli tag="dev":
+    docker build -f runtime/up-cli/Dockerfile -t ghcr.io/plutokeating/ultrapads-cli:{{tag}} .

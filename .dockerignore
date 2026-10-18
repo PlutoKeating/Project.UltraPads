@@ -1,0 +1,8 @@
+# 白名单：只把构建 up-cli 所需的 Rust 工作区送进构建上下文，杜绝私有素材与产物进入镜像
+*
+!Cargo.toml
+!Cargo.lock
+!engine/
+!runtime/
+!bridge/
+**/target

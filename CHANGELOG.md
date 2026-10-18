@@ -40,6 +40,12 @@
 - Android release 开启 R8：新增 keep 规则，修复 shared_preferences / path_provider（经 package:jni 调用）启动即崩溃。
 - Linux release：放宽 rive_common 插件的 unused 告警（新版 clang + `-Werror`）。
 
+- 无头 CLI 容器镜像：`runtime/up-cli/Dockerfile`（`just docker-cli`），发布为 `ghcr.io/plutokeating/ultrapads-cli`。
+
+### 发布产物
+
+- Linux x64 release 包（tar.gz）、Android release APK（arm64-v8a / armeabi-v7a / x86_64，暂用调试密钥签名）、`up-cli` 容器镜像。
+
 ### 已知限制
 
 见 `docs/research/v0.0.1-verification.md`「已知问题」。

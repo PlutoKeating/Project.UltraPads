@@ -89,6 +89,15 @@ adb logcat -s flutter                         # Dart 日志
 
 模拟器的音频输出可能是空设备，判断引擎是否工作以引擎事件（电平、pad 状态）为准。
 
+### 无头 CLI 与容器镜像
+
+```bash
+just cli --help                 # cargo run -p up-cli
+just docker-cli 0.0.1           # 构建 ghcr.io/plutokeating/ultrapads-cli:0.0.1
+```
+
+镜像只包含 `up-cli` 和 ALSA 运行库。构建上下文由根目录 `.dockerignore` 白名单限定为 Rust 工作区（`Cargo.*`、`engine/`、`runtime/`、`bridge/`），私有素材和构建产物不会进入镜像。
+
 ## 4. 首次启动与内置 Kit
 
 - 曲库为空时自动导入应用资源中的 CC0 示例 Kit（`app/ultrapads/assets/kits/`，是 `content/kits/*.upkit` 的副本；`just bundle-kits` 同步，测试校验一致）。
