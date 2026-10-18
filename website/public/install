@@ -198,14 +198,15 @@ rc_files() {
 }
 
 ensure_path() {
-  local bin_dir="$1" modify="$2" f
+  local bin_dir="$1" modify="$2" f added=0
   case ":$PATH:" in *":$bin_dir:"*) return ;; esac
   if [ "$modify" -eq 0 ]; then
     warn "$(t "$bin_dir 不在 PATH 中，可手动加入：" "$bin_dir is not on PATH; add it with:")"
     note "export PATH=\"$bin_dir:\$PATH\""
     return
   fi
-  if [ "$(basename "${SHELL:-}")" = "fish" ]; then
+  if [ "$(basename "${SHELL:-}")" = "fish" ] && [ ! -f "${XDG_CONFIG_HOME:-$HOME/.config}/fish/conf.d/ultrapads.fish" ]; then
+    added=1
     mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/fish/conf.d"
     printf '%s\nfish_add_path -g "%s"\n%s\n' "$PATH_BEGIN" "$bin_dir" "$PATH_END" > "${XDG_CONFIG_HOME:-$HOME/.config}/fish/conf.d/ultrapads.fish"
   fi
@@ -214,8 +215,13 @@ ensure_path() {
     if grep -qF "$PATH_BEGIN" "$f" 2>/dev/null; then continue; fi
     printf '\n%s\ncase ":$PATH:" in *":%s:"*) ;; *) export PATH="%s:$PATH" ;; esac\n%s\n' \
       "$PATH_BEGIN" "$bin_dir" "$bin_dir" "$PATH_END" >> "$f"
+    added=1
   done < <(rc_files)
-  ok "$(t "已把 $bin_dir 加入 PATH（新开终端生效）" "Added $bin_dir to PATH (takes effect in new shells)")"
+  if [ "$added" -eq 1 ]; then
+    ok "$(t "已把 $bin_dir 加入 PATH（新开终端生效）" "Added $bin_dir to PATH (takes effect in new shells)")"
+  else
+    note "$(t "$bin_dir 已写入 shell 配置，新开终端即可使用 ultrapads" "$bin_dir is already in your shell config; open a new terminal to use ultrapads")"
+  fi
 }
 
 remove_path_blocks() {
@@ -249,9 +255,13 @@ pkg_manager() {
   done
 }
 
-# .so → 包名（未知的库返回空，由用户自行处理）
+# .so → 包名（未知的库返回空，由用户自行处理）。GTK 3 依赖链上的库（glib、cairo、pango…）都随 GTK 包安装。
 lib_package() {
   local pm="$1" lib="$2"
+  case "$lib" in
+    libatk-*|libcairo*|libgdk*|libgio-*|libglib-*|libgobject-*|libgmodule-*|libharfbuzz*|libpango*|libfontconfig*|libfreetype*|libX*|libwayland-*)
+      lib="libgtk-3.so.0" ;;
+  esac
   case "$pm:$lib" in
     apt-get:libgtk-3.so*) echo libgtk-3-0t64 ;;
     apt-get:libasound.so*) echo libasound2t64 ;;
@@ -295,21 +305,48 @@ check_deps() {
   done <<< "$libs"
   warn "$(t '缺少运行库：' 'Missing runtime libraries: ')$(echo "$libs" | tr '\n' ' ')"
   if [ "${#pkgs[@]}" -gt 0 ]; then
+    # root 直接调用包管理器（容器、最小系统常常没有 sudo）；否则经 sudo
+    local sudo="sudo"
+    if [ "$(id -u)" -eq 0 ]; then sudo=""; fi
     case "$pm" in
-      apt-get) cmd="sudo apt-get install -y ${pkgs[*]}" ;;
-      dnf) cmd="sudo dnf install -y ${pkgs[*]}" ;;
-      pacman) cmd="sudo pacman -S --needed --noconfirm ${pkgs[*]}" ;;
-      zypper) cmd="sudo zypper install -y ${pkgs[*]}" ;;
+      apt-get) cmd="apt-get install -y ${pkgs[*]}" ;;
+      dnf) cmd="dnf install -y ${pkgs[*]}" ;;
+      pacman) cmd="pacman -S --needed --noconfirm ${pkgs[*]}" ;;
+      zypper) cmd="zypper --non-interactive install ${pkgs[*]}" ;;
     esac
-    if [ "$auto_yes" -eq 1 ] || confirm "$(t "用 sudo 安装：${pkgs[*]}？" "Install with sudo: ${pkgs[*]}?")"; then
-      if [ "$pm" = "apt-get" ]; then sudo apt-get update -qq || true; fi
-      if $cmd; then ok "$(t '运行库已安装' 'Runtime libraries installed')"; else warn "$(t '安装失败，可稍后手动执行：' 'Install failed; run it later yourself:')"; note "$cmd"; fi
+    if [ -n "$sudo" ] && ! command -v sudo >/dev/null 2>&1; then
+      warn "$(t '没有 sudo，请用 root 执行：' 'sudo is not available; run as root:')"
+      note "$cmd"
+    elif [ "$auto_yes" -eq 1 ] || confirm "$(t "安装缺少的运行库（${sudo:+sudo }$pm）：${pkgs[*]}？" "Install the missing libraries (${sudo:+sudo }$pm): ${pkgs[*]}?")"; then
+      step "$(t '正在安装运行库…' 'Installing runtime libraries...')"
+      if [ "$pm" = "apt-get" ]; then $sudo apt-get update -qq >/dev/null 2>&1 || true; fi
+      # 镜像源偶发下载失败时重试一次
+      # shellcheck disable=SC2086  # $sudo 为空时必须不展开为参数
+      if DEBIAN_FRONTEND=noninteractive $sudo $cmd >/dev/null 2>&1 \
+        || { sleep 2; DEBIAN_FRONTEND=noninteractive $sudo $cmd >/dev/null 2>&1; }; then
+        libs="$(missing_libs "$dir")"
+        if [ -z "$libs" ]; then
+          ok "$(t '运行库已安装' 'Runtime libraries installed')"
+          return 0
+        fi
+        warn "$(t '仍缺少：' 'Still missing: ')$(echo "$libs" | tr '\n' ' ')"
+      else
+        warn "$(t '安装失败，可稍后手动执行：' 'Install failed; run it later yourself:')"
+        note "${sudo:+sudo }$cmd"
+        if [ "$pm" = "pacman" ]; then
+          note "$(t '（Arch 的软件包数据库过期时，请先 sudo pacman -Syu）' '(If your Arch package database is stale, run sudo pacman -Syu first)')"
+        fi
+      fi
     else
-      note "$(t '稍后可手动执行：' 'Run this later:') $cmd"
+      note "$(t '稍后可手动执行：' 'Run this later:') ${sudo:+sudo }$cmd"
     fi
   fi
   if [ "${#unknown[@]}" -gt 0 ]; then
-    note "$(t '以下库请用系统包管理器自行安装：' 'Install these with your package manager:') ${unknown[*]}"
+    # 安装过包之后重新检查：依赖链常常已经一并装上
+    libs="$(missing_libs "$dir")"
+    if [ -n "$libs" ]; then
+      note "$(t '以下库请用系统包管理器自行安装：' 'Install these with your package manager:') $(echo "$libs" | tr '\n' ' ')"
+    fi
   fi
 }
 

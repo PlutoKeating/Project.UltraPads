@@ -95,6 +95,7 @@ test("re-running is idempotent (no duplicate PATH block)", async () => {
   const r = await run();
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /Already on v0\.1\.0/);
+  assert.doesNotMatch(r.out, /Added .* to PATH/);
   const profile = fs.readFileSync(path.join(home, ".profile"), "utf8");
   assert.equal(profile.split("# >>> ultrapads >>>").length - 1, 1);
 });
