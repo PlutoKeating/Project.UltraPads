@@ -55,8 +55,8 @@
 
 | 平台 | 外壳 | 音频后端 | 验证（v0.0.1） |
 |---|---|---|---|
-| Linux x64 | Flutter linux（GTK） | cpal → ALSA（PipeWire/Pulse 兼容） | ✅ |
-| Android | Flutter android，minSdk 26 | cpal → AAudio（需 `ndk_context` 初始化，见 bridge 文档） | ✅（模拟器 + 真机待验收） |
+| Linux x64 | Flutter linux（GTK） | cpal → ALSA（PipeWire/Pulse 兼容） | ✅（`docs/research/v0.0.1-verification.md`） |
+| Android | Flutter android，minSdk 26；release 开启 R8，keep 规则见 `android/app/proguard-rules.pro` | cpal → AAudio（需 `ndk_context` 初始化，见 bridge 文档；默认设备为伪设备 `aaudio:-1`） | ✅ 模拟器（真机待验收） |
 | Windows | Flutter windows | cpal → WASAPI | 仅开发 |
 | macOS/iOS | Flutter | cpal → CoreAudio | 仅开发 |
 | Web | Flutter web（skwasm） | Rust→WASM，AudioWorklet，需 COOP/COEP；不支持时降级 | 仅开发 |
@@ -69,6 +69,8 @@
 - 构建：`pnpm run build` 生成 `packages/up_tokens/lib/src/generated/*.g.dart`、`design/tokens/build/css/`、`design/tokens/build/json/`（产物入库，Flutter 构建不依赖 Node）；`pnpm run check` 校验产物是最新的
 - 分层：primitive → semantic → component；皮肤 = semantic 层覆盖（neon / outline / light，用户自定义皮肤以 JSON 保存）；component 层不得含颜色
 - Dart 侧以 `ThemeExtension<UpTheme>` 注入，组件只能通过 `UpTheme.of(context)` 取值；`UpTheme.lerp` 让主题切换自动带动画
+- Pad 渐变：`full` 动效档由带三角抖动的片元着色器绘制（Impeller 不对渐变抖动，否则 Android 上出现同心淡环），见 `app/ultrapads/docs/ARCHITECTURE.md` §9
+- 颜色角色：Dart `ColorRole` 与引擎同名同序，`ColorRole.paletteIndex` 是到 `pad.palette.N` 的唯一映射（`docs/API.md` §3.1 末尾）
 - 字体：Uni Sans 是商业字体，不入库，由 `just inject-assets` 注入，`UpFonts.loadPrivate()` 加载；缺失时回退到 Montserrat（OFL）
 - i18n：`packages/up_i18n`（ARB，zh/en），`UpL10n.of(context)`、`LocaleController`；`dart run up_i18n:add_locale <code>` 新增语言，`dart run up_i18n:check` 检查缺失
 - lint：`tools/lint/no_hardcode.dart` 扫描 `packages/up_ui`、`packages/up_fx`、`app/ultrapads/lib`（排除生成代码），禁止 `Color(0x…)`、`Colors.*`、数字字面量的圆角/时长/间距/字号，以及 `Text('…')` 字面量；行级豁免写 `// up-lint-ignore: <原因>`
@@ -113,12 +115,14 @@
 
 - 导入安全：ZIP 条目路径规范化（拒绝绝对路径/`..`/盘符/符号链接）、条目数/单文件/总大小/压缩比限额、manifest 哈希校验后才入库；写文件一律"临时文件 → fsync → rename"。
 - 所有导入的音频在入库时统一为 WAV（Ogg/MP3/FLAC 等经 up-codec 解码转码），引擎只需解析 WAV。
-- 示例 Kit：`content/kits/*.upkit` 由 `cargo run -p up-library --example kitgen -- content/kits` 用代码合成生成（CC0-1.0）。原 App 素材只在被忽略的 `private-assets/` 中导入到用户自己的数据目录，永不入库。
+- 示例 Kit：`content/kits/*.upkit` 由 `cargo run -p up-library --example kitgen -- content/kits` 用代码合成生成（CC0-1.0）。应用把它们的副本打包为资源（`app/ultrapads/assets/kits/`），首次启动曲库为空时经 `library_import_bytes` 导入。原 App 素材只在被忽略的 `private-assets/` 中，经 `just inject-assets` 注入后由应用首次启动导入到用户自己的数据目录（或桌面开发时 `--dart-define=UP_PRIVATE_KITS=<dir>` 直接导入），不入库、不随仓库分发。默认加载：原版 Sunset → CC0 Starter → 第一个。
 
 ## 9. 音频引擎实现要点（engine/*、runtime/up-host、runtime/up-cli）
 
 - **量化**：transport 以拍（四分音符）计位置，有效速度 = bpm × speed；`next_boundary(beat, grid)` 求下一个网格点，换算为块内帧偏移，Pending 的 Loop 在该偏移处采样级精确起播（浮点误差 1e-6 帧内吸附）。
 - **声部**：每 pad 一个主声部（`self_choke=false` 时 one-shot 可叠加），停止/截断/偷取都转为 5 ms（或 `choke_release_ms`）淡出尾巴；上限 `max_voices`（默认 32）+ 16 个尾巴槽。
 - **采样**：加载时 symphonia 解码（WAV/MP3/Ogg Vorbis/FLAC/AAC-M4A/ALAC/AIFF/CAF）→ rubato FFT 重采样到设备采样率；设备采样率变化时引擎重建并按原始音频重新重采样当前 Kit。
+- **Pitch**：`PadParams.pitch`（半音 ±12）在声部起播时换算为速率倍数 `2^(pitch/12)`，与 speed 相乘，对在播声部实时生效。
+- **试听声部**：作品播放（可循环）与编辑器 `sample_preview`（任意区段）共用一个不占用 pad 的立体声声部，不受 speed 影响。
 - **录音**：Master 限幅后的立体声写入 rtrb 环形缓冲 → 控制线程汇总为 `Take`（时长 + 128 段波形）→ runtime 写 WAV（FFI 下存入曲库 `tracks/`）→ `TrackSaved` 事件。
 - **CLI**：`up-cli devices | render --kit-dir <dir> --events <json> --out <wav> | play --kit-dir <dir> --pad A0 | latency-probe | inspect <wav>`（`cargo run -p up-cli -- …`）。

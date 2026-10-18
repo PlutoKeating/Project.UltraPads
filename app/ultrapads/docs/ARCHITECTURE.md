@@ -29,6 +29,9 @@ lib/
    ├─ app/app.dart           MaterialApp.router、主题（AnimatedTheme 皮肤过渡）、i18n、FxScope
    ├─ assets/private_assets.dart  私有素材清单解析（见 §6）
    ├─ engine/                engine_bootstrap.dart（UP_ENGINE=mock|ffi）、ffi_engine_client.dart
+   ├─ library/first_run.dart 首次启动：导入内置 Kit（CC0 资源 / 注入的 4.7.0 Kit）并加载默认 Kit
+   ├─ config/app_links.dart  外部链接（assets/config/links.json：视频教程搜索地址；页面不写 URL）
+   ├─ dev/dev_hooks.dart     开发/验证环境变量（ULTRAPADS_HUB_AUTOSTART、ULTRAPADS_LOG_EVENTS）
    ├─ routing/               routes.dart（路径常量）、router.dart（go_router + 转场）
    ├─ state/                 Riverpod：engine_state / perform_state / library_state / settings_state
    ├─ rust/                  FRB 生成代码（不要手改）
@@ -63,21 +66,39 @@ lib/
 | `/dev/gallery?tab=&skin=` | `DesignGalleryPage` | 推入 | 新增（ADR-0001 #13 修订：替代 Figma） |
 
 弹层（不是路由）：皮肤面板 `showSkinsSheet`（0.4 s QuadOut 底部滑入）、速度框
-`showSpeedModal`（1.0 / 0.7 / 0.5）、保存录音 `showSaveRecordingSheet`、采样选择、确认对话框。
+`showSpeedModal`（4.7.0 `modalVelocities`：速度按钮正下方的下拉框，1.0 / 0.7 / 0.5，进 0.5 s、出 1.0 s QuadOut）、保存录音 `showSaveRecordingSheet`、采样选择、确认对话框。
 
 - 未完成引导时 `redirect` 到 `/onboarding`；画廊路由不受影响。
-- `--dart-define=UP_GALLERY=true` 时初始路由为 `/dev/gallery`。
+- `--dart-define=UP_GALLERY=true` 时初始路由为 `/dev/gallery`；`--dart-define=UP_ROUTE=<路由>` 或桌面环境变量
+  `ULTRAPADS_ROUTE` 指定初始路由（开发 / 截图）。
+- 宽屏（平板 / 桌面）：除演奏页外的页面在 router 中统一包 `WideBody`（`routing/wide_body.dart`），限宽 600 居中；
+  演奏页见 §3.2。
 
 ### 3.1 演奏页结构
 
 ```
-UpTopBar: [♫ SONGS] KIT <名称> ……………… [速度 1.0×（仅教程模式）]
+UpTopBar: [♫ SONGS] KIT <名称> …… [速度 1.0（仅教程模式，点开下拉 1.0/0.7/0.5）] [▶ YouTube/BiliBili]
 功能行 (functionRow 50pt) ──────────────────────────── [A/B 64.5×63]
   默认：[🎓 LEARN TO PLAY] | [⋮]
   ⋮ 展开（整行横移，0.3 s CircIn/CircOut）：[● 录音] [皮肤] [编辑] [分享] [设置] [◀]
   教程模式：[▶/■] ———o——— [✕]
 PadGrid 3×4（A/B 两页横移 0.2 s QuadOut），教程模式叠加判定反馈层
+首次引导浮层（FirstGuide，非教程模式、未看过时）
 ```
+
+- **视频教程按钮**（4.7.0 `btnYoutube`，顶栏最右）：`url_launcher` 打开外部链接。链接来自
+  `assets/config/links.json`（`appLinksProvider`）：Kit 自带 `videoUrl` 优先，否则按界面语言选搜索地址
+  （zh → BiliBili，其余 → YouTube），搜索词 = Kit 名 + `videoQuerySuffix`。Android 11+ 在 Manifest 中声明
+  VIEW https 的 `<queries>`。
+- **首次引导**（`features/onboarding/first_guide.dart`，4.7.0 FirstGuide）：70% 遮罩挖洞、手指 1.0 s QuadIn
+  上移、白色气泡、STEP x/4（从右滑入）、SKIP（0.25 s 滑入）；4 步：pad → LEARN TO PLAY → ⋮ → SONGS。
+  完成或跳过后写入设置 `firstGuideSeen`；设置页「开发者 → 重新显示新手引导」可重置。
+
+### 3.2 宽屏布局（`features/perform/perform_layout.dart`）
+
+4.7.0 用 FairyGUI `fixed_height` 适配（画布 828×1472 px 按高度等比缩放）。手机布局不变；宽高比超过画布时，
+pad 网格按 4.7.0 cell 几何的宽高比（约 0.78）由可用高度算出宽度并水平居中，顶栏与功能行与网格同宽。
+golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tablet_768x1024`、`settings_desktop_1280x800`。
 
 ## 4. 状态流（引擎为唯一事实源）
 
@@ -126,7 +147,10 @@ PadGrid 3×4（A/B 两页横移 0.2 s QuadOut），教程模式叠加判定反�
 - 运行时：`PrivateAssets.load()` 先读 `injected.json`，失败读占位清单；`resolve(类别, 文件)` 按优先级查找。
   缺失时回退开源占位：Open Sans（up_tokens 打包）、Material Icons、程序化绘制的 pad / 封面。
 - 当前用到的私有素材：皮肤缩略图（`ios/ui/ScreenPads__img_skins_*`）、Uni Sans 字体（APK，
-  注册为 `UpFonts.privateFiles` 的家族名）、APK `normal_*` Lottie（设置「经典 Pad 动画」开启时）。
+  注册为 `UpFonts.privateFiles` 的家族名）、APK `normal_*` Lottie（设置「经典 Pad 动画」开启时）、
+  image 类皮肤（Christmas / Pets / Muertos / Halloween）的整张 pad 位图（`PadImageSkin`：常态位图 +
+  按下 / Loop 闪烁时淡入的亮态位图，`BoxFit.fill`，缺色退回 pink；未注入时保持 token 绘制）、
+  4.7.0 的 6 个内置 Kit（`privateKits`，首次启动导入，见 §8.1）。
 
 ## 7. 复刻取舍（截图 / 4.7.0 IPA / 3.7.6 APK 冲突时的决定）
 
@@ -142,36 +166,47 @@ PadGrid 3×4（A/B 两页横移 0.2 s QuadOut），教程模式叠加判定反�
 | 传输栏 / 速度 | 只在教程模式出现：▶/■ + 进度条 + 速度 1.0/0.7/0.5 | 4.7.0 `btnNavController=tutorialVelocity`；截图中的传输栏属于教程模式 |
 | 停止全部 | 键盘 Space；`StopAllCmd`。演奏页没有常驻停止按钮 | 4.7.0 没有 |
 | 教程 | 时间轴：pad 提前 `tutorial.fill`(1 s) 从下往上填满，判 PERFECT / TOO FAST / TOO SLOW / MISS；窗口优先用引擎谱面的 `perfectMs`/`missMs` | 4.7.0 tutorial.json；APK 的无时间步骤格式仍兼容 |
-| 速度 | 只缩放教程时间轴，不改变演奏音频速度 | 4.7.0 未确认音频是否变速（分析文档 §9-2） |
+| 速度 | 实时变速播放（引擎 `SetSpeed`，varispeed）+ 教程时间轴同比缩放；只在教程模式出现，退出教程恢复 1.0 | 已定决策（4.7.0 未确认音频是否变速，分析文档 §9-2）；引擎 `transport_clock.song_secs` 同样按 speed 推进 |
 | 曲库 | 3 个 Tab（KITS / FEED / PROFILE）+ 搜索；订阅横幅换成「新曲推送卡」；解锁弹窗去掉付费按钮 | ADR-0001 #4 |
-| 编辑 Kit | 整页 `#EE4286` 粉底（primitive `swatch.mediumPink`，暂无 semantic token）；EDIT PAD 含颜色 / Loop / Hold / 分组 / 音量 / 声像 / 裁剪 / 复制 / 清空 | 4.7.0；Pitch 暂缺（`PadParams` 没有 pitch 字段） |
+| 编辑 Kit | 整页 `#EE4286` 粉底（primitive `swatch.mediumPink`，暂无 semantic token）；EDIT PAD 含颜色 / Loop / Hold / 分组 / 音量 / PITCH ±（半音 ±12）/ 声像 / 裁剪 / 复制 / 清空；试听走 `sample_preview`（不占用 pad） | 4.7.0 |
 | 录音 | 录音结束弹「保存录音」面板，导出 `.flac` 后分享 | 4.7.0 |
 | 引导 | Walkthrough 4 页 + 风格选择；Splash 用系统启动页 | 4.7.0（试用 / 订阅页不做） |
 | 设置 / Hub / 皮肤编辑器 / 画廊 | 原 App 没有，按设计系统新做 | 需求 F7、F8、F10、ADR-0001 #13 |
 
 ## 8. 引擎适配（FFI）
 
-`FfiEngineClient` 以当前生成绑定（`lib/src/rust/api/{engine,library,tracks,hub,types}.dart`）为准：
+`FfiEngineClient` 以当前生成绑定（`lib/src/rust/api/{engine,library,tracks,hub,types}.dart`）为准，`EngineClient` 的每个函数都有对应 FFI：
 
-| 能力 | 状态 |
+| 能力 | FFI |
 |---|---|
-| init / audio_start / audio_stop / audio_devices / snapshot / events / pad_down / pad_up / send | 已接 |
-| library_list_kits / load_kit / import / export_kit | 已接 |
-| 编辑 Kit：`library_kit_json` + `library_save_kit(kitJson)` | 已接：读取 `up_model::KitDoc` JSON，修改 pad 字段后写回（保留 layers / meta 等未知字段；换采样时清空 layers） |
-| 采样：sample_waveform、sampler_record_start/stop、library_list_samples | 已接（`sample_info` 用 list_samples 查找） |
-| 采样试听 `sample_preview` | **缺**，抛 `EngineNotImplemented` |
-| 作品：tracks_list / play / stop / export / rename / delete | 已接（`track_play` 没有 loop 参数） |
-| tutorial_get | 已接（带 perfectMs / missMs） |
-| Hub：start / stop / discover / pair / sync / controller | 已接；引擎侧目前返回 NotImplemented 时 UI 降级；**服务启动后没有配对码** |
-| ColorRole | 引擎是命名枚举（blue/orange/…/neutral），映射到 token 调色板下标（purple→magenta、red→rose、lime→green、grey/neutral→cyan） |
+| 生命周期 / 音频 | init / audio_start / audio_stop / audio_status / audio_devices / snapshot / events / pad_down / pad_up / send |
+| 曲库 | library_list_kits / load_kit / import / import_bytes / export_kit |
+| 编辑 Kit | `library_kit_json` + `library_save_kit(kitJson)`：读取 `up_model::KitDoc` JSON，修改 pad 字段（含 `pitchSemitones`）后写回（保留 layers / meta 等未知字段；换采样时清空 layers） |
+| 采样 | sample_waveform、sample_preview / sample_preview_stop、sampler_record_start/stop、library_list_samples（`sampleInfo` 由它查找） |
+| 作品 | tracks_list / track_play(loop) / track_stop / track_export / track_rename / track_delete |
+| 教程 | tutorial_get（带 perfectMs / missMs） |
+| Hub | `docs/API.md` §3.1 全部函数；事件见 API.md 的 Dart 映射说明 |
+| ColorRole | 与引擎同名同序；调色板下标只由 `ColorRole.paletteIndex` 决定（API.md §3.1 末尾的映射表） |
 
 `--dart-define=UP_ENGINE=mock` 使用 `MockEngineClient`；FFI 库加载失败时也自动回退到 Mock，
-设置页显示「原生音频引擎不可用，正在以演示模式运行」。
+设置页显示「原生音频引擎不可用，正在以演示模式运行」。设置页的音频状态读 `audio_status`（不再为读状态重启音频）。
+
+### 8.1 首次启动（`lib/src/library/first_run.dart`）
+
+`runApp` 之后在后台执行，每一步失败只记日志：
+
+1. 曲库为空 → 导入 `assets/kits/*.upkit`（CC0，`content/kits` 的副本）：`library_import_bytes`；
+2. 注入了私有素材（`injected.json` 有 `privateKits`）且该次注入尚未导入 → 把 4.7.0 内置 Kit 的文件按原目录结构还原到临时目录，`library_import(dir)`（原 App 素材导入器），记录注入时间戳；
+3. 桌面开发便利：`--dart-define=UP_PRIVATE_KITS=<dir>` 直接 `library_import(dir)`；
+4. 引擎还没有 Kit → 默认加载：原版 Sunset → CC0 `UltraPads Starter` → 第一个。
 
 ## 9. 动效分级（up_fx）
 
 `FxScope.tierOf`：减少动效（`MediaQuery.disableAnimations`）→ `minimal`；Web / 测试 → `lite`
 （BoxShadow 光晕，golden 稳定）；其它 → `full`（Fragment Shader）。着色器加载失败自动回退。
+pad 主体的渐变在 `full` 档由 `DitheredGradient`（`shaders/dither_gradient.frag`，±1/255 三角噪声）绘制：
+Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径向渐变 8 bit 量化后会出现同心淡环；
+`lite` 档与测试仍用普通渐变。
 设置「动画 Pad」关闭时 Lottie 不播放（APK `preferences_animate`）。
 
 ## 10. 测试
@@ -179,4 +214,6 @@ PadGrid 3×4（A/B 两页横移 0.2 s QuadOut），教程模式叠加判定反�
 - `test/app_test.dart`：用 `MockEngineClient(realtime: false)` 启动完整应用；覆盖 Listener 同步触发、
   功能行展开、皮肤切换、时间轴教程与速度框、A/B、键盘映射、各页面 golden、LET'S PLAY、录音保存、引导、中文。
 - `test/gallery_test.dart`：画廊交互，以及 3 个内置主题 + 16 套预设各一份 golden（组件页）。
+- `test/first_run_test.dart`（默认 Kit 顺序、打包的 CC0 Kit 与 `content/kits` 一致、空曲库导入）、
+  `layout_test.dart`、`video_link_test.dart`、`first_guide_test.dart`、`image_skin_test.dart`。
 - golden 位于 `test/goldens/`，字体由 `test/flutter_test_config.dart` 加载（Open Sans + Material Icons）。

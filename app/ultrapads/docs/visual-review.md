@@ -38,19 +38,21 @@
 
 ## 3. 差异与后续修正
 
+> 「修正项」列末尾的 ✅ / ◐ 标注 v0.0.1 收尾时的处理结果；v0.0.1 实机截图（Linux / Android 模拟器）的文件名与说明见 `docs/research/v0.0.1-verification.md`（截图本身不入库）。
+
 | # | 差异 | 原因 | 修正项 |
 |---|---|---|---|
 | 1 | 字体：golden 用 Open Sans（与 4.7.0 一致）；商店截图的粗体更圆 | 截图是营销合成图 | 无需修正；注入 APK 素材后可选 Uni Sans（`UpFontSet.uniSans`） |
 | 2 | Loop 待机 pad 颜色：截图 2 是紫色底 + 角色色描边；当前 neon 主题为深青底 | token `pad.loop.idleFill` 的取值 | 请 token 代理按截图 2 复核 neon 的 `pad.loop.idleFill` |
-| 3 | 演奏页顶部 YouTube / BiliBili 视频按钮未做 | 没有视频源 | 有教学视频源后加回（`performVideoTutorial` 文案已有） |
+| 3 | 演奏页顶部 YouTube / BiliBili 视频按钮未做 | 没有视频源 | 有教学视频源后加回（`performVideoTutorial` 文案已有） → ✅ v0.0.1：顶栏视频教程按钮（YouTube / BiliBili，链接在 `assets/config/links.json`） |
 | 4 | 演奏页底部 logo / 背景区（4.7.0 y 1365–1471）未做 | 原为广告区 + 远程 loader | 可放品牌 logo（私有素材） |
-| 5 | 首次教学（FirstGuide：遮罩挖洞、手指动画、文字气泡、STEP x/4）未做 | 时间 | 用 `UpTutorialTokens` 的 bubble / hand / highlightHole 实现 |
+| 5 | 首次教学（FirstGuide：遮罩挖洞、手指动画、文字气泡、STEP x/4）未做 | 时间 | 用 `UpTutorialTokens` 的 bubble / hand / highlightHole 实现 → ✅ v0.0.1：`first_guide.dart` |
 | 6 | 曲库封面是程序化渐变 + 文字，不是 Kit 封面图 | 原 App 封面来自远程 CDN，素材中没有 | Kit 带 `coverPath` 时显示（`KitCover.image` 已支持） |
 | 7 | FEED 页的大卡斜 6.8°「KIT」字标、ARTISTS 圆角缩略未完全复刻 | 时间 | 用 `UpKitCardTokens.bigLabelAngle` / `smallWidth` 补齐 |
-| 8 | 皮肤 image / tint / scale 类（Christmas、Pets、Square…）只复刻颜色，没有装饰位图和 5 层方块缩放 | token 代理标注 `fidelity: partial` | 用注入的 `ios/skin/*` 位图做 `PadImageSkin`（`UpPad` 已有 Lottie 皮肤钩子，可同样扩展） |
-| 9 | 编辑 Kit 缺 PITCH ± | `PadParams` 没有 pitch 字段 | 需要引擎在 `PadParams` / KitDoc 中暴露 `pitchSemitones` |
+| 8 | 皮肤 image / tint / scale 类（Christmas、Pets、Square…）只复刻颜色，没有装饰位图和 5 层方块缩放 | token 代理标注 `fidelity: partial` | 用注入的 `ios/skin/*` 位图做 `PadImageSkin`（`UpPad` 已有 Lottie 皮肤钩子，可同样扩展） → ◐ v0.0.1：image 类 4 套（Christmas / Pets / Muertos / Halloween）注入后用整张位图；小装饰图与 tint/scale 类仍只用 token |
+| 9 | 编辑 Kit 缺 PITCH ± | `PadParams` 没有 pitch 字段 | 需要引擎在 `PadParams` / KitDoc 中暴露 `pitchSemitones` → ✅ v0.0.1：`PadParams.pitch` + EDIT PAD 的 PITCH ± |
 | 10 | 编辑 Kit 页底色用 primitive `swatch.mediumPink` | 没有对应 semantic token | 请 token 代理增加 `surface.editor` |
 | 11 | 速度药丸图标、TRACK 卡图标是 Material Icons | 开源占位 | 注入素材后可替换为 `ios/icon/*`（未接线） |
-| 12 | FFI 模式下真实曲库为空时显示 NO KIT LOADED | 曲库需先导入 | 首启时自动导入内置 Kit（需要引擎提供内置包路径或打包内置 Kit） |
-| 14 | Android 模拟器（Impeller/Vulkan）上 pad 径向渐变能看到一圈淡淡的同心环（Linux 无） | 渐变色带 / 采样精度 | 渐变增加中间色标或改用着色器绘制 pad 主体 |
-| 13 | iPad 布局：只有居中限宽（maxWidth 600），没有 `m_ipad` 的放大排版 | v0.0.1 只验证手机 / 桌面 | 按 `fixed_height` 等比缩放实现平板布局 |
+| 12 | FFI 模式下真实曲库为空时显示 NO KIT LOADED | 曲库需先导入 | 首启时自动导入内置 Kit（需要引擎提供内置包路径或打包内置 Kit） → ✅ v0.0.1：首次启动导入 CC0 Kit / 注入的 4.7.0 Kit（`library/first_run.dart`） |
+| 14 | Android 模拟器（Impeller/Vulkan）上 pad 径向渐变能看到一圈淡淡的同心环（Linux 无） | 渐变色带 / 采样精度 | 渐变增加中间色标或改用着色器绘制 pad 主体 → ✅ v0.0.1：`DitheredGradient` 抖动着色器（模拟器截图复核见 `docs/research/v0.0.1-verification.md`） |
+| 13 | iPad 布局：只有居中限宽（maxWidth 600），没有 `m_ipad` 的放大排版 | v0.0.1 只验证手机 / 桌面 | 按 `fixed_height` 等比缩放实现平板布局 → ✅ v0.0.1：`perform_layout.dart` 按 fixed_height 等比计算网格并居中，其它页 `WideBody` 限宽 |

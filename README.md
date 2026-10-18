@@ -37,8 +37,13 @@ just tokens        # 生成设计 token
 just codegen       # 生成 Rust↔Dart 绑定
 just check         # Rust + Dart 全量检查
 just run-linux     # 运行 Linux 版
-just build-android # 构建 Android APK
+just build-android # 构建 Android APK（release，按 ABI 拆分）
+just build-linux   # 构建 Linux release
+just inject-assets # 可选：注入本机的原 App 素材（不入库），含 4.7.0 的 6 个内置 Kit
+just bundle-kits   # 把 content/kits 的 CC0 示例 Kit 同步为应用资源
 ```
+
+环境要求、构建运行、Android 模拟器与 Hub 联调见 `docs/QUICK_START.md`；版本记录见 `CHANGELOG.md`。
 
 ## 许可证
 
