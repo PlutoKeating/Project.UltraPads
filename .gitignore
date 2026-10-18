@@ -1,0 +1,40 @@
+# --- 私有/受版权保护素材：永不入库 ---
+/references/
+/private-assets/
+
+# --- Rust ---
+/target/
+**/target/
+
+# --- Flutter / Dart ---
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+**/pubspec_overrides.yaml
+*.iml
+.idea/
+
+# --- Android ---
+**/android/.gradle/
+**/android/local.properties
+**/android/key.properties
+**/android/app/.cxx/
+*.keystore
+*.jks
+
+# --- Node (token 构建工具) ---
+node_modules/
+.turbo/
+
+# --- 通用 ---
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
+/dist/
+/out/

@@ -1,0 +1,43 @@
+[workspace]
+resolver = "3"
+members = [
+  "engine/*",
+  "runtime/up-host",
+  "runtime/up-library",
+  "runtime/up-hub",
+  "runtime/up-cli",
+  "bridge/up-ffi",
+]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/PlutoKeating/UltraPads"
+rust-version = "1.85"
+
+[workspace.dependencies]
+up-core = { path = "engine/up-core" }
+up-rt = { path = "engine/up-rt" }
+up-dsp = { path = "engine/up-dsp" }
+up-graph = { path = "engine/up-graph" }
+up-sampler = { path = "engine/up-sampler" }
+up-transport = { path = "engine/up-transport" }
+up-sequencer = { path = "engine/up-sequencer" }
+up-mixer = { path = "engine/up-mixer" }
+up-recorder = { path = "engine/up-recorder" }
+up-model = { path = "engine/up-model" }
+up-codec = { path = "engine/up-codec" }
+up-protocol = { path = "engine/up-protocol" }
+up-engine = { path = "engine/up-engine" }
+up-host = { path = "runtime/up-host" }
+up-library = { path = "runtime/up-library" }
+up-hub = { path = "runtime/up-hub" }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+opt-level = 2

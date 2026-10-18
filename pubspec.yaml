@@ -1,0 +1,24 @@
+name: ultrapads_workspace
+publish_to: none
+environment:
+  sdk: ^3.9.0
+workspace:
+  - app/ultrapads
+  - packages/up_tokens
+  - packages/up_ui
+  - packages/up_fx
+  - packages/up_i18n
+  - packages/up_engine
+dev_dependencies:
+  melos: ^8.0.0
+melos:
+  name: ultrapads
+  scripts:
+    analyze:
+      exec: flutter analyze --no-fatal-infos
+    test:
+      exec: flutter test
+      packageFilters:
+        dirExists: test
+    format:
+      exec: dart format .
