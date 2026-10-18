@@ -1,219 +1,1383 @@
 {
-  "$description": "Component layer: theme-independent geometry / motion / glow recipes. Colours are NOT allowed here (they belong to semantic so skins can change them). The build fails on a colour or gradient token in this layer.",
+  "$description": "Component layer: theme-independent geometry / motion / glow recipes (IPA 4.7.0 FairyGUI px / 2 unless noted). Colours are NOT allowed here.",
   "pad": {
-    "gap": { "$type": "dimension", "$value": "{spacing.xxs}", "$description": "APK cell margin 1 => 2 between pads" },
-    "minSize": { "$type": "dimension", "$value": "{size.touch.min}" },
-    "numberSizeRatio": { "$type": "number", "$value": "{ratio.padNumberSize}" },
-    "numberInsetEndRatio": { "$type": "number", "$value": "{ratio.padNumberInsetEnd}" },
-    "numberInsetBottomRatio": { "$type": "number", "$value": "{ratio.padNumberInsetBottom}" },
-    "loopIconRatio": { "$type": "number", "$value": 0.22, "$description": "Loop glyph size relative to pad short side (SHOT)" },
-    "glowPressed": { "$type": "shadow", "$value": "{glow.lg}" },
-    "glowPlaying": { "$type": "shadow", "$value": "{glow.md}" },
-    "bevel": { "$type": "shadow", "$value": "{shadow.padBevel}" },
-    "pressAttack": { "$type": "duration", "$value": "{motion.duration.padPressHalf}", "$description": "Flash 0 -> peak while finger down" },
-    "pressRelease": { "$type": "duration", "$value": "{motion.duration.padPressHalf}", "$description": "Flash peak -> 0 after release" },
-    "pressCurve": { "$type": "cubicBezier", "$value": "{motion.easing.lottiePad}" },
-    "loopRevolution": { "$type": "duration", "$value": "{motion.duration.loopRevolution}" },
-    "loopFlashPeak": { "$type": "duration", "$value": "{motion.duration.loopFlash}" },
-    "loopFlashCycle": { "$type": "duration", "$value": "{motion.duration.loopFlashCycle}" },
-    "loopCurve": { "$type": "cubicBezier", "$value": "{motion.easing.linear}" },
-    "pendingBlink": { "$type": "duration", "$value": "{motion.duration.slow}" },
-    "scaleSpring": { "$type": "number", "stiffness": { "$value": "{motion.spring.snappy.stiffness}" }, "damping": { "$value": "{motion.spring.snappy.damping}" }, "mass": { "$value": "{motion.spring.snappy.mass}" } }
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.xxs}",
+      "$description": "IPA 4px between pads"
+    },
+    "minSize": {
+      "$type": "dimension",
+      "$value": "{size.touch.min}"
+    },
+    "designSize": {
+      "$type": "dimension",
+      "$value": {
+        "value": 128,
+        "unit": "px"
+      },
+      "$description": "IPA pad component 256px (scaled to the cell)"
+    },
+    "cellWidth": {
+      "$type": "dimension",
+      "$value": {
+        "value": 133.5,
+        "unit": "px"
+      },
+      "$description": "IPA cell 267/268 x 255-257 px (not square)"
+    },
+    "cellHeight": {
+      "$type": "dimension",
+      "$value": {
+        "value": 128,
+        "unit": "px"
+      }
+    },
+    "numberSizeRatio": {
+      "$type": "number",
+      "$value": "{ratio.padNumberSize}"
+    },
+    "numberInsetEndRatio": {
+      "$type": "number",
+      "$value": "{ratio.padNumberInsetEnd}"
+    },
+    "numberInsetBottomRatio": {
+      "$type": "number",
+      "$value": "{ratio.padNumberInsetBottom}"
+    },
+    "loopIconRatio": {
+      "$type": "number",
+      "$value": 0.47,
+      "$description": "IPA loop glyph 120x136 on a 256 pad"
+    },
+    "glowPressed": {
+      "$type": "shadow",
+      "$value": "{glow.lg}",
+      "$description": "UP neon glow"
+    },
+    "glowPlaying": {
+      "$type": "shadow",
+      "$value": "{glow.md}",
+      "$description": "UP neon glow"
+    },
+    "bevel": {
+      "$type": "shadow",
+      "$value": "{shadow.padBevel}"
+    },
+    "pressAttack": {
+      "$type": "duration",
+      "$value": "{motion.duration.frame}",
+      "$description": "IPA: lit state on the next frame (no tween)"
+    },
+    "pressRelease": {
+      "$type": "duration",
+      "$value": "{motion.duration.fast}",
+      "$description": "IPA: 0.1 s QuadOut back to idle"
+    },
+    "pressCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    },
+    "loopFlashHalf": {
+      "$type": "duration",
+      "$value": "{motion.duration.loopHalf}",
+      "$description": "IPA: 0.6 s one way, yoyo, infinite (1.2 s period)"
+    },
+    "loopFlashCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    },
+    "loopRevolution": {
+      "$type": "duration",
+      "$value": "{motion.duration.loopCycle}",
+      "$description": "IPA: loop icon 360° per 1.2 s"
+    },
+    "loopCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.linear}"
+    },
+    "pendingBlink": {
+      "$type": "duration",
+      "$value": "{motion.duration.slow}",
+      "$description": "UP"
+    },
+    "pressScaleIn": {
+      "$type": "duration",
+      "$value": {
+        "value": 50,
+        "unit": "ms"
+      },
+      "$description": "IPA Square skin: layer shrink 0.05 s, stagger 17 ms"
+    },
+    "pressScaleOut": {
+      "$type": "duration",
+      "$value": "{motion.duration.fast}",
+      "$description": "IPA Circle/Square: back to 1.0 in 0.1 s QuadOut"
+    },
+    "scaleSpring": {
+      "$type": "number",
+      "stiffness": {
+        "$value": "{motion.spring.snappy.stiffness}"
+      },
+      "damping": {
+        "$value": "{motion.spring.snappy.damping}"
+      },
+      "mass": {
+        "$value": "{motion.spring.snappy.mass}"
+      }
+    },
+    "loopFlashCycle": {
+      "$type": "duration",
+      "$value": "{motion.duration.loopCycle}",
+      "$description": "IPA loop flash period 1.2 s"
+    }
   },
   "padGrid": {
-    "columns": { "$type": "number", "$value": 3, "$extensions": { "up": { "int": true } } },
-    "rows": { "$type": "number", "$value": 4, "$extensions": { "up": { "int": true } } },
-    "banks": { "$type": "number", "$value": 2, "$extensions": { "up": { "int": true } }, "$description": "A / B" },
-    "pageInset": { "$type": "dimension", "$value": "{spacing.lg}", "$description": "APK page width = screen - 20 (10 each side)" },
-    "marginTop": { "$type": "dimension", "$value": "{spacing.sm}" },
-    "marginBottom": { "$type": "dimension", "$value": "{spacing.xl}" },
-    "maxWidth": { "$type": "dimension", "$value": "{size.content.tabletMaxWidth}" },
-    "bankSwitch": { "$type": "duration", "$value": "{motion.duration.fast}" },
-    "bankSwitchCurve": { "$type": "cubicBezier", "$value": "{motion.easing.decelerate}" }
+    "columns": {
+      "$type": "number",
+      "$value": 3,
+      "$extensions": {
+        "up": {
+          "int": true
+        }
+      }
+    },
+    "rows": {
+      "$type": "number",
+      "$value": 4,
+      "$extensions": {
+        "up": {
+          "int": true
+        }
+      }
+    },
+    "banks": {
+      "$type": "number",
+      "$value": 2,
+      "$description": "A / B",
+      "$extensions": {
+        "up": {
+          "int": true
+        }
+      }
+    },
+    "pageInset": {
+      "$type": "dimension",
+      "$value": "{spacing.edge}",
+      "$description": "IPA pad area x 9..819 px"
+    },
+    "top": {
+      "$type": "dimension",
+      "$value": {
+        "value": 143,
+        "unit": "px"
+      },
+      "$description": "IPA pad area y 286 px"
+    },
+    "bottomInset": {
+      "$type": "dimension",
+      "$value": {
+        "value": 75.5,
+        "unit": "px"
+      },
+      "$description": "IPA pad area ends at y 1321 of 1472 px"
+    },
+    "maxWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.tabletMaxWidth}"
+    },
+    "bankSwitch": {
+      "$type": "duration",
+      "$value": "{motion.duration.short}",
+      "$description": "IPA A/B 0.2 s QuadOut, page slides 100%"
+    },
+    "bankSwitchCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    },
+    "marginTop": {
+      "$type": "dimension",
+      "$value": "{spacing.sm}",
+      "$description": "APK 6dp (old; IPA uses absolute y 286px)"
+    },
+    "marginBottom": {
+      "$type": "dimension",
+      "$value": "{spacing.xl}",
+      "$description": "APK 12dp (old)"
+    }
   },
   "topBar": {
-    "height": { "$type": "dimension", "$value": "{size.bar.toolbar}" },
-    "menuHeight": { "$type": "dimension", "$value": "{size.bar.menu}" },
-    "menuSlotWidth": { "$type": "dimension", "$value": { "value": 50, "unit": "px" } },
-    "paddingX": { "$type": "dimension", "$value": "{spacing.md}" },
-    "gap": { "$type": "dimension", "$value": "{spacing.md}" },
-    "iconSize": { "$type": "dimension", "$value": "{size.icon.lg}" },
-    "bankButtonSize": { "$type": "dimension", "$value": "{size.control.ab}" },
-    "recIconSize": { "$type": "dimension", "$value": { "value": 30, "unit": "px" } }
+    "songsWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.songsButtonWidth}"
+    },
+    "songsHeight": {
+      "$type": "dimension",
+      "$value": "{size.control.sm}"
+    },
+    "songsX": {
+      "$type": "dimension",
+      "$value": {
+        "value": 10,
+        "unit": "px"
+      },
+      "$description": "IPA (20,33) px"
+    },
+    "songsY": {
+      "$type": "dimension",
+      "$value": {
+        "value": 16.5,
+        "unit": "px"
+      }
+    },
+    "titleX": {
+      "$type": "dimension",
+      "$value": {
+        "value": 108,
+        "unit": "px"
+      },
+      "$description": "IPA KIT title at (216,45) px"
+    },
+    "youtubeWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.youtubeWidth}"
+    },
+    "youtubeHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.youtubeHeight}"
+    },
+    "functionRowY": {
+      "$type": "dimension",
+      "$value": {
+        "value": 63,
+        "unit": "px"
+      },
+      "$description": "IPA function row y 126 px"
+    },
+    "functionRowHeight": {
+      "$type": "dimension",
+      "$value": "{size.bar.functionRow}"
+    },
+    "functionButton": {
+      "$type": "dimension",
+      "$value": "{size.touch.comfortable}",
+      "$description": "IPA 100x100 px"
+    },
+    "functionButtonInner": {
+      "$type": "dimension",
+      "$value": "{size.control.md}",
+      "$description": "IPA inner block 84 px"
+    },
+    "tutorialWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.tutorialButtonWidth}"
+    },
+    "moreWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.moreButtonWidth}"
+    },
+    "bankButtonWidth": {
+      "$type": "dimension",
+      "$value": "{size.control.ab}"
+    },
+    "bankButtonHeight": {
+      "$type": "dimension",
+      "$value": {
+        "value": 63,
+        "unit": "px"
+      },
+      "$description": "IPA 129x126 px"
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$value": "{size.icon.lg}"
+    },
+    "songsBreathe": {
+      "$type": "duration",
+      "$value": "{motion.duration.breathe}",
+      "$description": "IPA SONGS glow 1 -> 0.5 -> 1 per 0.783 s linear"
+    },
+    "collapse": {
+      "$type": "duration",
+      "$value": "{motion.duration.medium}",
+      "$description": "IPA function row collapse CircIn / return CircOut"
+    },
+    "collapseCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.circIn}"
+    },
+    "expandCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.circOut}"
+    },
+    "height": {
+      "$type": "dimension",
+      "$value": {
+        "value": 56.5,
+        "unit": "px"
+      },
+      "$description": "IPA top region above the function row (0..113px)"
+    },
+    "paddingX": {
+      "$type": "dimension",
+      "$value": "{spacing.lg}",
+      "$description": "IPA SONGS x 20px"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.md}"
+    },
+    "bankButtonSize": {
+      "$type": "dimension",
+      "$value": "{size.control.ab}",
+      "$description": "IPA A/B 129px"
+    },
+    "recIconSize": {
+      "$type": "dimension",
+      "$value": "{size.control.md}",
+      "$description": "IPA record block 84px"
+    }
+  },
+  "navBar": {
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.bar.nav}"
+    },
+    "buttonSize": {
+      "$type": "dimension",
+      "$value": "{size.control.mdBox}"
+    },
+    "paddingX": {
+      "$type": "dimension",
+      "$value": "{spacing.lg}"
+    }
   },
   "tabBar": {
-    "height": { "$type": "dimension", "$value": "{size.bar.tabbar}" },
-    "iconSize": { "$type": "dimension", "$value": "{size.icon.lg}" },
-    "indicatorHeight": { "$type": "dimension", "$value": "{borderWidth.regular}" }
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.bar.tabbar}"
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$value": "{size.icon.lg}"
+    },
+    "selectedCircle": {
+      "$type": "dimension",
+      "$value": "{size.content.tabSelectedCircle}"
+    },
+    "indicatorHeight": {
+      "$type": "dimension",
+      "$value": "{borderWidth.tab}",
+      "$description": "IPA underline 3 px"
+    },
+    "subTabWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.subTabWidth}"
+    },
+    "subTabHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.subTabHeight}"
+    }
   },
   "chip": {
-    "height": { "$type": "dimension", "$value": "{size.control.md}" },
-    "radius": { "$type": "dimension", "$value": "{radius.sm}" },
-    "paddingX": { "$type": "dimension", "$value": "{spacing.xl}" },
-    "iconBoxWidth": { "$type": "dimension", "$value": "{size.control.md}" },
-    "iconSize": { "$type": "dimension", "$value": "{size.icon.md}" },
-    "gap": { "$type": "dimension", "$value": "{spacing.md}" }
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.control.sm}",
+      "$description": "IPA SONGS button 63 px"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.md}"
+    },
+    "paddingX": {
+      "$type": "dimension",
+      "$value": "{spacing.md}"
+    },
+    "iconBoxWidth": {
+      "$type": "dimension",
+      "$value": "{size.control.sm}"
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$value": "{size.icon.sm}"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.md}"
+    }
   },
   "kitCard": {
-    "height": { "$type": "dimension", "$value": "{size.content.kitCellHeight}" },
-    "heightLarge": { "$type": "dimension", "$value": { "value": 96, "unit": "px" } },
-    "coverSize": { "$type": "dimension", "$value": "{size.content.kitCellHeight}" },
-    "coverSizeLarge": { "$type": "dimension", "$value": { "value": 96, "unit": "px" } },
-    "radius": { "$type": "dimension", "$value": "{radius.lg}" },
-    "coverRadius": { "$type": "dimension", "$value": "{radius.sm}" },
-    "padding": { "$type": "dimension", "$value": "{spacing.xl}" },
-    "gap": { "$type": "dimension", "$value": "{spacing.xl}" },
-    "marginTop": { "$type": "dimension", "$value": "{spacing.sm}" },
-    "indicatorWidth": { "$type": "dimension", "$value": "{borderWidth.thick}" },
-    "focusScale": { "$type": "number", "$value": 1.06, "$description": "Centred card in the stacked carousel (SHOT)" },
-    "shadow": { "$type": "shadow", "$value": "{shadow.lg}" },
-    "carouselItemWidth": { "$type": "dimension", "$value": { "value": 96, "unit": "px" } },
-    "carouselItemHeight": { "$type": "dimension", "$value": { "value": 48, "unit": "px" } }
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.control.row}",
+      "$description": "IPA kit row 132 px"
+    },
+    "thumbWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.kitThumbWidth}"
+    },
+    "thumbHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.kitThumbHeight}"
+    },
+    "thumbInset": {
+      "$type": "dimension",
+      "$value": "{spacing.kitRowInset}"
+    },
+    "textInset": {
+      "$type": "dimension",
+      "$value": "{size.content.kitTextInset}"
+    },
+    "indicatorWidth": {
+      "$type": "dimension",
+      "$value": "{borderWidth.selection}",
+      "$description": "IPA selection bar 9 px"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.none}"
+    },
+    "coverRadius": {
+      "$type": "dimension",
+      "$value": "{radius.sm}"
+    },
+    "bigWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.kitBigWidth}"
+    },
+    "bigHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.kitBigHeight}"
+    },
+    "smallWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.kitSmallWidth}"
+    },
+    "smallHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.kitSmallHeight}"
+    },
+    "bigLabelAngle": {
+      "$type": "number",
+      "$value": 6.8,
+      "$description": "IPA KIT stamp rotation (degrees)"
+    },
+    "padding": {
+      "$type": "dimension",
+      "$value": "{spacing.xl}"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.xl}"
+    },
+    "shadow": {
+      "$type": "shadow",
+      "$value": "{shadow.lg}"
+    },
+    "coverSize": {
+      "$type": "dimension",
+      "$value": "{size.content.kitThumbHeight}",
+      "$description": "IPA thumbnail height 109px"
+    },
+    "coverSizeLarge": {
+      "$type": "dimension",
+      "$value": "{size.content.kitThumbWidth}",
+      "$description": "IPA thumbnail width 147px"
+    },
+    "heightLarge": {
+      "$type": "dimension",
+      "$value": "{size.control.row}",
+      "$description": "IPA kit row 132px"
+    },
+    "marginTop": {
+      "$type": "dimension",
+      "$value": "{spacing.sm}",
+      "$description": "APK (old)"
+    },
+    "focusScale": {
+      "$type": "number",
+      "$value": 1.06,
+      "$description": "SHOT stacked carousel focus"
+    }
   },
   "banner": {
-    "width": { "$type": "dimension", "$value": "{size.content.featuredWidth}" },
-    "height": { "$type": "dimension", "$value": "{size.content.featuredHeight}" },
-    "holderHeight": { "$type": "dimension", "$value": "{size.content.featuredHolderHeight}" },
-    "radius": { "$type": "dimension", "$value": "{radius.xl}" },
-    "indicatorSize": { "$type": "dimension", "$value": "{spacing.sm}" },
-    "indicatorGap": { "$type": "dimension", "$value": "{spacing.sm}" },
-    "autoplay": { "$type": "duration", "$value": "{motion.duration.carousel}" },
-    "transition": { "$type": "duration", "$value": "{motion.duration.slow}" },
-    "transitionCurve": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
+    "width": {
+      "$type": "dimension",
+      "$value": "{size.content.featuredWidth}"
+    },
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.content.featuredHeight}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.xl}"
+    },
+    "indicatorWidth": {
+      "$type": "dimension",
+      "$value": {
+        "value": 25,
+        "unit": "px"
+      },
+      "$description": "IPA pagination 50x10 px"
+    },
+    "indicatorHeight": {
+      "$type": "dimension",
+      "$value": {
+        "value": 5,
+        "unit": "px"
+      }
+    },
+    "indicatorGap": {
+      "$type": "dimension",
+      "$value": "{spacing.sm}"
+    },
+    "signatureHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.signatureHeight}"
+    },
+    "autoplay": {
+      "$type": "duration",
+      "$value": "{motion.duration.carousel}"
+    },
+    "transition": {
+      "$type": "duration",
+      "$value": "{motion.duration.slow}"
+    },
+    "transitionCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    },
+    "holderHeight": {
+      "$type": "dimension",
+      "$value": {
+        "value": 147,
+        "unit": "px"
+      },
+      "$description": "UP: card 137 + pagination row"
+    },
+    "indicatorSize": {
+      "$type": "dimension",
+      "$value": {
+        "value": 5,
+        "unit": "px"
+      },
+      "$description": "IPA pagination dot height 10px"
+    }
   },
   "sheet": {
-    "radius": { "$type": "dimension", "$value": "{radius.xxl}" },
-    "headerHeight": { "$type": "dimension", "$value": "{size.bar.header}" },
-    "footerHeight": { "$type": "dimension", "$value": "{size.bar.tabbar}" },
-    "handleWidth": { "$type": "dimension", "$value": { "value": 36, "unit": "px" } },
-    "handleHeight": { "$type": "dimension", "$value": "{spacing.xs}" },
-    "itemHeight": { "$type": "dimension", "$value": "{size.control.xl}" },
-    "itemGap": { "$type": "dimension", "$value": "{spacing.xxs}" },
-    "maxWidth": { "$type": "dimension", "$value": "{size.content.subButtonWidth}" },
-    "enter": { "$type": "duration", "$value": "{motion.duration.slow}" },
-    "exit": { "$type": "duration", "$value": "{motion.duration.slow}" },
-    "curve": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
-    "spring": { "$type": "number", "stiffness": { "$value": "{motion.spring.standard.stiffness}" }, "damping": { "$value": "{motion.spring.standard.damping}" }, "mass": { "$value": "{motion.spring.standard.mass}" } }
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.content.skinPanelHeight}",
+      "$description": "IPA skin panel 488 px, slides from the bottom"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.none}"
+    },
+    "headerHeight": {
+      "$type": "dimension",
+      "$value": "{size.bar.nav}"
+    },
+    "itemSize": {
+      "$type": "dimension",
+      "$value": "{size.content.skinItem}"
+    },
+    "thumbSize": {
+      "$type": "dimension",
+      "$value": "{size.content.skinThumb}"
+    },
+    "dividerHeight": {
+      "$type": "dimension",
+      "$value": "{borderWidth.thin}",
+      "$description": "IPA pink 2 px divider"
+    },
+    "handleWidth": {
+      "$type": "dimension",
+      "$value": {
+        "value": 36,
+        "unit": "px"
+      },
+      "$description": "UP"
+    },
+    "handleHeight": {
+      "$type": "dimension",
+      "$value": "{spacing.xs}"
+    },
+    "enter": {
+      "$type": "duration",
+      "$value": "{motion.duration.slow}",
+      "$description": "IPA 0.4 s QuadOut"
+    },
+    "exit": {
+      "$type": "duration",
+      "$value": "{motion.duration.slow}"
+    },
+    "curve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    },
+    "spring": {
+      "$type": "number",
+      "stiffness": {
+        "$value": "{motion.spring.standard.stiffness}"
+      },
+      "damping": {
+        "$value": "{motion.spring.standard.damping}"
+      },
+      "mass": {
+        "$value": "{motion.spring.standard.mass}"
+      }
+    },
+    "itemGap": {
+      "$type": "dimension",
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$description": "IPA LOAD SOUND row step 140 - row 132 px = 8px"
+    },
+    "footerHeight": {
+      "$type": "dimension",
+      "$value": "{size.bar.tabbar}"
+    },
+    "maxWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.buttonWidth}"
+    }
+  },
+  "modal": {
+    "width": {
+      "$type": "dimension",
+      "$value": "{size.content.modalWidth}"
+    },
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.content.modalHeight}"
+    },
+    "thumbHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.modalThumbHeight}"
+    },
+    "buttonWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.modalButtonWidth}"
+    },
+    "buttonHeight": {
+      "$type": "dimension",
+      "$value": "{size.control.xl}"
+    },
+    "speedWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.speedModalWidth}"
+    },
+    "speedHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.speedModalHeight}"
+    },
+    "speedIn": {
+      "$type": "duration",
+      "$value": "{motion.duration.modalIn}",
+      "$description": "IPA speed picker in 0.5 s"
+    },
+    "speedOut": {
+      "$type": "duration",
+      "$value": "{motion.duration.slower}",
+      "$description": "IPA out 1.0 s"
+    },
+    "curve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    }
   },
   "page": {
-    "push": { "$type": "duration", "$value": "{motion.duration.slow}" },
-    "pushCurve": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
-    "paddingX": { "$type": "dimension", "$value": "{spacing.xxxl}" }
+    "push": {
+      "$type": "duration",
+      "$value": "{motion.duration.medium}",
+      "$description": "UP (scene transitions are code-driven in the original)"
+    },
+    "pushCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    },
+    "paddingX": {
+      "$type": "dimension",
+      "$value": "{spacing.xxxl}"
+    }
   },
   "listItem": {
-    "height": { "$type": "dimension", "$value": "{size.control.xl}" },
-    "paddingX": { "$type": "dimension", "$value": "{spacing.xxl}" },
-    "gap": { "$type": "dimension", "$value": "{spacing.xl}" },
-    "iconBoxSize": { "$type": "dimension", "$value": "{size.control.md}" },
-    "iconSize": { "$type": "dimension", "$value": "{size.icon.md}" },
-    "radius": { "$type": "dimension", "$value": "{radius.md}" }
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.control.row}",
+      "$description": "IPA LOAD SOUND row 132 px"
+    },
+    "step": {
+      "$type": "dimension",
+      "$value": {
+        "value": 70,
+        "unit": "px"
+      },
+      "$description": "IPA row step 140 px"
+    },
+    "paddingX": {
+      "$type": "dimension",
+      "$value": "{spacing.kitRowInset}"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.xl}"
+    },
+    "iconBoxSize": {
+      "$type": "dimension",
+      "$value": "{size.control.md}"
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$value": "{size.icon.lg}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.none}"
+    },
+    "profileRowHeight": {
+      "$type": "dimension",
+      "$value": {
+        "value": 55.5,
+        "unit": "px"
+      },
+      "$description": "IPA profile entry 111 px"
+    }
   },
-  "skinItem": {
-    "thumbSize": { "$type": "dimension", "$value": { "value": 96, "unit": "px" } },
-    "marginStart": { "$type": "dimension", "$value": "{spacing.xxxl}" },
-    "marginY": { "$type": "dimension", "$value": "{spacing.lg}" },
-    "radius": { "$type": "dimension", "$value": "{radius.xl}" }
+  "kitEditor": {
+    "navHeight": {
+      "$type": "dimension",
+      "$value": "{size.bar.nav}"
+    },
+    "miniPad": {
+      "$type": "dimension",
+      "$value": "{size.content.miniPad}"
+    },
+    "miniPadGap": {
+      "$type": "dimension",
+      "$value": "{size.content.miniPadGap}"
+    },
+    "panelWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.miniPanelWidth}"
+    },
+    "panelHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.miniPanelHeight}"
+    },
+    "editPadWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.editPadWidth}"
+    },
+    "saveWidth": {
+      "$type": "dimension",
+      "$value": {
+        "value": 75,
+        "unit": "px"
+      },
+      "$description": "IPA SALVAR 150x60 px"
+    },
+    "saveHeight": {
+      "$type": "dimension",
+      "$value": {
+        "value": 30,
+        "unit": "px"
+      }
+    },
+    "closeSize": {
+      "$type": "dimension",
+      "$value": {
+        "value": 47.5,
+        "unit": "px"
+      },
+      "$description": "IPA close 95 px"
+    },
+    "maxTrim": {
+      "$type": "duration",
+      "$value": {
+        "value": 30000,
+        "unit": "ms"
+      },
+      "$description": "IPA trim max 30 s"
+    }
   },
   "waveform": {
-    "height": { "$type": "dimension", "$value": { "value": 40, "unit": "px" } },
-    "barWidth": { "$type": "dimension", "$value": { "value": 3, "unit": "px" } },
-    "barGap": { "$type": "dimension", "$value": "{spacing.xxs}" },
-    "barRadius": { "$type": "dimension", "$value": { "value": 1.5, "unit": "px" } },
-    "minBarHeight": { "$type": "dimension", "$value": "{spacing.xs}" },
-    "markerWidth": { "$type": "dimension", "$value": "{borderWidth.regular}" }
+    "width": {
+      "$type": "dimension",
+      "$value": "{size.content.waveformWidth}"
+    },
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.content.waveformHeight}"
+    },
+    "barWidth": {
+      "$type": "dimension",
+      "$value": {
+        "value": 3,
+        "unit": "px"
+      },
+      "$description": "UP"
+    },
+    "barGap": {
+      "$type": "dimension",
+      "$value": "{spacing.xxs}"
+    },
+    "barRadius": {
+      "$type": "dimension",
+      "$value": {
+        "value": 1.5,
+        "unit": "px"
+      }
+    },
+    "minBarHeight": {
+      "$type": "dimension",
+      "$value": "{spacing.xs}"
+    },
+    "markerWidth": {
+      "$type": "dimension",
+      "$value": "{borderWidth.regular}"
+    }
   },
   "meter": {
-    "width": { "$type": "dimension", "$value": "{spacing.sm}" },
-    "radius": { "$type": "dimension", "$value": "{radius.sm}" },
-    "segmentGap": { "$type": "dimension", "$value": "{spacing.hair}" },
-    "midThreshold": { "$type": "number", "$value": 0.7 },
-    "highThreshold": { "$type": "number", "$value": 0.9 },
-    "peakHold": { "$type": "duration", "$value": "{motion.duration.progress}" },
-    "decay": { "$type": "duration", "$value": "{motion.duration.slow}" }
+    "width": {
+      "$type": "dimension",
+      "$value": "{spacing.sm}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.sm}"
+    },
+    "segmentGap": {
+      "$type": "dimension",
+      "$value": "{spacing.hair}"
+    },
+    "midThreshold": {
+      "$type": "number",
+      "$value": 0.7
+    },
+    "highThreshold": {
+      "$type": "number",
+      "$value": 0.9
+    },
+    "peakHold": {
+      "$type": "duration",
+      "$value": "{motion.duration.slower}"
+    },
+    "decay": {
+      "$type": "duration",
+      "$value": "{motion.duration.medium}"
+    }
   },
   "progressRing": {
-    "innerRadius": { "$type": "dimension", "$value": { "value": 64, "unit": "px" }, "$description": "APK circular.xml" },
-    "thickness": { "$type": "dimension", "$value": "{spacing.md}" },
-    "duration": { "$type": "duration", "$value": "{motion.duration.progress}" },
-    "curve": { "$type": "cubicBezier", "$value": "{motion.easing.decelerate}" }
+    "innerRadius": {
+      "$type": "dimension",
+      "$value": {
+        "value": 64,
+        "unit": "px"
+      },
+      "$description": "APK circular.xml (old)"
+    },
+    "thickness": {
+      "$type": "dimension",
+      "$value": "{spacing.md}"
+    },
+    "loadingStep": {
+      "$type": "duration",
+      "$value": "{motion.duration.fast}",
+      "$description": "IPA 3x3 loading grid shifts alpha every 0.1 s"
+    },
+    "duration": {
+      "$type": "duration",
+      "$value": "{motion.duration.slower}"
+    },
+    "curve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    }
   },
   "slider": {
-    "trackHeight": { "$type": "dimension", "$value": "{spacing.xs}" },
-    "thumbSize": { "$type": "dimension", "$value": "{size.control.xs}", "$description": "APK thumb_seekbar 20dp" },
-    "thumbSizeActive": { "$type": "dimension", "$value": "{size.icon.lg}" },
-    "insetX": { "$type": "dimension", "$value": "{spacing.xxxl}" }
+    "width": {
+      "$type": "dimension",
+      "$value": "{size.content.sliderWidth}"
+    },
+    "trackHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.sliderHeight}"
+    },
+    "thumbSize": {
+      "$type": "dimension",
+      "$value": "{size.control.slider}",
+      "$description": "IPA grip 50 px"
+    },
+    "thumbSizeActive": {
+      "$type": "dimension",
+      "$value": "{size.control.slider}"
+    },
+    "insetX": {
+      "$type": "dimension",
+      "$value": "{spacing.xxxl}"
+    }
   },
   "button": {
-    "height": { "$type": "dimension", "$value": "{size.control.lg}" },
-    "heightSm": { "$type": "dimension", "$value": "{size.control.md}" },
-    "heightLg": { "$type": "dimension", "$value": "{size.control.xl}" },
-    "minWidth": { "$type": "dimension", "$value": { "value": 88, "unit": "px" } },
-    "wideWidth": { "$type": "dimension", "$value": "{size.content.subButtonWidth}" },
-    "radius": { "$type": "dimension", "$value": "{radius.md}" },
-    "paddingX": { "$type": "dimension", "$value": "{spacing.xxl}" },
-    "iconSize": { "$type": "dimension", "$value": "{size.icon.md}" },
-    "gap": { "$type": "dimension", "$value": "{spacing.md}" },
-    "borderWidth": { "$type": "dimension", "$value": "{borderWidth.regular}" },
-    "pressScale": { "$type": "number", "$value": 0.97 },
-    "press": { "$type": "duration", "$value": "{motion.duration.fast}" }
+    "width": {
+      "$type": "dimension",
+      "$value": "{size.content.buttonWidth}",
+      "$description": "IPA btn 500x100 px"
+    },
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.control.lg}"
+    },
+    "heightSm": {
+      "$type": "dimension",
+      "$value": "{size.content.seeAllHeight}"
+    },
+    "heightLg": {
+      "$type": "dimension",
+      "$value": "{size.control.xl}"
+    },
+    "minWidth": {
+      "$type": "dimension",
+      "$value": {
+        "value": 88,
+        "unit": "px"
+      },
+      "$description": "UP"
+    },
+    "seeAllWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.seeAllWidth}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.md}"
+    },
+    "pillRadius": {
+      "$type": "dimension",
+      "$value": "{radius.pill}"
+    },
+    "paddingX": {
+      "$type": "dimension",
+      "$value": "{spacing.xxl}"
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$value": "{size.icon.md}"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.md}"
+    },
+    "borderWidth": {
+      "$type": "dimension",
+      "$value": "{borderWidth.regular}"
+    },
+    "pressScale": {
+      "$type": "number",
+      "$value": 0.97,
+      "$description": "UP"
+    },
+    "press": {
+      "$type": "duration",
+      "$value": "{motion.duration.fast}"
+    },
+    "wideWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.buttonWidth}",
+      "$description": "IPA btn 500px"
+    }
   },
   "iconButton": {
-    "size": { "$type": "dimension", "$value": "{size.touch.min}" },
-    "iconSize": { "$type": "dimension", "$value": "{size.icon.lg}" }
+    "size": {
+      "$type": "dimension",
+      "$value": "{size.touch.comfortable}"
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$value": "{size.icon.lg}"
+    }
   },
   "dialog": {
-    "radius": { "$type": "dimension", "$value": "{radius.xxl}" },
-    "padding": { "$type": "dimension", "$value": "{spacing.huge}" },
-    "gap": { "$type": "dimension", "$value": "{spacing.xxl}" },
-    "maxWidth": { "$type": "dimension", "$value": "{size.content.subButtonWidth}" },
-    "shadow": { "$type": "shadow", "$value": "{shadow.lg}" },
-    "enter": { "$type": "duration", "$value": "{motion.duration.medium}" },
-    "curve": { "$type": "cubicBezier", "$value": "{motion.easing.emphasized}" }
+    "width": {
+      "$type": "dimension",
+      "$value": "{size.content.dialogWidth}",
+      "$description": "IPA rate dialog 606 px"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.xxl}"
+    },
+    "padding": {
+      "$type": "dimension",
+      "$value": "{spacing.huge}"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.xxl}"
+    },
+    "maxWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.modalWidth}"
+    },
+    "shadow": {
+      "$type": "shadow",
+      "$value": "{shadow.lg}"
+    },
+    "enter": {
+      "$type": "duration",
+      "$value": "{motion.duration.medium}"
+    },
+    "curve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    }
   },
   "genreIcon": {
-    "size": { "$type": "dimension", "$value": "{size.touch.min}" },
-    "iconSize": { "$type": "dimension", "$value": "{size.icon.lg}" },
-    "labelGap": { "$type": "dimension", "$value": "{spacing.sm}" },
-    "ringWidth": { "$type": "dimension", "$value": "{borderWidth.regular}" },
-    "gap": { "$type": "dimension", "$value": "{spacing.xl}" }
+    "size": {
+      "$type": "dimension",
+      "$value": "{size.touch.min}"
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$value": "{size.icon.lg}"
+    },
+    "labelGap": {
+      "$type": "dimension",
+      "$value": "{spacing.sm}"
+    },
+    "ringWidth": {
+      "$type": "dimension",
+      "$value": "{borderWidth.regular}"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.xl}"
+    },
+    "rowHeight": {
+      "$type": "dimension",
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      },
+      "$description": "IPA genre list 659x96 px"
+    },
+    "rowWidth": {
+      "$type": "dimension",
+      "$value": {
+        "value": 329.5,
+        "unit": "px"
+      }
+    }
   },
   "swatch": {
-    "size": { "$type": "dimension", "$value": "{size.icon.xl}", "$description": "APK 32x32 colour dots" },
-    "ringWidth": { "$type": "dimension", "$value": "{borderWidth.regular}" },
-    "ringWidthSelected": { "$type": "dimension", "$value": "{borderWidth.heavy}" }
+    "size": {
+      "$type": "dimension",
+      "$value": "{size.control.swatch}",
+      "$description": "IPA 70 px colour dots, 8 colours"
+    },
+    "ringWidth": {
+      "$type": "dimension",
+      "$value": "{borderWidth.regular}"
+    },
+    "ringWidthSelected": {
+      "$type": "dimension",
+      "$value": "{borderWidth.heavy}"
+    }
   },
   "badge": {
-    "height": { "$type": "dimension", "$value": "{size.icon.sm}" },
-    "radius": { "$type": "dimension", "$value": "{radius.sm}" },
-    "paddingX": { "$type": "dimension", "$value": "{spacing.sm}" }
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.icon.sm}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.pill}"
+    },
+    "paddingX": {
+      "$type": "dimension",
+      "$value": "{spacing.sm}"
+    }
   },
   "transport": {
-    "height": { "$type": "dimension", "$value": "{size.bar.toolbar}" },
-    "stopSize": { "$type": "dimension", "$value": "{size.control.md}" },
-    "speedHeight": { "$type": "dimension", "$value": "{size.icon.lg}" },
-    "gap": { "$type": "dimension", "$value": "{spacing.xl}" }
+    "speedWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.speedButtonWidth}"
+    },
+    "speedHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.speedButtonHeight}"
+    },
+    "playSize": {
+      "$type": "dimension",
+      "$value": "{size.touch.comfortable}"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.xl}"
+    },
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.bar.functionRow}",
+      "$description": "IPA tutorial row 100px"
+    },
+    "stopSize": {
+      "$type": "dimension",
+      "$value": "{size.control.md}",
+      "$description": "IPA play/stop block 84px"
+    }
+  },
+  "record": {
+    "buttonSize": {
+      "$type": "dimension",
+      "$value": "{size.control.rec}"
+    },
+    "pulse": {
+      "$type": "duration",
+      "$value": "{motion.duration.loopHalf}",
+      "$description": "IPA 0.6 s QuadOut: ring x1.2 red, dot x0.5"
+    },
+    "pulseScale": {
+      "$type": "number",
+      "$value": 1.2
+    },
+    "dotScale": {
+      "$type": "number",
+      "$value": 0.5
+    },
+    "ripple": {
+      "$type": "duration",
+      "$value": "{motion.duration.slower}",
+      "$description": "IPA ripple 1.0 s CircOut to 4x, alpha 1 -> 0"
+    },
+    "rippleScale": {
+      "$type": "number",
+      "$value": 4
+    },
+    "rippleCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.circOut}"
+    },
+    "playSize": {
+      "$type": "dimension",
+      "$value": {
+        "value": 55,
+        "unit": "px"
+      },
+      "$description": "IPA save recording play button 110 px"
+    }
   },
   "trackCard": {
-    "radius": { "$type": "dimension", "$value": "{radius.xl}" },
-    "padding": { "$type": "dimension", "$value": "{spacing.xxl}" },
-    "gap": { "$type": "dimension", "$value": "{spacing.xl}" },
-    "shadow": { "$type": "shadow", "$value": "{shadow.lg}" },
-    "recTransition": { "$type": "duration", "$value": "{motion.duration.recTransition}" },
-    "recLoop": { "$type": "duration", "$value": "{motion.duration.recLoop}" }
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.xl}"
+    },
+    "padding": {
+      "$type": "dimension",
+      "$value": "{spacing.xxl}"
+    },
+    "gap": {
+      "$type": "dimension",
+      "$value": "{spacing.xl}"
+    },
+    "shadow": {
+      "$type": "shadow",
+      "$value": "{shadow.lg}"
+    },
+    "recTransition": {
+      "$type": "duration",
+      "$value": "{motion.duration.loopHalf}",
+      "$description": "IPA record pulse 0.6 s"
+    },
+    "recLoop": {
+      "$type": "duration",
+      "$value": "{motion.duration.slower}",
+      "$description": "IPA record ripple 1.0 s"
+    }
   },
   "toast": {
-    "radius": { "$type": "dimension", "$value": "{radius.xl}" },
-    "padding": { "$type": "dimension", "$value": "{spacing.xl}" },
-    "visible": { "$type": "duration", "$value": "{motion.duration.toast}" }
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.xl}"
+    },
+    "padding": {
+      "$type": "dimension",
+      "$value": "{spacing.xl}"
+    },
+    "visible": {
+      "$type": "duration",
+      "$value": "{motion.duration.toast}"
+    }
   },
   "tutorial": {
-    "barHeight": { "$type": "dimension", "$value": "{size.bar.menu}" },
-    "ringWidth": { "$type": "dimension", "$value": "{borderWidth.thick}" },
-    "pulse": { "$type": "duration", "$value": "{motion.duration.pulse}" }
+    "fill": {
+      "$type": "duration",
+      "$value": "{motion.duration.slower}",
+      "$description": "IPA tutorial pad fills bottom->top in 1.0 s linear"
+    },
+    "fillCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.linear}"
+    },
+    "bubbleWidth": {
+      "$type": "dimension",
+      "$value": "{size.content.bubbleWidth}"
+    },
+    "bubbleHeight": {
+      "$type": "dimension",
+      "$value": "{size.content.bubbleHeight}"
+    },
+    "highlightHole": {
+      "$type": "dimension",
+      "$value": "{size.touch.comfortable}",
+      "$description": "IPA 100 px cut-out"
+    },
+    "handTravel": {
+      "$type": "dimension",
+      "$value": {
+        "value": 100,
+        "unit": "px"
+      },
+      "$description": "IPA hand moves 200 px"
+    },
+    "hand": {
+      "$type": "duration",
+      "$value": "{motion.duration.slower}"
+    },
+    "handCurve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadIn}"
+    },
+    "perfectRise": {
+      "$type": "dimension",
+      "$value": {
+        "value": 27.5,
+        "unit": "px"
+      },
+      "$description": "IPA PERFECT rises 55 px in 0.3 s"
+    },
+    "perfectDuration": {
+      "$type": "duration",
+      "$value": "{motion.duration.medium}"
+    },
+    "perfectCircleScale": {
+      "$type": "number",
+      "$value": 20,
+      "$description": "IPA green circle grows to 20x in 0.4 s"
+    },
+    "perfectCircle": {
+      "$type": "duration",
+      "$value": "{motion.duration.slow}"
+    },
+    "missTilt": {
+      "$type": "number",
+      "$value": 6,
+      "$description": "IPA TOO FAST/SLOW tilt degrees"
+    },
+    "wrongIn": {
+      "$type": "duration",
+      "$value": "{motion.duration.fast}"
+    },
+    "wrongOut": {
+      "$type": "duration",
+      "$value": "{motion.duration.wrongOut}"
+    },
+    "wrongScale": {
+      "$type": "number",
+      "$value": 1.3
+    },
+    "stepSlide": {
+      "$type": "dimension",
+      "$value": {
+        "value": 80,
+        "unit": "px"
+      },
+      "$description": "IPA step label slides in 160 px"
+    },
+    "textIn": {
+      "$type": "duration",
+      "$value": "{motion.duration.short}"
+    },
+    "skipSlide": {
+      "$type": "duration",
+      "$value": "{motion.duration.skipSlide}"
+    },
+    "ringWidth": {
+      "$type": "dimension",
+      "$value": "{borderWidth.thick}"
+    },
+    "barHeight": {
+      "$type": "dimension",
+      "$value": "{size.bar.functionRow}"
+    },
+    "pulse": {
+      "$type": "duration",
+      "$value": "{motion.duration.slower}",
+      "$description": "IPA tutorial pad fill 1.0 s"
+    }
   },
   "searchField": {
-    "height": { "$type": "dimension", "$value": "{size.control.lg}" },
-    "radius": { "$type": "dimension", "$value": "{radius.md}" },
-    "paddingX": { "$type": "dimension", "$value": "{spacing.xl}" }
+    "width": {
+      "$type": "dimension",
+      "$value": "{size.content.searchFieldWidth}"
+    },
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.content.searchFieldHeight}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.md}"
+    },
+    "paddingX": {
+      "$type": "dimension",
+      "$value": "{spacing.xl}"
+    }
+  },
+  "input": {
+    "width": {
+      "$type": "dimension",
+      "$value": "{size.content.inputWidth}"
+    },
+    "height": {
+      "$type": "dimension",
+      "$value": "{size.content.inputHeight}"
+    },
+    "labelFloat": {
+      "$type": "duration",
+      "$value": "{motion.duration.slow}",
+      "$description": "IPA label move + colour 0.4 s QuadOut"
+    },
+    "curve": {
+      "$type": "cubicBezier",
+      "$value": "{motion.easing.quadOut}"
+    }
+  },
+  "skinItem": {
+    "size": {
+      "$type": "dimension",
+      "$value": "{size.content.skinItem}"
+    },
+    "thumbSize": {
+      "$type": "dimension",
+      "$value": "{size.content.skinThumb}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.xl}"
+    },
+    "marginStart": {
+      "$type": "dimension",
+      "$value": "{spacing.xxxl}",
+      "$description": "APK (old)"
+    },
+    "marginY": {
+      "$type": "dimension",
+      "$value": "{spacing.lg}",
+      "$description": "APK (old)"
+    }
   }
 }

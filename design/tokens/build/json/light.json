@@ -128,6 +128,11 @@
       "type": "color",
       "value": "#FFFFFF14"
     },
+    "color.alpha.white.10": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FFFFFF1A"
+    },
     "color.alpha.white.12": {
       "layer": "primitive",
       "type": "color",
@@ -152,6 +157,11 @@
       "layer": "primitive",
       "type": "color",
       "value": "#FFFFFF7F"
+    },
+    "color.alpha.white.60": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FFFFFF99"
     },
     "color.alpha.white.70": {
       "layer": "primitive",
@@ -188,10 +198,20 @@
       "type": "color",
       "value": "#00000040"
     },
+    "color.alpha.black.40": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#00000066"
+    },
     "color.alpha.black.50": {
       "layer": "primitive",
       "type": "color",
       "value": "#00000080"
+    },
+    "color.alpha.black.60": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#00000099"
     },
     "color.alpha.black.63": {
       "layer": "primitive",
@@ -202,6 +222,16 @@
       "layer": "primitive",
       "type": "color",
       "value": "#000000AC"
+    },
+    "color.alpha.black.70": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#000000B3"
+    },
+    "color.alpha.black.80": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#000000CC"
     },
     "color.brand.rose": {
       "layer": "primitive",
@@ -247,6 +277,26 @@
       "layer": "primitive",
       "type": "color",
       "value": "#F8453E"
+    },
+    "color.brand.pink": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FD1A68"
+    },
+    "color.brand.rosePad": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F73470"
+    },
+    "color.brand.create": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#EE4286"
+    },
+    "color.brand.alert": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FD155F"
     },
     "color.classic.blue.300": {
       "layer": "primitive",
@@ -503,6 +553,581 @@
       "type": "color",
       "value": "#C86DD7"
     },
+    "color.ui.bgPads": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#242B2E"
+    },
+    "color.ui.bgMenu": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#262B2F"
+    },
+    "color.ui.cell": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#2C3336"
+    },
+    "color.ui.cellPressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#252B2E"
+    },
+    "color.ui.placeholder": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#1E2225"
+    },
+    "color.ui.social": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#1A1D20"
+    },
+    "color.ui.modalButton": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#363F43"
+    },
+    "color.ui.adsArea": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#15181A"
+    },
+    "color.ui.paginationDot": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#484C4F"
+    },
+    "color.ui.textDark": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#282828"
+    },
+    "color.ui.textSection": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#939BA3"
+    },
+    "color.ui.textMuted": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#999999"
+    },
+    "color.ui.inputText": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#666666"
+    },
+    "color.ui.recRed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FF0000"
+    },
+    "color.ui.tutorialFill": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#10CEF8"
+    },
+    "color.ui.tutorialOutline": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#BD1555"
+    },
+    "color.ui.tutorialLoop": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#02BCEB"
+    },
+    "color.ui.perfect": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#1CCB19"
+    },
+    "color.ui.premium": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FF156C"
+    },
+    "color.ui.premiumTop": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FD1A86"
+    },
+    "color.ui.premiumBadge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FBC800"
+    },
+    "color.ui.premiumCyan": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#00CCFF"
+    },
+    "color.ui.signatureCyan": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#00CBFE"
+    },
+    "color.ui.signatureMagenta": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FD1AD8"
+    },
+    "color.ui.thumbCyan": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#52DAFF"
+    },
+    "color.ui.thumbMagenta": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FF52DD"
+    },
+    "color.ui.liveOps": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#371D55"
+    },
+    "color.pad.blue.base": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#00CBF7"
+    },
+    "color.pad.blue.highlight": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#3FDDFE"
+    },
+    "color.pad.blue.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#22D7FD"
+    },
+    "color.pad.blue.pressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#C2F2FC"
+    },
+    "color.pad.blue.pressedAlt": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#B3EFFC"
+    },
+    "color.pad.orange.base": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#EB7F00"
+    },
+    "color.pad.orange.bitmap": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#E97B00"
+    },
+    "color.pad.orange.highlight": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FAA600"
+    },
+    "color.pad.orange.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F29300"
+    },
+    "color.pad.orange.pressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FDE7BF"
+    },
+    "color.pad.green.base": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#00C200"
+    },
+    "color.pad.green.highlight": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#14E200"
+    },
+    "color.pad.green.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#0BD300"
+    },
+    "color.pad.green.pressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#C4F7C0"
+    },
+    "color.pad.pink.base": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F73470"
+    },
+    "color.pad.pink.highlight": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F9508B"
+    },
+    "color.pad.pink.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F9508A"
+    },
+    "color.pad.pink.pressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FFD9E4"
+    },
+    "color.skin.circle.blue": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#04C9E2"
+    },
+    "color.skin.circle.orange": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FE9F4C"
+    },
+    "color.skin.circle.green": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#28D13A"
+    },
+    "color.skin.circle.pink": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FE54AE"
+    },
+    "color.skin.broken.bluePressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#B3EFFC"
+    },
+    "color.skin.broken.orangePressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F7CB99"
+    },
+    "color.skin.broken.greenPressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#99E699"
+    },
+    "color.skin.broken.pinkPressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FBADC5"
+    },
+    "color.skin.square.1": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#006673"
+    },
+    "color.skin.square.2": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#008D9F"
+    },
+    "color.skin.square.3": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#00B4CB"
+    },
+    "color.skin.square.4": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#01D1EB"
+    },
+    "color.skin.square.5": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#2DE8FF"
+    },
+    "color.skin.polished.blue.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#8AE7FC"
+    },
+    "color.skin.polished.blue.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#57E1FF"
+    },
+    "color.skin.polished.blue.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#0ECFF8"
+    },
+    "color.skin.polished.green.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#83E481"
+    },
+    "color.skin.polished.green.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#1BEC00"
+    },
+    "color.skin.polished.green.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#04C800"
+    },
+    "color.skin.polished.orange.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F6C381"
+    },
+    "color.skin.polished.orange.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FFB200"
+    },
+    "color.skin.polished.orange.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#EC8300"
+    },
+    "color.skin.polished.pink.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FCA0BC"
+    },
+    "color.skin.polished.pink.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FF6B99"
+    },
+    "color.skin.polished.pink.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F83C76"
+    },
+    "color.skin.clean.blue.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#04C8E1"
+    },
+    "color.skin.clean.blue.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#02C0D8"
+    },
+    "color.skin.clean.blue.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#01B9D1"
+    },
+    "color.skin.clean.green.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#28CF39"
+    },
+    "color.skin.clean.green.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#25C335"
+    },
+    "color.skin.clean.green.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#23B732"
+    },
+    "color.skin.clean.orange.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FB9C49"
+    },
+    "color.skin.clean.orange.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#EE8D38"
+    },
+    "color.skin.clean.orange.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#E27E28"
+    },
+    "color.skin.clean.pink.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F852A9"
+    },
+    "color.skin.clean.pink.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#DF4A99"
+    },
+    "color.skin.clean.pink.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#C74388"
+    },
+    "color.skin.christmas.greenCore": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#8CE38C"
+    },
+    "color.skin.christmas.greenMid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#54D654"
+    },
+    "color.skin.christmas.greenPressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#CBF2CB"
+    },
+    "color.skin.christmas.orangePressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FAE4CB"
+    },
+    "color.skin.christmas.pinkPressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FCC1D3"
+    },
+    "color.skin.muertos.greenCore": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#009B00"
+    },
+    "color.skin.muertos.pinkCore": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#F86291"
+    },
+    "color.skin.muertos.pinkEdge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#D62D61"
+    },
+    "color.skin.pets.greenEdge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#00A800"
+    },
+    "color.skin.pets.orangeMid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FF9F00"
+    },
+    "color.skin.pets.orangeEdge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#CC6E00"
+    },
+    "color.skin.halloween.blue.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#2663BA"
+    },
+    "color.skin.halloween.blue.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#164295"
+    },
+    "color.skin.halloween.blue.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#052171"
+    },
+    "color.skin.halloween.blue.pressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#618DF9"
+    },
+    "color.skin.halloween.green.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#C0E13B"
+    },
+    "color.skin.halloween.green.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#B5D630"
+    },
+    "color.skin.halloween.green.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#A4C51D"
+    },
+    "color.skin.halloween.green.pressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#E1FC76"
+    },
+    "color.skin.halloween.orange.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FEAD0D"
+    },
+    "color.skin.halloween.orange.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FDA90C"
+    },
+    "color.skin.halloween.orange.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#EB760A"
+    },
+    "color.skin.halloween.orange.pressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FFCB71"
+    },
+    "color.skin.halloween.pink.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FE76AF"
+    },
+    "color.skin.halloween.pink.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#E73F80"
+    },
+    "color.skin.halloween.pink.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#D91F64"
+    },
+    "color.skin.halloween.pink.pressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FF60A3"
+    },
+    "color.skin.halloween.purple.core": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#C784E4"
+    },
+    "color.skin.halloween.purple.mid": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#AF67CE"
+    },
+    "color.skin.halloween.purple.edge": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#7E4398"
+    },
+    "color.skin.halloween.purple.pressed": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#E3A5FE"
+    },
+    "color.skin.lgbt.red": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#E9493F"
+    },
+    "color.skin.lgbt.yellow": {
+      "layer": "primitive",
+      "type": "color",
+      "value": "#FEDF28"
+    },
     "gradient.brand": {
       "layer": "primitive",
       "type": "gradient",
@@ -591,12 +1216,27 @@
     "opacity.flash": {
       "layer": "primitive",
       "type": "number",
-      "value": 0.75
+      "value": 0.8
     },
     "opacity.full": {
       "layer": "primitive",
       "type": "number",
       "value": 1
+    },
+    "opacity.flashSoft": {
+      "layer": "primitive",
+      "type": "number",
+      "value": 0.7
+    },
+    "opacity.secondary": {
+      "layer": "primitive",
+      "type": "number",
+      "value": 0.6
+    },
+    "opacity.emptyPad": {
+      "layer": "primitive",
+      "type": "number",
+      "value": 0.2
     },
     "blur.none": {
       "layer": "primitive",
@@ -693,15 +1333,25 @@
       "type": "dimension",
       "value": 4
     },
+    "borderWidth.tab": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 1.5
+    },
+    "borderWidth.selection": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 4.5
+    },
     "motion.duration.instant": {
       "layer": "primitive",
       "type": "duration",
       "value": 0
     },
-    "motion.duration.xfast": {
+    "motion.duration.frame": {
       "layer": "primitive",
       "type": "duration",
-      "value": 50
+      "value": 17
     },
     "motion.duration.fast": {
       "layer": "primitive",
@@ -713,75 +1363,60 @@
       "type": "duration",
       "value": 150
     },
-    "motion.duration.padPressHalf": {
-      "layer": "primitive",
-      "type": "duration",
-      "value": 158
-    },
-    "motion.duration.medium": {
+    "motion.duration.short": {
       "layer": "primitive",
       "type": "duration",
       "value": 200
     },
-    "motion.duration.loopFlash": {
+    "motion.duration.skipSlide": {
       "layer": "primitive",
       "type": "duration",
       "value": 250
     },
-    "motion.duration.slow": {
+    "motion.duration.medium": {
       "layer": "primitive",
       "type": "duration",
       "value": 300
     },
-    "motion.duration.padPress": {
+    "motion.duration.slow": {
       "layer": "primitive",
       "type": "duration",
-      "value": 317
+      "value": 400
     },
-    "motion.duration.recTransition": {
-      "layer": "primitive",
-      "type": "duration",
-      "value": 367
-    },
-    "motion.duration.slower": {
-      "layer": "primitive",
-      "type": "duration",
-      "value": 450
-    },
-    "motion.duration.loopFlashCycle": {
+    "motion.duration.modalIn": {
       "layer": "primitive",
       "type": "duration",
       "value": 500
     },
-    "motion.duration.loopRevolution": {
+    "motion.duration.loopHalf": {
       "layer": "primitive",
       "type": "duration",
-      "value": 817
+      "value": 600
     },
-    "motion.duration.loadingKit": {
+    "motion.duration.breathe": {
       "layer": "primitive",
       "type": "duration",
-      "value": 868
+      "value": 783
     },
-    "motion.duration.pulse": {
+    "motion.duration.wrongOut": {
       "layer": "primitive",
       "type": "duration",
       "value": 900
     },
-    "motion.duration.progress": {
+    "motion.duration.slower": {
       "layer": "primitive",
       "type": "duration",
-      "value": 1250
+      "value": 1000
     },
-    "motion.duration.recLoop": {
+    "motion.duration.loopCycle": {
       "layer": "primitive",
       "type": "duration",
-      "value": 2000
+      "value": 1200
     },
-    "motion.duration.download": {
+    "motion.duration.splash": {
       "layer": "primitive",
       "type": "duration",
-      "value": 2202
+      "value": 1200
     },
     "motion.duration.toast": {
       "layer": "primitive",
@@ -793,6 +1428,21 @@
       "type": "duration",
       "value": 4000
     },
+    "motion.duration.xfast": {
+      "layer": "primitive",
+      "type": "duration",
+      "value": 50
+    },
+    "motion.duration.padPressHalf": {
+      "layer": "primitive",
+      "type": "duration",
+      "value": 17
+    },
+    "motion.duration.padPress": {
+      "layer": "primitive",
+      "type": "duration",
+      "value": 117
+    },
     "motion.easing.linear": {
       "layer": "primitive",
       "type": "cubicBezier",
@@ -801,6 +1451,46 @@
         0,
         1,
         1
+      ]
+    },
+    "motion.easing.quadOut": {
+      "layer": "primitive",
+      "type": "cubicBezier",
+      "value": [
+        0.25,
+        0.46,
+        0.45,
+        0.94
+      ]
+    },
+    "motion.easing.quadIn": {
+      "layer": "primitive",
+      "type": "cubicBezier",
+      "value": [
+        0.55,
+        0.085,
+        0.68,
+        0.53
+      ]
+    },
+    "motion.easing.circOut": {
+      "layer": "primitive",
+      "type": "cubicBezier",
+      "value": [
+        0.075,
+        0.82,
+        0.165,
+        1
+      ]
+    },
+    "motion.easing.circIn": {
+      "layer": "primitive",
+      "type": "cubicBezier",
+      "value": [
+        0.6,
+        0.04,
+        0.98,
+        0.335
       ]
     },
     "motion.easing.standard": {
@@ -823,16 +1513,6 @@
         1
       ]
     },
-    "motion.easing.accelerate": {
-      "layer": "primitive",
-      "type": "cubicBezier",
-      "value": [
-        0.4,
-        0,
-        1,
-        1
-      ]
-    },
     "motion.easing.emphasized": {
       "layer": "primitive",
       "type": "cubicBezier",
@@ -843,24 +1523,14 @@
         1
       ]
     },
-    "motion.easing.lottiePad": {
+    "motion.easing.accelerate": {
       "layer": "primitive",
       "type": "cubicBezier",
       "value": [
-        0.6,
-        0,
         0.4,
+        0,
+        1,
         1
-      ]
-    },
-    "motion.easing.lottieLinear": {
-      "layer": "primitive",
-      "type": "cubicBezier",
-      "value": [
-        0.167,
-        0.167,
-        0.833,
-        0.833
       ]
     },
     "motion.spring.snappy": {
@@ -947,7 +1617,7 @@
     "ratio.padRadius": {
       "layer": "primitive",
       "type": "number",
-      "value": 0.12
+      "value": 0.1
     },
     "ratio.padNumberSize": {
       "layer": "primitive",
@@ -1093,6 +1763,16 @@
         }
       ]
     },
+    "size.canvas.width": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 414
+    },
+    "size.canvas.height": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 736
+    },
     "size.icon.xs": {
       "layer": "primitive",
       "type": "dimension",
@@ -1111,7 +1791,7 @@
     "size.icon.lg": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 24
+      "value": 23.5
     },
     "size.icon.xl": {
       "layer": "primitive",
@@ -1131,97 +1811,337 @@
     "size.touch.comfortable": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 48
+      "value": 50
     },
-    "size.bar.toolbar": {
+    "size.bar.nav": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 56
+      "value": 50
     },
     "size.bar.tabbar": {
       "layer": "primitive",
       "type": "dimension",
       "value": 50
     },
-    "size.bar.menu": {
+    "size.bar.functionRow": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 36
-    },
-    "size.bar.header": {
-      "layer": "primitive",
-      "type": "dimension",
-      "value": 44
+      "value": 50
     },
     "size.bar.banner": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 54
+      "value": 51.5
+    },
+    "size.bar.bottom": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 53
+    },
+    "size.bar.toolbar": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 56
+    },
+    "size.bar.menu": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 36
     },
     "size.control.xs": {
       "layer": "primitive",
       "type": "dimension",
       "value": 20
     },
+    "size.control.slider": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 25
+    },
+    "size.control.swatch": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 35
+    },
     "size.control.sm": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 28
+      "value": 31.5
     },
     "size.control.md": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 34
+      "value": 42
+    },
+    "size.control.mdBox": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 40
     },
     "size.control.lg": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 44
+      "value": 50
     },
     "size.control.xl": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 54
+      "value": 62
+    },
+    "size.control.row": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 66
     },
     "size.control.ab": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 56
+      "value": 64.5
     },
-    "size.content.subButtonWidth": {
+    "size.control.rec": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 335
+      "value": 85
+    },
+    "size.content.songsButtonWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 89.5
+    },
+    "size.content.youtubeWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 71
+    },
+    "size.content.youtubeHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 44
+    },
+    "size.content.tutorialButtonWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 210
+    },
+    "size.content.moreButtonWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 32.5
+    },
+    "size.content.speedButtonWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 73
+    },
+    "size.content.speedButtonHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 39
+    },
+    "size.content.speedModalWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 113
+    },
+    "size.content.speedModalHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 140
+    },
+    "size.content.sliderWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 255.5
+    },
+    "size.content.sliderHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 5
+    },
+    "size.content.buttonWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 250
+    },
+    "size.content.modalWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 337.5
+    },
+    "size.content.modalHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 462
+    },
+    "size.content.modalThumbHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 207
+    },
+    "size.content.modalButtonWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 277.5
+    },
+    "size.content.kitThumbWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 73.5
+    },
+    "size.content.kitThumbHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 54.5
+    },
+    "size.content.kitTextInset": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 86
     },
     "size.content.featuredWidth": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 300
+      "value": 244.5
     },
     "size.content.featuredHeight": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 160
+      "value": 137
     },
-    "size.content.featuredHolderHeight": {
+    "size.content.kitBigWidth": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 175
+      "value": 202.5
     },
-    "size.content.videoHeight": {
+    "size.content.kitBigHeight": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 211
+      "value": 150.5
     },
-    "size.content.kitCellHeight": {
+    "size.content.kitSmallWidth": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 60
+      "value": 69.5
     },
-    "size.content.editRowHeight": {
+    "size.content.kitSmallHeight": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 100
+      "value": 87
+    },
+    "size.content.seeAllWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 168
+    },
+    "size.content.seeAllHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 33.5
+    },
+    "size.content.signatureHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 104
+    },
+    "size.content.skinPanelHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 244
+    },
+    "size.content.skinItem": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 115
+    },
+    "size.content.skinThumb": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 75
+    },
+    "size.content.miniPad": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 45
+    },
+    "size.content.miniPadGap": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 4
+    },
+    "size.content.miniPanelWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 165
+    },
+    "size.content.miniPanelHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 214.5
+    },
+    "size.content.editPadWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 375
+    },
+    "size.content.waveformWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 390.5
+    },
+    "size.content.waveformHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 111
+    },
+    "size.content.searchFieldWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 375
+    },
+    "size.content.searchFieldHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 36
+    },
+    "size.content.inputWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 333.5
+    },
+    "size.content.inputHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 60.5
+    },
+    "size.content.bubbleWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 210.5
+    },
+    "size.content.bubbleHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 132.5
+    },
+    "size.content.tabSelectedCircle": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 31.5
+    },
+    "size.content.subTabWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 115.5
+    },
+    "size.content.subTabHeight": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 31
+    },
+    "size.content.dialogWidth": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 303
     },
     "size.content.tabletMaxWidth": {
       "layer": "primitive",
@@ -1293,34 +2213,62 @@
       "type": "dimension",
       "value": 48
     },
+    "spacing.edge": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 4.5
+    },
+    "spacing.kitRowInset": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 5.5
+    },
     "font.family.regular": {
       "layer": "primitive",
       "type": "fontFamily",
       "value": [
-        "Uni Sans",
-        "Montserrat"
+        "Open Sans"
       ]
     },
     "font.family.heavy": {
       "layer": "primitive",
       "type": "fontFamily",
       "value": [
-        "Uni Sans Heavy",
-        "Montserrat"
+        "Open Sans"
       ]
     },
-    "font.family.thin": {
+    "font.family.light": {
       "layer": "primitive",
       "type": "fontFamily",
       "value": [
-        "Uni Sans Thin",
-        "Montserrat"
+        "Open Sans"
       ]
     },
-    "font.weight.thin": {
+    "font.family.uniSansRegular": {
+      "layer": "primitive",
+      "type": "fontFamily",
+      "value": [
+        "Uni Sans"
+      ]
+    },
+    "font.family.uniSansHeavy": {
+      "layer": "primitive",
+      "type": "fontFamily",
+      "value": [
+        "Uni Sans Heavy"
+      ]
+    },
+    "font.family.uniSansThin": {
+      "layer": "primitive",
+      "type": "fontFamily",
+      "value": [
+        "Uni Sans Thin"
+      ]
+    },
+    "font.weight.light": {
       "layer": "primitive",
       "type": "fontWeight",
-      "value": 100
+      "value": 300
     },
     "font.weight.regular": {
       "layer": "primitive",
@@ -1335,27 +2283,27 @@
     "font.size.xxxs": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 8
+      "value": 10
     },
     "font.size.xxs": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 9
+      "value": 11.5
     },
     "font.size.xs": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 10
+      "value": 12.5
     },
     "font.size.sm": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 12
+      "value": 14
     },
     "font.size.md": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 14
+      "value": 14.5
     },
     "font.size.lg": {
       "layer": "primitive",
@@ -1370,22 +2318,37 @@
     "font.size.xxl": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 20
+      "value": 17
     },
     "font.size.xxxl": {
       "layer": "primitive",
       "type": "dimension",
+      "value": 17.5
+    },
+    "font.size.page": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 18
+    },
+    "font.size.speed": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 19
+    },
+    "font.size.value": {
+      "layer": "primitive",
+      "type": "dimension",
       "value": 24
+    },
+    "font.size.bank": {
+      "layer": "primitive",
+      "type": "dimension",
+      "value": 30
     },
     "font.size.display": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 32
-    },
-    "font.size.hero": {
-      "layer": "primitive",
-      "type": "dimension",
-      "value": 44
+      "value": 35
     },
     "font.letterSpacing.tight": {
       "layer": "primitive",
@@ -1400,12 +2363,12 @@
     "font.letterSpacing.caps": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 0.5
+      "value": 0
     },
     "font.letterSpacing.capsWide": {
       "layer": "primitive",
       "type": "dimension",
-      "value": 1.2
+      "value": 0.5
     },
     "font.lineHeight.tight": {
       "layer": "primitive",
@@ -1432,11 +2395,10 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 44,
+        "fontSize": 30,
         "letterSpacing": -0.2,
         "lineHeight": 1
       }
@@ -1446,11 +2408,10 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 32,
+        "fontSize": 35,
         "letterSpacing": 0,
         "lineHeight": 1
       }
@@ -1460,11 +2421,10 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 24,
+        "fontSize": 18,
         "letterSpacing": 0,
         "lineHeight": 1.15
       }
@@ -1474,12 +2434,11 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 16,
-        "letterSpacing": 0.5,
+        "fontSize": 17.5,
+        "letterSpacing": 0,
         "lineHeight": 1.15
       }
     },
@@ -1488,12 +2447,37 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 14,
-        "letterSpacing": 0.5,
+        "fontSize": 14.5,
+        "letterSpacing": 0,
+        "lineHeight": 1.15
+      }
+    },
+    "typography.section": {
+      "layer": "primitive",
+      "type": "typography",
+      "value": {
+        "fontFamily": [
+          "Open Sans"
+        ],
+        "fontWeight": 400,
+        "fontSize": 17,
+        "letterSpacing": 0,
+        "lineHeight": 1.15
+      }
+    },
+    "typography.sheetTitle": {
+      "layer": "primitive",
+      "type": "typography",
+      "value": {
+        "fontFamily": [
+          "Open Sans"
+        ],
+        "fontWeight": 400,
+        "fontSize": 16,
+        "letterSpacing": 0,
         "lineHeight": 1.15
       }
     },
@@ -1502,12 +2486,11 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 12,
-        "letterSpacing": 0.5,
+        "fontSize": 14,
+        "letterSpacing": 0,
         "lineHeight": 1.15
       }
     },
@@ -1516,12 +2499,11 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 10,
-        "letterSpacing": 0.5,
+        "fontSize": 12.5,
+        "letterSpacing": 0,
         "lineHeight": 1.15
       }
     },
@@ -1530,12 +2512,11 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 400,
-        "fontSize": 8,
-        "letterSpacing": 1.2,
+        "fontSize": 10,
+        "letterSpacing": 0.5,
         "lineHeight": 1.15
       }
     },
@@ -1544,12 +2525,11 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Thin",
-          "Montserrat"
+          "Open Sans"
         ],
-        "fontWeight": 100,
-        "fontSize": 8,
-        "letterSpacing": 1.2,
+        "fontWeight": 400,
+        "fontSize": 11.5,
+        "letterSpacing": 0,
         "lineHeight": 1.15
       }
     },
@@ -1558,8 +2538,7 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 400,
         "fontSize": 14,
@@ -1572,11 +2551,10 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 400,
-        "fontSize": 12,
+        "fontSize": 12.5,
         "letterSpacing": 0,
         "lineHeight": 1.3
       }
@@ -1586,11 +2564,10 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 400,
-        "fontSize": 10,
+        "fontSize": 11.5,
         "letterSpacing": 0,
         "lineHeight": 1.3
       }
@@ -1600,12 +2577,11 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
         "fontSize": 14,
-        "letterSpacing": 0.5,
+        "letterSpacing": 0,
         "lineHeight": 1
       }
     },
@@ -1614,13 +2590,25 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 10,
-        "letterSpacing": 0.5,
+        "fontSize": 12.5,
+        "letterSpacing": 0,
         "lineHeight": 1
+      }
+    },
+    "typography.bubble": {
+      "layer": "primitive",
+      "type": "typography",
+      "value": {
+        "fontFamily": [
+          "Open Sans"
+        ],
+        "fontWeight": 800,
+        "fontSize": 15,
+        "letterSpacing": 0,
+        "lineHeight": 1.15
       }
     },
     "typography.padBank": {
@@ -1628,11 +2616,10 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 16,
+        "fontSize": 30,
         "letterSpacing": 0,
         "lineHeight": 1
       }
@@ -1642,8 +2629,7 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
         "fontSize": 16,
@@ -1656,11 +2642,23 @@
       "type": "typography",
       "value": {
         "fontFamily": [
-          "Uni Sans Heavy",
-          "Montserrat"
+          "Open Sans"
         ],
         "fontWeight": 800,
-        "fontSize": 12,
+        "fontSize": 19,
+        "letterSpacing": 0,
+        "lineHeight": 1
+      }
+    },
+    "typography.value": {
+      "layer": "primitive",
+      "type": "typography",
+      "value": {
+        "fontFamily": [
+          "Open Sans"
+        ],
+        "fontWeight": 400,
+        "fontSize": 24,
         "letterSpacing": 0,
         "lineHeight": 1
       }
@@ -1683,7 +2681,7 @@
     "transport.waveformPlayed": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FD169D"
+      "value": "#FD1A68"
     },
     "transport.waveformUnplayed": {
       "layer": "semantic",
@@ -1698,12 +2696,12 @@
     "transport.progressFill": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F73873"
+      "value": "#FD1A68"
     },
     "transport.thumb": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F73873"
+      "value": "#FFFFFF"
     },
     "transport.speedBackground": {
       "layer": "semantic",
@@ -1788,7 +2786,17 @@
     "card.selectedIndicator": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F93E78"
+      "value": "#FD1A68"
+    },
+    "card.placeholder": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#1E2225"
+    },
+    "card.counter": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#999999"
     },
     "banner.scrim": {
       "layer": "semantic",
@@ -1807,7 +2815,7 @@
     "banner.indicator": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FFFFFF66"
+      "value": "#484C4F"
     },
     "banner.indicatorActive": {
       "layer": "semantic",
@@ -1867,7 +2875,7 @@
     "badge.background": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F93E78"
+      "value": "#FD1A68"
     },
     "badge.foreground": {
       "layer": "semantic",
@@ -1892,7 +2900,7 @@
     "button.primaryBackground": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F73873"
+      "value": "#FD1A68"
     },
     "button.primaryForeground": {
       "layer": "semantic",
@@ -1902,7 +2910,7 @@
     "button.primaryPressed": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FD1A68"
+      "value": "#F73873"
     },
     "button.secondaryBackground": {
       "layer": "semantic",
@@ -1927,7 +2935,7 @@
     "button.dangerBackground": {
       "layer": "semantic",
       "type": "color",
-      "value": "#D0021B"
+      "value": "#FF0000"
     },
     "button.disabledBackground": {
       "layer": "semantic",
@@ -1938,6 +2946,21 @@
       "layer": "semantic",
       "type": "color",
       "value": "#B9C0C6"
+    },
+    "button.alertBorder": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FD155F"
+    },
+    "button.whiteBackground": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "button.whiteForeground": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#F73873"
     },
     "input.background": {
       "layer": "semantic",
@@ -1959,6 +2982,16 @@
       "type": "color",
       "value": "#F73873"
     },
+    "input.border": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF7F"
+    },
+    "input.focus": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#F73873"
+    },
     "slider.track": {
       "layer": "semantic",
       "type": "color",
@@ -1967,12 +3000,12 @@
     "slider.fill": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F73873"
+      "value": "#FD1A68"
     },
     "slider.thumb": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F73873"
+      "value": "#FFFFFF"
     },
     "dialog.background": {
       "layer": "semantic",
@@ -1983,6 +3016,21 @@
       "layer": "semantic",
       "type": "color",
       "value": "#00000080"
+    },
+    "dialog.light": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "dialog.lightTitle": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FD1A68"
+    },
+    "dialog.lightText": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#666666"
     },
     "toast.background": {
       "layer": "semantic",
@@ -2022,7 +3070,7 @@
     "waveform.active": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FD169D"
+      "value": "#FD1A68"
     },
     "waveform.inactive": {
       "layer": "semantic",
@@ -2047,12 +3095,12 @@
     "progressRing.fill": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F73873"
+      "value": "#FD1A68"
     },
     "record.indicator": {
       "layer": "semantic",
       "type": "color",
-      "value": "#D0021B"
+      "value": "#FF0000"
     },
     "record.trackCard": {
       "layer": "semantic",
@@ -2068,6 +3116,16 @@
       "layer": "semantic",
       "type": "color",
       "value": "#242B2D"
+    },
+    "genre.check": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#F73470"
+    },
+    "genre.tabSelected": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FD1A68"
     },
     "swatch.ring": {
       "layer": "semantic",
@@ -2092,82 +3150,102 @@
     "pad.palette.0.core": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FF3CD8"
+      "value": "#F9508B"
     },
     "pad.palette.0.mid": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FD169D"
+      "value": "#F73470"
     },
     "pad.palette.0.edge": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FC0579"
+      "value": "#F73470"
     },
     "pad.palette.0.glow": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FD169D"
+      "value": "#F73470"
+    },
+    "pad.palette.0.pressed": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
     },
     "pad.palette.1.core": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F9E21D"
+      "value": "#FAA600"
     },
     "pad.palette.1.mid": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F9D01D"
+      "value": "#EB7F00"
     },
     "pad.palette.1.edge": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FBB418"
+      "value": "#E97B00"
     },
     "pad.palette.1.glow": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F9D01D"
+      "value": "#EB7F00"
+    },
+    "pad.palette.1.pressed": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
     },
     "pad.palette.2.core": {
       "layer": "semantic",
       "type": "color",
-      "value": "#C8DC2A"
+      "value": "#14E200"
     },
     "pad.palette.2.mid": {
       "layer": "semantic",
       "type": "color",
-      "value": "#9BCD35"
+      "value": "#00C200"
     },
     "pad.palette.2.edge": {
       "layer": "semantic",
       "type": "color",
-      "value": "#51BC44"
+      "value": "#00C200"
     },
     "pad.palette.2.glow": {
       "layer": "semantic",
       "type": "color",
-      "value": "#9BCD35"
+      "value": "#00C200"
+    },
+    "pad.palette.2.pressed": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
     },
     "pad.palette.3.core": {
       "layer": "semantic",
       "type": "color",
-      "value": "#01B4FE"
+      "value": "#3FDDFE"
     },
     "pad.palette.3.mid": {
       "layer": "semantic",
       "type": "color",
-      "value": "#0194FE"
+      "value": "#00CBF7"
     },
     "pad.palette.3.edge": {
       "layer": "semantic",
       "type": "color",
-      "value": "#015BFE"
+      "value": "#00CBF7"
     },
     "pad.palette.3.glow": {
       "layer": "semantic",
       "type": "color",
-      "value": "#0194FE"
+      "value": "#00CBF7"
+    },
+    "pad.palette.3.pressed": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
     },
     "pad.palette.4.core": {
       "layer": "semantic",
@@ -2189,75 +3267,100 @@
       "type": "color",
       "value": "#EA20D3"
     },
+    "pad.palette.4.pressed": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
+    },
     "pad.palette.5.core": {
       "layer": "semantic",
       "type": "color",
-      "value": "#5AD8F5"
+      "value": "#F9E21D"
     },
     "pad.palette.5.mid": {
       "layer": "semantic",
       "type": "color",
-      "value": "#0FB6E3"
+      "value": "#F9D01D"
     },
     "pad.palette.5.edge": {
       "layer": "semantic",
       "type": "color",
-      "value": "#0A8FB8"
+      "value": "#FBB418"
     },
     "pad.palette.5.glow": {
       "layer": "semantic",
       "type": "color",
-      "value": "#0FB6E3"
+      "value": "#F9D01D"
+    },
+    "pad.palette.5.pressed": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
     },
     "pad.palette.6.core": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F1B37E"
+      "value": "#5AD8F5"
     },
     "pad.palette.6.mid": {
       "layer": "semantic",
       "type": "color",
-      "value": "#E9993F"
+      "value": "#0FB6E3"
     },
     "pad.palette.6.edge": {
       "layer": "semantic",
       "type": "color",
-      "value": "#E07D28"
+      "value": "#0A8FB8"
     },
     "pad.palette.6.glow": {
       "layer": "semantic",
       "type": "color",
-      "value": "#E9993F"
+      "value": "#0FB6E3"
+    },
+    "pad.palette.6.pressed": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
     },
     "pad.palette.7.core": {
       "layer": "semantic",
       "type": "color",
-      "value": "#EE4989"
+      "value": "#C784E4"
     },
     "pad.palette.7.mid": {
       "layer": "semantic",
       "type": "color",
-      "value": "#E6347A"
+      "value": "#AF67CE"
     },
     "pad.palette.7.edge": {
       "layer": "semantic",
       "type": "color",
-      "value": "#DD1F69"
+      "value": "#7E4398"
     },
     "pad.palette.7.glow": {
       "layer": "semantic",
       "type": "color",
-      "value": "#E6347A"
+      "value": "#AF67CE"
+    },
+    "pad.palette.7.pressed": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
     },
     "pad.shape.radiusRatio": {
       "layer": "semantic",
       "type": "number",
-      "value": 0.12
+      "value": 0.1
     },
     "pad.fill.radial": {
       "layer": "semantic",
       "type": "number",
       "value": 1
+    },
+    "pad.showNumber": {
+      "layer": "semantic",
+      "type": "number",
+      "value": 0
     },
     "pad.flash": {
       "layer": "semantic",
@@ -2302,7 +3405,7 @@
     "pad.pressed.flashOpacity": {
       "layer": "semantic",
       "type": "number",
-      "value": 0.75
+      "value": 0.8
     },
     "pad.pressed.glow": {
       "layer": "semantic",
@@ -2312,7 +3415,7 @@
     "pad.pressed.scale": {
       "layer": "semantic",
       "type": "number",
-      "value": 0.97
+      "value": 1
     },
     "pad.playing.fillOpacity": {
       "layer": "semantic",
@@ -2322,7 +3425,7 @@
     "pad.playing.flashOpacity": {
       "layer": "semantic",
       "type": "number",
-      "value": 0.75
+      "value": 0.8
     },
     "pad.playing.glow": {
       "layer": "semantic",
@@ -2357,17 +3460,22 @@
     "pad.loop.idleFillOpacity": {
       "layer": "semantic",
       "type": "number",
-      "value": 1
+      "value": 0
     },
     "pad.loop.borderWidth": {
       "layer": "semantic",
       "type": "dimension",
-      "value": 1
+      "value": 0
     },
     "pad.loop.icon": {
       "layer": "semantic",
       "type": "color",
       "value": "#FFFFFF"
+    },
+    "pad.loop.iconOpacity": {
+      "layer": "semantic",
+      "type": "number",
+      "value": 0.58
     },
     "pad.empty.fill": {
       "layer": "semantic",
@@ -2392,6 +3500,11 @@
       "type": "color",
       "value": "#00000014"
     },
+    "pad.empty.opacity": {
+      "layer": "semantic",
+      "type": "number",
+      "value": 0.2
+    },
     "pad.tutorial.dimOpacity": {
       "layer": "semantic",
       "type": "number",
@@ -2401,6 +3514,21 @@
       "layer": "semantic",
       "type": "color",
       "value": "#242B2D"
+    },
+    "pad.tutorial.fill": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#10CEF8"
+    },
+    "pad.tutorial.outline": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#BD1555"
+    },
+    "pad.tutorial.loopIcon": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#02BCEB"
     },
     "surface.app": {
       "layer": "semantic",
@@ -2462,6 +3590,31 @@
       "type": "color",
       "value": "#000000AC"
     },
+    "surface.scrimStrong": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#000000CC"
+    },
+    "surface.kitEditor": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#EE4286"
+    },
+    "surface.social": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#1A1D20"
+    },
+    "surface.tabBar": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#262B2F"
+    },
+    "surface.navShadow": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#00000099"
+    },
     "border.subtle": {
       "layer": "semantic",
       "type": "color",
@@ -2486,6 +3639,11 @@
       "layer": "semantic",
       "type": "color",
       "value": "#242B2D"
+    },
+    "border.dark": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#00000066"
     },
     "text.primary": {
       "layer": "semantic",
@@ -2525,7 +3683,17 @@
     "text.link": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F73873"
+      "value": "#FD1A68"
+    },
+    "text.section": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#939BA3"
+    },
+    "text.dark": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#282828"
     },
     "icon.primary": {
       "layer": "semantic",
@@ -2550,12 +3718,12 @@
     "accent.primary": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F73873"
+      "value": "#FD1A68"
     },
     "accent.primaryPressed": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FD1A68"
+      "value": "#F73873"
     },
     "accent.primaryMuted": {
       "layer": "semantic",
@@ -2565,22 +3733,32 @@
     "accent.selected": {
       "layer": "semantic",
       "type": "color",
-      "value": "#F93E78"
+      "value": "#F73470"
     },
     "accent.secondary": {
       "layer": "semantic",
       "type": "color",
-      "value": "#FD1B99"
+      "value": "#F73873"
     },
     "accent.preview": {
       "layer": "semantic",
       "type": "color",
       "value": "#50E3C2"
     },
+    "accent.alert": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FD155F"
+    },
+    "accent.create": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#EE4286"
+    },
     "status.success": {
       "layer": "semantic",
       "type": "color",
-      "value": "#00CF02"
+      "value": "#1CCB19"
     },
     "status.warning": {
       "layer": "semantic",
@@ -2590,7 +3768,7 @@
     "status.danger": {
       "layer": "semantic",
       "type": "color",
-      "value": "#D0021B"
+      "value": "#FF0000"
     },
     "status.info": {
       "layer": "semantic",
@@ -2600,7 +3778,7 @@
     "status.recording": {
       "layer": "semantic",
       "type": "color",
-      "value": "#D0021B"
+      "value": "#FF0000"
     },
     "brand.background": {
       "layer": "semantic",
@@ -2630,50 +3808,80 @@
       "type": "dimension",
       "value": 2
     },
-    "transport.height": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 56
+    "feedback.perfect": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#1CCB19"
     },
-    "transport.stopSize": {
+    "feedback.wrong": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FF0000"
+    },
+    "feedback.bubble": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "feedback.bubbleText": {
+      "layer": "semantic",
+      "type": "color",
+      "value": "#000000"
+    },
+    "transport.speedWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 34
+      "value": 73
     },
     "transport.speedHeight": {
       "layer": "component",
       "type": "dimension",
-      "value": 24
+      "value": 39
+    },
+    "transport.playSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 50
     },
     "transport.gap": {
       "layer": "component",
       "type": "dimension",
       "value": 12
     },
+    "transport.height": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 50
+    },
+    "transport.stopSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 42
+    },
     "chip.height": {
       "layer": "component",
       "type": "dimension",
-      "value": 34
+      "value": 31.5
     },
     "chip.radius": {
       "layer": "component",
       "type": "dimension",
-      "value": 3
+      "value": 4
     },
     "chip.paddingX": {
       "layer": "component",
       "type": "dimension",
-      "value": 12
+      "value": 8
     },
     "chip.iconBoxWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 34
+      "value": 31.5
     },
     "chip.iconSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 20
+      "value": 16
     },
     "chip.gap": {
       "layer": "component",
@@ -2683,32 +3891,37 @@
     "banner.width": {
       "layer": "component",
       "type": "dimension",
-      "value": 300
+      "value": 244.5
     },
     "banner.height": {
       "layer": "component",
       "type": "dimension",
-      "value": 160
-    },
-    "banner.holderHeight": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 175
+      "value": 137
     },
     "banner.radius": {
       "layer": "component",
       "type": "dimension",
       "value": 8
     },
-    "banner.indicatorSize": {
+    "banner.indicatorWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 6
+      "value": 25
+    },
+    "banner.indicatorHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 5
     },
     "banner.indicatorGap": {
       "layer": "component",
       "type": "dimension",
       "value": 6
+    },
+    "banner.signatureHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 104
     },
     "banner.autoplay": {
       "layer": "component",
@@ -2718,32 +3931,57 @@
     "banner.transition": {
       "layer": "component",
       "type": "duration",
-      "value": 300
+      "value": 400
     },
     "banner.transitionCurve": {
       "layer": "component",
       "type": "cubicBezier",
       "value": [
-        0.42,
-        0,
-        0.58,
-        1
+        0.25,
+        0.46,
+        0.45,
+        0.94
       ]
+    },
+    "banner.holderHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 147
+    },
+    "banner.indicatorSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 5
+    },
+    "sheet.height": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 244
     },
     "sheet.radius": {
       "layer": "component",
       "type": "dimension",
-      "value": 12
+      "value": 0
     },
     "sheet.headerHeight": {
       "layer": "component",
       "type": "dimension",
-      "value": 44
+      "value": 50
     },
-    "sheet.footerHeight": {
+    "sheet.itemSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 50
+      "value": 115
+    },
+    "sheet.thumbSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 75
+    },
+    "sheet.dividerHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 1
     },
     "sheet.handleWidth": {
       "layer": "component",
@@ -2755,39 +3993,24 @@
       "type": "dimension",
       "value": 4
     },
-    "sheet.itemHeight": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 54
-    },
-    "sheet.itemGap": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 2
-    },
-    "sheet.maxWidth": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 335
-    },
     "sheet.enter": {
       "layer": "component",
       "type": "duration",
-      "value": 300
+      "value": 400
     },
     "sheet.exit": {
       "layer": "component",
       "type": "duration",
-      "value": 300
+      "value": 400
     },
     "sheet.curve": {
       "layer": "component",
       "type": "cubicBezier",
       "value": [
-        0.42,
-        0,
-        0.58,
-        1
+        0.25,
+        0.46,
+        0.45,
+        0.94
       ]
     },
     "sheet.spring": {
@@ -2799,6 +4022,21 @@
         "mass": 1
       }
     },
+    "sheet.itemGap": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 4
+    },
+    "sheet.footerHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 50
+    },
+    "sheet.maxWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 250
+    },
     "badge.height": {
       "layer": "component",
       "type": "dimension",
@@ -2807,42 +4045,52 @@
     "badge.radius": {
       "layer": "component",
       "type": "dimension",
-      "value": 3
+      "value": 999
     },
     "badge.paddingX": {
       "layer": "component",
       "type": "dimension",
       "value": 6
     },
+    "button.width": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 250
+    },
     "button.height": {
       "layer": "component",
       "type": "dimension",
-      "value": 44
+      "value": 50
     },
     "button.heightSm": {
       "layer": "component",
       "type": "dimension",
-      "value": 34
+      "value": 33.5
     },
     "button.heightLg": {
       "layer": "component",
       "type": "dimension",
-      "value": 54
+      "value": 62
     },
     "button.minWidth": {
       "layer": "component",
       "type": "dimension",
       "value": 88
     },
-    "button.wideWidth": {
+    "button.seeAllWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 335
+      "value": 168
     },
     "button.radius": {
       "layer": "component",
       "type": "dimension",
       "value": 4
+    },
+    "button.pillRadius": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 999
     },
     "button.paddingX": {
       "layer": "component",
@@ -2874,25 +4122,65 @@
       "type": "duration",
       "value": 100
     },
+    "button.wideWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 250
+    },
+    "input.width": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 333.5
+    },
+    "input.height": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 60.5
+    },
+    "input.labelFloat": {
+      "layer": "component",
+      "type": "duration",
+      "value": 400
+    },
+    "input.curve": {
+      "layer": "component",
+      "type": "cubicBezier",
+      "value": [
+        0.25,
+        0.46,
+        0.45,
+        0.94
+      ]
+    },
+    "slider.width": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 255.5
+    },
     "slider.trackHeight": {
       "layer": "component",
       "type": "dimension",
-      "value": 4
+      "value": 5
     },
     "slider.thumbSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 20
+      "value": 25
     },
     "slider.thumbSizeActive": {
       "layer": "component",
       "type": "dimension",
-      "value": 24
+      "value": 25
     },
     "slider.insetX": {
       "layer": "component",
       "type": "dimension",
       "value": 20
+    },
+    "dialog.width": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 303
     },
     "dialog.radius": {
       "layer": "component",
@@ -2912,7 +4200,7 @@
     "dialog.maxWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 335
+      "value": 337.5
     },
     "dialog.shadow": {
       "layer": "component",
@@ -2931,16 +4219,16 @@
     "dialog.enter": {
       "layer": "component",
       "type": "duration",
-      "value": 200
+      "value": 300
     },
     "dialog.curve": {
       "layer": "component",
       "type": "cubicBezier",
       "value": [
-        0.2,
-        0,
-        0,
-        1
+        0.25,
+        0.46,
+        0.45,
+        0.94
       ]
     },
     "toast.radius": {
@@ -2986,17 +4274,22 @@
     "meter.peakHold": {
       "layer": "component",
       "type": "duration",
-      "value": 1250
+      "value": 1000
     },
     "meter.decay": {
       "layer": "component",
       "type": "duration",
       "value": 300
     },
+    "waveform.width": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 390.5
+    },
     "waveform.height": {
       "layer": "component",
       "type": "dimension",
-      "value": 40
+      "value": 111
     },
     "waveform.barWidth": {
       "layer": "component",
@@ -3033,25 +4326,75 @@
       "type": "dimension",
       "value": 8
     },
+    "progressRing.loadingStep": {
+      "layer": "component",
+      "type": "duration",
+      "value": 100
+    },
     "progressRing.duration": {
       "layer": "component",
       "type": "duration",
-      "value": 1250
+      "value": 1000
     },
     "progressRing.curve": {
       "layer": "component",
       "type": "cubicBezier",
       "value": [
-        0,
-        0,
-        0.2,
+        0.25,
+        0.46,
+        0.45,
+        0.94
+      ]
+    },
+    "record.buttonSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 85
+    },
+    "record.pulse": {
+      "layer": "component",
+      "type": "duration",
+      "value": 600
+    },
+    "record.pulseScale": {
+      "layer": "component",
+      "type": "number",
+      "value": 1.2
+    },
+    "record.dotScale": {
+      "layer": "component",
+      "type": "number",
+      "value": 0.5
+    },
+    "record.ripple": {
+      "layer": "component",
+      "type": "duration",
+      "value": 1000
+    },
+    "record.rippleScale": {
+      "layer": "component",
+      "type": "number",
+      "value": 4
+    },
+    "record.rippleCurve": {
+      "layer": "component",
+      "type": "cubicBezier",
+      "value": [
+        0.075,
+        0.82,
+        0.165,
         1
       ]
+    },
+    "record.playSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 55
     },
     "swatch.size": {
       "layer": "component",
       "type": "dimension",
-      "value": 32
+      "value": 35
     },
     "swatch.ringWidth": {
       "layer": "component",
@@ -3073,6 +4416,21 @@
       "type": "dimension",
       "value": 44
     },
+    "pad.designSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 128
+    },
+    "pad.cellWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 133.5
+    },
+    "pad.cellHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 128
+    },
     "pad.numberSizeRatio": {
       "layer": "component",
       "type": "number",
@@ -3091,7 +4449,7 @@
     "pad.loopIconRatio": {
       "layer": "component",
       "type": "number",
-      "value": 0.22
+      "value": 0.47
     },
     "pad.glowPressed": {
       "layer": "component",
@@ -3154,37 +4512,42 @@
     "pad.pressAttack": {
       "layer": "component",
       "type": "duration",
-      "value": 158
+      "value": 17
     },
     "pad.pressRelease": {
       "layer": "component",
       "type": "duration",
-      "value": 158
+      "value": 100
     },
     "pad.pressCurve": {
       "layer": "component",
       "type": "cubicBezier",
       "value": [
-        0.6,
-        0,
-        0.4,
-        1
+        0.25,
+        0.46,
+        0.45,
+        0.94
+      ]
+    },
+    "pad.loopFlashHalf": {
+      "layer": "component",
+      "type": "duration",
+      "value": 600
+    },
+    "pad.loopFlashCurve": {
+      "layer": "component",
+      "type": "cubicBezier",
+      "value": [
+        0.25,
+        0.46,
+        0.45,
+        0.94
       ]
     },
     "pad.loopRevolution": {
       "layer": "component",
       "type": "duration",
-      "value": 817
-    },
-    "pad.loopFlashPeak": {
-      "layer": "component",
-      "type": "duration",
-      "value": 250
-    },
-    "pad.loopFlashCycle": {
-      "layer": "component",
-      "type": "duration",
-      "value": 500
+      "value": 1200
     },
     "pad.loopCurve": {
       "layer": "component",
@@ -3199,7 +4562,17 @@
     "pad.pendingBlink": {
       "layer": "component",
       "type": "duration",
-      "value": 300
+      "value": 400
+    },
+    "pad.pressScaleIn": {
+      "layer": "component",
+      "type": "duration",
+      "value": 50
+    },
+    "pad.pressScaleOut": {
+      "layer": "component",
+      "type": "duration",
+      "value": 100
     },
     "pad.scaleSpring": {
       "layer": "component",
@@ -3209,6 +4582,11 @@
         "damping": 38,
         "mass": 1
       }
+    },
+    "pad.loopFlashCycle": {
+      "layer": "component",
+      "type": "duration",
+      "value": 1200
     },
     "padGrid.columns": {
       "layer": "component",
@@ -3228,7 +4606,37 @@
     "padGrid.pageInset": {
       "layer": "component",
       "type": "dimension",
-      "value": 10
+      "value": 4.5
+    },
+    "padGrid.top": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 143
+    },
+    "padGrid.bottomInset": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 75.5
+    },
+    "padGrid.maxWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 600
+    },
+    "padGrid.bankSwitch": {
+      "layer": "component",
+      "type": "duration",
+      "value": 200
+    },
+    "padGrid.bankSwitchCurve": {
+      "layer": "component",
+      "type": "cubicBezier",
+      "value": [
+        0.25,
+        0.46,
+        0.45,
+        0.94
+      ]
     },
     "padGrid.marginTop": {
       "layer": "component",
@@ -3240,65 +4648,155 @@
       "type": "dimension",
       "value": 12
     },
-    "padGrid.maxWidth": {
+    "topBar.songsWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 600
+      "value": 89.5
     },
-    "padGrid.bankSwitch": {
+    "topBar.songsHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 31.5
+    },
+    "topBar.songsX": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 10
+    },
+    "topBar.songsY": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 16.5
+    },
+    "topBar.titleX": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 108
+    },
+    "topBar.youtubeWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 71
+    },
+    "topBar.youtubeHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 44
+    },
+    "topBar.functionRowY": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 63
+    },
+    "topBar.functionRowHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 50
+    },
+    "topBar.functionButton": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 50
+    },
+    "topBar.functionButtonInner": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 42
+    },
+    "topBar.tutorialWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 210
+    },
+    "topBar.moreWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 32.5
+    },
+    "topBar.bankButtonWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 64.5
+    },
+    "topBar.bankButtonHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 63
+    },
+    "topBar.iconSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 23.5
+    },
+    "topBar.songsBreathe": {
       "layer": "component",
       "type": "duration",
-      "value": 100
+      "value": 783
     },
-    "padGrid.bankSwitchCurve": {
+    "topBar.collapse": {
+      "layer": "component",
+      "type": "duration",
+      "value": 300
+    },
+    "topBar.collapseCurve": {
       "layer": "component",
       "type": "cubicBezier",
       "value": [
-        0,
-        0,
-        0.2,
+        0.6,
+        0.04,
+        0.98,
+        0.335
+      ]
+    },
+    "topBar.expandCurve": {
+      "layer": "component",
+      "type": "cubicBezier",
+      "value": [
+        0.075,
+        0.82,
+        0.165,
         1
       ]
     },
     "topBar.height": {
       "layer": "component",
       "type": "dimension",
-      "value": 56
-    },
-    "topBar.menuHeight": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 36
-    },
-    "topBar.menuSlotWidth": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 50
+      "value": 56.5
     },
     "topBar.paddingX": {
       "layer": "component",
       "type": "dimension",
-      "value": 8
+      "value": 10
     },
     "topBar.gap": {
       "layer": "component",
       "type": "dimension",
       "value": 8
     },
-    "topBar.iconSize": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 24
-    },
     "topBar.bankButtonSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 56
+      "value": 64.5
     },
     "topBar.recIconSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 30
+      "value": 42
+    },
+    "navBar.height": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 50
+    },
+    "navBar.buttonSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 40
+    },
+    "navBar.paddingX": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 10
     },
     "tabBar.height": {
       "layer": "component",
@@ -3308,42 +4806,92 @@
     "tabBar.iconSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 24
+      "value": 23.5
+    },
+    "tabBar.selectedCircle": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 31.5
     },
     "tabBar.indicatorHeight": {
       "layer": "component",
       "type": "dimension",
-      "value": 2
+      "value": 1.5
+    },
+    "tabBar.subTabWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 115.5
+    },
+    "tabBar.subTabHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 31
     },
     "kitCard.height": {
       "layer": "component",
       "type": "dimension",
-      "value": 60
+      "value": 66
     },
-    "kitCard.heightLarge": {
+    "kitCard.thumbWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 96
+      "value": 73.5
     },
-    "kitCard.coverSize": {
+    "kitCard.thumbHeight": {
       "layer": "component",
       "type": "dimension",
-      "value": 60
+      "value": 54.5
     },
-    "kitCard.coverSizeLarge": {
+    "kitCard.thumbInset": {
       "layer": "component",
       "type": "dimension",
-      "value": 96
+      "value": 5.5
+    },
+    "kitCard.textInset": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 86
+    },
+    "kitCard.indicatorWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 4.5
     },
     "kitCard.radius": {
       "layer": "component",
       "type": "dimension",
-      "value": 6
+      "value": 0
     },
     "kitCard.coverRadius": {
       "layer": "component",
       "type": "dimension",
       "value": 3
+    },
+    "kitCard.bigWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 202.5
+    },
+    "kitCard.bigHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 150.5
+    },
+    "kitCard.smallWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 69.5
+    },
+    "kitCard.smallHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 87
+    },
+    "kitCard.bigLabelAngle": {
+      "layer": "component",
+      "type": "number",
+      "value": 6.8
     },
     "kitCard.padding": {
       "layer": "component",
@@ -3354,21 +4902,6 @@
       "layer": "component",
       "type": "dimension",
       "value": 12
-    },
-    "kitCard.marginTop": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 6
-    },
-    "kitCard.indicatorWidth": {
-      "layer": "component",
-      "type": "dimension",
-      "value": 3
-    },
-    "kitCard.focusScale": {
-      "layer": "component",
-      "type": "number",
-      "value": 1.06
     },
     "kitCard.shadow": {
       "layer": "component",
@@ -3384,15 +4917,85 @@
         }
       ]
     },
-    "kitCard.carouselItemWidth": {
+    "kitCard.coverSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 96
+      "value": 54.5
     },
-    "kitCard.carouselItemHeight": {
+    "kitCard.coverSizeLarge": {
       "layer": "component",
       "type": "dimension",
-      "value": 48
+      "value": 73.5
+    },
+    "kitCard.heightLarge": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 66
+    },
+    "kitCard.marginTop": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 6
+    },
+    "kitCard.focusScale": {
+      "layer": "component",
+      "type": "number",
+      "value": 1.06
+    },
+    "modal.width": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 337.5
+    },
+    "modal.height": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 462
+    },
+    "modal.thumbHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 207
+    },
+    "modal.buttonWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 277.5
+    },
+    "modal.buttonHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 62
+    },
+    "modal.speedWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 113
+    },
+    "modal.speedHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 140
+    },
+    "modal.speedIn": {
+      "layer": "component",
+      "type": "duration",
+      "value": 500
+    },
+    "modal.speedOut": {
+      "layer": "component",
+      "type": "duration",
+      "value": 1000
+    },
+    "modal.curve": {
+      "layer": "component",
+      "type": "cubicBezier",
+      "value": [
+        0.25,
+        0.46,
+        0.45,
+        0.94
+      ]
     },
     "page.push": {
       "layer": "component",
@@ -3403,10 +5006,10 @@
       "layer": "component",
       "type": "cubicBezier",
       "value": [
-        0.42,
-        0,
-        0.58,
-        1
+        0.25,
+        0.46,
+        0.45,
+        0.94
       ]
     },
     "page.paddingX": {
@@ -3417,12 +5020,17 @@
     "listItem.height": {
       "layer": "component",
       "type": "dimension",
-      "value": 54
+      "value": 66
+    },
+    "listItem.step": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 70
     },
     "listItem.paddingX": {
       "layer": "component",
       "type": "dimension",
-      "value": 16
+      "value": 5.5
     },
     "listItem.gap": {
       "layer": "component",
@@ -3432,47 +5040,82 @@
     "listItem.iconBoxSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 34
+      "value": 42
     },
     "listItem.iconSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 20
+      "value": 23.5
     },
     "listItem.radius": {
       "layer": "component",
       "type": "dimension",
+      "value": 0
+    },
+    "listItem.profileRowHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 55.5
+    },
+    "kitEditor.navHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 50
+    },
+    "kitEditor.miniPad": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 45
+    },
+    "kitEditor.miniPadGap": {
+      "layer": "component",
+      "type": "dimension",
       "value": 4
     },
-    "skinItem.thumbSize": {
+    "kitEditor.panelWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 96
+      "value": 165
     },
-    "skinItem.marginStart": {
+    "kitEditor.panelHeight": {
       "layer": "component",
       "type": "dimension",
-      "value": 20
+      "value": 214.5
     },
-    "skinItem.marginY": {
+    "kitEditor.editPadWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 10
+      "value": 375
     },
-    "skinItem.radius": {
+    "kitEditor.saveWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 8
+      "value": 75
+    },
+    "kitEditor.saveHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 30
+    },
+    "kitEditor.closeSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 47.5
+    },
+    "kitEditor.maxTrim": {
+      "layer": "component",
+      "type": "duration",
+      "value": 30000
     },
     "iconButton.size": {
       "layer": "component",
       "type": "dimension",
-      "value": 44
+      "value": 50
     },
     "iconButton.iconSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 24
+      "value": 23.5
     },
     "genreIcon.size": {
       "layer": "component",
@@ -3482,7 +5125,7 @@
     "genreIcon.iconSize": {
       "layer": "component",
       "type": "dimension",
-      "value": 24
+      "value": 23.5
     },
     "genreIcon.labelGap": {
       "layer": "component",
@@ -3498,6 +5141,16 @@
       "layer": "component",
       "type": "dimension",
       "value": 12
+    },
+    "genreIcon.rowHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 48
+    },
+    "genreIcon.rowWidth": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 329.5
     },
     "trackCard.radius": {
       "layer": "component",
@@ -3531,32 +5184,142 @@
     "trackCard.recTransition": {
       "layer": "component",
       "type": "duration",
-      "value": 367
+      "value": 600
     },
     "trackCard.recLoop": {
       "layer": "component",
       "type": "duration",
-      "value": 2000
+      "value": 1000
     },
-    "tutorial.barHeight": {
+    "tutorial.fill": {
+      "layer": "component",
+      "type": "duration",
+      "value": 1000
+    },
+    "tutorial.fillCurve": {
+      "layer": "component",
+      "type": "cubicBezier",
+      "value": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    "tutorial.bubbleWidth": {
       "layer": "component",
       "type": "dimension",
-      "value": 36
+      "value": 210.5
+    },
+    "tutorial.bubbleHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 132.5
+    },
+    "tutorial.highlightHole": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 50
+    },
+    "tutorial.handTravel": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 100
+    },
+    "tutorial.hand": {
+      "layer": "component",
+      "type": "duration",
+      "value": 1000
+    },
+    "tutorial.handCurve": {
+      "layer": "component",
+      "type": "cubicBezier",
+      "value": [
+        0.55,
+        0.085,
+        0.68,
+        0.53
+      ]
+    },
+    "tutorial.perfectRise": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 27.5
+    },
+    "tutorial.perfectDuration": {
+      "layer": "component",
+      "type": "duration",
+      "value": 300
+    },
+    "tutorial.perfectCircleScale": {
+      "layer": "component",
+      "type": "number",
+      "value": 20
+    },
+    "tutorial.perfectCircle": {
+      "layer": "component",
+      "type": "duration",
+      "value": 400
+    },
+    "tutorial.missTilt": {
+      "layer": "component",
+      "type": "number",
+      "value": 6
+    },
+    "tutorial.wrongIn": {
+      "layer": "component",
+      "type": "duration",
+      "value": 100
+    },
+    "tutorial.wrongOut": {
+      "layer": "component",
+      "type": "duration",
+      "value": 900
+    },
+    "tutorial.wrongScale": {
+      "layer": "component",
+      "type": "number",
+      "value": 1.3
+    },
+    "tutorial.stepSlide": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 80
+    },
+    "tutorial.textIn": {
+      "layer": "component",
+      "type": "duration",
+      "value": 200
+    },
+    "tutorial.skipSlide": {
+      "layer": "component",
+      "type": "duration",
+      "value": 250
     },
     "tutorial.ringWidth": {
       "layer": "component",
       "type": "dimension",
       "value": 3
     },
+    "tutorial.barHeight": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 50
+    },
     "tutorial.pulse": {
       "layer": "component",
       "type": "duration",
-      "value": 900
+      "value": 1000
+    },
+    "searchField.width": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 375
     },
     "searchField.height": {
       "layer": "component",
       "type": "dimension",
-      "value": 44
+      "value": 36
     },
     "searchField.radius": {
       "layer": "component",
@@ -3567,6 +5330,31 @@
       "layer": "component",
       "type": "dimension",
       "value": 12
+    },
+    "skinItem.size": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 115
+    },
+    "skinItem.thumbSize": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 75
+    },
+    "skinItem.radius": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 8
+    },
+    "skinItem.marginStart": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 20
+    },
+    "skinItem.marginY": {
+      "layer": "component",
+      "type": "dimension",
+      "value": 10
     }
   }
 }

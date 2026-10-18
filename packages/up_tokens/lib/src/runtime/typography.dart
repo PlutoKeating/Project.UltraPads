@@ -8,28 +8,41 @@ import 'text_role.dart';
 /// Resolved [TextStyle]s for every [UpTextRole] of a theme.
 @immutable
 class UpTypography {
-  const UpTypography._(this._styles);
+  const UpTypography._(this._styles, this.fontSet);
 
   /// Builds styles from typography tokens with [color] (usually
-  /// `text.primary`). Uses the private Uni Sans cut when it is loaded
-  /// (single-weight family -> normal weight), else the bundled fallback with
-  /// the token weight.
-  factory UpTypography.resolve({required Color color}) {
+  /// `text.primary`). With [UpFontSet.uniSans] each role uses the injected
+  /// Uni Sans cut for its weight when loaded, else the bundled Open Sans.
+  factory UpTypography.resolve({
+    required Color color,
+    UpFontSet fontSet = UpFontSet.openSans,
+  }) {
     return UpTypography._(<UpTextRole, TextStyle>{
       for (final UpTextRole role in UpTextRole.values)
-        role: styleFor(role.spec, color),
-    });
+        role: styleFor(role.spec, color, fontSet: fontSet),
+    }, fontSet);
   }
 
   final Map<UpTextRole, TextStyle> _styles;
 
-  static TextStyle styleFor(UpTextRoleSpec spec, Color color) {
-    final bool private = UpFonts.isLoaded(spec.family);
+  /// Font set these styles were resolved with.
+  final UpFontSet fontSet;
+
+  static TextStyle styleFor(
+    UpTextRoleSpec spec,
+    Color color, {
+    UpFontSet fontSet = UpFontSet.openSans,
+  }) {
+    final String? uni = fontSet == UpFontSet.uniSans
+        ? UpFonts.uniSansFamilyFor(spec.weight)
+        : null;
+    final bool private = uni != null && UpFonts.isLoaded(uni);
     return TextStyle(
       inherit: false,
       color: color,
-      fontFamily: private ? spec.family : spec.fallbackFamily,
-      package: private || spec.fallbackFamily == null ? null : UpFonts.package,
+      fontFamily: private ? uni : spec.family,
+      package: private ? null : UpFonts.package,
+      // Private Uni Sans cuts are single-weight families: no synthetic bold.
       fontWeight: private ? FontWeight.w400 : spec.weight,
       fontSize: spec.size,
       letterSpacing: spec.letterSpacing,
@@ -50,14 +63,14 @@ class UpTypography {
   UpTypography withColor(Color color) => UpTypography._(<UpTextRole, TextStyle>{
     for (final MapEntry<UpTextRole, TextStyle> e in _styles.entries)
       e.key: e.value.copyWith(color: color),
-  });
+  }, fontSet);
 
   static UpTypography lerp(UpTypography a, UpTypography b, double t) {
     if (identical(a, b)) return a;
     return UpTypography._(<UpTextRole, TextStyle>{
       for (final UpTextRole r in UpTextRole.values)
         r: TextStyle.lerp(a[r], b[r], t)!,
-    });
+    }, t < 0.5 ? a.fontSet : b.fontSet);
   }
 
   /// Material TextTheme mapping (for stock widgets that read Theme.of).
@@ -78,9 +91,13 @@ class UpTypography {
 
   @override
   bool operator ==(Object other) =>
-      other is UpTypography && mapEquals(other._styles, _styles);
+      other is UpTypography &&
+      other.fontSet == fontSet &&
+      mapEquals(other._styles, _styles);
 
   @override
-  int get hashCode =>
-      Object.hashAll(UpTextRole.values.map((UpTextRole r) => _styles[r]));
+  int get hashCode => Object.hash(
+    fontSet,
+    Object.hashAll(UpTextRole.values.map((UpTextRole r) => _styles[r])),
+  );
 }

@@ -6,8 +6,9 @@ UltraPads 设计 token 的 Dart 端：
   - `primitives.g.dart`：`UpPrimitiveColors`、`UpSpacing`、`UpRadii`、`UpRatios`、`UpSizes`、`UpDurations`、`UpEasings`、`UpSprings`、`UpShadows`、`UpGlows`、`UpOpacities`、`UpBlurs`、`UpZIndex`、`UpBorderWidths`、`UpFont*`、`UpTextRoles` 和 `enum UpTextRole`
   - `components.g.dart`：`UpPadTokens`、`UpPadGridTokens`、`UpTopBarTokens`、`UpChipTokens`、`UpKitCardTokens`、`UpBannerTokens`、`UpSheetTokens`、`UpListItemTokens`、`UpWaveformTokens`、`UpMeterTokens`、`UpProgressRingTokens`、`UpSliderTokens`、`UpButtonTokens`、`UpDialogTokens`、`UpGenreIconTokens` 等
   - `semantic.g.dart`：`UpSemantic`（全部语义 token 的值对象，带 `copyWith`、`lerp`、`withValues`、`valueOf`、`padRole`，以及给皮肤编辑器用的 `tokens` 元数据）
-  - `semantic_<theme>.g.dart`、`themes.g.dart`：内置皮肤的值和注册表 `UpSemanticThemes`
-- `lib/src/runtime/`：手写的运行时 —— `UpTheme`（`ThemeExtension`）、`UpThemes`、`UpSkin` / `UpSemanticOverrides`（自定义皮肤和 JSON）、`UpGlowSpec`、`UpGradient`、`UpPadRole`、`UpTypography`、`UpFonts`、`UpMotion`
+  - `semantic_<theme>.g.dart`、`themes.g.dart`：内置主题的值和注册表 `UpSemanticThemes`
+  - `skins.g.dart`：原版 16 套皮肤预设 `UpSkinPresets`
+- `lib/src/runtime/`：手写的运行时 —— `UpTheme`（`ThemeExtension`）、`UpThemes`、`UpSkin` / `UpSemanticOverrides`（自定义皮肤和 JSON）、`UpSkinPreset`、`UpGlowSpec`、`UpGradient`、`UpPadRole`、`UpTypography`、`UpFonts`、`UpMotion`
 
 ## 规则
 
@@ -27,7 +28,7 @@ import 'package:up_tokens/up_tokens.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await UpFonts.loadPrivate();   // 已注入 Uni Sans 就用它，否则用内置的 Montserrat
+  await UpFonts.loadPrivate();   // 可选：注册已注入的 Uni Sans（默认字体 Open Sans 已打包，无需加载）
   runApp(MaterialApp(theme: UpThemes.neon.toThemeData(), home: const Home()));
 }
 ```
@@ -52,8 +53,12 @@ DecoratedBox(
   ),
 );
 
-// 动效
-AnimationController(vsync: this, duration: UpPadTokens.pressAttack);
+// 按下 / Loop 闪烁层：颜色取角色的 pressed，峰值不透明度取 semantic
+ColoredBox(color: role.pressed.withValues(alpha: t.colors.padPressedFlashOpacity * flash.value));
+
+// 动效（4.7.0：按下 1 帧点亮，松开 0.1 s QuadOut；Loop 0.6 s 往返、图标 1.2 s 一圈）
+AnimationController(vsync: this, duration: UpPadTokens.pressAttack,
+    reverseDuration: UpPadTokens.pressRelease);
 CurvedAnimation(parent: c, curve: UpPadTokens.pressCurve);
 SpringSimulation(UpPadTokens.scaleSpring, 1, t.colors.padPressedScale, 0);
 Padding(padding: EdgeInsets.all(UpSpacing.md));
@@ -79,13 +84,23 @@ final theme = UpTheme.fromSkin(UpSkin.decode(json));
 
 JSON 格式：`{"schema":1,"id":…,"name":…,"base":"neon|outline|light","overrides":{"<dotted key>": "#RRGGBB[AA]" | number | [{"color","position"}…]}}`。新版本加入的未知 key 会被跳过，并通过 `onUnknownKey` 回调报告；值格式错误时抛出 `FormatException`。
 
+## 皮肤预设
+
+```dart
+for (final p in UpSkinPresets.all) {            // 按原版皮肤面板的顺序
+  final name = lookupName(p.nameKey);           // up_i18n 中的 skinPreset* key
+  final theme = p.toTheme();                     // 直接切换
+  // p.technique / p.fidelity：partial 表示装饰图层需要 UI 层另外用私有素材实现
+}
+final mySkin = UpSkinPresets.byId('circle')!.toSkin(name: '我的圆形');  // 作为编辑起点
+```
+
 ## 字体
 
-- token 中的字体族是 `Uni Sans`、`Uni Sans Heavy`、`Uni Sans Thin`（Fontfabric 商业字体，**不入库**）。
-- 导入：`just inject-assets`（`tools/assets/inject_private_assets.dart`）把 `private-assets/compat/fonts/*.ttf` 复制到 `app/ultrapads/assets/private_manifest/font__<名称>.ttf`（该目录已被 gitignore）。应用启动时调用 `UpFonts.loadPrivate()`，用 `FontLoader` 注册找到的字体；缺失的直接跳过。
-- 回退：本包内置 **Montserrat**（SIL OFL 1.1，`assets/fonts/`，Thin/Regular/ExtraBold）。私有字体是单字重字族，命中时按 `FontWeight.w400` 渲染，避免引擎合成粗体；回退到 Montserrat 时使用 token 里的字重。
-- 中日韩字形由平台字体补齐。
+- 默认字体 **Open Sans**（Regular 400 / ExtraBold 800 / Light 300，SIL OFL 1.1，来自 googlefonts/opensans 官方仓库，`assets/fonts/` 附 `OFL.txt`）。Ref 4.7.0 用的就是这款字体，所以它是默认字体，不需要任何加载。
+- **Uni Sans**（Fontfabric 商业字体，3.x 版使用）保留为可选的皮肤字体，**不入库**：`just inject-assets` 把它复制到 `app/ultrapads/assets/private_manifest/font__*.ttf`，应用启动时用 `UpFonts.loadPrivate()` 注册。之后通过 `theme.withFontSet(UpFontSet.uniSans)` 或在皮肤 JSON 中写 `"font": "uniSans"` 启用。私有字体按字重映射到 Thin / Regular / Heavy；它们都是单字重字族，命中时按 `w400` 渲染，避免引擎合成粗体；没有注入时自动回到 Open Sans。
+- 中日韩字形由平台字体补齐（4.7.0 同样如此）。
 
 ## 测试
 
-`flutter test` 覆盖：APK 校正值、主题 key 一致性、调色板循环、lerp（含不同色标数的渐变）、`ThemeData.lerp`、自定义覆盖和校验、JSON 往返、未知 key、diff、光晕强度、字体回退和注入、`UpTheme.of`。
+`flutter test` 覆盖：4.7.0 校正值、16 套皮肤预设、字体集切换、主题 key 一致性、调色板循环、lerp（含不同色标数的渐变）、`ThemeData.lerp`、自定义覆盖和校验、JSON 往返、未知 key、diff、光晕强度、字体回退和注入、`UpTheme.of`。

@@ -2,65 +2,317 @@
   "pad": {
     "palette": {
       "$type": "color",
-      "$description": "Ordered pad colour roles. Kits reference a role index (wraps modulo the palette length), never RGB. Each role: core (gradient stop 0 / radial centre), mid (0.5), edge (1), glow. Roles 0-3 map to the APK Kit config colours rosa / amarelo / verde / azul.",
-      "0": { "core": { "$value": "{color.neon.pink.300}" }, "mid": { "$value": "{color.neon.pink.500}" }, "edge": { "$value": "{color.neon.pink.700}" }, "glow": { "$value": "{color.neon.pink.500}" } },
-      "1": { "core": { "$value": "{color.neon.yellow.300}" }, "mid": { "$value": "{color.neon.yellow.500}" }, "edge": { "$value": "{color.neon.yellow.700}" }, "glow": { "$value": "{color.neon.yellow.500}" } },
-      "2": { "core": { "$value": "{color.neon.green.300}" }, "mid": { "$value": "{color.neon.green.500}" }, "edge": { "$value": "{color.neon.green.700}" }, "glow": { "$value": "{color.neon.green.500}" } },
-      "3": { "core": { "$value": "{color.neon.blue.300}" }, "mid": { "$value": "{color.neon.blue.500}" }, "edge": { "$value": "{color.neon.blue.700}" }, "glow": { "$value": "{color.neon.blue.500}" } },
-      "4": { "core": { "$value": "{color.neon.magenta.300}" }, "mid": { "$value": "{color.neon.magenta.500}" }, "edge": { "$value": "{color.neon.magenta.700}" }, "glow": { "$value": "{color.neon.magenta.500}" } },
-      "5": { "core": { "$value": "{color.neon.cyan.300}" }, "mid": { "$value": "{color.neon.cyan.500}" }, "edge": { "$value": "{color.neon.cyan.700}" }, "glow": { "$value": "{color.neon.cyan.500}" } },
-      "6": { "core": { "$value": "{color.neon.orange.300}" }, "mid": { "$value": "{color.neon.orange.500}" }, "edge": { "$value": "{color.neon.orange.700}" }, "glow": { "$value": "{color.neon.orange.500}" } },
-      "7": { "core": { "$value": "{color.neon.rose.300}" }, "mid": { "$value": "{color.neon.rose.500}" }, "edge": { "$value": "{color.neon.rose.700}" }, "glow": { "$value": "{color.neon.rose.500}" } }
+      "$description": "Ordered pad colour roles; Kits store a role index (wraps modulo the palette length), never RGB. Roles 0-3 = Kit config colours rosa / amarelo / verde / azul(_loop) (pink / orange / green / blue, IPA 4.7.0). Roles 4-7 are UltraPads extensions (store-screenshot neon hues). Each role: core (gradient stop 0 / radial centre), mid (0.5 / flat body), edge (1 / rim), glow, pressed (colour of the press / loop flash layer).",
+      "0": {
+        "core": {
+          "$value": "{color.pad.pink.highlight}"
+        },
+        "mid": {
+          "$value": "{color.pad.pink.base}"
+        },
+        "edge": {
+          "$value": "{color.pad.pink.base}"
+        },
+        "glow": {
+          "$value": "{color.pad.pink.base}"
+        },
+        "pressed": {
+          "$value": "{color.base.white}"
+        }
+      },
+      "1": {
+        "core": {
+          "$value": "{color.pad.orange.highlight}"
+        },
+        "mid": {
+          "$value": "{color.pad.orange.base}"
+        },
+        "edge": {
+          "$value": "{color.pad.orange.bitmap}"
+        },
+        "glow": {
+          "$value": "{color.pad.orange.base}"
+        },
+        "pressed": {
+          "$value": "{color.base.white}"
+        }
+      },
+      "2": {
+        "core": {
+          "$value": "{color.pad.green.highlight}"
+        },
+        "mid": {
+          "$value": "{color.pad.green.base}"
+        },
+        "edge": {
+          "$value": "{color.pad.green.base}"
+        },
+        "glow": {
+          "$value": "{color.pad.green.base}"
+        },
+        "pressed": {
+          "$value": "{color.base.white}"
+        }
+      },
+      "3": {
+        "core": {
+          "$value": "{color.pad.blue.highlight}"
+        },
+        "mid": {
+          "$value": "{color.pad.blue.base}"
+        },
+        "edge": {
+          "$value": "{color.pad.blue.base}"
+        },
+        "glow": {
+          "$value": "{color.pad.blue.base}"
+        },
+        "pressed": {
+          "$value": "{color.base.white}"
+        }
+      },
+      "4": {
+        "core": {
+          "$value": "{color.neon.magenta.300}"
+        },
+        "mid": {
+          "$value": "{color.neon.magenta.500}"
+        },
+        "edge": {
+          "$value": "{color.neon.magenta.700}"
+        },
+        "glow": {
+          "$value": "{color.neon.magenta.500}"
+        },
+        "pressed": {
+          "$value": "{color.base.white}"
+        }
+      },
+      "5": {
+        "core": {
+          "$value": "{color.neon.yellow.300}"
+        },
+        "mid": {
+          "$value": "{color.neon.yellow.500}"
+        },
+        "edge": {
+          "$value": "{color.neon.yellow.700}"
+        },
+        "glow": {
+          "$value": "{color.neon.yellow.500}"
+        },
+        "pressed": {
+          "$value": "{color.base.white}"
+        }
+      },
+      "6": {
+        "core": {
+          "$value": "{color.neon.cyan.300}"
+        },
+        "mid": {
+          "$value": "{color.neon.cyan.500}"
+        },
+        "edge": {
+          "$value": "{color.neon.cyan.700}"
+        },
+        "glow": {
+          "$value": "{color.neon.cyan.500}"
+        },
+        "pressed": {
+          "$value": "{color.base.white}"
+        }
+      },
+      "7": {
+        "core": {
+          "$value": "{color.skin.halloween.purple.core}"
+        },
+        "mid": {
+          "$value": "{color.skin.halloween.purple.mid}"
+        },
+        "edge": {
+          "$value": "{color.skin.halloween.purple.edge}"
+        },
+        "glow": {
+          "$value": "{color.skin.halloween.purple.mid}"
+        },
+        "pressed": {
+          "$value": "{color.base.white}"
+        }
+      }
     },
     "shape": {
-      "radiusRatio": { "$type": "number", "$value": "{ratio.padRadius}", "$description": "Corner radius = pad short side * ratio (APK 12%)" }
+      "radiusRatio": {
+        "$type": "number",
+        "$value": "{ratio.padRadius}",
+        "$description": "Corner radius = pad short side * ratio (IPA ~10%; Circle skin 0.5)"
+      }
     },
     "fill": {
-      "radial": { "$type": "number", "$value": 1, "$description": "1 = radial (core centre), 0 = linear top->bottom; lerpable" }
+      "radial": {
+        "$type": "number",
+        "$value": 1,
+        "$description": "1 = radial (core centre), 0 = linear top->bottom (core = top highlight); lerpable"
+      }
     },
-    "flash": { "$type": "color", "$value": "{color.base.white}", "$description": "Press flash overlay colour (APK white flash layer)" },
-    "border": { "$type": "color", "$value": "{color.grey.930}" },
-    "label": { "$type": "color", "$value": "{color.base.white}" },
+    "showNumber": {
+      "$type": "number",
+      "$value": 0,
+      "$description": "1 = draw the pad number (IPA Number skin)"
+    },
+    "flash": {
+      "$type": "color",
+      "$value": "{color.base.white}",
+      "$description": "Default flash colour (IPA white overlay). Per-role colour: pad.palette.<i>.pressed."
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{color.grey.930}"
+    },
+    "label": {
+      "$type": "color",
+      "$value": "{color.base.white}"
+    },
     "idle": {
-      "fillOpacity": { "$type": "number", "$value": 1 },
-      "borderWidth": { "$type": "dimension", "$value": "{borderWidth.none}" },
-      "glow": { "$type": "number", "$value": 0 },
-      "bevel": { "$type": "number", "$value": 1, "$description": "Strength of the hard bottom bevel shadow" }
+      "fillOpacity": {
+        "$type": "number",
+        "$value": 1
+      },
+      "borderWidth": {
+        "$type": "dimension",
+        "$value": "{borderWidth.none}"
+      },
+      "glow": {
+        "$type": "number",
+        "$value": 0
+      },
+      "bevel": {
+        "$type": "number",
+        "$value": 1,
+        "$description": "Strength of the hard bottom bevel shadow (SHOT)"
+      }
     },
     "pressed": {
-      "fillOpacity": { "$type": "number", "$value": 1 },
-      "flashOpacity": { "$type": "number", "$value": "{opacity.flash}" },
-      "glow": { "$type": "number", "$value": 1 },
-      "scale": { "$type": "number", "$value": 0.97 }
+      "fillOpacity": {
+        "$type": "number",
+        "$value": 1
+      },
+      "flashOpacity": {
+        "$type": "number",
+        "$value": "{opacity.flash}",
+        "$description": "Peak alpha of the palette 'pressed' layer (IPA white overlay 0.8; tint-swap skins use 1)"
+      },
+      "glow": {
+        "$type": "number",
+        "$value": 1,
+        "$description": "UP neon glow (the original has no glow)"
+      },
+      "scale": {
+        "$type": "number",
+        "$value": 1,
+        "$description": "IPA Default does not scale; Circle / Square skins 0.9"
+      }
     },
     "playing": {
-      "fillOpacity": { "$type": "number", "$value": 1 },
-      "flashOpacity": { "$type": "number", "$value": "{opacity.flash}" },
-      "glow": { "$type": "number", "$value": 0.8 }
+      "fillOpacity": {
+        "$type": "number",
+        "$value": 1
+      },
+      "flashOpacity": {
+        "$type": "number",
+        "$value": "{opacity.flash}",
+        "$description": "IPA loop flash peak (yoyo 0 <-> 0.8)"
+      },
+      "glow": {
+        "$type": "number",
+        "$value": 0.8
+      }
     },
     "pending": {
-      "opacityMin": { "$type": "number", "$value": 0.4, "$description": "Blink floor while a loop waits for its quantised start" }
+      "opacityMin": {
+        "$type": "number",
+        "$value": 0.4,
+        "$description": "UP: blink floor while a loop waits for its quantised start"
+      }
     },
     "disabled": {
-      "opacity": { "$type": "number", "$value": "{opacity.disabled}" }
+      "opacity": {
+        "$type": "number",
+        "$value": "{opacity.disabled}"
+      }
     },
     "selected": {
-      "border": { "$type": "color", "$value": "{color.base.white}" },
-      "borderWidth": { "$type": "dimension", "$value": "{borderWidth.regular}" }
+      "border": {
+        "$type": "color",
+        "$value": "{color.base.white}"
+      },
+      "borderWidth": {
+        "$type": "dimension",
+        "$value": "{borderWidth.regular}"
+      }
     },
     "loop": {
-      "idleFill": { "$type": "color", "$value": "{color.neon.violet.500}", "$description": "SHOT idle loop pad body" },
-      "idleFillOpacity": { "$type": "number", "$value": 1 },
-      "borderWidth": { "$type": "dimension", "$value": "{borderWidth.thin}", "$description": "Role-coloured stroke around idle loop pads" },
-      "icon": { "$type": "color", "$value": "{color.base.white}", "$description": "Loop glyph on a playing pad (idle uses the role colour)" }
+      "idleFill": {
+        "$type": "color",
+        "$value": "{color.neon.violet.500}",
+        "$description": "SHOT idle loop pad body (used when idle.fillOpacity < 1)"
+      },
+      "idleFillOpacity": {
+        "$type": "number",
+        "$value": 0
+      },
+      "borderWidth": {
+        "$type": "dimension",
+        "$value": "{borderWidth.none}"
+      },
+      "icon": {
+        "$type": "color",
+        "$value": "{color.base.white}",
+        "$description": "IPA loop glyph (white, α ~0.58 in Default bitmap)"
+      },
+      "iconOpacity": {
+        "$type": "number",
+        "$value": 0.58
+      }
     },
     "empty": {
-      "fill": { "$type": "gradient", "$value": "{gradient.emptyPad}" },
-      "border": { "$type": "color", "$value": "{color.alpha.white.8}" }
+      "fill": {
+        "$type": "gradient",
+        "$value": "{gradient.emptyPad}"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{color.base.white}",
+        "$description": "IPA dashed rounded frame"
+      },
+      "opacity": {
+        "$type": "number",
+        "$value": "{opacity.emptyPad}",
+        "$description": "IPA empty pad frame alpha 0.2"
+      }
     },
     "tutorial": {
-      "dimOpacity": { "$type": "number", "$value": "{opacity.dim}" },
-      "highlight": { "$type": "color", "$value": "{color.base.white}" }
+      "dimOpacity": {
+        "$type": "number",
+        "$value": "{opacity.dim}",
+        "$description": "APK non-target pad alpha"
+      },
+      "highlight": {
+        "$type": "color",
+        "$value": "{color.base.white}"
+      },
+      "fill": {
+        "$type": "color",
+        "$value": "{color.ui.tutorialFill}",
+        "$description": "IPA tutorial pad fill (fills bottom->top in 1 s)"
+      },
+      "outline": {
+        "$type": "color",
+        "$value": "{color.ui.tutorialOutline}"
+      },
+      "loopIcon": {
+        "$type": "color",
+        "$value": "{color.ui.tutorialLoop}"
+      }
     }
   }
 }

@@ -1,42 +1,163 @@
 {
   "opacity": {
     "$type": "number",
-    "none": { "$value": 0 },
-    "faint": { "$value": 0.08 },
-    "subtle": { "$value": 0.12 },
-    "dim": { "$value": 0.2, "$description": "APK tutorial non-target pad alpha; skin panel dim" },
-    "disabled": { "$value": 0.35 },
-    "muted": { "$value": 0.5 },
-    "strong": { "$value": 0.7 },
-    "flash": { "$value": 0.75, "$description": "APK pad flash peak" },
-    "full": { "$value": 1 }
+    "none": {
+      "$value": 0
+    },
+    "faint": {
+      "$value": 0.08
+    },
+    "subtle": {
+      "$value": 0.12
+    },
+    "dim": {
+      "$value": 0.2,
+      "$description": "APK tutorial non-target pad alpha; skin panel dim"
+    },
+    "disabled": {
+      "$value": 0.35
+    },
+    "muted": {
+      "$value": 0.5
+    },
+    "strong": {
+      "$value": 0.7
+    },
+    "flash": {
+      "$value": 0.8,
+      "$description": "IPA pad press / loop flash white overlay peak (orange 0.8, green/pink 0.7)"
+    },
+    "full": {
+      "$value": 1
+    },
+    "flashSoft": {
+      "$value": 0.7,
+      "$description": "IPA green / pink press overlay peak"
+    },
+    "secondary": {
+      "$value": 0.6,
+      "$description": "IPA INSPIRED BY"
+    },
+    "emptyPad": {
+      "$value": 0.2,
+      "$description": "IPA empty pad dashed frame alpha"
+    }
   },
   "blur": {
     "$type": "dimension",
-    "none": { "$value": { "value": 0, "unit": "px" } },
-    "sm": { "$value": { "value": 4, "unit": "px" } },
-    "md": { "$value": { "value": 12, "unit": "px" } },
-    "lg": { "$value": { "value": 24, "unit": "px" } },
-    "xl": { "$value": { "value": 40, "unit": "px" } }
+    "none": {
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      }
+    },
+    "sm": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
+    "md": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      }
+    },
+    "lg": {
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      }
+    },
+    "xl": {
+      "$value": {
+        "value": 40,
+        "unit": "px"
+      }
+    }
   },
   "zIndex": {
     "$type": "number",
-    "base": { "$value": 0 },
-    "raised": { "$value": 1 },
-    "sticky": { "$value": 10 },
-    "overlay": { "$value": 20 },
-    "sheet": { "$value": 30 },
-    "dialog": { "$value": 40 },
-    "toast": { "$value": 50 },
-    "tutorial": { "$value": 60 }
+    "base": {
+      "$value": 0
+    },
+    "raised": {
+      "$value": 1
+    },
+    "sticky": {
+      "$value": 10
+    },
+    "overlay": {
+      "$value": 20
+    },
+    "sheet": {
+      "$value": 30
+    },
+    "dialog": {
+      "$value": 40
+    },
+    "toast": {
+      "$value": 50
+    },
+    "tutorial": {
+      "$value": 60
+    }
   },
   "borderWidth": {
     "$type": "dimension",
-    "none": { "$value": { "value": 0, "unit": "px" } },
-    "hairline": { "$value": { "value": 0.5, "unit": "px" } },
-    "thin": { "$value": { "value": 1, "unit": "px" }, "$description": "APK pad border_black" },
-    "regular": { "$value": { "value": 2, "unit": "px" }, "$description": "APK selected pad / edit button / swatch" },
-    "thick": { "$value": { "value": 3, "unit": "px" }, "$description": "APK kit selected indicator" },
-    "heavy": { "$value": { "value": 4, "unit": "px" }, "$description": "APK selected swatch" }
+    "none": {
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      }
+    },
+    "hairline": {
+      "$value": {
+        "value": 0.5,
+        "unit": "px"
+      }
+    },
+    "thin": {
+      "$value": {
+        "value": 1,
+        "unit": "px"
+      },
+      "$description": "APK pad border_black"
+    },
+    "regular": {
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$description": "APK selected pad 2dp; IPA skin panel divider 2px->1pt uses hairline"
+    },
+    "thick": {
+      "$value": {
+        "value": 3,
+        "unit": "px"
+      },
+      "$description": "APK kit selected indicator"
+    },
+    "heavy": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$description": "APK selected swatch"
+    },
+    "tab": {
+      "$value": {
+        "value": 1.5,
+        "unit": "px"
+      },
+      "$description": "IPA tab underline 3px"
+    },
+    "selection": {
+      "$value": {
+        "value": 4.5,
+        "unit": "px"
+      },
+      "$description": "IPA kit row selection bar 9px"
+    }
   }
 }

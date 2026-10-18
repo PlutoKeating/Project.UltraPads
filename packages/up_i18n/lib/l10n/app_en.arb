@@ -683,6 +683,40 @@
   },
   "skinEditorDeleteTitle": "Delete skin?",
   "@skinEditorDeleteTitle": {},
+  "skinPresetDefault": "Default",
+  "@skinPresetDefault": {
+    "description": "Name of a built-in pad skin (original skin list)."
+  },
+  "skinPresetNumber": "Number",
+  "@skinPresetNumber": {},
+  "skinPresetChristmas": "Christmas",
+  "@skinPresetChristmas": {},
+  "skinPresetPets": "Pets",
+  "@skinPresetPets": {},
+  "skinPresetCover": "Cover",
+  "@skinPresetCover": {},
+  "skinPresetBroken": "Broken",
+  "@skinPresetBroken": {},
+  "skinPresetMuertos": "Muertos",
+  "@skinPresetMuertos": {},
+  "skinPresetCrazy": "Crazy",
+  "@skinPresetCrazy": {},
+  "skinPresetLaunchpad": "Launchpad",
+  "@skinPresetLaunchpad": {},
+  "skinPresetCrafts": "Crafts",
+  "@skinPresetCrafts": {},
+  "skinPresetPolished": "Polished",
+  "@skinPresetPolished": {},
+  "skinPresetClean": "Clean",
+  "@skinPresetClean": {},
+  "skinPresetCircle": "Circle",
+  "@skinPresetCircle": {},
+  "skinPresetSquare": "Square",
+  "@skinPresetSquare": {},
+  "skinPresetLgbt": "Rainbow",
+  "@skinPresetLgbt": {},
+  "skinPresetHalloween": "Halloween",
+  "@skinPresetHalloween": {},
   "settingsTitle": "Settings",
   "@settingsTitle": {},
   "settingsAudio": "Audio",
@@ -1129,5 +1163,159 @@
         "type": "String"
       }
     }
+  },
+  "performSpeedValue": "{value}×",
+  "@performSpeedValue": {
+    "description": "Compact speed pill on the perform screen (e.g. 1.0×).",
+    "placeholders": {
+      "value": {
+        "type": "double",
+        "format": "decimalPatternDigits",
+        "optionalParameters": {
+          "decimalDigits": 1
+        }
+      }
+    }
+  },
+  "settingsClassicPads": "Classic pad animation",
+  "@settingsClassicPads": {
+    "description": "Toggle: use the original app's Lottie pad press animation when private assets are installed."
+  },
+  "settingsEngineBackend": "Audio engine: {name}",
+  "@settingsEngineBackend": {
+    "description": "About section; name is 'ffi' or 'mock'.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsEngineFallback": "Native audio engine unavailable — running in demo mode",
+  "@settingsEngineFallback": {
+    "description": "Shown when the FFI engine failed to load and the mock engine is used."
+  },
+  "errorEngineUnsupported": "The audio engine doesn't support this yet",
+  "@errorEngineUnsupported": {
+    "description": "A feature whose FFI function is not implemented yet."
+  },
+  "loadSoundPickSample": "Choose a sound",
+  "@loadSoundPickSample": {
+    "description": "Title of the sample list after picking a source kit."
+  },
+  "hubThisDevice": "This device",
+  "@hubThisDevice": {
+    "description": "Section header for the local hub server."
+  },
+  "hubNearbyDevices": "Nearby devices",
+  "@hubNearbyDevices": {
+    "description": "Section header for discovered devices."
+  },
+  "settingsPrivateAssets": "Original app assets",
+  "@settingsPrivateAssets": {
+    "description": "About: whether private reference assets are installed."
+  },
+  "onboardingSkip": "Skip",
+  "@onboardingSkip": {
+    "description": "Skip the onboarding pages."
+  },
+  "performLearnToPlay": "Learn to play",
+  "@performLearnToPlay": {
+    "description": "Tutorial entry button on the perform screen (4.7.0 'LEARN TO PLAY')."
+  },
+  "performBackToTools": "Back",
+  "@performBackToTools": {
+    "description": "Collapse the expanded tool row on the perform screen."
+  },
+  "performSpeedNormal": "Normal",
+  "@performSpeedNormal": {
+    "description": "Tutorial speed option 1.0×."
+  },
+  "performSpeedSlow": "Slow",
+  "@performSpeedSlow": {
+    "description": "Tutorial speed option 0.7×."
+  },
+  "performSpeedVerySlow": "Very slow",
+  "@performSpeedVerySlow": {
+    "description": "Tutorial speed option 0.5×."
+  },
+  "tutorialPerfect": "Perfect",
+  "@tutorialPerfect": {
+    "description": "Timing judgement: pressed when the pad was full."
+  },
+  "tutorialTooFast": "Too fast",
+  "@tutorialTooFast": {
+    "description": "Timing judgement: pressed before the pad was full."
+  },
+  "tutorialTooSlow": "Too slow",
+  "@tutorialTooSlow": {
+    "description": "Timing judgement: pressed after the pad was full."
+  },
+  "tutorialMiss": "Miss",
+  "@tutorialMiss": {
+    "description": "Timing judgement: the step passed without a press."
+  },
+  "tutorialPressWhenFull": "Press the pad when it's fully filled",
+  "@tutorialPressWhenFull": {
+    "description": "First tutorial hint."
+  },
+  "tutorialPlayDemo": "Play",
+  "@tutorialPlayDemo": {
+    "description": "Start / resume the tutorial timeline."
+  },
+  "navFeed": "Feed",
+  "@navFeed": {
+    "description": "Library tab: featured feed."
+  },
+  "librarySeeAll": "See all",
+  "@librarySeeAll": {
+    "description": "Open the full category list."
+  },
+  "libraryArtists": "Artists",
+  "@libraryArtists": {
+    "description": "Feed section: artists."
+  },
+  "libraryRecommended": "Recommended for you",
+  "@libraryRecommended": {
+    "description": "Feed section: recommended kits."
+  },
+  "libraryOpenKit": "Open kit",
+  "@libraryOpenKit": {
+    "description": "Import kit page: open the imported kit."
+  },
+  "kitEditorEditPad": "Edit pad",
+  "@kitEditorEditPad": {
+    "description": "Kit editor tab: pad properties."
+  },
+  "kitEditorEditFile": "Edit file",
+  "@kitEditorEditFile": {
+    "description": "Kit editor: waveform trim view."
+  },
+  "kitEditorClone": "Clone",
+  "@kitEditorClone": {
+    "description": "Kit editor: clone the selected pad to another pad."
+  },
+  "kitEditorGroup": "Group",
+  "@kitEditorGroup": {
+    "description": "Kit editor: choke group stepper."
+  },
+  "kitEditorLoop": "Loop",
+  "@kitEditorLoop": {
+    "description": "Kit editor: loop switch."
+  },
+  "kitEditorReplaceTitle": "Replace this sound?",
+  "@kitEditorReplaceTitle": {
+    "description": "Confirm replacing a pad that already has audio."
+  },
+  "recordSaveAndShare": "Save and share",
+  "@recordSaveAndShare": {
+    "description": "Save recording page: save then open the share sheet."
+  },
+  "onboardingNext": "Next",
+  "@onboardingNext": {
+    "description": "Onboarding: next page."
+  },
+  "onboardingChooseStyleBody": "Pick the styles you like and we'll start you off with the right kits",
+  "@onboardingChooseStyleBody": {
+    "description": "Category preference page body."
   }
 }

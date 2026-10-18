@@ -1483,6 +1483,102 @@ abstract class UpL10n {
   /// **'Delete skin?'**
   String get skinEditorDeleteTitle;
 
+  /// Name of a built-in pad skin (original skin list).
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get skinPresetDefault;
+
+  /// No description provided for @skinPresetNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get skinPresetNumber;
+
+  /// No description provided for @skinPresetChristmas.
+  ///
+  /// In en, this message translates to:
+  /// **'Christmas'**
+  String get skinPresetChristmas;
+
+  /// No description provided for @skinPresetPets.
+  ///
+  /// In en, this message translates to:
+  /// **'Pets'**
+  String get skinPresetPets;
+
+  /// No description provided for @skinPresetCover.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover'**
+  String get skinPresetCover;
+
+  /// No description provided for @skinPresetBroken.
+  ///
+  /// In en, this message translates to:
+  /// **'Broken'**
+  String get skinPresetBroken;
+
+  /// No description provided for @skinPresetMuertos.
+  ///
+  /// In en, this message translates to:
+  /// **'Muertos'**
+  String get skinPresetMuertos;
+
+  /// No description provided for @skinPresetCrazy.
+  ///
+  /// In en, this message translates to:
+  /// **'Crazy'**
+  String get skinPresetCrazy;
+
+  /// No description provided for @skinPresetLaunchpad.
+  ///
+  /// In en, this message translates to:
+  /// **'Launchpad'**
+  String get skinPresetLaunchpad;
+
+  /// No description provided for @skinPresetCrafts.
+  ///
+  /// In en, this message translates to:
+  /// **'Crafts'**
+  String get skinPresetCrafts;
+
+  /// No description provided for @skinPresetPolished.
+  ///
+  /// In en, this message translates to:
+  /// **'Polished'**
+  String get skinPresetPolished;
+
+  /// No description provided for @skinPresetClean.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean'**
+  String get skinPresetClean;
+
+  /// No description provided for @skinPresetCircle.
+  ///
+  /// In en, this message translates to:
+  /// **'Circle'**
+  String get skinPresetCircle;
+
+  /// No description provided for @skinPresetSquare.
+  ///
+  /// In en, this message translates to:
+  /// **'Square'**
+  String get skinPresetSquare;
+
+  /// No description provided for @skinPresetLgbt.
+  ///
+  /// In en, this message translates to:
+  /// **'Rainbow'**
+  String get skinPresetLgbt;
+
+  /// No description provided for @skinPresetHalloween.
+  ///
+  /// In en, this message translates to:
+  /// **'Halloween'**
+  String get skinPresetHalloween;
+
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:
@@ -2172,6 +2268,216 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'{choice, select, solo{Play solo} jam{Jam with friends} other{Just exploring}}'**
   String onboardingPlayStyle(String choice);
+
+  /// Compact speed pill on the perform screen (e.g. 1.0×).
+  ///
+  /// In en, this message translates to:
+  /// **'{value}×'**
+  String performSpeedValue(double value);
+
+  /// Toggle: use the original app's Lottie pad press animation when private assets are installed.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic pad animation'**
+  String get settingsClassicPads;
+
+  /// About section; name is 'ffi' or 'mock'.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio engine: {name}'**
+  String settingsEngineBackend(String name);
+
+  /// Shown when the FFI engine failed to load and the mock engine is used.
+  ///
+  /// In en, this message translates to:
+  /// **'Native audio engine unavailable — running in demo mode'**
+  String get settingsEngineFallback;
+
+  /// A feature whose FFI function is not implemented yet.
+  ///
+  /// In en, this message translates to:
+  /// **'The audio engine doesn\'t support this yet'**
+  String get errorEngineUnsupported;
+
+  /// Title of the sample list after picking a source kit.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a sound'**
+  String get loadSoundPickSample;
+
+  /// Section header for the local hub server.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get hubThisDevice;
+
+  /// Section header for discovered devices.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby devices'**
+  String get hubNearbyDevices;
+
+  /// About: whether private reference assets are installed.
+  ///
+  /// In en, this message translates to:
+  /// **'Original app assets'**
+  String get settingsPrivateAssets;
+
+  /// Skip the onboarding pages.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// Tutorial entry button on the perform screen (4.7.0 'LEARN TO PLAY').
+  ///
+  /// In en, this message translates to:
+  /// **'Learn to play'**
+  String get performLearnToPlay;
+
+  /// Collapse the expanded tool row on the perform screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get performBackToTools;
+
+  /// Tutorial speed option 1.0×.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get performSpeedNormal;
+
+  /// Tutorial speed option 0.7×.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow'**
+  String get performSpeedSlow;
+
+  /// Tutorial speed option 0.5×.
+  ///
+  /// In en, this message translates to:
+  /// **'Very slow'**
+  String get performSpeedVerySlow;
+
+  /// Timing judgement: pressed when the pad was full.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect'**
+  String get tutorialPerfect;
+
+  /// Timing judgement: pressed before the pad was full.
+  ///
+  /// In en, this message translates to:
+  /// **'Too fast'**
+  String get tutorialTooFast;
+
+  /// Timing judgement: pressed after the pad was full.
+  ///
+  /// In en, this message translates to:
+  /// **'Too slow'**
+  String get tutorialTooSlow;
+
+  /// Timing judgement: the step passed without a press.
+  ///
+  /// In en, this message translates to:
+  /// **'Miss'**
+  String get tutorialMiss;
+
+  /// First tutorial hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Press the pad when it\'s fully filled'**
+  String get tutorialPressWhenFull;
+
+  /// Start / resume the tutorial timeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get tutorialPlayDemo;
+
+  /// Library tab: featured feed.
+  ///
+  /// In en, this message translates to:
+  /// **'Feed'**
+  String get navFeed;
+
+  /// Open the full category list.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get librarySeeAll;
+
+  /// Feed section: artists.
+  ///
+  /// In en, this message translates to:
+  /// **'Artists'**
+  String get libraryArtists;
+
+  /// Feed section: recommended kits.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for you'**
+  String get libraryRecommended;
+
+  /// Import kit page: open the imported kit.
+  ///
+  /// In en, this message translates to:
+  /// **'Open kit'**
+  String get libraryOpenKit;
+
+  /// Kit editor tab: pad properties.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit pad'**
+  String get kitEditorEditPad;
+
+  /// Kit editor: waveform trim view.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit file'**
+  String get kitEditorEditFile;
+
+  /// Kit editor: clone the selected pad to another pad.
+  ///
+  /// In en, this message translates to:
+  /// **'Clone'**
+  String get kitEditorClone;
+
+  /// Kit editor: choke group stepper.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get kitEditorGroup;
+
+  /// Kit editor: loop switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Loop'**
+  String get kitEditorLoop;
+
+  /// Confirm replacing a pad that already has audio.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace this sound?'**
+  String get kitEditorReplaceTitle;
+
+  /// Save recording page: save then open the share sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and share'**
+  String get recordSaveAndShare;
+
+  /// Onboarding: next page.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// Category preference page body.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the styles you like and we\'ll start you off with the right kits'**
+  String get onboardingChooseStyleBody;
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

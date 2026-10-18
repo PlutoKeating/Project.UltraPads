@@ -2,44 +2,276 @@
   "motion": {
     "duration": {
       "$type": "duration",
-      "instant": { "$value": { "value": 0, "unit": "ms" } },
-      "xfast": { "$value": { "value": 50, "unit": "ms" } },
-      "fast": { "$value": { "value": 100, "unit": "ms" }, "$description": "APK A/B page scroll; material buttons/chips" },
-      "quick": { "$value": { "value": 150, "unit": "ms" }, "$description": "APK bottom sheet slide" },
-      "padPressHalf": { "$value": { "value": 158, "unit": "ms" }, "$description": "APK one-shot Lottie first half (frames 0..9.5 @60fps)" },
-      "medium": { "$value": { "value": 200, "unit": "ms" }, "$description": "APK unzip delay" },
-      "loopFlash": { "$value": { "value": 250, "unit": "ms" }, "$description": "APK loop flash peak (frame 15)" },
-      "slow": { "$value": { "value": 300, "unit": "ms" }, "$description": "APK panel/sub-page enter & exit" },
-      "padPress": { "$value": { "value": 317, "unit": "ms" }, "$description": "APK one-shot Lottie total (19 frames @60fps)" },
-      "recTransition": { "$value": { "value": 367, "unit": "ms" }, "$description": "APK bt_rec_transition" },
-      "slower": { "$value": { "value": 450, "unit": "ms" } },
-      "loopFlashCycle": { "$value": { "value": 500, "unit": "ms" }, "$description": "APK loop flash back to 0 (frame 30)" },
-      "loopRevolution": { "$value": { "value": 817, "unit": "ms" }, "$description": "APK loop icon one revolution (49 frames)" },
-      "loadingKit": { "$value": { "value": 868, "unit": "ms" } },
-      "pulse": { "$value": { "value": 900, "unit": "ms" } },
-      "progress": { "$value": { "value": 1250, "unit": "ms" }, "$description": "APK loading progress bar" },
-      "recLoop": { "$value": { "value": 2000, "unit": "ms" }, "$description": "APK bt_rec_animation loop" },
-      "download": { "$value": { "value": 2202, "unit": "ms" } },
-      "toast": { "$value": { "value": 2500, "unit": "ms" } },
-      "carousel": { "$value": { "value": 4000, "unit": "ms" } }
+      "$description": "IPA 4.7.0 FairyGUI Transition times unless noted (APK 3.7.6 values kept only where 4.7.0 has no equivalent).",
+      "instant": {
+        "$value": {
+          "value": 0,
+          "unit": "ms"
+        }
+      },
+      "frame": {
+        "$value": {
+          "value": 17,
+          "unit": "ms"
+        },
+        "$description": "IPA pad press: jump to lit state on the next frame (1/60 s)"
+      },
+      "fast": {
+        "$value": {
+          "value": 100,
+          "unit": "ms"
+        },
+        "$description": "IPA pad release (QuadOut), loading grid step, wrong-mark fade-in"
+      },
+      "quick": {
+        "$value": {
+          "value": 150,
+          "unit": "ms"
+        },
+        "$description": "APK bottom sheet slide (no IPA equivalent)"
+      },
+      "short": {
+        "$value": {
+          "value": 200,
+          "unit": "ms"
+        },
+        "$description": "IPA A/B page switch, text box / step label"
+      },
+      "skipSlide": {
+        "$value": {
+          "value": 250,
+          "unit": "ms"
+        },
+        "$description": "IPA skip-tutorial button slide-in"
+      },
+      "medium": {
+        "$value": {
+          "value": 300,
+          "unit": "ms"
+        },
+        "$description": "IPA nav row collapse (Circ), list play/stop cross-scale, PERFECT rise"
+      },
+      "slow": {
+        "$value": {
+          "value": 400,
+          "unit": "ms"
+        },
+        "$description": "IPA skin panel in/out, input label float"
+      },
+      "modalIn": {
+        "$value": {
+          "value": 500,
+          "unit": "ms"
+        },
+        "$description": "IPA speed picker in, import OPEN KIT button"
+      },
+      "loopHalf": {
+        "$value": {
+          "value": 600,
+          "unit": "ms"
+        },
+        "$description": "IPA loop flash one way (yoyo); record button pulse"
+      },
+      "breathe": {
+        "$value": {
+          "value": 783,
+          "unit": "ms"
+        },
+        "$description": "IPA SONGS button glow segment"
+      },
+      "wrongOut": {
+        "$value": {
+          "value": 900,
+          "unit": "ms"
+        },
+        "$description": "IPA wrong-pad cross fade-out"
+      },
+      "slower": {
+        "$value": {
+          "value": 1000,
+          "unit": "ms"
+        },
+        "$description": "IPA speed picker out, record ripple, tutorial pad fill, first-open hand"
+      },
+      "loopCycle": {
+        "$value": {
+          "value": 1200,
+          "unit": "ms"
+        },
+        "$description": "IPA loop flash period and loop icon revolution"
+      },
+      "splash": {
+        "$value": {
+          "value": 1200,
+          "unit": "ms"
+        },
+        "$description": "IPA splash logo"
+      },
+      "toast": {
+        "$value": {
+          "value": 2500,
+          "unit": "ms"
+        },
+        "$description": "UP"
+      },
+      "carousel": {
+        "$value": {
+          "value": 4000,
+          "unit": "ms"
+        },
+        "$description": "UP featured carousel autoplay (not in IPA data)"
+      },
+      "xfast": {
+        "$value": {
+          "value": 50,
+          "unit": "ms"
+        },
+        "$description": "IPA Square skin layer step (0.05 s)"
+      },
+      "padPressHalf": {
+        "$value": "{motion.duration.frame}",
+        "$description": "Press attack (IPA: next frame). Kept name for existing callers."
+      },
+      "padPress": {
+        "$value": {
+          "value": 117,
+          "unit": "ms"
+        },
+        "$description": "IPA press flash total: 1 frame attack + 0.1 s release"
+      }
     },
     "easing": {
       "$type": "cubicBezier",
-      "linear": { "$value": [0, 0, 1, 1] },
-      "standard": { "$value": [0.42, 0, 0.58, 1], "$description": "Android AccelerateDecelerate (APK default for panels)" },
-      "decelerate": { "$value": [0, 0, 0.2, 1], "$description": "Android Decelerate (APK A/B scroll, progress)" },
-      "accelerate": { "$value": [0.4, 0, 1, 1] },
-      "emphasized": { "$value": [0.2, 0, 0, 1] },
-      "lottiePad": { "$value": [0.6, 0, 0.4, 1], "$description": "APK pad flash Lottie bezier (o.x 0.6, i.x 0.4)" },
-      "lottieLinear": { "$value": [0.167, 0.167, 0.833, 0.833], "$description": "APK loop Lottie" }
+      "$description": "FairyGUI ease names as CSS cubic-bezier (Penner approximations).",
+      "linear": {
+        "$value": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "$description": "IPA rotation / fill"
+      },
+      "quadOut": {
+        "$value": [
+          0.25,
+          0.46,
+          0.45,
+          0.94
+        ],
+        "$description": "IPA default ease (most transitions)"
+      },
+      "quadIn": {
+        "$value": [
+          0.55,
+          0.085,
+          0.68,
+          0.53
+        ],
+        "$description": "IPA first-open hand"
+      },
+      "circOut": {
+        "$value": [
+          0.075,
+          0.82,
+          0.165,
+          1
+        ],
+        "$description": "IPA nav row return, record ripple"
+      },
+      "circIn": {
+        "$value": [
+          0.6,
+          0.04,
+          0.98,
+          0.335
+        ],
+        "$description": "IPA nav row collapse"
+      },
+      "standard": {
+        "$value": [
+          0.42,
+          0,
+          0.58,
+          1
+        ],
+        "$description": "APK AccelerateDecelerate (old)"
+      },
+      "decelerate": {
+        "$value": [
+          0,
+          0,
+          0.2,
+          1
+        ],
+        "$description": "APK Decelerate (old)"
+      },
+      "emphasized": {
+        "$value": [
+          0.2,
+          0,
+          0,
+          1
+        ],
+        "$description": "UP dialogs"
+      },
+      "accelerate": {
+        "$value": [
+          0.4,
+          0,
+          1,
+          1
+        ],
+        "$description": "UP/APK accelerate"
+      }
     },
     "spring": {
       "$type": "number",
-      "$description": "Physics springs -> Flutter SpringDescription(mass, stiffness, damping).",
-      "snappy": { "stiffness": { "$value": 900 }, "damping": { "$value": 38 }, "mass": { "$value": 1 } },
-      "standard": { "stiffness": { "$value": 500 }, "damping": { "$value": 36 }, "mass": { "$value": 1 } },
-      "gentle": { "stiffness": { "$value": 170 }, "damping": { "$value": 26 }, "mass": { "$value": 1 } },
-      "bouncy": { "stiffness": { "$value": 400 }, "damping": { "$value": 16 }, "mass": { "$value": 1 } }
+      "$description": "UP extension (the original uses tweens only). Flutter SpringDescription(mass, stiffness, damping).",
+      "snappy": {
+        "stiffness": {
+          "$value": 900
+        },
+        "damping": {
+          "$value": 38
+        },
+        "mass": {
+          "$value": 1
+        }
+      },
+      "standard": {
+        "stiffness": {
+          "$value": 500
+        },
+        "damping": {
+          "$value": 36
+        },
+        "mass": {
+          "$value": 1
+        }
+      },
+      "gentle": {
+        "stiffness": {
+          "$value": 170
+        },
+        "damping": {
+          "$value": 26
+        },
+        "mass": {
+          "$value": 1
+        }
+      },
+      "bouncy": {
+        "stiffness": {
+          "$value": 400
+        },
+        "damping": {
+          "$value": 16
+        },
+        "mass": {
+          "$value": 1
+        }
+      }
     }
   }
 }

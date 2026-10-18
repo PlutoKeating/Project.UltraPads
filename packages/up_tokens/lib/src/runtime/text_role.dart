@@ -18,7 +18,6 @@ enum UpTextCase {
 class UpTextRoleSpec {
   const UpTextRoleSpec({
     required this.family,
-    required this.fallbackFamily,
     required this.size,
     required this.weight,
     required this.letterSpacing,
@@ -26,14 +25,9 @@ class UpTextRoleSpec {
     required this.textCase,
   });
 
-  /// Private family name (e.g. `Uni Sans Heavy`, single-weight family).
+  /// Bundled family name (`Open Sans`, shipped in up_tokens).
   final String family;
-
-  /// Open fallback family bundled in up_tokens (e.g. `Montserrat`).
-  final String? fallbackFamily;
   final double size;
-
-  /// Weight applied when rendering with the fallback family.
   final FontWeight weight;
   final double letterSpacing;
 

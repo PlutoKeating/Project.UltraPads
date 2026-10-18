@@ -28,7 +28,7 @@ void main() {
     UpFonts.debugReset();
     // Any TTF stands in for the private file here.
     final Uint8List ttf = File(
-      'assets/fonts/Montserrat-ExtraBold.ttf',
+      'assets/fonts/OpenSans-ExtraBold.ttf',
     ).readAsBytesSync();
     final _FakeBundle bundle = _FakeBundle(
       '${UpFonts.privateAssetDir}${UpFonts.privateFiles['Uni Sans Heavy']}',
@@ -40,7 +40,14 @@ void main() {
     expect(loaded, <String>{'Uni Sans Heavy'});
     expect(UpFonts.revision.value, before + 1);
 
-    final TextStyle title = UpThemes.neon.text[UpTextRole.title];
+    // Default font set stays Open Sans even when Uni Sans is available.
+    expect(
+      UpThemes.neon.text[UpTextRole.title].fontFamily,
+      'packages/up_tokens/Open Sans',
+    );
+
+    final UpTheme uni = UpThemes.neon.withFontSet(UpFontSet.uniSans);
+    final TextStyle title = uni.text[UpTextRole.title];
     expect(title.fontFamily, 'Uni Sans Heavy');
     expect(
       title.fontWeight,
@@ -48,11 +55,12 @@ void main() {
       reason: 'single-weight family: no synthetic bold',
     );
 
-    // Regular cut was not injected -> body keeps the open fallback.
+    // Regular cut was not injected -> body falls back to Open Sans.
     expect(
-      UpThemes.neon.text[UpTextRole.body].fontFamily,
-      'packages/up_tokens/Montserrat',
+      uni.text[UpTextRole.body].fontFamily,
+      'packages/up_tokens/Open Sans',
     );
+    expect(uni.text[UpTextRole.body].fontWeight, FontWeight.w400);
   });
 
   test('missing private fonts are not an error', () async {

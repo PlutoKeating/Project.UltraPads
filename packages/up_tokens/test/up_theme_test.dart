@@ -5,14 +5,27 @@ import 'package:up_tokens/up_tokens.dart';
 void main() {
   group('generated tokens', () {
     test('APK-calibrated values reach Dart', () {
-      expect(UpThemes.neon.colors.surfaceApp, const Color(0xFF202629));
-      expect(UpThemes.neon.colors.accentPrimary, const Color(0xFFF73873));
-      expect(UpThemes.neon.colors.padShapeRadiusRatio, closeTo(0.12, 1e-9));
+      // Ref 4.7.0 (IPA) values.
+      final UpSemantic c = UpThemes.neon.colors;
+      expect(c.surfacePads, const Color(0xFF242B2E));
+      expect(c.surfacePage, const Color(0xFF262B2F));
+      expect(c.surfaceRaised, const Color(0xFF2C3336));
+      expect(c.surfaceKitEditor, const Color(0xFFEE4286));
+      expect(c.accentPrimary, const Color(0xFFFD1A68));
+      expect(c.padShapeRadiusRatio, closeTo(0.10, 1e-9));
+      expect(c.padRole(3).mid, const Color(0xFF00CBF7));
+      expect(c.padRole(1).mid, const Color(0xFFEB7F00));
+      expect(c.padRole(2).mid, const Color(0xFF00C200));
+      expect(c.padRole(0).mid, const Color(0xFFF73470));
+      expect(c.padPressedFlashOpacity, closeTo(0.8, 1e-9));
       expect(UpPadGridTokens.columns * UpPadGridTokens.rows, 12);
       expect(UpPadTokens.gap, 2);
-      expect(UpPadGridTokens.bankSwitch, const Duration(milliseconds: 100));
-      expect(UpDurations.loopRevolution, const Duration(milliseconds: 817));
-      expect(UpPadTokens.pressCurve, const Cubic(0.6, 0, 0.4, 1));
+      expect(UpPadGridTokens.bankSwitch, const Duration(milliseconds: 200));
+      expect(UpPadTokens.pressRelease, const Duration(milliseconds: 100));
+      expect(UpPadTokens.loopRevolution, const Duration(milliseconds: 1200));
+      expect(UpPadTokens.loopFlashHalf, const Duration(milliseconds: 600));
+      expect(UpSheetTokens.enter, const Duration(milliseconds: 400));
+      expect(UpPadTokens.pressCurve, UpEasings.quadOut);
       expect(UpSprings.snappy.stiffness, 900);
     });
 
@@ -174,6 +187,39 @@ void main() {
     });
   });
 
+  group('skin presets', () {
+    test('16 original skins in panel order, all resolvable', () {
+      expect(UpSkinPresets.all, hasLength(16));
+      expect(UpSkinPresets.all.first.id, 'default');
+      expect(UpSkinPresets.all.last.id, 'halloween');
+      for (final UpSkinPreset p in UpSkinPresets.all) {
+        final UpTheme t = p.toTheme();
+        expect(t.baseId, p.baseId, reason: p.id);
+        expect(p.nameKey, startsWith('skinPreset'));
+      }
+    });
+
+    test('preset values come from the IPA analysis', () {
+      final UpSemantic circle = UpSkinPresets.byId('circle')!.toTheme().colors;
+      expect(circle.padShapeRadiusRatio, 0.5);
+      expect(circle.padPressedScale, 0.9);
+      expect(circle.padRole(3).mid, const Color(0xFF04C9E2));
+      expect(circle.padRole(3).pressed, const Color(0xFFC2F2FC));
+      final UpSemantic number = UpSkinPresets.byId('number')!.toTheme().colors;
+      expect(number.padShowNumber, 1);
+      expect(UpSkinPresets.byId('nope'), isNull);
+    });
+
+    test('preset -> skin JSON round trip keeps the font set', () {
+      final UpSkin skin = UpSkinPresets.byId(
+        'polished',
+      )!.toSkin(fontSet: UpFontSet.uniSans);
+      final UpSkin back = UpSkin.decode(skin.encode());
+      expect(back, skin);
+      expect(back.fontSet, UpFontSet.uniSans);
+    });
+  });
+
   group('helpers', () {
     test('glow shadows scale with intensity and vanish at 0', () {
       final List<BoxShadow> s = UpPadTokens.glowPressed.shadows(
@@ -191,18 +237,24 @@ void main() {
       );
     });
 
-    test(
-      'typography falls back to bundled Montserrat until Uni Sans loads',
-      () {
-        UpFonts.debugReset();
-        final TextStyle title = UpThemes.neon.text[UpTextRole.title];
-        expect(title.fontFamily, 'packages/up_tokens/Montserrat');
-        expect(title.fontWeight, FontWeight.w800);
-        expect(title.color, UpThemes.neon.colors.textPrimary);
-        expect(UpThemes.neon.text.format(UpTextRole.title, 'Songs'), 'SONGS');
-        expect(UpThemes.neon.text.format(UpTextRole.body, 'Songs'), 'Songs');
-      },
-    );
+    test('typography uses bundled Open Sans', () {
+      UpFonts.debugReset();
+      final TextStyle title = UpThemes.neon.text[UpTextRole.title];
+      expect(title.fontFamily, 'packages/up_tokens/Open Sans');
+      expect(title.fontWeight, FontWeight.w800);
+      expect(title.fontSize, 17.5);
+      expect(title.color, UpThemes.neon.colors.textPrimary);
+      expect(UpThemes.neon.text.format(UpTextRole.title, 'Songs'), 'SONGS');
+      expect(UpThemes.neon.text.format(UpTextRole.body, 'Songs'), 'Songs');
+      // Uni Sans requested but not injected -> still Open Sans.
+      expect(
+        UpThemes.neon
+            .withFontSet(UpFontSet.uniSans)
+            .text[UpTextRole.title]
+            .fontFamily,
+        'packages/up_tokens/Open Sans',
+      );
+    });
 
     test('colour codec', () {
       expect(UpColorCodec.encode(const Color(0xFF0A0B0C)), '#0A0B0C');

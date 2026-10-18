@@ -47,8 +47,8 @@ export function dartTypeAndExpr(e) {
       }
       return ['List<BoxShadow>', `<BoxShadow>[${v.map((l) => `BoxShadow(color: ${color(l.color)}, offset: Offset(${num(l.x)}, ${num(l.y)}), blurRadius: ${num(l.blur)}, spreadRadius: ${num(l.spread)})`).join(', ')}]`];
     case 'typography': {
-      const [family, fallback] = v.fontFamily;
-      return ['UpTextRoleSpec', `UpTextRoleSpec(family: ${str(family)}, fallbackFamily: ${fallback ? str(fallback) : 'null'}, size: ${num(v.fontSize)}, weight: ${weight(v.fontWeight)}, letterSpacing: ${num(v.letterSpacing)}, height: ${num(v.lineHeight)}, textCase: UpTextCase.${e.textCase === 'upper' ? 'upper' : 'none'})`];
+      const [family] = v.fontFamily;
+      return ['UpTextRoleSpec', `UpTextRoleSpec(family: ${str(family)}, size: ${num(v.fontSize)}, weight: ${weight(v.fontWeight)}, letterSpacing: ${num(v.letterSpacing)}, height: ${num(v.lineHeight)}, textCase: UpTextCase.${e.textCase === 'upper' ? 'upper' : 'none'})`];
     }
     case 'spring':
       return ['SpringDescription', `SpringDescription(mass: ${num(v.mass)}, stiffness: ${num(v.stiffness)}, damping: ${num(v.damping)})`];
@@ -134,7 +134,7 @@ export function semanticSchemaFile(entries) {
   const roleIdx = [...roles.keys()].sort((a, b) => a - b);
   roleIdx.forEach((v, i) => { if (v !== i) throw new Error('pad.palette indices must be contiguous from 0'); });
   for (const i of roleIdx) {
-    for (const k of ['core', 'mid', 'edge', 'glow']) if (!roles.get(i)[k]) throw new Error(`pad.palette.${i}.${k} missing`);
+    for (const k of ['core', 'mid', 'edge', 'glow', 'pressed']) if (!roles.get(i)[k]) throw new Error(`pad.palette.${i}.${k} missing`);
   }
 
   const L = [];
@@ -183,7 +183,7 @@ ${fields.map((f) => `    required this.${f.name},`).join('\n')}
     switch (index % padPaletteLength) {
 ${roleIdx.map((i) => {
     const r = roles.get(i);
-    return `      case ${i}:\n        return UpPadRole(index: ${i}, core: ${r.core}, mid: ${r.mid}, edge: ${r.edge}, glow: ${r.glow});`;
+    return `      case ${i}:\n        return UpPadRole(index: ${i}, core: ${r.core}, mid: ${r.mid}, edge: ${r.edge}, glow: ${r.glow}, pressed: ${r.pressed});`;
   }).join('\n')}
       default:
         throw StateError('unreachable');

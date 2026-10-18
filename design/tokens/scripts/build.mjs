@@ -12,6 +12,7 @@ import StyleDictionary from 'style-dictionary';
 import { componentsFile, primitivesFile, semanticSchemaFile, semanticThemeFile, themeRegistryFile } from './lib/dart.mjs';
 import { layerOf, SEMANTIC_TYPES, toEntries } from './lib/model.mjs';
 import { cssFile, figmaFile, flatJson } from './lib/web.mjs';
+import { loadSkins, skinsDartFile, skinsJsonFile } from './lib/skins.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const TOKENS_DIR = resolve(here, '..');
@@ -155,6 +156,16 @@ for (const t of themes.slice(1)) {
 writeFileSync(join(OUT.dart, 'themes.g.dart'), themeRegistryFile(themes));
 writeFileSync(join(OUT.json, 'figma-variables.json'), figmaFile(themes, collected));
 
+// skin presets (semantic overrides of the original app's skins)
+let skins = [];
+try {
+  skins = loadSkins(join(SRC, 'skins'), collected[themes[0].id], themes.map((t) => t.id));
+} catch (e) {
+  fail([e.message]);
+}
+writeFileSync(join(OUT.dart, 'skins.g.dart'), skinsDartFile(skins));
+writeFileSync(join(OUT.json, 'skins.json'), skinsJsonFile(skins));
+
 // dart format keeps generated code analyzer/format clean
 const fmt = spawnSync('dart', ['format', '--language-version=3.9', '--output=write', OUT.dart], { encoding: 'utf8' });
 if (fmt.status !== 0) {
@@ -177,6 +188,6 @@ if (CHECK) {
   console.log('✔ token outputs are up to date');
 } else {
   console.log(`✔ tokens built for themes [${themes.map((t) => t.id).join(', ')}]`);
-  console.log(`  primitive: ${counts.primitive}  semantic: ${counts.semantic}  component: ${counts.component}`);
+  console.log(`  primitive: ${counts.primitive}  semantic: ${counts.semantic}  component: ${counts.component}  skin presets: ${skins.length}`);
   for (const dir of Object.values(OUT)) console.log(`  → ${relative(REPO, dir)}/`);
 }

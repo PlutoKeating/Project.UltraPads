@@ -791,6 +791,54 @@ class UpL10nZh extends UpL10n {
   String get skinEditorDeleteTitle => '删除皮肤？';
 
   @override
+  String get skinPresetDefault => '默认';
+
+  @override
+  String get skinPresetNumber => '数字';
+
+  @override
+  String get skinPresetChristmas => '圣诞';
+
+  @override
+  String get skinPresetPets => '萌宠';
+
+  @override
+  String get skinPresetCover => '封面';
+
+  @override
+  String get skinPresetBroken => '裂纹';
+
+  @override
+  String get skinPresetMuertos => '亡灵节';
+
+  @override
+  String get skinPresetCrazy => '疯狂';
+
+  @override
+  String get skinPresetLaunchpad => '发射台';
+
+  @override
+  String get skinPresetCrafts => '手工';
+
+  @override
+  String get skinPresetPolished => '亮面';
+
+  @override
+  String get skinPresetClean => '简洁';
+
+  @override
+  String get skinPresetCircle => '圆形';
+
+  @override
+  String get skinPresetSquare => '方块';
+
+  @override
+  String get skinPresetLgbt => '彩虹';
+
+  @override
+  String get skinPresetHalloween => '万圣节';
+
+  @override
   String get settingsTitle => '设置';
 
   @override
@@ -1252,4 +1300,120 @@ class UpL10nZh extends UpL10n {
     });
     return '$_temp0';
   }
+
+  @override
+  String performSpeedValue(double value) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPatternDigits(
+          locale: localeName,
+          decimalDigits: 1,
+        );
+    final String valueString = valueNumberFormat.format(value);
+
+    return '$valueString×';
+  }
+
+  @override
+  String get settingsClassicPads => '经典 Pad 动画';
+
+  @override
+  String settingsEngineBackend(String name) {
+    return '音频引擎：$name';
+  }
+
+  @override
+  String get settingsEngineFallback => '原生音频引擎不可用，正在以演示模式运行';
+
+  @override
+  String get errorEngineUnsupported => '音频引擎暂不支持此功能';
+
+  @override
+  String get loadSoundPickSample => '选择声音';
+
+  @override
+  String get hubThisDevice => '本机';
+
+  @override
+  String get hubNearbyDevices => '附近的设备';
+
+  @override
+  String get settingsPrivateAssets => '原 App 素材';
+
+  @override
+  String get onboardingSkip => '跳过';
+
+  @override
+  String get performLearnToPlay => '学习演奏';
+
+  @override
+  String get performBackToTools => '返回';
+
+  @override
+  String get performSpeedNormal => '正常';
+
+  @override
+  String get performSpeedSlow => '慢速';
+
+  @override
+  String get performSpeedVerySlow => '很慢';
+
+  @override
+  String get tutorialPerfect => '完美';
+
+  @override
+  String get tutorialTooFast => '太快了';
+
+  @override
+  String get tutorialTooSlow => '太慢了';
+
+  @override
+  String get tutorialMiss => '错过';
+
+  @override
+  String get tutorialPressWhenFull => '在 Pad 完全填满时按下';
+
+  @override
+  String get tutorialPlayDemo => '播放';
+
+  @override
+  String get navFeed => '推荐';
+
+  @override
+  String get librarySeeAll => '查看全部';
+
+  @override
+  String get libraryArtists => '艺人';
+
+  @override
+  String get libraryRecommended => '为你推荐';
+
+  @override
+  String get libraryOpenKit => '打开 Kit';
+
+  @override
+  String get kitEditorEditPad => '编辑 Pad';
+
+  @override
+  String get kitEditorEditFile => '编辑音频';
+
+  @override
+  String get kitEditorClone => '复制';
+
+  @override
+  String get kitEditorGroup => '分组';
+
+  @override
+  String get kitEditorLoop => '循环';
+
+  @override
+  String get kitEditorReplaceTitle => '替换这个声音？';
+
+  @override
+  String get recordSaveAndShare => '保存并分享';
+
+  @override
+  String get onboardingNext => '下一步';
+
+  @override
+  String get onboardingChooseStyleBody => '选择你喜欢的风格，我们会为你推荐合适的 Kit';
 }

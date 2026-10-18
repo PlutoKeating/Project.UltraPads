@@ -1,102 +1,865 @@
 {
-  "$description": "Primitive colour palette. Raw values only; never referenced directly by UI code — UI reads semantic tokens. Sources: APK = Ref v3.7.6 colors.xml / Lottie gradients (docs/research/compat-apk-analysis.md §4.1); SHOT = current store screenshots (pending calibration against a newer build).",
+  "$description": "Primitive colour palette. Raw values only; UI code reads semantic tokens. Sources, in priority order: IPA = Ref 4.7.0 FairyGUI packages / skin bitmaps (docs/research/compat-ipa-4.7.0-analysis.md); APK = v3.7.6 colors.xml / Lottie (compat-apk-analysis.md); SHOT = store screenshots; UP = UltraPads design extension.",
   "color": {
     "$type": "color",
     "base": {
-      "white": { "$value": "#FFFFFF" },
-      "black": { "$value": "#000000" },
-      "transparent": { "$value": "#00000000" }
+      "white": {
+        "$value": "#FFFFFF"
+      },
+      "black": {
+        "$value": "#000000"
+      },
+      "transparent": {
+        "$value": "#00000000"
+      }
     },
     "grey": {
       "$description": "Dark neutral ramp. 950..700 from APK colors.xml, 50..300 for the light theme.",
-      "1000": { "$value": "#0B0D0D", "$description": "APK empty pad gradient end" },
-      "975": { "$value": "#111314", "$description": "APK empty pad gradient mid" },
-      "960": { "$value": "#171B1C", "$description": "APK empty pad gradient start" },
-      "950": { "$value": "#181B1C", "$description": "APK dark_grey_two / search_color" },
-      "940": { "$value": "#191E20", "$description": "APK A/B button background" },
-      "930": { "$value": "#1B1D1D", "$description": "APK pad border_black" },
-      "920": { "$value": "#1E1E1F", "$description": "SHOT secondary toolbar" },
-      "900": { "$value": "#202629", "$description": "APK primary / dark_grey (window, toolbar)" },
-      "850": { "$value": "#242B2D", "$description": "APK app_color / black (pads page)" },
-      "840": { "$value": "#242B2E", "$description": "APK charcoal (tab pages)" },
-      "820": { "$value": "#262D31", "$description": "SHOT pad area" },
-      "800": { "$value": "#2C3336", "$description": "APK charcoal_grey / item_kit" },
-      "700": { "$value": "#3C4145", "$description": "SHOT chip / raised" },
-      "600": { "$value": "#4A5155" },
-      "500": { "$value": "#686C6E", "$description": "SHOT muted text" },
-      "400": { "$value": "#939BA3", "$description": "APK coolgrey (secondary text)" },
-      "300": { "$value": "#B9C0C6" },
-      "200": { "$value": "#D9DEE2" },
-      "100": { "$value": "#ECEFF1" },
-      "50": { "$value": "#F6F7F8" }
+      "1000": {
+        "$value": "#0B0D0D",
+        "$description": "APK empty pad gradient end"
+      },
+      "975": {
+        "$value": "#111314",
+        "$description": "APK empty pad gradient mid"
+      },
+      "960": {
+        "$value": "#171B1C",
+        "$description": "APK empty pad gradient start"
+      },
+      "950": {
+        "$value": "#181B1C",
+        "$description": "APK dark_grey_two / search_color"
+      },
+      "940": {
+        "$value": "#191E20",
+        "$description": "APK A/B button background"
+      },
+      "930": {
+        "$value": "#1B1D1D",
+        "$description": "APK pad border_black"
+      },
+      "920": {
+        "$value": "#1E1E1F",
+        "$description": "SHOT secondary toolbar"
+      },
+      "900": {
+        "$value": "#202629",
+        "$description": "APK primary / dark_grey (window, toolbar)"
+      },
+      "850": {
+        "$value": "#242B2D",
+        "$description": "APK app_color / black (pads page)"
+      },
+      "840": {
+        "$value": "#242B2E",
+        "$description": "APK charcoal (tab pages)"
+      },
+      "820": {
+        "$value": "#262D31",
+        "$description": "SHOT pad area"
+      },
+      "800": {
+        "$value": "#2C3336",
+        "$description": "APK charcoal_grey / item_kit"
+      },
+      "700": {
+        "$value": "#3C4145",
+        "$description": "SHOT chip / raised"
+      },
+      "600": {
+        "$value": "#4A5155"
+      },
+      "500": {
+        "$value": "#686C6E",
+        "$description": "SHOT muted text"
+      },
+      "400": {
+        "$value": "#939BA3",
+        "$description": "APK coolgrey (secondary text)"
+      },
+      "300": {
+        "$value": "#B9C0C6"
+      },
+      "200": {
+        "$value": "#D9DEE2"
+      },
+      "100": {
+        "$value": "#ECEFF1"
+      },
+      "50": {
+        "$value": "#F6F7F8"
+      }
     },
     "alpha": {
       "white": {
-        "4": { "$value": "#FFFFFF0A", "$description": "APK kit_background" },
-        "8": { "$value": "#FFFFFF14" },
-        "12": { "$value": "#FFFFFF1F" },
-        "20": { "$value": "#FFFFFF33", "$description": "APK white_20 (empty pad)" },
-        "30": { "$value": "#FFFFFF4C", "$description": "APK white_30" },
-        "40": { "$value": "#FFFFFF66", "$description": "APK white_40 (pads container)" },
-        "50": { "$value": "#FFFFFF7F", "$description": "APK white_50" },
-        "70": { "$value": "#FFFFFFB3" },
-        "75": { "$value": "#FFFFFFBF", "$description": "APK pad press flash peak" },
-        "90": { "$value": "#FFFFFFE6" }
+        "4": {
+          "$value": "#FFFFFF0A",
+          "$description": "APK kit_background"
+        },
+        "8": {
+          "$value": "#FFFFFF14"
+        },
+        "12": {
+          "$value": "#FFFFFF1F"
+        },
+        "20": {
+          "$value": "#FFFFFF33",
+          "$description": "APK white_20 (empty pad)"
+        },
+        "30": {
+          "$value": "#FFFFFF4C",
+          "$description": "APK white_30"
+        },
+        "40": {
+          "$value": "#FFFFFF66",
+          "$description": "APK white_40 (pads container)"
+        },
+        "50": {
+          "$value": "#FFFFFF7F",
+          "$description": "APK white_50"
+        },
+        "70": {
+          "$value": "#FFFFFFB3"
+        },
+        "75": {
+          "$value": "#FFFFFFBF",
+          "$description": "APK pad press flash peak"
+        },
+        "90": {
+          "$value": "#FFFFFFE6"
+        },
+        "10": {
+          "$value": "#FFFFFF1A",
+          "$description": "IPA dividers / tab bar top line (img_white α0.1)"
+        },
+        "60": {
+          "$value": "#FFFFFF99",
+          "$description": "IPA INSPIRED BY text α0.6"
+        }
       },
       "black": {
-        "8": { "$value": "#00000014" },
-        "12": { "$value": "#0000001F" },
-        "20": { "$value": "#00000033", "$description": "APK black_alpha_20 (skin panel dim)" },
-        "25": { "$value": "#00000040", "$description": "APK social media chip" },
-        "50": { "$value": "#00000080", "$description": "APK black_50" },
-        "63": { "$value": "#000000A0", "$description": "APK black_opacity (scrim)" },
-        "67": { "$value": "#000000AC", "$description": "APK background_download_kit" }
+        "8": {
+          "$value": "#00000014"
+        },
+        "12": {
+          "$value": "#0000001F"
+        },
+        "20": {
+          "$value": "#00000033",
+          "$description": "APK black_alpha_20 (skin panel dim)"
+        },
+        "25": {
+          "$value": "#00000040",
+          "$description": "APK social media chip"
+        },
+        "50": {
+          "$value": "#00000080",
+          "$description": "APK black_50"
+        },
+        "63": {
+          "$value": "#000000A0",
+          "$description": "APK black_opacity (scrim)"
+        },
+        "67": {
+          "$value": "#000000AC",
+          "$description": "APK background_download_kit"
+        },
+        "40": {
+          "$value": "#00000066",
+          "$description": "IPA kit editor separator / selection outside"
+        },
+        "60": {
+          "$value": "#00000099",
+          "$description": "IPA nav bar shadow 60%"
+        },
+        "70": {
+          "$value": "#000000B3",
+          "$description": "IPA tutorial / full-page dark overlay 70%"
+        },
+        "80": {
+          "$value": "#000000CC",
+          "$description": "IPA kit preview overlay 80%"
+        }
       }
     },
     "brand": {
-      "rose": { "$value": "#F73873", "$description": "APK red_pink — primary accent (save, seekbar thumb, selected underline)" },
-      "roseLight": { "$value": "#F93E78", "$description": "APK selected_kit / skin_price" },
-      "raspberry": { "$value": "#FD1A68", "$description": "APK red_pink_two; SHOT SONGS chip" },
-      "raspberryDeep": { "$value": "#8E1546", "$description": "SHOT SONGS chip icon box" },
-      "electric": { "$value": "#FD1B99", "$description": "APK electric_pink" },
-      "magenta": { "$value": "#D2066D", "$description": "SHOT brand gradient start" },
-      "berry": { "$value": "#B3076B", "$description": "SHOT brand gradient mid" },
-      "plum": { "$value": "#6E1470", "$description": "SHOT brand gradient end (purple)" },
-      "kitDefault": { "$value": "#F8453E", "$description": "APK Kit colorBackground default rgb(248,69,62)" }
+      "rose": {
+        "$value": "#F73873",
+        "$description": "IPA secondary: skin panel divider, SAVE text, input focus (APK primary)"
+      },
+      "roseLight": {
+        "$value": "#F93E78",
+        "$description": "APK selected_kit / skin_price"
+      },
+      "raspberry": {
+        "$value": "#FD1A68",
+        "$description": "alias of brand.pink (APK red_pink_two)"
+      },
+      "raspberryDeep": {
+        "$value": "#8E1546",
+        "$description": "SHOT SONGS chip icon box"
+      },
+      "electric": {
+        "$value": "#FD1B99",
+        "$description": "APK electric_pink"
+      },
+      "magenta": {
+        "$value": "#D2066D",
+        "$description": "SHOT brand gradient start"
+      },
+      "berry": {
+        "$value": "#B3076B",
+        "$description": "SHOT brand gradient mid"
+      },
+      "plum": {
+        "$value": "#6E1470",
+        "$description": "SHOT brand gradient end (purple)"
+      },
+      "kitDefault": {
+        "$value": "#F8453E",
+        "$description": "APK Kit colorBackground default rgb(248,69,62)"
+      },
+      "pink": {
+        "$value": "#FD1A68",
+        "$description": "IPA primary accent: SONGS button, tab underline, kit selection bar, progress"
+      },
+      "rosePad": {
+        "$value": "#F73470",
+        "$description": "IPA secondary: skin price, genre check"
+      },
+      "create": {
+        "$value": "#EE4286",
+        "$description": "IPA kit editor page background"
+      },
+      "alert": {
+        "$value": "#FD155F",
+        "$description": "IPA rate dialog NO / CANCEL outline"
+      }
     },
     "classic": {
       "$description": "APK NORMAL-skin Lottie pad gradients (stops 0 / 0.5 / 1).",
-      "blue": { "300": { "$value": "#54E0FF" }, "500": { "$value": "#2AD5FA" }, "700": { "$value": "#00CAF7" } },
-      "green": { "300": { "$value": "#1BEB00" }, "500": { "$value": "#0DD600" }, "700": { "$value": "#00C200" } },
-      "orange": { "300": { "$value": "#FFB100" }, "500": { "$value": "#F49600" }, "700": { "$value": "#E97A00" } },
-      "pink": { "300": { "$value": "#FF6B97" }, "500": { "$value": "#FA4F84" }, "700": { "$value": "#F7346F" } }
+      "blue": {
+        "300": {
+          "$value": "#54E0FF"
+        },
+        "500": {
+          "$value": "#2AD5FA"
+        },
+        "700": {
+          "$value": "#00CAF7"
+        }
+      },
+      "green": {
+        "300": {
+          "$value": "#1BEB00"
+        },
+        "500": {
+          "$value": "#0DD600"
+        },
+        "700": {
+          "$value": "#00C200"
+        }
+      },
+      "orange": {
+        "300": {
+          "$value": "#FFB100"
+        },
+        "500": {
+          "$value": "#F49600"
+        },
+        "700": {
+          "$value": "#E97A00"
+        }
+      },
+      "pink": {
+        "300": {
+          "$value": "#FF6B97"
+        },
+        "500": {
+          "$value": "#FA4F84"
+        },
+        "700": {
+          "$value": "#F7346F"
+        }
+      }
     },
     "neon": {
       "$description": "Current-store neon pad hues (SHOT, radial core -> edge). Pending calibration.",
-      "yellow": { "300": { "$value": "#F9E21D" }, "500": { "$value": "#F9D01D" }, "700": { "$value": "#FBB418" } },
-      "green": { "300": { "$value": "#C8DC2A" }, "500": { "$value": "#9BCD35" }, "700": { "$value": "#51BC44" } },
-      "magenta": { "300": { "$value": "#F23CF0" }, "500": { "$value": "#EA20D3" }, "700": { "$value": "#AF27A6" } },
-      "blue": { "300": { "$value": "#01B4FE" }, "500": { "$value": "#0194FE" }, "700": { "$value": "#015BFE" } },
-      "pink": { "300": { "$value": "#FF3CD8" }, "500": { "$value": "#FD169D" }, "700": { "$value": "#FC0579" } },
-      "cyan": { "300": { "$value": "#5AD8F5" }, "500": { "$value": "#0FB6E3" }, "700": { "$value": "#0A8FB8" } },
-      "orange": { "300": { "$value": "#F1B37E" }, "500": { "$value": "#E9993F" }, "700": { "$value": "#E07D28" } },
-      "rose": { "300": { "$value": "#EE4989" }, "500": { "$value": "#E6347A" }, "700": { "$value": "#DD1F69" } },
-      "violet": { "500": { "$value": "#4A12A8", "$description": "SHOT loop pad idle fill" }, "700": { "$value": "#3A0E8A" }, "900": { "$value": "#2A0A66" } }
+      "yellow": {
+        "300": {
+          "$value": "#F9E21D"
+        },
+        "500": {
+          "$value": "#F9D01D"
+        },
+        "700": {
+          "$value": "#FBB418"
+        }
+      },
+      "green": {
+        "300": {
+          "$value": "#C8DC2A"
+        },
+        "500": {
+          "$value": "#9BCD35"
+        },
+        "700": {
+          "$value": "#51BC44"
+        }
+      },
+      "magenta": {
+        "300": {
+          "$value": "#F23CF0"
+        },
+        "500": {
+          "$value": "#EA20D3"
+        },
+        "700": {
+          "$value": "#AF27A6"
+        }
+      },
+      "blue": {
+        "300": {
+          "$value": "#01B4FE"
+        },
+        "500": {
+          "$value": "#0194FE"
+        },
+        "700": {
+          "$value": "#015BFE"
+        }
+      },
+      "pink": {
+        "300": {
+          "$value": "#FF3CD8"
+        },
+        "500": {
+          "$value": "#FD169D"
+        },
+        "700": {
+          "$value": "#FC0579"
+        }
+      },
+      "cyan": {
+        "300": {
+          "$value": "#5AD8F5"
+        },
+        "500": {
+          "$value": "#0FB6E3"
+        },
+        "700": {
+          "$value": "#0A8FB8"
+        }
+      },
+      "orange": {
+        "300": {
+          "$value": "#F1B37E"
+        },
+        "500": {
+          "$value": "#E9993F"
+        },
+        "700": {
+          "$value": "#E07D28"
+        }
+      },
+      "rose": {
+        "300": {
+          "$value": "#EE4989"
+        },
+        "500": {
+          "$value": "#E6347A"
+        },
+        "700": {
+          "$value": "#DD1F69"
+        }
+      },
+      "violet": {
+        "500": {
+          "$value": "#4A12A8",
+          "$description": "SHOT loop pad idle fill"
+        },
+        "700": {
+          "$value": "#3A0E8A"
+        },
+        "900": {
+          "$value": "#2A0A66"
+        }
+      }
     },
     "swatch": {
       "$description": "APK kit editor colour picker (8 dots).",
-      "aquaMarine": { "$value": "#50E3C2" },
-      "darkSky": { "$value": "#4A90E2" },
-      "skyBlue": { "$value": "#2B98F0" },
-      "greenYellow": { "$value": "#BBD809" },
-      "orangeyRed": { "$value": "#FC6530" },
-      "redPink": { "$value": "#F73873" },
-      "scarlet": { "$value": "#D0021B" },
-      "vibrantGreen": { "$value": "#00CF02" },
-      "vividPurple": { "$value": "#9013FE" },
-      "dandelion": { "$value": "#FFEC00" },
-      "mediumPink": { "$value": "#EE4286" },
-      "lavenderPink": { "$value": "#C86DD7" }
+      "aquaMarine": {
+        "$value": "#50E3C2"
+      },
+      "darkSky": {
+        "$value": "#4A90E2"
+      },
+      "skyBlue": {
+        "$value": "#2B98F0"
+      },
+      "greenYellow": {
+        "$value": "#BBD809"
+      },
+      "orangeyRed": {
+        "$value": "#FC6530"
+      },
+      "redPink": {
+        "$value": "#F73873"
+      },
+      "scarlet": {
+        "$value": "#D0021B"
+      },
+      "vibrantGreen": {
+        "$value": "#00CF02"
+      },
+      "vividPurple": {
+        "$value": "#9013FE"
+      },
+      "dandelion": {
+        "$value": "#FFEC00"
+      },
+      "mediumPink": {
+        "$value": "#EE4286"
+      },
+      "lavenderPink": {
+        "$value": "#C86DD7"
+      }
+    },
+    "ui": {
+      "$description": "IPA 4.7.0 UI surfaces and literals.",
+      "bgPads": {
+        "$value": "#242B2E",
+        "$description": "IPA perform page, nav bars, skin panel, kit preview modal"
+      },
+      "bgMenu": {
+        "$value": "#262B2F",
+        "$description": "IPA library / search / save-kit pages, tab bar"
+      },
+      "cell": {
+        "$value": "#2C3336",
+        "$description": "IPA kit row, LOAD SOUND row, recording row"
+      },
+      "cellPressed": {
+        "$value": "#252B2E",
+        "$description": "IPA kit row pressed"
+      },
+      "placeholder": {
+        "$value": "#1E2225",
+        "$description": "IPA featured card placeholder"
+      },
+      "social": {
+        "$value": "#1A1D20",
+        "$description": "IPA social bar / feedback button"
+      },
+      "modalButton": {
+        "$value": "#363F43",
+        "$description": "IPA watch-video unlock button / action sheet"
+      },
+      "adsArea": {
+        "$value": "#15181A",
+        "$description": "IPA library ads banner area"
+      },
+      "paginationDot": {
+        "$value": "#484C4F",
+        "$description": "IPA featured pagination"
+      },
+      "textDark": {
+        "$value": "#282828",
+        "$description": "IPA speed button digits"
+      },
+      "textSection": {
+        "$value": "#939BA3",
+        "$description": "IPA library section titles"
+      },
+      "textMuted": {
+        "$value": "#999999",
+        "$description": "IPA download counter"
+      },
+      "inputText": {
+        "$value": "#666666",
+        "$description": "IPA rate dialog input / toggle"
+      },
+      "recRed": {
+        "$value": "#FF0000",
+        "$description": "IPA record button / timer"
+      },
+      "tutorialFill": {
+        "$value": "#10CEF8",
+        "$description": "IPA tutorial pad fill"
+      },
+      "tutorialOutline": {
+        "$value": "#BD1555",
+        "$description": "IPA tutorial pad outline"
+      },
+      "tutorialLoop": {
+        "$value": "#02BCEB",
+        "$description": "IPA tutorial loop icon"
+      },
+      "perfect": {
+        "$value": "#1CCB19",
+        "$description": "IPA PERFECT feedback circle"
+      },
+      "premium": {
+        "$value": "#FF156C",
+        "$description": "IPA paywall background"
+      },
+      "premiumTop": {
+        "$value": "#FD1A86",
+        "$description": "IPA paywall top"
+      },
+      "premiumBadge": {
+        "$value": "#FBC800",
+        "$description": "IPA offer badge"
+      },
+      "premiumCyan": {
+        "$value": "#00CCFF",
+        "$description": "IPA paywall privacy band"
+      },
+      "signatureCyan": {
+        "$value": "#00CBFE",
+        "$description": "IPA subscription banner slash"
+      },
+      "signatureMagenta": {
+        "$value": "#FD1AD8",
+        "$description": "IPA subscription banner glow"
+      },
+      "thumbCyan": {
+        "$value": "#52DAFF",
+        "$description": "IPA kit thumbnail glow"
+      },
+      "thumbMagenta": {
+        "$value": "#FF52DD",
+        "$description": "IPA kit thumbnail glow"
+      },
+      "liveOps": {
+        "$value": "#371D55",
+        "$description": "IPA Halloween live-ops modal"
+      }
+    },
+    "pad": {
+      "$description": "IPA 4.7.0 pad colours. base = skin tint value; highlight = Default bitmap top highlight; edge = Default bitmap rim; pressed = pale tint used by tint-swap skins (Crazy/Circle/LGBT).",
+      "blue": {
+        "base": {
+          "$value": "#00CBF7"
+        },
+        "highlight": {
+          "$value": "#3FDDFE"
+        },
+        "edge": {
+          "$value": "#22D7FD"
+        },
+        "pressed": {
+          "$value": "#C2F2FC"
+        },
+        "pressedAlt": {
+          "$value": "#B3EFFC"
+        }
+      },
+      "orange": {
+        "base": {
+          "$value": "#EB7F00"
+        },
+        "bitmap": {
+          "$value": "#E97B00"
+        },
+        "highlight": {
+          "$value": "#FAA600"
+        },
+        "edge": {
+          "$value": "#F29300"
+        },
+        "pressed": {
+          "$value": "#FDE7BF"
+        }
+      },
+      "green": {
+        "base": {
+          "$value": "#00C200"
+        },
+        "highlight": {
+          "$value": "#14E200"
+        },
+        "edge": {
+          "$value": "#0BD300"
+        },
+        "pressed": {
+          "$value": "#C4F7C0"
+        }
+      },
+      "pink": {
+        "base": {
+          "$value": "#F73470"
+        },
+        "highlight": {
+          "$value": "#F9508B"
+        },
+        "edge": {
+          "$value": "#F9508A"
+        },
+        "pressed": {
+          "$value": "#FFD9E4"
+        }
+      }
+    },
+    "skin": {
+      "$description": "IPA 4.7.0 per-skin pad colours (FairyGUI tints + bitmap samples).",
+      "circle": {
+        "blue": {
+          "$value": "#04C9E2"
+        },
+        "orange": {
+          "$value": "#FE9F4C"
+        },
+        "green": {
+          "$value": "#28D13A"
+        },
+        "pink": {
+          "$value": "#FE54AE"
+        }
+      },
+      "broken": {
+        "bluePressed": {
+          "$value": "#B3EFFC"
+        },
+        "orangePressed": {
+          "$value": "#F7CB99"
+        },
+        "greenPressed": {
+          "$value": "#99E699"
+        },
+        "pinkPressed": {
+          "$value": "#FBADC5"
+        }
+      },
+      "square": {
+        "1": {
+          "$value": "#006673"
+        },
+        "2": {
+          "$value": "#008D9F"
+        },
+        "3": {
+          "$value": "#00B4CB"
+        },
+        "4": {
+          "$value": "#01D1EB"
+        },
+        "5": {
+          "$value": "#2DE8FF"
+        }
+      },
+      "polished": {
+        "blue": {
+          "core": {
+            "$value": "#8AE7FC"
+          },
+          "mid": {
+            "$value": "#57E1FF"
+          },
+          "edge": {
+            "$value": "#0ECFF8"
+          }
+        },
+        "green": {
+          "core": {
+            "$value": "#83E481"
+          },
+          "mid": {
+            "$value": "#1BEC00"
+          },
+          "edge": {
+            "$value": "#04C800"
+          }
+        },
+        "orange": {
+          "core": {
+            "$value": "#F6C381"
+          },
+          "mid": {
+            "$value": "#FFB200"
+          },
+          "edge": {
+            "$value": "#EC8300"
+          }
+        },
+        "pink": {
+          "core": {
+            "$value": "#FCA0BC"
+          },
+          "mid": {
+            "$value": "#FF6B99"
+          },
+          "edge": {
+            "$value": "#F83C76"
+          }
+        }
+      },
+      "clean": {
+        "blue": {
+          "core": {
+            "$value": "#04C8E1"
+          },
+          "mid": {
+            "$value": "#02C0D8"
+          },
+          "edge": {
+            "$value": "#01B9D1"
+          }
+        },
+        "green": {
+          "core": {
+            "$value": "#28CF39"
+          },
+          "mid": {
+            "$value": "#25C335"
+          },
+          "edge": {
+            "$value": "#23B732"
+          }
+        },
+        "orange": {
+          "core": {
+            "$value": "#FB9C49"
+          },
+          "mid": {
+            "$value": "#EE8D38"
+          },
+          "edge": {
+            "$value": "#E27E28"
+          }
+        },
+        "pink": {
+          "core": {
+            "$value": "#F852A9"
+          },
+          "mid": {
+            "$value": "#DF4A99"
+          },
+          "edge": {
+            "$value": "#C74388"
+          }
+        }
+      },
+      "christmas": {
+        "greenCore": {
+          "$value": "#8CE38C"
+        },
+        "greenMid": {
+          "$value": "#54D654"
+        },
+        "greenPressed": {
+          "$value": "#CBF2CB"
+        },
+        "orangePressed": {
+          "$value": "#FAE4CB"
+        },
+        "pinkPressed": {
+          "$value": "#FCC1D3"
+        }
+      },
+      "muertos": {
+        "greenCore": {
+          "$value": "#009B00"
+        },
+        "pinkCore": {
+          "$value": "#F86291"
+        },
+        "pinkEdge": {
+          "$value": "#D62D61"
+        }
+      },
+      "pets": {
+        "greenEdge": {
+          "$value": "#00A800"
+        },
+        "orangeMid": {
+          "$value": "#FF9F00"
+        },
+        "orangeEdge": {
+          "$value": "#CC6E00"
+        }
+      },
+      "halloween": {
+        "blue": {
+          "core": {
+            "$value": "#2663BA"
+          },
+          "mid": {
+            "$value": "#164295"
+          },
+          "edge": {
+            "$value": "#052171"
+          },
+          "pressed": {
+            "$value": "#618DF9"
+          }
+        },
+        "green": {
+          "core": {
+            "$value": "#C0E13B"
+          },
+          "mid": {
+            "$value": "#B5D630"
+          },
+          "edge": {
+            "$value": "#A4C51D"
+          },
+          "pressed": {
+            "$value": "#E1FC76"
+          }
+        },
+        "orange": {
+          "core": {
+            "$value": "#FEAD0D"
+          },
+          "mid": {
+            "$value": "#FDA90C"
+          },
+          "edge": {
+            "$value": "#EB760A"
+          },
+          "pressed": {
+            "$value": "#FFCB71"
+          }
+        },
+        "pink": {
+          "core": {
+            "$value": "#FE76AF"
+          },
+          "mid": {
+            "$value": "#E73F80"
+          },
+          "edge": {
+            "$value": "#D91F64"
+          },
+          "pressed": {
+            "$value": "#FF60A3"
+          }
+        },
+        "purple": {
+          "core": {
+            "$value": "#C784E4"
+          },
+          "mid": {
+            "$value": "#AF67CE"
+          },
+          "edge": {
+            "$value": "#7E4398"
+          },
+          "pressed": {
+            "$value": "#E3A5FE"
+          }
+        }
+      },
+      "lgbt": {
+        "red": {
+          "$value": "#E9493F"
+        },
+        "yellow": {
+          "$value": "#FEDF28"
+        }
+      }
     }
   }
 }

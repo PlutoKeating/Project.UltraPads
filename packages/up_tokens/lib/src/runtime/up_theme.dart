@@ -31,13 +31,14 @@ class UpTheme extends ThemeExtension<UpTheme> {
     required Brightness brightness,
     required UpSemantic colors,
     String? baseId,
+    UpFontSet fontSet = UpFontSet.openSans,
     UpSemanticOverrides overrides = const UpSemanticOverrides.empty(),
   }) => UpTheme(
     id: id,
     baseId: baseId ?? id,
     brightness: brightness,
     colors: colors,
-    text: UpTypography.resolve(color: colors.textPrimary),
+    text: UpTypography.resolve(color: colors.textPrimary, fontSet: fontSet),
     overrides: overrides,
   );
 
@@ -46,10 +47,12 @@ class UpTheme extends ThemeExtension<UpTheme> {
     UpTheme base,
     UpSemanticOverrides overrides, {
     String id = 'custom',
+    UpFontSet? fontSet,
   }) => UpTheme.fromSemantic(
     id: id,
     baseId: base.baseId,
     brightness: base.brightness,
+    fontSet: fontSet ?? base.fontSet,
     colors: overrides.applyTo(
       UpSemanticThemes.byId[base.baseId] ?? base.colors,
     ),
@@ -57,8 +60,12 @@ class UpTheme extends ThemeExtension<UpTheme> {
   );
 
   /// Resolves a persisted [UpSkin].
-  factory UpTheme.fromSkin(UpSkin skin) =>
-      UpTheme.custom(UpThemes.byId(skin.baseId), skin.overrides, id: skin.id);
+  factory UpTheme.fromSkin(UpSkin skin) => UpTheme.custom(
+    UpThemes.byId(skin.baseId),
+    skin.overrides,
+    id: skin.id,
+    fontSet: skin.fontSet,
+  );
 
   /// Theme id (`neon`, `outline`, `light`, or a custom skin id).
   final String id;
@@ -78,6 +85,14 @@ class UpTheme extends ThemeExtension<UpTheme> {
 
   bool get isCustom => overrides.values.isNotEmpty || id != baseId;
 
+  /// Font set the text roles use (Open Sans by default).
+  UpFontSet get fontSet => text.fontSet;
+
+  /// Same theme rendered with another font set (e.g. optional Uni Sans).
+  UpTheme withFontSet(UpFontSet fontSet) => copyWith(
+    text: UpTypography.resolve(color: colors.textPrimary, fontSet: fontSet),
+  );
+
   /// Pad colour role for a Kit colour index (wraps).
   UpPadRole padRole(int index) => colors.padRole(index);
 
@@ -86,6 +101,7 @@ class UpTheme extends ThemeExtension<UpTheme> {
     id: id ?? this.id,
     name: name,
     baseId: baseId,
+    fontSet: fontSet,
     overrides: overrides,
   );
 

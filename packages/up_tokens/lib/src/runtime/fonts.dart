@@ -1,28 +1,43 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import '../generated/primitives.g.dart';
+
+/// Which font family set text roles render with.
+enum UpFontSet {
+  /// Open Sans (SIL OFL 1.1) bundled in up_tokens — Ref 4.7.0 default.
+  openSans,
+
+  /// Uni Sans (Fontfabric, commercial, Ref 3.x). Optional skin font:
+  /// only used when the private files were injected; otherwise Open Sans.
+  uniSans;
+
+  static UpFontSet parse(Object? v) =>
+      UpFontSet.values.where((UpFontSet f) => f.name == v).firstOrNull ??
+      UpFontSet.openSans;
+}
+
 /// Font registry.
 ///
-/// * The original Uni Sans cuts (Fontfabric, commercial) are **never committed**.
-///   `just inject-assets` (tools/assets/inject_private_assets.dart) copies them
-///   from `private-assets/compat/fonts/` into the app's git-ignored
+/// * Open Sans Regular / ExtraBold / Light ship in `packages/up_tokens`
+///   (declared in pubspec.yaml) and need no loading.
+/// * The Uni Sans cuts are **never committed**. `just inject-assets`
+///   (tools/assets/inject_private_assets.dart) copies them from
+///   `private-assets/compat/fonts/` into the app's git-ignored
 ///   `assets/private_manifest/` as `font__<name>.ttf`; [loadPrivate] registers
-///   whatever is present at startup.
-/// * When a private cut is missing, text roles fall back to the bundled
-///   Montserrat (SIL OFL 1.1, `packages/up_tokens/assets/fonts/`).
+///   whatever is present.
 abstract final class UpFonts {
-  /// Package that bundles the fallback fonts.
+  /// Package that bundles Open Sans.
   static const String package = 'up_tokens';
 
   /// Default location of injected private fonts inside the app bundle.
   static const String privateAssetDir = 'assets/private_manifest/';
 
-  /// Private family name -> file name expected in [privateAssetDir].
-  /// Family names must match `font.family.*` tokens.
-  static const Map<String, String> privateFiles = <String, String>{
-    'Uni Sans': 'font__Uni_Sans.ttf',
-    'Uni Sans Heavy': 'font__Uni_Sans_Heavy.ttf',
-    'Uni Sans Thin': 'font__Uni_Sans_Thin.ttf',
+  /// Private family name -> injected file name. Names match `font.family.uniSans*`.
+  static final Map<String, String> privateFiles = <String, String>{
+    UpFontFamilies.uniSansRegular.first: 'font__Uni_Sans.ttf',
+    UpFontFamilies.uniSansHeavy.first: 'font__Uni_Sans_Heavy.ttf',
+    UpFontFamilies.uniSansThin.first: 'font__Uni_Sans_Thin.ttf',
   };
 
   static final Set<String> _loaded = <String>{};
@@ -35,6 +50,13 @@ abstract final class UpFonts {
 
   /// Families currently registered by [loadPrivate] / [registerBytes].
   static Set<String> get loadedFamilies => Set<String>.unmodifiable(_loaded);
+
+  /// Private Uni Sans family for a weight: <=300 Thin, >=600 Heavy, else Regular.
+  static String uniSansFamilyFor(FontWeight weight) {
+    if (weight.value <= 300) return UpFontFamilies.uniSansThin.first;
+    if (weight.value >= 600) return UpFontFamilies.uniSansHeavy.first;
+    return UpFontFamilies.uniSansRegular.first;
+  }
 
   /// Tries to load every [privateFiles] entry from [bundle]. Missing files are
   /// skipped silently (open-source checkout). Returns the families loaded.
@@ -49,7 +71,7 @@ abstract final class UpFonts {
       try {
         found[e.key] = await b.load('$assetDir${e.value}');
       } on Object {
-        // Not injected: fallback family will be used.
+        // Not injected: Open Sans is used.
       }
     }
     return registerBytes(found);

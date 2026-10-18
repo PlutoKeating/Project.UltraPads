@@ -1,18 +1,102 @@
 {
   "spacing": {
     "$type": "dimension",
-    "none": { "$value": { "value": 0, "unit": "px" } },
-    "hair": { "$value": { "value": 1, "unit": "px" }, "$description": "APK pad cell margin" },
-    "xxs": { "$value": { "value": 2, "unit": "px" }, "$description": "APK gap between pads" },
-    "xs": { "$value": { "value": 4, "unit": "px" } },
-    "sm": { "$value": { "value": 6, "unit": "px" } },
-    "md": { "$value": { "value": 8, "unit": "px" } },
-    "lg": { "$value": { "value": 10, "unit": "px" }, "$description": "APK pads page horizontal margin" },
-    "xl": { "$value": { "value": 12, "unit": "px" } },
-    "xxl": { "$value": { "value": 16, "unit": "px" }, "$description": "APK fab_margin / text_margin" },
-    "xxxl": { "$value": { "value": 20, "unit": "px" } },
-    "huge": { "$value": { "value": 24, "unit": "px" } },
-    "giant": { "$value": { "value": 32, "unit": "px" } },
-    "massive": { "$value": { "value": 48, "unit": "px" } }
+    "none": {
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      }
+    },
+    "hair": {
+      "$value": {
+        "value": 1,
+        "unit": "px"
+      },
+      "$description": "APK pad cell margin"
+    },
+    "xxs": {
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$description": "IPA gap between pads (4px)"
+    },
+    "xs": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
+    "sm": {
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      }
+    },
+    "md": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "lg": {
+      "$value": {
+        "value": 10,
+        "unit": "px"
+      },
+      "$description": "APK pads page margin; IPA top bar x (20px)"
+    },
+    "xl": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      }
+    },
+    "xxl": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$description": "APK fab_margin / text_margin"
+    },
+    "xxxl": {
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      }
+    },
+    "huge": {
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      }
+    },
+    "giant": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      }
+    },
+    "massive": {
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      }
+    },
+    "$description": "Spacing scale (logical px). IPA = FairyGUI px / 2.",
+    "edge": {
+      "$value": {
+        "value": 4.5,
+        "unit": "px"
+      },
+      "$description": "IPA pad area side margin (9px)"
+    },
+    "kitRowInset": {
+      "$value": {
+        "value": 5.5,
+        "unit": "px"
+      },
+      "$description": "IPA kit row thumbnail inset (11px)"
+    }
   }
 }

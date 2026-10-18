@@ -6,6 +6,7 @@ import 'package:flutter/painting.dart';
 import '../generated/semantic.g.dart';
 import '../generated/themes.g.dart';
 import 'color_codec.dart';
+import 'fonts.dart';
 import 'gradient.dart';
 
 /// A typed set of semantic token overrides (what a custom skin changes).
@@ -120,6 +121,7 @@ class UpSemanticOverrides {
 ///
 /// ```json
 /// {"schema":1,"id":"my-skin","name":"My skin","base":"neon",
+///  "font":"openSans",
 ///  "overrides":{"pad.palette.0.core":"#FF00AA","pad.shape.radiusRatio":0.2}}
 /// ```
 @immutable
@@ -128,6 +130,7 @@ class UpSkin {
     required this.id,
     required this.name,
     required this.baseId,
+    this.fontSet = UpFontSet.openSans,
     this.overrides = const UpSemanticOverrides.empty(),
   });
 
@@ -138,6 +141,9 @@ class UpSkin {
 
   /// Built-in theme id this skin derives from (see [UpSemanticThemes.ids]).
   final String baseId;
+
+  /// Font set (`"font"` in JSON; optional, default `openSans`).
+  final UpFontSet fontSet;
   final UpSemanticOverrides overrides;
 
   Map<String, Object> toJson() => <String, Object>{
@@ -145,6 +151,7 @@ class UpSkin {
     'id': id,
     'name': name,
     'base': baseId,
+    'font': fontSet.name,
     'overrides': overrides.toJson(),
   };
 
@@ -176,6 +183,7 @@ class UpSkin {
       baseId: UpSemanticThemes.byId.containsKey(base)
           ? base
           : UpSemanticThemes.defaultId,
+      fontSet: UpFontSet.parse(json['font']),
       overrides: UpSemanticOverrides.fromJson(
         overrides.cast<String, Object?>(),
         onUnknownKey: onUnknownKey,
@@ -193,8 +201,9 @@ class UpSkin {
       other.id == id &&
       other.name == name &&
       other.baseId == baseId &&
+      other.fontSet == fontSet &&
       other.overrides == overrides;
 
   @override
-  int get hashCode => Object.hash(id, name, baseId, overrides);
+  int get hashCode => Object.hash(id, name, baseId, fontSet, overrides);
 }

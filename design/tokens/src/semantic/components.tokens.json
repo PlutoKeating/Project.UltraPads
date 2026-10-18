@@ -1,141 +1,376 @@
 {
   "transport": {
     "$type": "color",
-    "background": { "$value": "{color.grey.920}" },
-    "stopBackground": { "$value": "{color.grey.700}" },
-    "stopIcon": { "$value": "{color.base.white}" },
-    "waveformPlayed": { "$value": "{color.neon.pink.500}" },
-    "waveformUnplayed": { "$value": "{color.alpha.white.30}" },
-    "progressTrack": { "$value": "{color.alpha.white.20}" },
-    "progressFill": { "$value": "{color.brand.rose}" },
-    "thumb": { "$value": "{color.brand.rose}" },
-    "speedBackground": { "$value": "{color.base.white}" },
-    "speedText": { "$value": "{color.grey.850}" }
+    "background": {
+      "$value": "{color.ui.bgPads}"
+    },
+    "stopBackground": {
+      "$value": "{color.ui.modalButton}"
+    },
+    "stopIcon": {
+      "$value": "{color.base.white}"
+    },
+    "waveformPlayed": {
+      "$value": "{color.brand.pink}"
+    },
+    "waveformUnplayed": {
+      "$value": "{color.alpha.white.30}"
+    },
+    "progressTrack": {
+      "$value": "{color.alpha.white.20}"
+    },
+    "progressFill": {
+      "$value": "{color.brand.pink}",
+      "$description": "IPA progress bar"
+    },
+    "thumb": {
+      "$value": "{color.base.white}",
+      "$description": "IPA slider grip"
+    },
+    "speedBackground": {
+      "$value": "{color.base.white}"
+    },
+    "speedText": {
+      "$value": "{color.ui.textDark}",
+      "$description": "IPA speed digits #282828"
+    }
   },
   "chip": {
     "$type": "color",
-    "background": { "$value": "{color.grey.700}" },
-    "foreground": { "$value": "{color.base.white}" },
-    "iconBox": { "$value": "{color.grey.800}" },
-    "selectedBackground": { "$value": "{color.brand.raspberry}" },
-    "selectedForeground": { "$value": "{color.base.white}" },
-    "selectedIconBox": { "$value": "{color.brand.raspberryDeep}" },
-    "hintBackground": { "$value": "{color.base.white}", "$description": "APK A/B tutorial hint inverts to white" },
-    "hintForeground": { "$value": "{color.base.black}" }
+    "background": {
+      "$value": "{color.ui.bgPads}",
+      "$description": "IPA tutorial button block"
+    },
+    "foreground": {
+      "$value": "{color.base.white}"
+    },
+    "iconBox": {
+      "$value": "{color.ui.cell}"
+    },
+    "selectedBackground": {
+      "$value": "{color.brand.pink}",
+      "$description": "IPA SONGS button"
+    },
+    "selectedForeground": {
+      "$value": "{color.base.white}"
+    },
+    "selectedIconBox": {
+      "$value": "{color.brand.raspberryDeep}",
+      "$description": "SHOT darker icon box"
+    },
+    "hintBackground": {
+      "$value": "{color.base.white}",
+      "$description": "APK A/B tutorial hint inverts to white"
+    },
+    "hintForeground": {
+      "$value": "{color.base.black}"
+    }
   },
   "card": {
     "$type": "color",
-    "background": { "$value": "{color.grey.800}" },
-    "backgroundSelected": { "$value": "{color.grey.700}" },
-    "border": { "$value": "{color.alpha.white.8}" },
-    "title": { "$value": "{color.base.white}" },
-    "subtitle": { "$value": "{color.alpha.white.70}" },
-    "overline": { "$value": "{color.grey.400}" },
-    "selectedIndicator": { "$value": "{color.brand.roseLight}" }
+    "background": {
+      "$value": "{color.ui.cell}",
+      "$description": "IPA kit row"
+    },
+    "backgroundSelected": {
+      "$value": "{color.ui.cellPressed}",
+      "$description": "IPA kit row pressed"
+    },
+    "border": {
+      "$value": "{color.alpha.white.10}"
+    },
+    "title": {
+      "$value": "{color.base.white}"
+    },
+    "subtitle": {
+      "$value": "{color.alpha.white.60}",
+      "$description": "IPA INSPIRED BY"
+    },
+    "overline": {
+      "$value": "{color.ui.textSection}"
+    },
+    "selectedIndicator": {
+      "$value": "{color.brand.pink}",
+      "$description": "IPA kit row selection bar"
+    },
+    "placeholder": {
+      "$value": "{color.ui.placeholder}",
+      "$description": "IPA featured placeholder"
+    },
+    "counter": {
+      "$value": "{color.ui.textMuted}",
+      "$description": "IPA download counter"
+    }
   },
   "banner": {
-    "scrim": { "$type": "gradient", "$value": "{gradient.scrimBottom}" },
-    "indicator": { "$type": "color", "$value": "{color.alpha.white.40}" },
-    "indicatorActive": { "$type": "color", "$value": "{color.base.white}" }
+    "scrim": {
+      "$type": "gradient",
+      "$value": "{gradient.scrimBottom}"
+    },
+    "indicator": {
+      "$type": "color",
+      "$value": "{color.ui.paginationDot}",
+      "$description": "IPA pagination dot"
+    },
+    "indicatorActive": {
+      "$type": "color",
+      "$value": "{color.base.white}"
+    }
   },
   "sheet": {
     "$type": "color",
-    "background": { "$value": "{color.grey.820}" },
-    "header": { "$value": "{color.grey.920}" },
-    "handle": { "$value": "{color.alpha.white.30}" },
-    "item": { "$value": "{color.grey.800}" },
-    "itemPressed": { "$value": "{color.grey.700}" },
-    "itemIconBox": { "$value": "{color.grey.850}" },
-    "underline": { "$value": "{color.brand.rose}" }
+    "background": {
+      "$value": "{color.ui.bgPads}",
+      "$description": "IPA skin panel"
+    },
+    "header": {
+      "$value": "{color.ui.bgPads}"
+    },
+    "handle": {
+      "$value": "{color.alpha.white.30}"
+    },
+    "item": {
+      "$value": "{color.ui.cell}"
+    },
+    "itemPressed": {
+      "$value": "{color.ui.cellPressed}"
+    },
+    "itemIconBox": {
+      "$value": "{color.ui.bgPads}"
+    },
+    "underline": {
+      "$value": "{color.brand.rose}",
+      "$description": "IPA skin panel title divider #F73873"
+    }
   },
   "list": {
     "$type": "color",
-    "item": { "$value": "{color.grey.800}" },
-    "itemPressed": { "$value": "{color.grey.700}" },
-    "separator": { "$value": "{color.grey.900}" }
+    "item": {
+      "$value": "{color.ui.cell}"
+    },
+    "itemPressed": {
+      "$value": "{color.ui.cellPressed}"
+    },
+    "separator": {
+      "$value": "{color.alpha.white.10}"
+    }
   },
   "badge": {
     "$type": "color",
-    "background": { "$value": "{color.brand.roseLight}" },
-    "foreground": { "$value": "{color.base.white}" },
-    "new": { "$value": "{color.swatch.vibrantGreen}" },
-    "top": { "$value": "{color.swatch.dandelion}" },
-    "topForeground": { "$value": "{color.grey.850}" }
+    "background": {
+      "$value": "{color.brand.pink}",
+      "$description": "IPA notification dot"
+    },
+    "foreground": {
+      "$value": "{color.base.white}"
+    },
+    "new": {
+      "$value": "{color.swatch.vibrantGreen}"
+    },
+    "top": {
+      "$value": "{color.swatch.dandelion}"
+    },
+    "topForeground": {
+      "$value": "{color.grey.850}"
+    }
   },
   "button": {
     "$type": "color",
-    "primaryBackground": { "$value": "{color.brand.rose}" },
-    "primaryForeground": { "$value": "{color.base.white}" },
-    "primaryPressed": { "$value": "{color.brand.raspberry}" },
-    "secondaryBackground": { "$value": "{color.grey.700}" },
-    "secondaryForeground": { "$value": "{color.base.white}" },
-    "outlineBorder": { "$value": "{color.base.white}" },
-    "ghostForeground": { "$value": "{color.base.white}" },
-    "dangerBackground": { "$value": "{color.swatch.scarlet}" },
-    "disabledBackground": { "$value": "{color.alpha.white.12}" },
-    "disabledForeground": { "$value": "{color.alpha.white.30}" }
+    "primaryBackground": {
+      "$value": "{color.brand.pink}"
+    },
+    "primaryForeground": {
+      "$value": "{color.base.white}"
+    },
+    "primaryPressed": {
+      "$value": "{color.brand.rose}"
+    },
+    "secondaryBackground": {
+      "$value": "{color.ui.modalButton}",
+      "$description": "IPA unlock / action sheet button"
+    },
+    "secondaryForeground": {
+      "$value": "{color.base.white}"
+    },
+    "outlineBorder": {
+      "$value": "{color.base.white}"
+    },
+    "ghostForeground": {
+      "$value": "{color.base.white}"
+    },
+    "dangerBackground": {
+      "$value": "{color.ui.recRed}"
+    },
+    "disabledBackground": {
+      "$value": "{color.alpha.white.12}"
+    },
+    "disabledForeground": {
+      "$value": "{color.alpha.white.30}"
+    },
+    "alertBorder": {
+      "$value": "{color.brand.alert}",
+      "$description": "IPA NO / CANCEL outline"
+    },
+    "whiteBackground": {
+      "$value": "{color.base.white}",
+      "$description": "IPA SAVE bar / pill buttons"
+    },
+    "whiteForeground": {
+      "$value": "{color.brand.rose}",
+      "$description": "IPA SAVE text #F73873"
+    }
   },
   "input": {
     "$type": "color",
-    "background": { "$value": "{color.grey.950}" },
-    "foreground": { "$value": "{color.base.white}" },
-    "placeholder": { "$value": "{color.grey.400}" },
-    "cursor": { "$value": "{color.brand.rose}" }
+    "background": {
+      "$value": "{color.ui.bgMenu}"
+    },
+    "foreground": {
+      "$value": "{color.base.white}"
+    },
+    "placeholder": {
+      "$value": "{color.alpha.white.60}"
+    },
+    "cursor": {
+      "$value": "{color.brand.rose}"
+    },
+    "border": {
+      "$value": "{color.alpha.white.50}",
+      "$description": "IPA search field outline α0.5"
+    },
+    "focus": {
+      "$value": "{color.brand.rose}",
+      "$description": "IPA label/underline focus #F73873"
+    }
   },
   "slider": {
     "$type": "color",
-    "track": { "$value": "{color.alpha.white.20}" },
-    "fill": { "$value": "{color.brand.rose}" },
-    "thumb": { "$value": "{color.brand.rose}" }
+    "track": {
+      "$value": "{color.alpha.white.20}"
+    },
+    "fill": {
+      "$value": "{color.brand.pink}"
+    },
+    "thumb": {
+      "$value": "{color.base.white}",
+      "$description": "IPA grip"
+    }
   },
   "dialog": {
     "$type": "color",
-    "background": { "$value": "{color.grey.800}" },
-    "scrim": { "$value": "{color.alpha.black.63}" }
+    "background": {
+      "$value": "{color.ui.bgPads}",
+      "$description": "IPA kit preview modal"
+    },
+    "scrim": {
+      "$value": "{color.alpha.black.80}",
+      "$description": "IPA kit preview overlay"
+    },
+    "light": {
+      "$value": "{color.base.white}",
+      "$description": "IPA rate dialog"
+    },
+    "lightTitle": {
+      "$value": "{color.brand.pink}"
+    },
+    "lightText": {
+      "$value": "{color.ui.inputText}"
+    }
   },
   "toast": {
     "$type": "color",
-    "background": { "$value": "{color.alpha.white.90}" },
-    "foreground": { "$value": "{color.grey.850}" }
+    "background": {
+      "$value": "{color.alpha.white.90}"
+    },
+    "foreground": {
+      "$value": "{color.grey.850}"
+    }
   },
   "meter": {
     "$type": "color",
-    "track": { "$value": "{color.alpha.white.8}" },
-    "low": { "$value": "{color.swatch.vibrantGreen}" },
-    "mid": { "$value": "{color.swatch.dandelion}" },
-    "high": { "$value": "{color.swatch.scarlet}" },
-    "peak": { "$value": "{color.base.white}" }
+    "track": {
+      "$value": "{color.alpha.white.8}"
+    },
+    "low": {
+      "$value": "{color.swatch.vibrantGreen}"
+    },
+    "mid": {
+      "$value": "{color.swatch.dandelion}"
+    },
+    "high": {
+      "$value": "{color.swatch.scarlet}"
+    },
+    "peak": {
+      "$value": "{color.base.white}"
+    }
   },
   "waveform": {
     "$type": "color",
-    "active": { "$value": "{color.neon.pink.500}" },
-    "inactive": { "$value": "{color.alpha.white.30}" },
-    "selection": { "$value": "{color.alpha.white.12}" },
-    "marker": { "$value": "{color.base.white}" }
+    "active": {
+      "$value": "{color.brand.pink}"
+    },
+    "inactive": {
+      "$value": "{color.alpha.white.30}"
+    },
+    "selection": {
+      "$value": "{color.alpha.black.40}",
+      "$description": "IPA area outside trim selection"
+    },
+    "marker": {
+      "$value": "{color.base.white}"
+    }
   },
   "progressRing": {
     "$type": "color",
-    "track": { "$value": "{color.base.white}" },
-    "fill": { "$value": "{color.brand.rose}" }
+    "track": {
+      "$value": "{color.base.white}"
+    },
+    "fill": {
+      "$value": "{color.brand.pink}"
+    }
   },
   "record": {
     "$type": "color",
-    "indicator": { "$value": "{color.swatch.scarlet}" },
-    "trackCard": { "$value": "{color.grey.800}" }
+    "indicator": {
+      "$value": "{color.ui.recRed}"
+    },
+    "trackCard": {
+      "$value": "{color.ui.cell}"
+    }
   },
   "genre": {
     "$type": "color",
-    "label": { "$value": "{color.alpha.white.70}" },
-    "ring": { "$value": "{color.base.white}" }
+    "label": {
+      "$value": "{color.alpha.white.70}"
+    },
+    "ring": {
+      "$value": "{color.base.white}"
+    },
+    "check": {
+      "$value": "{color.brand.rosePad}",
+      "$description": "IPA genre check"
+    },
+    "tabSelected": {
+      "$value": "{color.brand.pink}",
+      "$description": "IPA tab selected circle"
+    }
   },
   "swatch": {
     "$type": "color",
-    "ring": { "$value": "{color.base.white}" }
+    "ring": {
+      "$value": "{color.base.white}"
+    }
   },
   "hub": {
     "$type": "color",
-    "online": { "$value": "{color.swatch.vibrantGreen}" },
-    "pairing": { "$value": "{color.swatch.skyBlue}" },
-    "offline": { "$value": "{color.grey.500}" }
+    "online": {
+      "$value": "{color.swatch.vibrantGreen}"
+    },
+    "pairing": {
+      "$value": "{color.swatch.skyBlue}"
+    },
+    "offline": {
+      "$value": "{color.grey.500}"
+    }
   }
 }

@@ -33,6 +33,7 @@ const List<String> arbKeyDomains = <String>[
 /// (brand names, units, letters).
 const Set<String> arbIdenticalAllowed = <String>{
   'performBankA',
+  'performSpeedValue',
   'performBankB',
   'performTempo',
   'settingsMidi',

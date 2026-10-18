@@ -10,6 +10,7 @@ class UpPadRole {
     required this.mid,
     required this.edge,
     required this.glow,
+    required this.pressed,
   });
 
   final int index;
@@ -25,6 +26,10 @@ class UpPadRole {
 
   /// Glow colour fed into `UpGlowSpec.shadows`.
   final Color glow;
+
+  /// Colour of the press / loop flash layer (white for overlay skins, a pale
+  /// tint for tint-swap skins); its peak alpha is `pad.pressed.flashOpacity`.
+  final Color pressed;
 
   List<Color> get colors => <Color>[core, mid, edge];
 
@@ -55,8 +60,9 @@ class UpPadRole {
       other.core == core &&
       other.mid == mid &&
       other.edge == edge &&
-      other.glow == glow;
+      other.glow == glow &&
+      other.pressed == pressed;
 
   @override
-  int get hashCode => Object.hash(index, core, mid, edge, glow);
+  int get hashCode => Object.hash(index, core, mid, edge, glow, pressed);
 }

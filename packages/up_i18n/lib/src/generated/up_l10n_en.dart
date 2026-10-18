@@ -797,6 +797,54 @@ class UpL10nEn extends UpL10n {
   String get skinEditorDeleteTitle => 'Delete skin?';
 
   @override
+  String get skinPresetDefault => 'Default';
+
+  @override
+  String get skinPresetNumber => 'Number';
+
+  @override
+  String get skinPresetChristmas => 'Christmas';
+
+  @override
+  String get skinPresetPets => 'Pets';
+
+  @override
+  String get skinPresetCover => 'Cover';
+
+  @override
+  String get skinPresetBroken => 'Broken';
+
+  @override
+  String get skinPresetMuertos => 'Muertos';
+
+  @override
+  String get skinPresetCrazy => 'Crazy';
+
+  @override
+  String get skinPresetLaunchpad => 'Launchpad';
+
+  @override
+  String get skinPresetCrafts => 'Crafts';
+
+  @override
+  String get skinPresetPolished => 'Polished';
+
+  @override
+  String get skinPresetClean => 'Clean';
+
+  @override
+  String get skinPresetCircle => 'Circle';
+
+  @override
+  String get skinPresetSquare => 'Square';
+
+  @override
+  String get skinPresetLgbt => 'Rainbow';
+
+  @override
+  String get skinPresetHalloween => 'Halloween';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override
@@ -1273,4 +1321,123 @@ class UpL10nEn extends UpL10n {
     });
     return '$_temp0';
   }
+
+  @override
+  String performSpeedValue(double value) {
+    final intl.NumberFormat valueNumberFormat =
+        intl.NumberFormat.decimalPatternDigits(
+          locale: localeName,
+          decimalDigits: 1,
+        );
+    final String valueString = valueNumberFormat.format(value);
+
+    return '$valueString×';
+  }
+
+  @override
+  String get settingsClassicPads => 'Classic pad animation';
+
+  @override
+  String settingsEngineBackend(String name) {
+    return 'Audio engine: $name';
+  }
+
+  @override
+  String get settingsEngineFallback =>
+      'Native audio engine unavailable — running in demo mode';
+
+  @override
+  String get errorEngineUnsupported =>
+      'The audio engine doesn\'t support this yet';
+
+  @override
+  String get loadSoundPickSample => 'Choose a sound';
+
+  @override
+  String get hubThisDevice => 'This device';
+
+  @override
+  String get hubNearbyDevices => 'Nearby devices';
+
+  @override
+  String get settingsPrivateAssets => 'Original app assets';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get performLearnToPlay => 'Learn to play';
+
+  @override
+  String get performBackToTools => 'Back';
+
+  @override
+  String get performSpeedNormal => 'Normal';
+
+  @override
+  String get performSpeedSlow => 'Slow';
+
+  @override
+  String get performSpeedVerySlow => 'Very slow';
+
+  @override
+  String get tutorialPerfect => 'Perfect';
+
+  @override
+  String get tutorialTooFast => 'Too fast';
+
+  @override
+  String get tutorialTooSlow => 'Too slow';
+
+  @override
+  String get tutorialMiss => 'Miss';
+
+  @override
+  String get tutorialPressWhenFull => 'Press the pad when it\'s fully filled';
+
+  @override
+  String get tutorialPlayDemo => 'Play';
+
+  @override
+  String get navFeed => 'Feed';
+
+  @override
+  String get librarySeeAll => 'See all';
+
+  @override
+  String get libraryArtists => 'Artists';
+
+  @override
+  String get libraryRecommended => 'Recommended for you';
+
+  @override
+  String get libraryOpenKit => 'Open kit';
+
+  @override
+  String get kitEditorEditPad => 'Edit pad';
+
+  @override
+  String get kitEditorEditFile => 'Edit file';
+
+  @override
+  String get kitEditorClone => 'Clone';
+
+  @override
+  String get kitEditorGroup => 'Group';
+
+  @override
+  String get kitEditorLoop => 'Loop';
+
+  @override
+  String get kitEditorReplaceTitle => 'Replace this sound?';
+
+  @override
+  String get recordSaveAndShare => 'Save and share';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingChooseStyleBody =>
+      'Pick the styles you like and we\'ll start you off with the right kits';
 }
