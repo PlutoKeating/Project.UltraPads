@@ -30,6 +30,7 @@ class _HubPageState extends ConsumerState<HubPage> {
   final Map<String, HubPeer> _peers = {};
   final _address = TextEditingController();
   StreamSubscription<HubPeerEvent>? _discovery;
+  Timer? _latencyPoll;
   bool _discovering = false;
   bool _probing = false;
   bool _unsupported = false;
@@ -44,11 +45,18 @@ class _HubPageState extends ConsumerState<HubPage> {
     super.initState();
     _loadKnown();
     _discover();
+    // 控制器模式下定时刷新往返延迟（同步读取，开销很小）。
+    _latencyPoll = Timer.periodic(UpDurations.slower, (_) {
+      if (ref.read(hubViewProvider).controller.connected) {
+        ref.read(hubViewProvider.notifier).refreshController();
+      }
+    });
   }
 
   @override
   void dispose() {
     _discovery?.cancel();
+    _latencyPoll?.cancel();
     // 停止 mDNS 浏览（释放 Android 组播锁）；只取消订阅要等下一个事件才生效。
     unawaited(tryEngineDo(_engine.hubDiscoverStop));
     _address.dispose();

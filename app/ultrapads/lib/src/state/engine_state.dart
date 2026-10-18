@@ -321,6 +321,9 @@ class HubProjection extends Notifier<HubView> {
     _refreshController(null);
   }
 
+  /// 重读控制器状态（往返延迟样本在连接期间持续累积，Hub 页定时调用）。
+  void refreshController() => _refreshController(null);
+
   Future<PairingCode?> newPairingCode() async {
     final code = await tryEngine(_engine.hubNewPairingCode);
     if (code != null) state = state.copyWith(pairingCode: () => code);
