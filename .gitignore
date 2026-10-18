@@ -38,3 +38,12 @@ node_modules/
 !.env.example
 /dist/
 /out/
+
+# Kotlin 编译守护进程会话
+**/.kotlin/
+
+# 私有素材注入到应用的位置（构建时由脚本复制）
+/app/ultrapads/assets/private/
+
+# 各代理/本地隔离构建目录
+/target/
