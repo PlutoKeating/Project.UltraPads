@@ -13,6 +13,7 @@ import 'package:up_tokens/up_tokens.dart';
 import 'package:up_ui/up_ui.dart';
 
 import '../../config/app_links.dart';
+import '../../assets/private_assets.dart';
 import '../../routing/routes.dart';
 import '../../state/engine_state.dart';
 import '../../state/perform_state.dart';
@@ -21,6 +22,7 @@ import '../recorder/save_recording_sheet.dart';
 import '../skins/skins_sheet.dart';
 import '../tutorial/tutorial_feedback.dart';
 import '../tutorial/tutorial_timing.dart';
+import '../onboarding/first_guide.dart';
 import 'keyboard_map.dart';
 import 'pad_mapping.dart';
 import 'perform_layout.dart';
@@ -216,6 +218,32 @@ class _PerformPageState extends ConsumerState<PerformPage>
 
   final _speedKey = GlobalKey(debugLabel: 'speed-pill');
 
+  // 首次引导（4.7.0 FirstGuide）的目标。
+  final _gridKey = GlobalKey(debugLabel: 'guide-grid');
+  final _learnKey = GlobalKey(debugLabel: 'guide-learn');
+  final _moreKey = GlobalKey(debugLabel: 'guide-more');
+  final _songsKey = GlobalKey(debugLabel: 'guide-songs');
+
+  List<FirstGuideStep> _guideSteps(BuildContext context) {
+    final l10n = context.l10n;
+    return [
+      FirstGuideStep(
+        target: _gridKey,
+        text: l10n.tutorialFirstGuidePad,
+        // 只高亮第一个 pad（网格左上角一格）。
+        hole: (r) => Rect.fromLTWH(
+          r.left,
+          r.top,
+          (r.width - (PadGrid.columns - 1) * UpPadTokens.gap) / PadGrid.columns,
+          (r.height - (PadGrid.rows - 1) * UpPadTokens.gap) / PadGrid.rows,
+        ),
+      ),
+      FirstGuideStep(target: _learnKey, text: l10n.tutorialFirstGuideLearn),
+      FirstGuideStep(target: _moreKey, text: l10n.tutorialFirstGuideMore),
+      FirstGuideStep(target: _songsKey, text: l10n.tutorialFirstGuideSongs),
+    ];
+  }
+
   /// 视频教程（外部浏览器 / App 打开；链接来自 assets/config/links.json）。
   Future<void> _openVideo(Uri uri) async {
     final l10n = context.l10n;
@@ -320,6 +348,8 @@ class _PerformPageState extends ConsumerState<PerformPage>
         onEdit: () => context.push(Routes.editor),
         onShare: _shareKit,
         onSettings: () => context.push(Routes.settings),
+        learnKey: _learnKey,
+        moreKey: _moreKey,
       );
     }
 
@@ -327,102 +357,151 @@ class _PerformPageState extends ConsumerState<PerformPage>
       focusNode: _focus,
       autofocus: true,
       onKeyEvent: _onKey,
-      child: Scaffold(
-        backgroundColor: c.surfacePads,
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, body) => Center(
-              child: SizedBox(
-                width: PerformLayout.columnWidth(body.biggest),
-                child: Column(
-                  children: [
-                    UpTopBar(
-                      background: c.surfacePads,
-                      leading: UpChip(
-                        label: l10n.navSongs,
-                        icon: Icons.music_note_rounded,
-                        variant: UpChipVariant.selected,
-                        onTap: () => context.push(Routes.kits),
-                      ),
-                      titleWidget: _KitTitle(name: view.kit?.name),
-                      trailing: [
-                        if (tutorial != null)
-                          SpeedPill(
-                            key: _speedKey,
-                            label: l10n.performSpeedValue(tutorial.speed),
-                            onTap: _pickSpeed,
+      child: Stack(
+        children: [
+          _scaffold(
+            context,
+            c,
+            l10n,
+            view,
+            tutorial,
+            row,
+            bankButton,
+            pads,
+            bank,
+            dimmed,
+            fills,
+            settings,
+            assets,
+            videoUri,
+          ),
+          // 首次引导：只在普通演奏模式下显示，完成 / 跳过后写入设置。
+          if (!settings.firstGuideSeen && tutorial == null)
+            Positioned.fill(
+              child: FirstGuideOverlay(
+                steps: _guideSteps(context),
+                onDone: () =>
+                    ref.read(settingsProvider.notifier).setFirstGuideSeen(true),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _scaffold(
+    BuildContext context,
+    UpSemantic c,
+    UpL10n l10n,
+    EngineView view,
+    TutorialSession? tutorial,
+    Widget row,
+    Widget? bankButton,
+    List<PadData> pads,
+    int bank,
+    Set<int> dimmed,
+    Map<int, double> fills,
+    AppSettings settings,
+    PrivateAssets assets,
+    Uri? videoUri,
+  ) {
+    return Scaffold(
+      backgroundColor: c.surfacePads,
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, body) => Center(
+            child: SizedBox(
+              width: PerformLayout.columnWidth(body.biggest),
+              child: Column(
+                children: [
+                  UpTopBar(
+                    background: c.surfacePads,
+                    leading: UpChip(
+                      key: _songsKey,
+                      label: l10n.navSongs,
+                      icon: Icons.music_note_rounded,
+                      variant: UpChipVariant.selected,
+                      onTap: () => context.push(Routes.kits),
+                    ),
+                    titleWidget: _KitTitle(name: view.kit?.name),
+                    trailing: [
+                      if (tutorial != null)
+                        SpeedPill(
+                          key: _speedKey,
+                          label: l10n.performSpeedValue(tutorial.speed),
+                          onTap: _pickSpeed,
+                        ),
+                      // 4.7.0 btnYoutube：顶栏最右（教程模式时速度按钮在它左边）。
+                      if (videoUri != null)
+                        VideoTutorialButton(
+                          label: l10n.performVideoPlatform,
+                          semanticLabel: l10n.performVideoTutorial,
+                          onTap: () => _openVideo(videoUri),
+                        ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: UpTopBarTokens.bankButtonSize,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: AnimatedSwitcher(
+                            duration: UpMotion.duration(
+                              context,
+                              UpDurations.medium,
+                            ),
+                            child: row,
                           ),
-                        // 4.7.0 btnYoutube：顶栏最右（教程模式时速度按钮在它左边）。
-                        if (videoUri != null)
-                          VideoTutorialButton(
-                            label: l10n.performVideoPlatform,
-                            semanticLabel: l10n.performVideoTutorial,
-                            onTap: () => _openVideo(videoUri),
-                          ),
+                        ),
+                        ?bankButton,
                       ],
                     ),
-                    SizedBox(
-                      height: UpTopBarTokens.bankButtonSize,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: AnimatedSwitcher(
-                              duration: UpMotion.duration(
-                                context,
-                                UpDurations.medium,
-                              ),
-                              child: row,
-                            ),
-                          ),
-                          ?bankButton,
-                        ],
+                  ),
+                  if (view.controllerMode) const _ControllerBanner(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        UpPadGridTokens.pageInset,
+                        UpPadGridTokens.marginTop,
+                        UpPadGridTokens.pageInset,
+                        UpPadGridTokens.marginBottom,
                       ),
-                    ),
-                    if (view.controllerMode) const _ControllerBanner(),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          UpPadGridTokens.pageInset,
-                          UpPadGridTokens.marginTop,
-                          UpPadGridTokens.pageInset,
-                          UpPadGridTokens.marginBottom,
-                        ),
-                        // 宽屏：按 4.7.0 fixed_height 等比计算网格尺寸并居中（PerformLayout）。
-                        child: LayoutBuilder(
-                          builder: (context, box) => Center(
-                            child: SizedBox.fromSize(
-                              size: PerformLayout.gridSize(box.biggest),
-                              child: Stack(
-                                children: [
-                                  PadGrid(
-                                    pads: pads,
-                                    bank: bank,
-                                    onPadDown: _padDown,
-                                    onPadUp: _padUp,
-                                    dimmed: dimmed,
-                                    fills: fills,
-                                    externallyPressed: _keyPressed,
-                                    lottie: settings.classicPads
-                                        ? classicLottieSkin(assets)
-                                        : null,
-                                  ),
-                                  if (tutorial != null)
-                                    Positioned.fill(
-                                      child: TutorialFeedbackLayer(
-                                        feedback: tutorial.feedback,
-                                        bank: bank,
-                                      ),
+                      // 宽屏：按 4.7.0 fixed_height 等比计算网格尺寸并居中（PerformLayout）。
+                      child: LayoutBuilder(
+                        builder: (context, box) => Center(
+                          child: SizedBox.fromSize(
+                            key: _gridKey,
+                            size: PerformLayout.gridSize(box.biggest),
+                            child: Stack(
+                              children: [
+                                PadGrid(
+                                  pads: pads,
+                                  bank: bank,
+                                  onPadDown: _padDown,
+                                  onPadUp: _padUp,
+                                  dimmed: dimmed,
+                                  fills: fills,
+                                  externallyPressed: _keyPressed,
+                                  lottie: settings.classicPads
+                                      ? classicLottieSkin(assets)
+                                      : null,
+                                ),
+                                if (tutorial != null)
+                                  Positioned.fill(
+                                    child: TutorialFeedbackLayer(
+                                      feedback: tutorial.feedback,
+                                      bank: bank,
                                     ),
-                                ],
-                              ),
+                                  ),
+                              ],
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

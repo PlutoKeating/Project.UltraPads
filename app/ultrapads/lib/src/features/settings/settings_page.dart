@@ -255,6 +255,17 @@ class SettingsPage extends ConsumerWidget {
                   ),
                   header(l10n.settingsDeveloper),
                   UpListItem(
+                    icon: Icons.tour_rounded,
+                    title: l10n.settingsReplayGuide,
+                    onTap: () {
+                      ref
+                          .read(settingsProvider.notifier)
+                          .setFirstGuideSeen(false);
+                      showUpToast(context, l10n.settingsReplayGuideDone);
+                    },
+                  ),
+                  const SizedBox(height: UpSheetTokens.itemGap),
+                  UpListItem(
                     icon: Icons.auto_awesome_mosaic_rounded,
                     title: l10n.settingsDesignGallery,
                     onTap: () => context.push(Routes.gallery),

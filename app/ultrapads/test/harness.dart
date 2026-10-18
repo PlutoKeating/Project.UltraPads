@@ -38,7 +38,12 @@ Future<AppHarness> pumpApp(
 }) async {
   await t.binding.setSurfaceSize(size);
   t.view.devicePixelRatio = 1;
-  SharedPreferences.setMockInitialValues({'onboarded': onboarded, ...prefs});
+  SharedPreferences.setMockInitialValues({
+    'onboarded': onboarded,
+    // 首次引导默认已看过，避免挡住其它测试；引导自己的测试显式传 false。
+    'firstGuideSeen': true,
+    ...prefs,
+  });
   final p = await SharedPreferences.getInstance();
   final engine = MockEngineClient(realtime: false);
   final locales = LocaleController(store: InMemoryLocaleStore('en'));

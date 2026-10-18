@@ -48,6 +48,7 @@ class AppSettings {
     this.outputDevice,
     this.keyboardEnabled = true,
     this.classicPads = false,
+    this.firstGuideSeen = false,
   });
 
   /// 当前皮肤：内置 id 或自定义皮肤 id。
@@ -62,6 +63,9 @@ class AppSettings {
   /// 使用 APK 经典 Lottie pad 动画（需要注入 APK 素材）。
   final bool classicPads;
 
+  /// 演奏页首次引导（4.7.0 FirstGuide）已完成或跳过。
+  final bool firstGuideSeen;
+
   AppSettings copyWith({
     String? skinId,
     List<UpSkin>? customSkins,
@@ -71,6 +75,7 @@ class AppSettings {
     String? Function()? outputDevice,
     bool? keyboardEnabled,
     bool? classicPads,
+    bool? firstGuideSeen,
   }) => AppSettings(
     skinId: skinId ?? this.skinId,
     customSkins: customSkins ?? this.customSkins,
@@ -80,6 +85,7 @@ class AppSettings {
     outputDevice: outputDevice != null ? outputDevice() : this.outputDevice,
     keyboardEnabled: keyboardEnabled ?? this.keyboardEnabled,
     classicPads: classicPads ?? this.classicPads,
+    firstGuideSeen: firstGuideSeen ?? this.firstGuideSeen,
   );
 }
 
@@ -92,6 +98,7 @@ class SettingsController extends Notifier<AppSettings> {
   static const _kDevice = 'outputDevice';
   static const _kKeyboard = 'keyboard';
   static const _kClassic = 'classicPads';
+  static const _kFirstGuide = 'firstGuideSeen';
 
   SharedPreferences get _p => ref.read(prefsProvider);
 
@@ -115,6 +122,7 @@ class SettingsController extends Notifier<AppSettings> {
       outputDevice: p.getString(_kDevice),
       keyboardEnabled: p.getBool(_kKeyboard) ?? true,
       classicPads: p.getBool(_kClassic) ?? false,
+      firstGuideSeen: p.getBool(_kFirstGuide) ?? false,
     );
   }
 
@@ -147,6 +155,12 @@ class SettingsController extends Notifier<AppSettings> {
   void setOnboarded() {
     state = state.copyWith(onboarded: true);
     _p.setBool(_kOnboarded, true);
+  }
+
+  /// 首次引导完成 / 跳过（true），或在设置中重新显示（false）。
+  void setFirstGuideSeen(bool v) {
+    state = state.copyWith(firstGuideSeen: v);
+    _p.setBool(_kFirstGuide, v);
   }
 
   void setBufferFrames(int? v) {

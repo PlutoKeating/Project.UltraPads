@@ -25,6 +25,8 @@ class PerformToolbar extends StatelessWidget {
     required this.onEdit,
     required this.onShare,
     required this.onSettings,
+    this.learnKey,
+    this.moreKey,
   });
 
   final bool expanded;
@@ -40,6 +42,10 @@ class PerformToolbar extends StatelessWidget {
   final VoidCallback onShare;
   final VoidCallback onSettings;
 
+  /// 首次引导用来定位「学习演奏」和 ⋮ 的 key（可选）。
+  final Key? learnKey;
+  final Key? moreKey;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -52,6 +58,7 @@ class PerformToolbar extends StatelessWidget {
       spacing: UpTopBarTokens.gap,
       children: [
         UpChip(
+          key: learnKey,
           label: l10n.performLearnToPlay,
           icon: Icons.school_rounded,
           variant: UpChipVariant.selected,
@@ -63,6 +70,7 @@ class PerformToolbar extends StatelessWidget {
           color: c.borderDivider,
         ),
         UpIconButton(
+          key: moreKey,
           icon: Icons.more_vert_rounded,
           semanticLabel: l10n.performMoreOptions,
           onPressed: () => onExpand(true),
