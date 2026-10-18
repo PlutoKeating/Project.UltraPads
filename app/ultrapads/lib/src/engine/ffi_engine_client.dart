@@ -226,6 +226,7 @@ class FfiEngineClient implements EngineClient {
     name: tr.name,
     durationSecs: tr.durationSecs,
     createdAt: DateTime.fromMillisecondsSinceEpoch(tr.createdUnixMs.toInt()),
+    waveform: tr.waveform.toList(),
   );
 
   static SampleInfo _sample(t.SampleInfo s) => SampleInfo(

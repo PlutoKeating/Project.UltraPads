@@ -174,6 +174,10 @@ class _EditorPageState extends ConsumerState<EditorPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 页面打开时 Kit 还没加载完（例如首次启动后台导入），加载后再读一次。
+    ref.listen(engineViewProvider.select((v) => v.kit?.id), (prev, next) {
+      if (next != null && next != _doc?.id && !_dirty) _load();
+    });
     final l10n = context.l10n;
     final theme = UpTheme.of(context);
     final c = theme.colors;

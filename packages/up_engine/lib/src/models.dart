@@ -418,6 +418,7 @@ final class TrackInfo {
     required this.durationSecs,
     required this.createdAt,
     this.kitName = '',
+    this.waveform = const [],
   });
 
   final String id;
@@ -425,6 +426,9 @@ final class TrackInfo {
   final double durationSecs;
   final DateTime createdAt;
   final String kitName;
+
+  /// 波形概要（0..1，引擎给 128 段）；为空时 UI 另行读取。
+  final List<double> waveform;
 }
 
 enum ExportFormat { wav, flac, upkit, sfz }

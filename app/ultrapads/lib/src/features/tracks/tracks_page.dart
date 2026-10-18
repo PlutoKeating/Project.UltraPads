@@ -152,16 +152,18 @@ class _TracksPageState extends ConsumerState<TracksPage> {
                               playback != null &&
                               playback.playing &&
                               playback.trackId == t.id;
-                          final peaks =
-                              ref
-                                  .watch(
-                                    waveformProvider((
-                                      sample: 'track:${t.id}',
-                                      buckets: UpWaveformTokens.height.toInt(),
-                                    )),
-                                  )
-                                  .value ??
-                              const [];
+                          final peaks = t.waveform.isNotEmpty
+                              ? t.waveform
+                              : ref
+                                        .watch(
+                                          waveformProvider((
+                                            sample: 'track:${t.id}',
+                                            buckets: UpWaveformTokens.height
+                                                .toInt(),
+                                          )),
+                                        )
+                                        .value ??
+                                    const [];
                           return TrackCard(
                             title: t.name,
                             subtitle: l10n.worksRecordedOn(t.createdAt),
