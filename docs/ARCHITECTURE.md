@@ -71,6 +71,11 @@
 - Dart 侧以 `ThemeExtension<UpTheme>` 注入，组件只能通过 `UpTheme.of(context)` 取值；`UpTheme.lerp` 让主题切换自动带动画
 - Pad 渐变：`full` 动效档由带三角抖动的片元着色器绘制（Impeller 不对渐变抖动，否则 Android 上出现同心淡环），见 `app/ultrapads/docs/ARCHITECTURE.md` §9
 - 颜色角色：Dart `ColorRole` 与引擎同名同序，`ColorRole.paletteIndex` 是到 `pad.palette.N` 的唯一映射（`docs/API.md` §3.1 末尾）
+- 品牌标志：`design/brand/ultrapads-mark.svg` 是唯一事实源（UP 组合字：U 为粉紫果冻管，P 的竖笔为青色 pad，P 的圆肚为 PlutoKeating 设计系统的琥珀 orb；透明底，512 坐标系）。`just icons`（`tools/brand/build_icons.mjs`）由它生成圆角图标 `design/brand/ultrapads.svg` 与官网 `website/public/icon.svg`，再经 Chromium 渲染、ImageMagick 缩放出全部平台位图（产物入库）：
+  - 圆角图标：Linux `linux/packaging/dev.ultrapads.ultrapads.png`、Windows `app_icon.ico`、Web `Icon-192/512`、`favicon.png`、Android 旧式 `mipmap-*/ic_launcher.png`
+  - 满版方形（标志缩至 80% 安全圆、无透明）：iOS `AppIcon.appiconset`、Web maskable 图标、官网 `apple-touch-icon.png`
+  - macOS：824/1024 圆角主体 + 投影
+  - Android adaptive icon（API 26+）：`mipmap-anydpi-v26/ic_launcher.xml` = `drawable/ic_launcher_background.xml`（与图标背景同一渐变）+ `mipmap-*/ic_launcher_foreground.png`（标志落在 66dp 安全区内）
 - 字体：Uni Sans 是商业字体，不入库，由 `just inject-assets` 注入，`UpFonts.loadPrivate()` 加载；缺失时回退到 Montserrat（OFL）
 - i18n：`packages/up_i18n`（ARB，zh/en），`UpL10n.of(context)`、`LocaleController`；`dart run up_i18n:add_locale <code>` 新增语言，`dart run up_i18n:check` 检查缺失
 - lint：`tools/lint/no_hardcode.dart` 扫描 `packages/up_ui`、`packages/up_fx`、`app/ultrapads/lib`（排除生成代码），禁止 `Color(0x…)`、`Colors.*`、数字字面量的圆角/时长/间距/字号，以及 `Text('…')` 字面量；行级豁免写 `// up-lint-ignore: <原因>`

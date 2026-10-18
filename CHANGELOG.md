@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### 新增
+
+- 品牌标志定稿：UP 组合字（粉紫果冻 U + 青色 pad 竖笔 + PlutoKeating 琥珀 orb），源文件 `design/brand/ultrapads-mark.svg`。
+  `just icons` 由它生成 Linux、Windows、macOS、iOS、Android（含 adaptive icon）、Web 与官网的全部图标；
+  Flutter Web 的 manifest / 页面标题改为 UltraPads 与品牌底色，替换模板默认值。
+
 ### 改进
 
 - 按键响应延迟：

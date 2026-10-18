@@ -83,6 +83,7 @@ just run-mock       # 不编译 Rust，用 Mock 引擎运行界面
 | `just build-linux` | 构建 Linux release |
 | `just build-android` | 构建 Android release APK（按 ABI 拆分） |
 | `just tokens` / `just codegen` | 重新生成设计 token 和 Rust↔Dart 绑定 |
+| `just icons` | 由 `design/brand/ultrapads-mark.svg` 重新生成全平台应用图标与官网图标 |
 | `just cli <参数>` | 运行无头 CLI |
 | `just inject-assets` | 可选：把本机自备的原 App 素材注入应用（不入库） |
 
@@ -125,8 +126,9 @@ bridge/up-ffi  Rust ↔ Dart 的 FFI 接口
 app/ultrapads  ③ Flutter 应用
 packages/      up_tokens（设计 token）up_ui（组件）up_fx（光效）up_i18n（多语言）up_engine（引擎客户端契约）
 design/tokens  W3C DTCG token 源 + Style Dictionary 构建
+design/brand   品牌标志（UP 组合字）与应用图标 SVG
 content/       Kit schema 与 CC0 示例 Kit
-tools/         lint、素材注入
+tools/         lint、素材注入、图标生成
 docs/          架构、API、需求、ADR、调研
 ```
 

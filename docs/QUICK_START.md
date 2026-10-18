@@ -14,7 +14,8 @@
 | flutter_rust_bridge_codegen | **2.13.0**（与 `flutter_rust_bridge: 2.13.0` 严格一致） | 生成 Rust↔Dart 绑定 |
 | just | 1.x | 统一命令入口（`just --list`） |
 | melos | 8.x（根 `pubspec.yaml` 的 dev 依赖，用 `dart run melos` 调用即可） | Dart 多包分析与测试 |
-| Node.js + pnpm | Node ≥ 22，pnpm 12 | 设计 token 构建（Style Dictionary） |
+| Node.js + pnpm | Node ≥ 22，pnpm 12 | 设计 token 构建（Style Dictionary）、图标生成 |
+| ImageMagick + Chromium | magick 7.x；chromium / google-chrome / Playwright headless shell 任一（或 `CHROME=<路径>`） | 仅 `just icons` 需要 |
 | Linux 桌面依赖 | GTK 3 开发包、clang、cmake、ninja、pkg-config、ALSA 开发包（`libasound2-dev`） | Linux 构建与音频 |
 
 ```bash
@@ -30,6 +31,7 @@ cargo install just
 just bootstrap   # flutter pub get（工作区）+ pnpm install（design/tokens）+ cargo fetch
 just tokens      # 由 DTCG 源生成 up_tokens（产物已入库，改 token 时才需要）
 just codegen     # 修改 bridge/up-ffi/src/api 后重新生成 FRB 绑定（产物已入库）
+just icons       # 修改 design/brand/ultrapads-mark.svg 后重新生成全平台图标（产物已入库；需 ImageMagick 7 + Chromium）
 ```
 
 i18n：改 `packages/up_i18n/lib/l10n/app_{zh,en}.arb` 后执行 `cd packages/up_i18n && dart run up_i18n:gen`。
