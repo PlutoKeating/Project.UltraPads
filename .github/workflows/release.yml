@@ -45,20 +45,27 @@ jobs:
       matrix:
         include:
           - arch: x64
-            runner: ubuntu-22.04
+            runner: ubuntu-24.04
           - arch: arm64
-            runner: ubuntu-22.04-arm
+            runner: ubuntu-24.04-arm
     runs-on: ${{ matrix.runner }}
+    # 构建基线 Debian 12（glibc 2.36、PipeWire 0.3.65）：PipeWire 原生音频后端需要 ≥ 0.3.65 的头文件；
+    # 产物可在 Debian 12+、Ubuntu 23.04+、Fedora 38+、Arch 等运行。
+    container: debian:12
     steps:
-      - uses: actions/checkout@v4
       - name: System packages
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev libasound2-dev
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends \
+            git curl ca-certificates unzip xz-utils zip file \
+            clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev \
+            libasound2-dev libpipewire-0.3-dev libspa-0.2-dev libdbus-1-dev
+          git config --global --add safe.directory '*'
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
-          key: linux-${{ matrix.arch }}
+          key: linux-${{ matrix.arch }}-debian12
       - name: Flutter ${{ env.FLUTTER_VERSION }}
         # git 检出可同时用于 x64 与 arm64 主机（官方压缩包只有 x64）
         run: |
