@@ -35,6 +35,12 @@ class UpPadRole {
 
   static const List<double> stops = <double>[0, 0.5, 1];
 
+  /// Radial gradient radius (fraction of the shortest side).
+  static const double radialExtent = 0.75;
+
+  /// `pad.fill.radial` blend → radial (true) or linear geometry.
+  static bool isRadial(double radial) => radial >= 0.5;
+
   /// Pad body gradient. [radial] is the semantic `pad.fill.radial` blend
   /// (1 = radial, 0 = linear); values in between pick the nearer geometry.
   Gradient gradient({double radial = 1, double opacity = 1}) {
@@ -43,8 +49,8 @@ class UpPadRole {
         : <Color>[
             for (final Color x in colors) x.withValues(alpha: x.a * opacity),
           ];
-    return radial >= 0.5
-        ? RadialGradient(colors: c, stops: stops, radius: 0.75)
+    return isRadial(radial)
+        ? RadialGradient(colors: c, stops: stops, radius: radialExtent)
         : LinearGradient(
             colors: c,
             stops: stops,

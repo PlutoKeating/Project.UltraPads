@@ -13,6 +13,9 @@ class FxShaders {
   ui.FragmentProgram? bloom;
   ui.FragmentProgram? ripple;
   ui.FragmentProgram? breathe;
+
+  /// pad 主体渐变（带抖动，修复 Impeller 上的同心色带）。
+  ui.FragmentProgram? gradient;
   Future<void>? _loading;
 
   /// 是否已全部可用。
@@ -25,6 +28,7 @@ class FxShaders {
     bloom = await _try('$_pkg/neon_bloom.frag');
     ripple = await _try('$_pkg/press_ripple.frag');
     breathe = await _try('$_pkg/loop_breathe.frag');
+    gradient = await _try('$_pkg/dither_gradient.frag');
   }
 
   static Future<ui.FragmentProgram?> _try(String key) async {

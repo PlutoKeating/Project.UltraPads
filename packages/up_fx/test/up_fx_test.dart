@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:up_fx/up_fx.dart';
@@ -79,5 +81,36 @@ void main() {
     );
     await t.pump(const Duration(milliseconds: 200));
     expect(find.byType(CustomPaint), findsWidgets);
+  });
+
+  testWidgets('DitheredGradient shader compiles and paints (full tier)', (
+    t,
+  ) async {
+    // 包内测试的资源键不带 `packages/up_fx/` 前缀：直接编译加载以验证着色器有效。
+    final program = await t.runAsync(
+      () => ui.FragmentProgram.fromAsset('shaders/dither_gradient.frag'),
+    );
+    expect(program, isNotNull);
+    FxShaders.instance.gradient = program;
+    for (final tier in FxTier.values) {
+      await t.pumpWidget(
+        FxScope(
+          tier: tier,
+          child: const SizedBox(
+            width: 80,
+            height: 60,
+            child: DitheredGradient(
+              colors: [Color(0xFFFF2288), Color(0xFFEE1177), Color(0xFF990044)],
+              stops: [0, 0.5, 1],
+              radial: true,
+              extent: 0.75,
+              cornerRadius: 8,
+            ),
+          ),
+        ),
+      );
+      expect(find.byType(CustomPaint), findsWidgets);
+      expect(t.takeException(), isNull);
+    }
   });
 }

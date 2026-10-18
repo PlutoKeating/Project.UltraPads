@@ -254,30 +254,53 @@ class _UpPadState extends State<UpPad> with TickerProviderStateMixin {
 
     // Loop 待机：紫色底 + 角色色描边（截图 2）
     final loopIdle = d.loop && !sounding && flash == 0;
-    final Decoration body;
+    Widget content;
     if (loopIdle) {
-      body = BoxDecoration(
-        borderRadius: shape,
-        color: c.padLoopIdleFill.withValues(
-          alpha: c.padLoopIdleFill.a * c.padLoopIdleFillOpacity,
+      content = DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: shape,
+          color: c.padLoopIdleFill.withValues(
+            alpha: c.padLoopIdleFill.a * c.padLoopIdleFillOpacity,
+          ),
+          border: Border.all(color: role.mid, width: c.padLoopBorderWidth),
+          boxShadow: _bevel(c.padIdleBevel, role.edge),
         ),
-        border: Border.all(color: role.mid, width: c.padLoopBorderWidth),
-        boxShadow: _bevel(c.padIdleBevel, role.edge),
+        child: _overlays(context, theme, size, radius, role),
       );
     } else {
+      // 主体渐变走 DitheredGradient：Impeller（Android）上普通渐变不抖动，
+      // 大面积径向渐变会出现同心色带（visual-review #14）。
       final stroke = _lerp(c.padIdleBorderWidth, 0, fillOpacity);
-      body = BoxDecoration(
-        borderRadius: shape,
-        gradient: role.gradient(radial: c.padFillRadial, opacity: fillOpacity),
-        border: stroke > 0 ? Border.all(color: role.mid, width: stroke) : null,
-        boxShadow: _bevel(c.padIdleBevel, role.edge),
+      content = DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: shape,
+          boxShadow: _bevel(c.padIdleBevel, role.edge),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            DitheredGradient(
+              colors: [
+                for (final x in role.colors)
+                  x.withValues(alpha: x.a * fillOpacity),
+              ],
+              stops: UpPadRole.stops,
+              radial: UpPadRole.isRadial(c.padFillRadial),
+              extent: UpPadRole.radialExtent,
+              cornerRadius: radius,
+            ),
+            if (stroke > 0)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: shape,
+                  border: Border.all(color: role.mid, width: stroke),
+                ),
+              ),
+            _overlays(context, theme, size, radius, role),
+          ],
+        ),
       );
     }
-
-    Widget content = DecoratedBox(
-      decoration: body,
-      child: _overlays(context, theme, size, radius, role),
-    );
 
     final lottie = widget.lottie;
     final asset = lottie?.assetFor(d.role!, loop: d.loop);

@@ -24,3 +24,4 @@ flutter:
     - shaders/neon_bloom.frag
     - shaders/press_ripple.frag
     - shaders/loop_breathe.frag
+    - shaders/dither_gradient.frag
