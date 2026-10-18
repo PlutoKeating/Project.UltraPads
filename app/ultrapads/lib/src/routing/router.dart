@@ -20,6 +20,7 @@ import '../features/skins/skin_editor_page.dart';
 import '../features/tracks/tracks_page.dart';
 import '../state/settings_state.dart';
 import 'routes.dart';
+import 'wide_body.dart';
 
 /// 子页从右侧推入（APK motion.pushRight，300ms → token page.push）。
 CustomTransitionPage<T> pushPage<T>(GoRouterState s, Widget child) =>
@@ -100,41 +101,57 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: Routes.kits,
-        pageBuilder: (c, s) => sheetPage(s, const LibraryPage()),
+        pageBuilder: (c, s) =>
+            sheetPage(s, const WideBody(child: LibraryPage())),
         routes: [
           GoRoute(
             path: ':id',
-            pageBuilder: (c, s) =>
-                pushPage(s, KitDetailPage(kitId: s.pathParameters['id']!)),
+            pageBuilder: (c, s) => pushPage(
+              s,
+              WideBody(
+                gutter: UpTheme.of(c).colors.surfacePads,
+                child: KitDetailPage(kitId: s.pathParameters['id']!),
+              ),
+            ),
           ),
         ],
       ),
       GoRoute(
         path: Routes.editor,
-        pageBuilder: (c, s) => sheetPage(s, const EditorPage()),
+        pageBuilder: (c, s) => sheetPage(
+          s,
+          const WideBody(
+            gutter: UpPrimitiveColors.swatchMediumPink,
+            child: EditorPage(),
+          ),
+        ),
         routes: [
           GoRoute(
             path: 'mic',
-            pageBuilder: (c, s) => pushPage(s, const MicSamplerPage()),
+            pageBuilder: (c, s) =>
+                pushPage(s, const WideBody(child: MicSamplerPage())),
           ),
         ],
       ),
       GoRoute(
         path: Routes.tracks,
-        pageBuilder: (c, s) => pushPage(s, const TracksPage()),
+        pageBuilder: (c, s) => pushPage(s, const WideBody(child: TracksPage())),
       ),
       GoRoute(
         path: Routes.skinEditor,
-        pageBuilder: (c, s) =>
-            pushPage(s, SkinEditorPage(skinId: s.uri.queryParameters['id'])),
+        pageBuilder: (c, s) => pushPage(
+          s,
+          WideBody(child: SkinEditorPage(skinId: s.uri.queryParameters['id'])),
+        ),
       ),
       GoRoute(
         path: Routes.settings,
-        pageBuilder: (c, s) => pushPage(s, const SettingsPage()),
+        pageBuilder: (c, s) =>
+            pushPage(s, const WideBody(child: SettingsPage())),
       ),
       GoRoute(
         path: Routes.hub,
-        pageBuilder: (c, s) => pushPage(s, const HubPage()),
+        pageBuilder: (c, s) => pushPage(s, const WideBody(child: HubPage())),
       ),
       GoRoute(
         path: Routes.gallery,

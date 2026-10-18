@@ -21,6 +21,7 @@ import '../tutorial/tutorial_feedback.dart';
 import '../tutorial/tutorial_timing.dart';
 import 'keyboard_map.dart';
 import 'pad_mapping.dart';
+import 'perform_layout.dart';
 import 'perform_toolbar.dart';
 
 /// 演奏页（启动页），布局以 App Store 4.7.0（`ScreenPads/Main`）为准：
@@ -307,86 +308,94 @@ class _PerformPageState extends ConsumerState<PerformPage>
       child: Scaffold(
         backgroundColor: c.surfacePads,
         body: SafeArea(
-          child: Column(
-            children: [
-              UpTopBar(
-                background: c.surfacePads,
-                leading: UpChip(
-                  label: l10n.navSongs,
-                  icon: Icons.music_note_rounded,
-                  variant: UpChipVariant.selected,
-                  onTap: () => context.push(Routes.kits),
-                ),
-                titleWidget: _KitTitle(name: view.kit?.name),
-                trailing: [
-                  if (tutorial != null)
-                    SpeedPill(
-                      key: _speedKey,
-                      label: l10n.performSpeedValue(tutorial.speed),
-                      onTap: _pickSpeed,
-                    ),
-                ],
-              ),
-              SizedBox(
-                height: UpTopBarTokens.bankButtonSize,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: LayoutBuilder(
+            builder: (context, body) => Center(
+              child: SizedBox(
+                width: PerformLayout.columnWidth(body.biggest),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: AnimatedSwitcher(
-                        duration: UpMotion.duration(
-                          context,
-                          UpDurations.medium,
-                        ),
-                        child: row,
+                    UpTopBar(
+                      background: c.surfacePads,
+                      leading: UpChip(
+                        label: l10n.navSongs,
+                        icon: Icons.music_note_rounded,
+                        variant: UpChipVariant.selected,
+                        onTap: () => context.push(Routes.kits),
                       ),
-                    ),
-                    ?bankButton,
-                  ],
-                ),
-              ),
-              if (view.controllerMode) const _ControllerBanner(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    UpPadGridTokens.pageInset,
-                    UpPadGridTokens.marginTop,
-                    UpPadGridTokens.pageInset,
-                    UpPadGridTokens.marginBottom,
-                  ),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: UpPadGridTokens.maxWidth,
-                      ),
-                      child: Stack(
-                        children: [
-                          PadGrid(
-                            pads: pads,
-                            bank: bank,
-                            onPadDown: _padDown,
-                            onPadUp: _padUp,
-                            dimmed: dimmed,
-                            fills: fills,
-                            externallyPressed: _keyPressed,
-                            lottie: settings.classicPads
-                                ? classicLottieSkin(assets)
-                                : null,
+                      titleWidget: _KitTitle(name: view.kit?.name),
+                      trailing: [
+                        if (tutorial != null)
+                          SpeedPill(
+                            key: _speedKey,
+                            label: l10n.performSpeedValue(tutorial.speed),
+                            onTap: _pickSpeed,
                           ),
-                          if (tutorial != null)
-                            Positioned.fill(
-                              child: TutorialFeedbackLayer(
-                                feedback: tutorial.feedback,
-                                bank: bank,
+                      ],
+                    ),
+                    SizedBox(
+                      height: UpTopBarTokens.bankButtonSize,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            child: AnimatedSwitcher(
+                              duration: UpMotion.duration(
+                                context,
+                                UpDurations.medium,
                               ),
+                              child: row,
                             ),
+                          ),
+                          ?bankButton,
                         ],
                       ),
                     ),
-                  ),
+                    if (view.controllerMode) const _ControllerBanner(),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          UpPadGridTokens.pageInset,
+                          UpPadGridTokens.marginTop,
+                          UpPadGridTokens.pageInset,
+                          UpPadGridTokens.marginBottom,
+                        ),
+                        // 宽屏：按 4.7.0 fixed_height 等比计算网格尺寸并居中（PerformLayout）。
+                        child: LayoutBuilder(
+                          builder: (context, box) => Center(
+                            child: SizedBox.fromSize(
+                              size: PerformLayout.gridSize(box.biggest),
+                              child: Stack(
+                                children: [
+                                  PadGrid(
+                                    pads: pads,
+                                    bank: bank,
+                                    onPadDown: _padDown,
+                                    onPadUp: _padUp,
+                                    dimmed: dimmed,
+                                    fills: fills,
+                                    externallyPressed: _keyPressed,
+                                    lottie: settings.classicPads
+                                        ? classicLottieSkin(assets)
+                                        : null,
+                                  ),
+                                  if (tutorial != null)
+                                    Positioned.fill(
+                                      child: TutorialFeedbackLayer(
+                                        feedback: tutorial.feedback,
+                                        bank: bank,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
