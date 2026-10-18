@@ -6,6 +6,7 @@ members = [
   "runtime/up-library",
   "runtime/up-hub",
   "runtime/up-cli",
+  "runtime/up-update",
   "bridge/up-ffi",
 ]
 
@@ -33,6 +34,7 @@ up-engine = { path = "engine/up-engine" }
 up-host = { path = "runtime/up-host" }
 up-library = { path = "runtime/up-library" }
 up-hub = { path = "runtime/up-hub" }
+up-update = { path = "runtime/up-update" }
 
 [profile.release]
 lto = "thin"
