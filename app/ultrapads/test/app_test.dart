@@ -81,9 +81,13 @@ void main() {
     // 速度框
     await t.tap(find.byType(SpeedPill));
     await settle(t);
-    await t.tap(find.byType(UpListItem).at(1));
+    await t.tap(find.byKey(const ValueKey('speed-0.7')));
     await settle(t);
     expect(h.container.read(tutorialProvider)!.speed, 0.7);
+    // 引擎实时变速（SetSpeed），退出教程时恢复 1.0。
+    expect(h.engine.snapshot().transport.speed, 0.7);
+    h.container.read(tutorialProvider.notifier).stop();
+    expect(h.engine.snapshot().transport.speed, 1.0);
   });
 
   testWidgets('A/B bank button toggles page (two-bank kit)', (t) async {

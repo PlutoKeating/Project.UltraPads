@@ -211,10 +211,18 @@ class _PerformPageState extends ConsumerState<PerformPage>
     );
   }
 
+  final _speedKey = GlobalKey(debugLabel: 'speed-pill');
+
+  /// 速度（4.7.0 只在教程模式出现）：引擎 SetSpeed 实时变速播放，
+  /// 教程时间轴同比缩放（见 TutorialController.setSpeed）。
   Future<void> _pickSpeed() async {
     final s = ref.read(tutorialProvider);
     if (s == null) return;
-    final v = await showSpeedModal(context, current: s.speed);
+    final v = await showSpeedModal(
+      context,
+      current: s.speed,
+      anchor: _speedKey.currentContext,
+    );
     if (v != null) ref.read(tutorialProvider.notifier).setSpeed(v);
   }
 
@@ -313,6 +321,7 @@ class _PerformPageState extends ConsumerState<PerformPage>
                 trailing: [
                   if (tutorial != null)
                     SpeedPill(
+                      key: _speedKey,
                       label: l10n.performSpeedValue(tutorial.speed),
                       onTap: _pickSpeed,
                     ),

@@ -178,17 +178,27 @@ class TutorialController extends Notifier<TutorialSession?> {
     );
   }
 
-  void stop() => state = null;
+  /// 退出教程：速度恢复 1.0（4.7.0 的速度控件只属于教程模式）。
+  void stop() {
+    if ((state?.speed ?? 1) != 1) _applySpeed(1);
+    state = null;
+  }
 
   void togglePlay() {
     final s = state;
     if (s != null) state = s.copyWith(playing: !s.playing);
   }
 
+  /// 速度 1.0 / 0.7 / 0.5：引擎 `SetSpeed` 实时变速播放（varispeed），
+  /// 教程时间轴按同一比例推进（引擎 `transport_clock.song_secs` 同样按 speed 推进）。
   void setSpeed(double v) {
     final s = state;
-    if (s != null) state = s.copyWith(speed: v);
+    if (s == null) return;
+    _applySpeed(v);
+    state = s.copyWith(speed: v);
   }
+
+  void _applySpeed(double v) => ref.read(engineProvider).send(SetSpeedCmd(v));
 
   /// 拖动进度条（0..1）：重置之后的步骤。
   void seekFraction(double f) {
