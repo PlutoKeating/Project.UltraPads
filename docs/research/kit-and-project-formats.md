@@ -233,6 +233,9 @@ amp_veltrack=100
 }
 ```
 
+- `layout`：**音色组**。一首歌（Kit）有 1–7 组，组名 `A`…`G`，每组 12 个 pad；`padCount = 组数 × 12`（12、24 … 84），
+  pad 的 `bank` 取对应字母，默认音符 `36 + bank*12 + index`（36..=119）。1–2 组的 Kit 写 `banks: ["A","B"]`（与 v0.1 之前逐字节一致），3 组起列出全部字母；
+  读取时组数取 `padCount` 与 pad 实际用到的组中较大者（v0.2.0 起）；
 - `launch.quantize` 取值 `none | 1/16 | 1/8 | 1/4 | 1beat | 1bar | 2bar | 4bar | global`，与项目的 Clip Launcher 全局量化共用同一套枚举；
 - 当 `quantize` 能用拍数表达时，写导出 SFZ 时同步写 `sync_beats`，保持两边一致；冲突时以 SFZ 为准并在加载时警告；
 - `tempo` 缺省时从 `acid` → `smpl` → 文件名 → 时长推算。
