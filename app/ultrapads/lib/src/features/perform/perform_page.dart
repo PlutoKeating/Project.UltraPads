@@ -486,6 +486,8 @@ class _PerformPageState extends ConsumerState<PerformPage>
                                   lottie: settings.classicPads
                                       ? classicLottieSkin(assets)
                                       : null,
+                                  // image 类皮肤：注入了 4.7.0 位图时用位图。
+                                  image: imageSkinFor(assets, settings.skinId),
                                 ),
                                 if (tutorial != null)
                                   Positioned.fill(

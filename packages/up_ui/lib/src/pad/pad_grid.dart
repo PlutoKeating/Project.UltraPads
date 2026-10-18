@@ -26,6 +26,7 @@ class PadGrid extends StatefulWidget {
     this.selected,
     this.showLabels = false,
     this.lottie,
+    this.image,
     this.loopIcon,
     this.enabled = true,
     this.externallyPressed = const {},
@@ -53,6 +54,9 @@ class PadGrid extends StatefulWidget {
   final int? selected;
   final bool showLabels;
   final PadLottieSkin? lottie;
+
+  /// 位图皮肤（私有素材，可选），见 [PadImageSkin]。
+  final PadImageSkin? image;
   final Widget? loopIcon;
   final bool enabled;
 
@@ -224,6 +228,7 @@ class PadGridState extends State<PadGrid> with SingleTickerProviderStateMixin {
       selected: widget.selected == flat,
       showLabel: widget.showLabels,
       lottie: widget.lottie,
+      image: widget.image,
       loopIcon: widget.loopIcon,
       fill: widget.fills[flat],
     ),

@@ -62,6 +62,23 @@ class PadLottieSkin {
   final bool playWhole;
 }
 
+/// Pad 的位图皮肤（4.7.0 image 类皮肤：Christmas / Pets / Muertos / Halloween
+/// 等整张 pad 插画）。只有注入了私有素材时由应用传入；返回 null 的角色仍用
+/// token 程序化绘制。
+@immutable
+class PadImageSkin {
+  const PadImageSkin({required this.imageFor});
+
+  /// 调色板下标 → 常态位图（[on] = false）或按下 / 播放中的亮态位图（[on] = true，
+  /// 没有时返回 null，改用 `pad.palette.N.pressed` 覆盖层）。
+  final ImageProvider? Function(
+    int role, {
+    required bool loop,
+    required bool on,
+  })
+  imageFor;
+}
+
 /// 单个 Pad（纯展示）。触摸由 [PadGrid] 的 Listener 统一处理，
 /// 这里只根据 [pressed]（UI 即时态）和 [data.state]（引擎态）绘制。
 class UpPad extends StatefulWidget {
@@ -75,6 +92,7 @@ class UpPad extends StatefulWidget {
     this.selected = false,
     this.showLabel = false,
     this.lottie,
+    this.image,
     this.loopIcon,
     this.fill,
   });
@@ -97,6 +115,9 @@ class UpPad extends StatefulWidget {
   final bool selected;
   final bool showLabel;
   final PadLottieSkin? lottie;
+
+  /// 位图皮肤（私有素材）；为空或该角色无位图时用 token 绘制。
+  final PadImageSkin? image;
 
   /// 自定义 loop 图标（私有素材）；为空时用 Material 图标。
   final Widget? loopIcon;
@@ -302,6 +323,28 @@ class _UpPadState extends State<UpPad> with TickerProviderStateMixin {
       );
     }
 
+    // 位图皮肤：整张 pad 插画替换程序化主体；亮态位图按按下 / loop 闪烁淡入。
+    final base = widget.image?.imageFor(d.role!, loop: d.loop, on: false);
+    if (base != null) {
+      final on = widget.image!.imageFor(d.role!, loop: d.loop, on: true);
+      final loopFlash = d.loop && d.sounding
+          ? UpPadTokens.loopFlashCurve.transform(_loopFlash.value)
+          : 0.0;
+      final lit = math.max(flash, loopFlash);
+      content = Stack(
+        fit: StackFit.expand,
+        children: [
+          Image(image: base, fit: BoxFit.fill, gaplessPlayback: true),
+          if (on != null && lit > 0)
+            Opacity(
+              opacity: lit,
+              child: Image(image: on, fit: BoxFit.fill, gaplessPlayback: true),
+            ),
+          _overlays(context, theme, size, radius, role, flashLayer: on == null),
+        ],
+      );
+    }
+
     final lottie = widget.lottie;
     final asset = lottie?.assetFor(d.role!, loop: d.loop);
     if (lottie != null && asset != null) {
@@ -344,8 +387,9 @@ class _UpPadState extends State<UpPad> with TickerProviderStateMixin {
     UpTheme theme,
     Size size,
     double radius,
-    UpPadRole? role,
-  ) {
+    UpPadRole? role, {
+    bool flashLayer = true,
+  }) {
     final c = theme.colors;
     final d = widget.data;
     final flash = _flash.value;
@@ -373,7 +417,7 @@ class _UpPadState extends State<UpPad> with TickerProviderStateMixin {
               ),
             ),
           ),
-        if (role != null && overlay > 0)
+        if (role != null && overlay > 0 && flashLayer)
           DecoratedBox(
             decoration: BoxDecoration(
               borderRadius: shape,

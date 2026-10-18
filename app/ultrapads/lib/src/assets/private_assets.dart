@@ -25,6 +25,12 @@ class PrivateAssets {
 
   static const PrivateAssets none = PrivateAssets._(false, [], {});
 
+  /// 由清单条目直接构造（测试、工具用）。
+  factory PrivateAssets.fromEntries(
+    Map<String, String> entries, {
+    List<String> priority = const ['ios', 'apk'],
+  }) => PrivateAssets._(entries.isNotEmpty, priority, entries);
+
   static const _dir = 'assets/private_manifest';
 
   final bool available;

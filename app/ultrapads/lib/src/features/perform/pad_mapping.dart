@@ -1,7 +1,62 @@
+import 'package:flutter/widgets.dart';
 import 'package:up_engine/up_engine.dart';
 import 'package:up_ui/up_ui.dart';
 
 import '../../assets/private_assets.dart';
+import '../../state/settings_state.dart';
+
+/// 4.7.0 image 类皮肤（整张 pad 插画）在注入素材中的包名。
+const Map<String, String> _imageSkinPackages = {
+  'christmas': 'padChristmas',
+  'pets': 'padPets',
+  'muertos': 'padMuertos',
+  'halloween': 'padHalloween',
+};
+
+/// 调色板下标 → 原 App 位图的颜色名（4.7.0 只有 pink/orange/green/blue，
+/// Halloween 多一个 purple；扩展角色按色相就近）。
+const List<String> _bitmapColors = [
+  'pink',
+  'orange',
+  'green',
+  'blue',
+  'pink',
+  'orange',
+  'blue',
+  'purple',
+];
+
+/// 当前皮肤是 image 类预设且注入了 4.7.0 皮肤位图时，返回位图皮肤；
+/// 否则 null（保持 token 程序化绘制）。[skinId] 为设置中的皮肤 id。
+PadImageSkin? imageSkinFor(PrivateAssets assets, String skinId) {
+  if (!skinId.startsWith(presetPrefix)) return null;
+  final pkg = _imageSkinPackages[skinId.substring(presetPrefix.length)];
+  if (pkg == null) return null;
+  String? find(Iterable<String> files) {
+    for (final f in files) {
+      final k = assets.key('ios/skin/$pkg/Skin_${pkg}__$f.png');
+      if (k != null) return k;
+    }
+    return null;
+  }
+
+  // 至少要有一张基础位图，否则当作没注入。
+  if (find(_bitmapColors.map((c) => 'img_pad_$c')) == null) return null;
+  return PadImageSkin(
+    imageFor: (role, {required loop, required on}) {
+      final c = _bitmapColors[role % _bitmapColors.length];
+      final path = on
+          ? find(['img_pad_${c}_on', 'img_pad_on_$c'])
+          : find([
+              if (c == 'blue') 'img_${c}_pets',
+              'img_pad_$c',
+              // 缺少的颜色（例如 purple）退回 pink。
+              'img_pad_pink',
+            ]);
+      return path == null ? null : AssetImage(path);
+    },
+  );
+}
 
 /// 引擎 pad 状态 → 组件展示数据。
 PadVisualState padVisual(PadPlayState s) => switch (s) {

@@ -45,11 +45,7 @@ class UpSearchField extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: UpSizes.iconSm,
-            color: c.inputPlaceholder,
-          ),
+          Icon(icon, size: UpSizes.iconSm, color: c.inputPlaceholder),
           const SizedBox(width: UpSpacing.sm),
           Expanded(
             child: TextField(

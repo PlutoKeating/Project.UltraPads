@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:up_ui/up_ui.dart';
@@ -122,5 +123,98 @@ void main() {
     await t.tapAt(origin + const Offset(290, 390)); // index 11 → empty
     await t.tapAt(origin + const Offset(150, 10)); // index 1
     expect(downs, [(1, 1)]);
+  });
+
+  testWidgets('PadImageSkin: bitmap body, on-image while pressed', (t) async {
+    // 1×1 透明 PNG（测试用，不是私有素材）。
+    final png = MemoryImage(
+      Uint8List.fromList(const [
+        0x89,
+        0x50,
+        0x4E,
+        0x47,
+        0x0D,
+        0x0A,
+        0x1A,
+        0x0A,
+        0x00,
+        0x00,
+        0x00,
+        0x0D,
+        0x49,
+        0x48,
+        0x44,
+        0x52,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x08,
+        0x06,
+        0x00,
+        0x00,
+        0x00,
+        0x1F,
+        0x15,
+        0xC4,
+        0x89,
+        0x00,
+        0x00,
+        0x00,
+        0x0D,
+        0x49,
+        0x44,
+        0x41,
+        0x54,
+        0x78,
+        0x9C,
+        0x63,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x05,
+        0x00,
+        0x01,
+        0x0D,
+        0x0A,
+        0x2D,
+        0xB4,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x49,
+        0x45,
+        0x4E,
+        0x44,
+        0xAE,
+        0x42,
+        0x60,
+        0x82,
+      ]),
+    );
+    final skin = PadImageSkin(
+      imageFor: (role, {required loop, required on}) => role == 0 ? png : null,
+    );
+    Widget pad(int role, {bool pressed = false}) => harness(
+      UpPad(
+        data: PadData(role: role),
+        pressed: pressed,
+        image: skin,
+      ),
+      size: const Size(100, 100),
+    );
+    await t.pumpWidget(pad(0));
+    expect(find.byType(Image), findsOneWidget);
+    await t.pumpWidget(pad(0, pressed: true));
+    await t.pump(const Duration(milliseconds: 50));
+    expect(find.byType(Image), findsNWidgets(2));
+    await t.pumpWidget(pad(1));
+    expect(find.byType(Image), findsNothing, reason: 'no bitmap → tokens');
   });
 }
