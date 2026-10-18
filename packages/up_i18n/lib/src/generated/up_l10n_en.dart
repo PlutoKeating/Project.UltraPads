@@ -1360,7 +1360,7 @@ class UpL10nEn extends UpL10n {
   String get hubNearbyDevices => 'Nearby devices';
 
   @override
-  String get settingsPrivateAssets => 'Original app assets';
+  String get settingsPrivateAssets => 'Private asset pack';
 
   @override
   String get onboardingSkip => 'Skip';

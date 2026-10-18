@@ -1483,7 +1483,7 @@ abstract class UpL10n {
   /// **'Delete skin?'**
   String get skinEditorDeleteTitle;
 
-  /// Name of a built-in pad skin (original skin list).
+  /// Name of a built-in pad skin (built-in skin list).
   ///
   /// In en, this message translates to:
   /// **'Default'**
@@ -2275,7 +2275,7 @@ abstract class UpL10n {
   /// **'{value}×'**
   String performSpeedValue(double value);
 
-  /// Toggle: use the original app's Lottie pad press animation when private assets are installed.
+  /// Toggle: use the Lottie pad press animation from the private asset pack when private assets are installed.
   ///
   /// In en, this message translates to:
   /// **'Classic pad animation'**
@@ -2320,7 +2320,7 @@ abstract class UpL10n {
   /// About: whether private reference assets are installed.
   ///
   /// In en, this message translates to:
-  /// **'Original app assets'**
+  /// **'Private asset pack'**
   String get settingsPrivateAssets;
 
   /// Skip the onboarding pages.
@@ -2329,7 +2329,7 @@ abstract class UpL10n {
   /// **'Skip'**
   String get onboardingSkip;
 
-  /// Tutorial entry button on the perform screen (4.7.0 'LEARN TO PLAY').
+  /// Tutorial entry button on the perform screen ('LEARN TO PLAY').
   ///
   /// In en, this message translates to:
   /// **'Learn to play'**

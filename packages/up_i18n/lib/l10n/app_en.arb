@@ -685,7 +685,7 @@
   "@skinEditorDeleteTitle": {},
   "skinPresetDefault": "Default",
   "@skinPresetDefault": {
-    "description": "Name of a built-in pad skin (original skin list)."
+    "description": "Name of a built-in pad skin (built-in skin list)."
   },
   "skinPresetNumber": "Number",
   "@skinPresetNumber": {},
@@ -1179,7 +1179,7 @@
   },
   "settingsClassicPads": "Classic pad animation",
   "@settingsClassicPads": {
-    "description": "Toggle: use the original app's Lottie pad press animation when private assets are installed."
+    "description": "Toggle: use the Lottie pad press animation from the private asset pack when private assets are installed."
   },
   "settingsEngineBackend": "Audio engine: {name}",
   "@settingsEngineBackend": {
@@ -1210,7 +1210,7 @@
   "@hubNearbyDevices": {
     "description": "Section header for discovered devices."
   },
-  "settingsPrivateAssets": "Original app assets",
+  "settingsPrivateAssets": "Private asset pack",
   "@settingsPrivateAssets": {
     "description": "About: whether private reference assets are installed."
   },
@@ -1220,7 +1220,7 @@
   },
   "performLearnToPlay": "Learn to play",
   "@performLearnToPlay": {
-    "description": "Tutorial entry button on the perform screen (4.7.0 'LEARN TO PLAY')."
+    "description": "Tutorial entry button on the perform screen ('LEARN TO PLAY')."
   },
   "performBackToTools": "Back",
   "@performBackToTools": {
