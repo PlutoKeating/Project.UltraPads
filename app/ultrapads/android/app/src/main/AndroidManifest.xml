@@ -18,11 +18,12 @@
         android:label="UltraPads"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- 不要给 MainActivity 设 taskAffinity=""：AppAuth 的回调 Activity 用默认亲和性，
+             一旦与 MainActivity 不在同一任务栈，登录回来会丢失授权状态（No stored state）。 -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"

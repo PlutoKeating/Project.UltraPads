@@ -257,6 +257,7 @@ Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径
 - **云端收藏 / 最近使用**（`CloudStateController`）：本地先生效并持久化；每个改动进待发队列（prefs `catalog.pending`），登录且联网时按序送达，失败留队、404 条目丢弃；登录后 / 启动恢复登录后拉取 `/api/me/state` 与本地取并集（待发的取消收藏优先）。`UltraPadsApp` 常驻监听它，所以不必打开曲库页也会同步。
 - **账号**（`account/`）：OIDC 授权码 + PKCE，签发方 `https://id.plutokeating.beer/`（Hydra），公共客户端 `ultrapads-app`。
   - Android / iOS / macOS：`flutter_appauth`（Custom Tabs），回调 `com.plutokeating.ultrapads://callback`（`build.gradle.kts` 的 `appAuthRedirectScheme`）。
+    - `MainActivity` **不能**设 `android:taskAffinity=""`：AppAuth 的回调 Activity 用默认亲和性，两者不在同一任务栈时，登录回来会报 `No stored state` 并丢弃授权结果（表现为浏览器跳回后仍是未登录）。
   - **Linux 等桌面**：flutter_appauth 没有 Linux 实现，改走 RFC 8252 回环方案——`LoopbackAuthFlow` 在 `127.0.0.1` 随机端口起一次性 HTTP 监听，系统浏览器（`url_launcher`）打开授权页，回调后用 `oauth2` 包换令牌（PKCE S256 + 随机 `state`，无客户端密钥；5 分钟超时，可取消）。Hydra 对回环地址允许任意端口，`clients.json` 登记 `http://127.0.0.1/callback`。
   - 刷新（两个平台共用）：`refreshTokens` 向 token 端点 POST `refresh_token`；并发只刷一次；`invalid_grant` 退出登录，仅网络错误则沿用旧令牌。ID 令牌里没有邮箱时问一次 userinfo。
   - **令牌存储**：应用私有目录里的 `account.json`，权限 0600，写入走「临时文件 → rename」（`FileTokenStore`）。不用 flutter_secure_storage：它的 Linux 实现依赖 libsecret 与桌面 keyring，会给发布包新增系统库依赖，无 keyring 的环境读写还会失败。代价是令牌只受文件系统权限与应用沙盒保护（Android 沙盒内他人不可读），不是硬件密钥库。

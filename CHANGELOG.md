@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### 修复
+
+- Android 真机登录后应用仍显示未登录：`MainActivity` 的 `android:taskAffinity=""` 让 AppAuth 回调 Activity 落在另一个任务栈，授权状态丢失（日志 `AppAuth: No stored state`）。已移除该属性。
+
 ## [0.3.1] - 2026-10-19
 
 官方曲库改为按段落分组，新增用户上传与分享、导入歌曲自动拆成 Kit（含本地 Demucs 分轨），录音可导出 FLAC 并带署名。
