@@ -20,9 +20,10 @@ UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter �
 - 支持个人多设备在局域网内协同。
 
 <p align="center">
-  <img src="app/ultrapads/test/goldens/perform_neon.png" width="240" alt="演奏页（霓虹主题）">
-  &nbsp;
-  <img src="app/ultrapads/test/goldens/gallery_neon.png" width="240" alt="应用内设计画廊">
+  <img src="app/ultrapads/test/goldens/perform_neon.png" width="190" alt="打击垫演奏页" valign="top">
+  <img src="app/ultrapads/test/goldens/library_kits.png" width="190" alt="歌曲页" valign="top">
+  <img src="app/ultrapads/test/goldens/library_catalog.png" width="190" alt="云端歌曲页" valign="top">
+  <img src="app/ultrapads/test/goldens/editor.png" width="190" alt="Pad 编辑页" valign="top">
 </p>
 
 ## 功能
