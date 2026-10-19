@@ -2046,4 +2046,224 @@ class UpL10nZh extends UpL10n {
 
   @override
   String get librarySplitErrorGeneric => '拆分失败，请重试。';
+
+  @override
+  String get libraryUgcMyUploads => '我的上传';
+
+  @override
+  String get libraryUgcFilterOrigin => '来源';
+
+  @override
+  String get libraryUgcOriginAll => '全部来源';
+
+  @override
+  String get libraryUgcCommunityBadge => '社区上传';
+
+  @override
+  String get libraryUgcCommunityNotice => '这是社区成员上传的 Kit，署名和许可证由上传者声明。';
+
+  @override
+  String libraryUgcUploadedBy(String credit) {
+    return '署名：$credit';
+  }
+
+  @override
+  String get libraryUgcReport => '举报';
+
+  @override
+  String get libraryUgcReportTitle => '举报这个 Kit';
+
+  @override
+  String get libraryUgcReportReasonCopyright => '侵犯版权';
+
+  @override
+  String get libraryUgcReportReasonInappropriate => '不当内容';
+
+  @override
+  String get libraryUgcReportReasonOther => '其他原因';
+
+  @override
+  String get libraryUgcReportNoteHint => '补充说明（可选，最多 500 字）';
+
+  @override
+  String get libraryUgcReportSubmit => '提交举报';
+
+  @override
+  String get libraryUgcReportSent => '已收到举报，谢谢。';
+
+  @override
+  String get libraryUgcReportOwn => '这是你自己的上传，不能举报。';
+
+  @override
+  String get libraryUgcReportSignIn => '登录后才能举报。';
+
+  @override
+  String get libraryUgcReportGone => '这个 Kit 已不再公开。';
+
+  @override
+  String get libraryUgcMyTitle => '我的上传';
+
+  @override
+  String get libraryUgcSignInPrompt => '登录后才能上传和管理你的 Kit。';
+
+  @override
+  String get libraryUgcEmpty => '还没有上传过 Kit。上传后默认只有你自己能看到。';
+
+  @override
+  String get libraryUgcUploadAction => '上传 Kit';
+
+  @override
+  String get libraryUgcVisibilityPrivate => '私有';
+
+  @override
+  String get libraryUgcVisibilityPublic => '公开';
+
+  @override
+  String get libraryUgcVisibilityHidden => '已隐藏（待审核）';
+
+  @override
+  String get libraryUgcVisibilityTakenDown => '已下架';
+
+  @override
+  String get libraryUgcNoFile => '还没有文件';
+
+  @override
+  String get libraryUgcHiddenNote => '因被多人举报暂时隐藏，等待审核。';
+
+  @override
+  String get libraryUgcTakenDownNote => '已被运营下架，只能删除。';
+
+  @override
+  String get libraryUgcMakePublic => '设为公开';
+
+  @override
+  String get libraryUgcMakePrivate => '改回私有';
+
+  @override
+  String get libraryUgcPublicConfirmTitle => '公开分享这个 Kit？';
+
+  @override
+  String get libraryUgcPublicConfirmBody =>
+      '公开后，任何人都能在曲库里看到并下载它，也会看到你填写的署名和许可证。你可以随时改回私有，最长一分钟后生效。';
+
+  @override
+  String get libraryUgcPublicConfirmOk => '公开';
+
+  @override
+  String get libraryUgcMadePublicToast => '已公开';
+
+  @override
+  String get libraryUgcMadePrivateToast => '已改回私有';
+
+  @override
+  String get libraryUgcDeleteTitle => '删除这个上传？';
+
+  @override
+  String get libraryUgcDeleteBody => '条目和云端文件会被永久删除，已经下载它的人不受影响。';
+
+  @override
+  String get libraryUgcDeletedToast => '已删除';
+
+  @override
+  String get libraryUgcRestore => '下载到本机';
+
+  @override
+  String libraryUgcRestoredToast(String name) {
+    return '$name 已可演奏';
+  }
+
+  @override
+  String get libraryUgcPickKitTitle => '选择要上传的 Kit';
+
+  @override
+  String get libraryUgcPickKitEmpty => '曲库里还没有可上传的 Kit。';
+
+  @override
+  String get libraryUgcFormTitle => '上传 Kit';
+
+  @override
+  String get libraryUgcFieldTitle => '标题';
+
+  @override
+  String get libraryUgcFieldCredit => '署名';
+
+  @override
+  String get libraryUgcFieldCreditHint => '会原样展示，例如：作者名 / 来源';
+
+  @override
+  String get libraryUgcFieldLicense => '许可证';
+
+  @override
+  String get libraryUgcFieldSourceUrl => '来源链接（可选）';
+
+  @override
+  String get libraryUgcFieldDescription => '说明（可选）';
+
+  @override
+  String get libraryUgcDeclarationTitle => '素材来源';
+
+  @override
+  String get libraryUgcDeclarationOwn => '我自己的作品或录音';
+
+  @override
+  String get libraryUgcDeclarationLicensed => '按所选许可证获得授权的素材';
+
+  @override
+  String get libraryUgcConfirmRights => '我有权分享这个 Kit，并同意按所选许可证公开';
+
+  @override
+  String get libraryUgcFormPrivateNote => '上传后默认私有，只有你能看到；之后可以在“我的上传”里公开。';
+
+  @override
+  String get libraryUgcFormErrTitle => '请填写标题（最多 120 字）';
+
+  @override
+  String get libraryUgcFormErrCredit => '请填写署名（最多 500 字）';
+
+  @override
+  String get libraryUgcFormErrUrl => '来源链接需要以 http:// 或 https:// 开头';
+
+  @override
+  String get libraryUgcFormErrConfirm => '请先确认你有权分享';
+
+  @override
+  String get libraryUgcSubmit => '上传';
+
+  @override
+  String get libraryUgcPhaseExporting => '正在打包…';
+
+  @override
+  String get libraryUgcPhaseCreating => '正在创建条目…';
+
+  @override
+  String libraryUgcPhaseUploading(int percent) {
+    return '正在上传 $percent%';
+  }
+
+  @override
+  String get libraryUgcUploadDone => '已上传，目前是私有的。';
+
+  @override
+  String get libraryUgcErrTooLarge => '文件超过 128 MB，上传不了。';
+
+  @override
+  String get libraryUgcErrQuota => '上传条目已达上限（50 个），请先删除不用的。';
+
+  @override
+  String get libraryUgcErrInvalidKit => '服务器认为文件无效或在传输中损坏，请重试。';
+
+  @override
+  String get libraryUgcErrSignIn => '登录已过期，请重新登录。';
+
+  @override
+  String get libraryUgcErrTakenDown => '这个条目已被下架。';
+
+  @override
+  String get libraryUgcErrNoFile => '还没有上传文件，不能公开。';
+
+  @override
+  String get libraryUgcErrBadForm => '有字段不符合要求，请检查后重试。';
+
+  @override
+  String get libraryUgcErrGeneric => '操作没有成功，请稍后再试。';
 }

@@ -2113,4 +2113,243 @@ class UpL10nEn extends UpL10n {
 
   @override
   String get librarySplitErrorGeneric => 'Splitting failed. Please retry.';
+
+  @override
+  String get libraryUgcMyUploads => 'My uploads';
+
+  @override
+  String get libraryUgcFilterOrigin => 'Source';
+
+  @override
+  String get libraryUgcOriginAll => 'All sources';
+
+  @override
+  String get libraryUgcCommunityBadge => 'Community';
+
+  @override
+  String get libraryUgcCommunityNotice =>
+      'Shared by a community member. Credit and licence are declared by the uploader.';
+
+  @override
+  String libraryUgcUploadedBy(String credit) {
+    return 'Credit: $credit';
+  }
+
+  @override
+  String get libraryUgcReport => 'Report';
+
+  @override
+  String get libraryUgcReportTitle => 'Report this kit';
+
+  @override
+  String get libraryUgcReportReasonCopyright => 'Copyright infringement';
+
+  @override
+  String get libraryUgcReportReasonInappropriate => 'Inappropriate content';
+
+  @override
+  String get libraryUgcReportReasonOther => 'Something else';
+
+  @override
+  String get libraryUgcReportNoteHint =>
+      'Details (optional, up to 500 characters)';
+
+  @override
+  String get libraryUgcReportSubmit => 'Send report';
+
+  @override
+  String get libraryUgcReportSent => 'Report received. Thank you.';
+
+  @override
+  String get libraryUgcReportOwn =>
+      'This is your own upload, so you can’t report it.';
+
+  @override
+  String get libraryUgcReportSignIn => 'Sign in to report a kit.';
+
+  @override
+  String get libraryUgcReportGone => 'This kit is no longer public.';
+
+  @override
+  String get libraryUgcMyTitle => 'My uploads';
+
+  @override
+  String get libraryUgcSignInPrompt =>
+      'Sign in to upload and manage your kits.';
+
+  @override
+  String get libraryUgcEmpty =>
+      'No uploads yet. New uploads are private by default.';
+
+  @override
+  String get libraryUgcUploadAction => 'Upload a kit';
+
+  @override
+  String get libraryUgcVisibilityPrivate => 'Private';
+
+  @override
+  String get libraryUgcVisibilityPublic => 'Public';
+
+  @override
+  String get libraryUgcVisibilityHidden => 'Hidden (under review)';
+
+  @override
+  String get libraryUgcVisibilityTakenDown => 'Taken down';
+
+  @override
+  String get libraryUgcNoFile => 'No file yet';
+
+  @override
+  String get libraryUgcHiddenNote =>
+      'Hidden for now after several reports. Waiting for review.';
+
+  @override
+  String get libraryUgcTakenDownNote =>
+      'Taken down by the moderators. You can only delete it.';
+
+  @override
+  String get libraryUgcMakePublic => 'Make public';
+
+  @override
+  String get libraryUgcMakePrivate => 'Make private';
+
+  @override
+  String get libraryUgcPublicConfirmTitle => 'Share this kit publicly?';
+
+  @override
+  String get libraryUgcPublicConfirmBody =>
+      'Anyone will be able to find and download it in the catalog, along with the credit and licence you entered. You can make it private again at any time; it can take up to a minute to take effect.';
+
+  @override
+  String get libraryUgcPublicConfirmOk => 'Make public';
+
+  @override
+  String get libraryUgcMadePublicToast => 'Now public';
+
+  @override
+  String get libraryUgcMadePrivateToast => 'Now private';
+
+  @override
+  String get libraryUgcDeleteTitle => 'Delete this upload?';
+
+  @override
+  String get libraryUgcDeleteBody =>
+      'The entry and its cloud file are deleted permanently. People who already downloaded it keep their copy.';
+
+  @override
+  String get libraryUgcDeletedToast => 'Deleted';
+
+  @override
+  String get libraryUgcRestore => 'Download to this device';
+
+  @override
+  String libraryUgcRestoredToast(String name) {
+    return '$name is ready to play';
+  }
+
+  @override
+  String get libraryUgcPickKitTitle => 'Choose a kit to upload';
+
+  @override
+  String get libraryUgcPickKitEmpty => 'There are no kits to upload yet.';
+
+  @override
+  String get libraryUgcFormTitle => 'Upload a kit';
+
+  @override
+  String get libraryUgcFieldTitle => 'Title';
+
+  @override
+  String get libraryUgcFieldCredit => 'Credit';
+
+  @override
+  String get libraryUgcFieldCreditHint =>
+      'Shown as written, e.g. author name / source';
+
+  @override
+  String get libraryUgcFieldLicense => 'Licence';
+
+  @override
+  String get libraryUgcFieldSourceUrl => 'Source link (optional)';
+
+  @override
+  String get libraryUgcFieldDescription => 'Description (optional)';
+
+  @override
+  String get libraryUgcDeclarationTitle => 'Where the material comes from';
+
+  @override
+  String get libraryUgcDeclarationOwn => 'My own work or recordings';
+
+  @override
+  String get libraryUgcDeclarationLicensed =>
+      'Material licensed to me under the licence above';
+
+  @override
+  String get libraryUgcConfirmRights =>
+      'I have the right to share this kit and agree to share it under the chosen licence';
+
+  @override
+  String get libraryUgcFormPrivateNote =>
+      'Uploads are private by default. You can make one public later from My uploads.';
+
+  @override
+  String get libraryUgcFormErrTitle => 'Enter a title (up to 120 characters)';
+
+  @override
+  String get libraryUgcFormErrCredit => 'Enter a credit (up to 500 characters)';
+
+  @override
+  String get libraryUgcFormErrUrl =>
+      'The source link must start with http:// or https://';
+
+  @override
+  String get libraryUgcFormErrConfirm =>
+      'Please confirm you have the right to share it';
+
+  @override
+  String get libraryUgcSubmit => 'Upload';
+
+  @override
+  String get libraryUgcPhaseExporting => 'Packing the kit…';
+
+  @override
+  String get libraryUgcPhaseCreating => 'Creating the entry…';
+
+  @override
+  String libraryUgcPhaseUploading(int percent) {
+    return 'Uploading $percent%';
+  }
+
+  @override
+  String get libraryUgcUploadDone => 'Uploaded. It’s private for now.';
+
+  @override
+  String get libraryUgcErrTooLarge =>
+      'The file is over 128 MB and can’t be uploaded.';
+
+  @override
+  String get libraryUgcErrQuota =>
+      'You’ve reached the limit of 50 uploads. Delete some first.';
+
+  @override
+  String get libraryUgcErrInvalidKit =>
+      'The server rejected the file as invalid or damaged in transit. Try again.';
+
+  @override
+  String get libraryUgcErrSignIn => 'Your sign-in has expired. Sign in again.';
+
+  @override
+  String get libraryUgcErrTakenDown => 'This entry has been taken down.';
+
+  @override
+  String get libraryUgcErrNoFile =>
+      'There’s no file yet, so it can’t be made public.';
+
+  @override
+  String get libraryUgcErrBadForm =>
+      'Some fields aren’t valid. Check them and try again.';
+
+  @override
+  String get libraryUgcErrGeneric => 'That didn’t work. Try again later.';
 }

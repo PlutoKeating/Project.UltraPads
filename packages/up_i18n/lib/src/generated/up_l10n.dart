@@ -3563,6 +3563,432 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'Splitting failed. Please retry.'**
   String get librarySplitErrorGeneric;
+
+  /// No description provided for @libraryUgcMyUploads.
+  ///
+  /// In en, this message translates to:
+  /// **'My uploads'**
+  String get libraryUgcMyUploads;
+
+  /// No description provided for @libraryUgcFilterOrigin.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get libraryUgcFilterOrigin;
+
+  /// No description provided for @libraryUgcOriginAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All sources'**
+  String get libraryUgcOriginAll;
+
+  /// No description provided for @libraryUgcCommunityBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Community'**
+  String get libraryUgcCommunityBadge;
+
+  /// No description provided for @libraryUgcCommunityNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared by a community member. Credit and licence are declared by the uploader.'**
+  String get libraryUgcCommunityNotice;
+
+  /// No description provided for @libraryUgcUploadedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit: {credit}'**
+  String libraryUgcUploadedBy(String credit);
+
+  /// No description provided for @libraryUgcReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get libraryUgcReport;
+
+  /// No description provided for @libraryUgcReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this kit'**
+  String get libraryUgcReportTitle;
+
+  /// No description provided for @libraryUgcReportReasonCopyright.
+  ///
+  /// In en, this message translates to:
+  /// **'Copyright infringement'**
+  String get libraryUgcReportReasonCopyright;
+
+  /// No description provided for @libraryUgcReportReasonInappropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'Inappropriate content'**
+  String get libraryUgcReportReasonInappropriate;
+
+  /// No description provided for @libraryUgcReportReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get libraryUgcReportReasonOther;
+
+  /// No description provided for @libraryUgcReportNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Details (optional, up to 500 characters)'**
+  String get libraryUgcReportNoteHint;
+
+  /// No description provided for @libraryUgcReportSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send report'**
+  String get libraryUgcReportSubmit;
+
+  /// No description provided for @libraryUgcReportSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Report received. Thank you.'**
+  String get libraryUgcReportSent;
+
+  /// No description provided for @libraryUgcReportOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'This is your own upload, so you can’t report it.'**
+  String get libraryUgcReportOwn;
+
+  /// No description provided for @libraryUgcReportSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to report a kit.'**
+  String get libraryUgcReportSignIn;
+
+  /// No description provided for @libraryUgcReportGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This kit is no longer public.'**
+  String get libraryUgcReportGone;
+
+  /// No description provided for @libraryUgcMyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My uploads'**
+  String get libraryUgcMyTitle;
+
+  /// No description provided for @libraryUgcSignInPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to upload and manage your kits.'**
+  String get libraryUgcSignInPrompt;
+
+  /// No description provided for @libraryUgcEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No uploads yet. New uploads are private by default.'**
+  String get libraryUgcEmpty;
+
+  /// No description provided for @libraryUgcUploadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a kit'**
+  String get libraryUgcUploadAction;
+
+  /// No description provided for @libraryUgcVisibilityPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get libraryUgcVisibilityPrivate;
+
+  /// No description provided for @libraryUgcVisibilityPublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get libraryUgcVisibilityPublic;
+
+  /// No description provided for @libraryUgcVisibilityHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden (under review)'**
+  String get libraryUgcVisibilityHidden;
+
+  /// No description provided for @libraryUgcVisibilityTakenDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken down'**
+  String get libraryUgcVisibilityTakenDown;
+
+  /// No description provided for @libraryUgcNoFile.
+  ///
+  /// In en, this message translates to:
+  /// **'No file yet'**
+  String get libraryUgcNoFile;
+
+  /// No description provided for @libraryUgcHiddenNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden for now after several reports. Waiting for review.'**
+  String get libraryUgcHiddenNote;
+
+  /// No description provided for @libraryUgcTakenDownNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken down by the moderators. You can only delete it.'**
+  String get libraryUgcTakenDownNote;
+
+  /// No description provided for @libraryUgcMakePublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Make public'**
+  String get libraryUgcMakePublic;
+
+  /// No description provided for @libraryUgcMakePrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Make private'**
+  String get libraryUgcMakePrivate;
+
+  /// No description provided for @libraryUgcPublicConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share this kit publicly?'**
+  String get libraryUgcPublicConfirmTitle;
+
+  /// No description provided for @libraryUgcPublicConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone will be able to find and download it in the catalog, along with the credit and licence you entered. You can make it private again at any time; it can take up to a minute to take effect.'**
+  String get libraryUgcPublicConfirmBody;
+
+  /// No description provided for @libraryUgcPublicConfirmOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Make public'**
+  String get libraryUgcPublicConfirmOk;
+
+  /// No description provided for @libraryUgcMadePublicToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Now public'**
+  String get libraryUgcMadePublicToast;
+
+  /// No description provided for @libraryUgcMadePrivateToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Now private'**
+  String get libraryUgcMadePrivateToast;
+
+  /// No description provided for @libraryUgcDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this upload?'**
+  String get libraryUgcDeleteTitle;
+
+  /// No description provided for @libraryUgcDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The entry and its cloud file are deleted permanently. People who already downloaded it keep their copy.'**
+  String get libraryUgcDeleteBody;
+
+  /// No description provided for @libraryUgcDeletedToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get libraryUgcDeletedToast;
+
+  /// No description provided for @libraryUgcRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Download to this device'**
+  String get libraryUgcRestore;
+
+  /// No description provided for @libraryUgcRestoredToast.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is ready to play'**
+  String libraryUgcRestoredToast(String name);
+
+  /// No description provided for @libraryUgcPickKitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a kit to upload'**
+  String get libraryUgcPickKitTitle;
+
+  /// No description provided for @libraryUgcPickKitEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no kits to upload yet.'**
+  String get libraryUgcPickKitEmpty;
+
+  /// No description provided for @libraryUgcFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a kit'**
+  String get libraryUgcFormTitle;
+
+  /// No description provided for @libraryUgcFieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get libraryUgcFieldTitle;
+
+  /// No description provided for @libraryUgcFieldCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit'**
+  String get libraryUgcFieldCredit;
+
+  /// No description provided for @libraryUgcFieldCreditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown as written, e.g. author name / source'**
+  String get libraryUgcFieldCreditHint;
+
+  /// No description provided for @libraryUgcFieldLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'Licence'**
+  String get libraryUgcFieldLicense;
+
+  /// No description provided for @libraryUgcFieldSourceUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Source link (optional)'**
+  String get libraryUgcFieldSourceUrl;
+
+  /// No description provided for @libraryUgcFieldDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get libraryUgcFieldDescription;
+
+  /// No description provided for @libraryUgcDeclarationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the material comes from'**
+  String get libraryUgcDeclarationTitle;
+
+  /// No description provided for @libraryUgcDeclarationOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'My own work or recordings'**
+  String get libraryUgcDeclarationOwn;
+
+  /// No description provided for @libraryUgcDeclarationLicensed.
+  ///
+  /// In en, this message translates to:
+  /// **'Material licensed to me under the licence above'**
+  String get libraryUgcDeclarationLicensed;
+
+  /// No description provided for @libraryUgcConfirmRights.
+  ///
+  /// In en, this message translates to:
+  /// **'I have the right to share this kit and agree to share it under the chosen licence'**
+  String get libraryUgcConfirmRights;
+
+  /// No description provided for @libraryUgcFormPrivateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploads are private by default. You can make one public later from My uploads.'**
+  String get libraryUgcFormPrivateNote;
+
+  /// No description provided for @libraryUgcFormErrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a title (up to 120 characters)'**
+  String get libraryUgcFormErrTitle;
+
+  /// No description provided for @libraryUgcFormErrCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a credit (up to 500 characters)'**
+  String get libraryUgcFormErrCredit;
+
+  /// No description provided for @libraryUgcFormErrUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'The source link must start with http:// or https://'**
+  String get libraryUgcFormErrUrl;
+
+  /// No description provided for @libraryUgcFormErrConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm you have the right to share it'**
+  String get libraryUgcFormErrConfirm;
+
+  /// No description provided for @libraryUgcSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get libraryUgcSubmit;
+
+  /// No description provided for @libraryUgcPhaseExporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Packing the kit…'**
+  String get libraryUgcPhaseExporting;
+
+  /// No description provided for @libraryUgcPhaseCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating the entry…'**
+  String get libraryUgcPhaseCreating;
+
+  /// No description provided for @libraryUgcPhaseUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading {percent}%'**
+  String libraryUgcPhaseUploading(int percent);
+
+  /// No description provided for @libraryUgcUploadDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded. It’s private for now.'**
+  String get libraryUgcUploadDone;
+
+  /// No description provided for @libraryUgcErrTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is over 128 MB and can’t be uploaded.'**
+  String get libraryUgcErrTooLarge;
+
+  /// No description provided for @libraryUgcErrQuota.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ve reached the limit of 50 uploads. Delete some first.'**
+  String get libraryUgcErrQuota;
+
+  /// No description provided for @libraryUgcErrInvalidKit.
+  ///
+  /// In en, this message translates to:
+  /// **'The server rejected the file as invalid or damaged in transit. Try again.'**
+  String get libraryUgcErrInvalidKit;
+
+  /// No description provided for @libraryUgcErrSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your sign-in has expired. Sign in again.'**
+  String get libraryUgcErrSignIn;
+
+  /// No description provided for @libraryUgcErrTakenDown.
+  ///
+  /// In en, this message translates to:
+  /// **'This entry has been taken down.'**
+  String get libraryUgcErrTakenDown;
+
+  /// No description provided for @libraryUgcErrNoFile.
+  ///
+  /// In en, this message translates to:
+  /// **'There’s no file yet, so it can’t be made public.'**
+  String get libraryUgcErrNoFile;
+
+  /// No description provided for @libraryUgcErrBadForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Some fields aren’t valid. Check them and try again.'**
+  String get libraryUgcErrBadForm;
+
+  /// No description provided for @libraryUgcErrGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'That didn’t work. Try again later.'**
+  String get libraryUgcErrGeneric;
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {
