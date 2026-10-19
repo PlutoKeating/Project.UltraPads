@@ -1,7 +1,8 @@
-"""分轨 → 音色组 / pad 布局，并生成 .upkit 目录（kit.json + samples/*.flac + 许可证文件）。
+"""分轨 → 段落组 / pad 布局，并生成 .upkit 目录（kit.json + samples/*.flac + 许可证文件）。
 
-每个乐器一个音色组（bank），一组 12 个 pad，全部是 Loop + Toggle + 按小节量化，同组互斥（exclusive）：
-素材有 8 小节时 = 2 个 4 小节完整乐句（A / B）、4 个 2 小节（八拍）、6 个 1 小节（半八拍）；不足 8 小节则按实际长度缩减。
+**一个音色组（A/B/C…）= 歌曲的一个完整段落（4 小节），组内一个 pad = 该段落的一个乐器分轨**：
+同时打开同一组的全部 pad 就是完整的一段歌；换到另一组的同一乐器 pad 即换段落（同一乐器跨组互斥，`exclusive`）。
+所有 pad 都是 Loop + Toggle + 按小节量化（`1bar`）。只有一条分轨的素材（整曲混音）在该组的空 pad 上补 2 小节 / 1 小节的片段。
 """
 
 from __future__ import annotations
@@ -16,23 +17,18 @@ from .model import ROLE_COLOR, Song, n_bars
 
 LICENSE_FILE = "LICENSE.txt"
 ATTRIBUTION_FILE = "ATTRIBUTION.txt"
+SECTION_BARS = 4
+MAX_SECTIONS = 8
 
 
-def pad_plan(bars: int) -> list[tuple[str, int, int]]:
-    """素材共 `bars` 个小节 → [(标签, 起始小节, 小节数)]，最多 12 个。"""
-    if bars >= 8:
-        return [
-            ("4bar A", 0, 4), ("4bar B", 4, 4),
-            ("2bar A1", 0, 2), ("2bar A2", 2, 2), ("2bar B1", 4, 2), ("2bar B2", 6, 2),
-            ("1bar A1", 0, 1), ("1bar A2", 1, 1), ("1bar A3", 2, 1), ("1bar A4", 3, 1),
-            ("1bar B1", 4, 1), ("1bar B4", 7, 1),
-        ]
-    if bars >= 4:
-        return [
-            ("4bar", 0, 4), ("2bar 1", 0, 2), ("2bar 2", 2, 2),
-            ("1bar 1", 0, 1), ("1bar 2", 1, 1), ("1bar 3", 2, 1), ("1bar 4", 3, 1),
-        ]
-    return [(f"{i + 1}bar", i, 1) for i in range(max(bars, 0))]
+def n_sections(bars: int) -> int:
+    """素材共 `bars` 个小节 → 段落数（每段 4 小节，不足一段的尾巴丢弃）。"""
+    return min(bars // SECTION_BARS, MAX_SECTIONS)
+
+
+def fragment_plan() -> list[tuple[str, int, int]]:
+    """整曲混音（只有一条分轨）时，段落内补充的片段 [(标签, 段内起始小节, 小节数)]。"""
+    return [("2bar 1", 0, 2), ("2bar 2", 2, 2), ("1bar 1", 0, 1), ("1bar 2", 1, 1), ("1bar 3", 2, 1), ("1bar 4", 3, 1)]
 
 
 def kit_uuid(song_id: str) -> str:
@@ -68,31 +64,38 @@ def build_kit_dir(song: Song, stems: dict[str, np.ndarray], out: Path) -> dict:
     (out / "samples").mkdir(parents=True)
     pads, total_pad = [], 0
     first_loop_secs = None
-    for bank, meta in enumerate(song.stems):
-        x = stems[meta.name]
-        bars = n_bars(x, song.bpm, song.offset)
-        plan = pad_plan(bars)
-        if not plan:
-            raise ValueError(f"{song.id}/{meta.name}：不足 1 小节")
-        for index, (label, start, nb) in enumerate(plan):
-            seg = audio.slice_bars(x, song.bpm, start, nb, song.offset * SR)
-            rel = f"samples/{meta.role}{bank + 1}_{label.replace(' ', '_').lower()}.flac"
-            audio.encode_flac(seg, out / rel)
-            flat = bank * 12 + index
-            pads.append({
-                "addr": {"bank": bank, "index": index},
-                "note": 36 + flat,
-                "name": f"{meta.name} {label}",
-                "color": ROLE_COLOR[meta.role],
-                "kind": "loop",
-                "launch": {"mode": "toggle", "quantize": "1bar", "retrigger": "restart"},
-                "exclusive": f"group{bank + 1}",
-                "tempo": {"bpm": song.bpm, "beats": nb * 4, "timeSignature": [4, 4], "stretch": "beats"},
-                "layers": [{"sample": rel}],
-            })
-            total_pad += 1
-            if first_loop_secs is None and nb == 4:
-                first_loop_secs = len(seg) / SR
+    sections = n_sections(min(n_bars(stems[m.name], song.bpm, song.offset) for m in song.stems))
+    if sections < 1:
+        raise ValueError(f"{song.id}：不足 {SECTION_BARS} 小节")
+    single = len(song.stems) == 1
+
+    def add_pad(bank: int, index: int, meta, label: str, start: int, nb: int, excl: str) -> None:
+        nonlocal total_pad, first_loop_secs
+        seg = audio.slice_bars(stems[meta.name], song.bpm, start, nb, song.offset * SR)
+        rel = f"samples/{'abcdefgh'[bank]}_{meta.role}{index + 1}_{label.replace(' ', '_').lower()}.flac"
+        audio.encode_flac(seg, out / rel)
+        pads.append({
+            "addr": {"bank": bank, "index": index},
+            "note": 36 + bank * 12 + index,
+            "name": f"{meta.name} {label}",
+            "color": ROLE_COLOR[meta.role],
+            "kind": "loop",
+            "launch": {"mode": "toggle", "quantize": "1bar", "retrigger": "restart"},
+            "exclusive": excl,
+            "tempo": {"bpm": song.bpm, "beats": nb * 4, "timeSignature": [4, 4], "stretch": "beats"},
+            "layers": [{"sample": rel}],
+        })
+        total_pad += 1
+        if first_loop_secs is None and nb == SECTION_BARS:
+            first_loop_secs = len(seg) / SR
+
+    for bank in range(sections):
+        sec = "ABCDEFGH"[bank]
+        for index, meta in enumerate(song.stems):  # pad 序号 = 乐器序号，各组一致
+            add_pad(bank, index, meta, f"{sec}", bank * SECTION_BARS, SECTION_BARS, f"inst{index + 1}")
+        if single:  # 整曲混音：补段内片段，供切分即兴
+            for k, (label, start, nb) in enumerate(fragment_plan()):
+                add_pad(bank, 1 + k, song.stems[0], f"{sec} {label}", bank * SECTION_BARS + start, nb, f"frag{bank}")
     doc = {
         "id": kit_uuid(song.id),
         "name": song.title,
@@ -102,7 +105,7 @@ def build_kit_dir(song: Song, stems: dict[str, np.ndarray], out: Path) -> dict:
         "genres": song.genres,
         "tags": song.tags,
         "tempo": {"bpm": song.bpm, "timeSignature": [4, 4]},
-        "padCount": len(song.stems) * 12,
+        "padCount": sections * 12,
         "pads": pads,
         "themeColor": song.theme_color,
         "source": {"kind": "catalog", "originalId": song.id, "originalName": song.source_url, "inspiredBy": song.attribution},
@@ -112,7 +115,7 @@ def build_kit_dir(song: Song, stems: dict[str, np.ndarray], out: Path) -> dict:
     (out / ATTRIBUTION_FILE).write_text(song.attribution + "\n", encoding="utf-8")
     if song.extra.get("notice_file"):  # 第三方素材（如 SoundFont）要求随附的版权与许可声明原文
         (out / "NOTICE.txt").write_text(Path(song.extra["notice_file"]).read_text(encoding="utf-8"), encoding="utf-8")
-    return {"pad_count": total_pad, "group_count": len(song.stems), "loop_secs": first_loop_secs or 4 * 4 * 60.0 / song.bpm}
+    return {"pad_count": total_pad, "group_count": sections, "loop_secs": first_loop_secs or 4 * 4 * 60.0 / song.bpm}
 
 
 def item_json(song: Song, stats: dict) -> dict:

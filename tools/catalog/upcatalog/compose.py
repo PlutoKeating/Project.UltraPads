@@ -1,7 +1,7 @@
-"""程序化作曲：风格模板 + 种子 → 一首 8 小节歌曲（A、B 两个 4 小节乐句）的各乐器音符。
+"""程序化作曲：风格模板 + 种子 → 一首 16 小节歌曲（A、B、C、D 四个 4 小节段落）的各乐器音符。
 
 产出的是**原创**音符（每首歌由种子确定性生成），再由 SoundFont（MuseScore_General，MIT）渲染成音频。
-每个乐句独立循环（A 渲染两遍取第二遍），所以 1 / 2 / 4 小节的切片都能无缝循环。
+每个段落独立循环（渲染两遍取第二遍），段落内所有乐器同时播放即是完整的一段歌。
 """
 
 from __future__ import annotations
@@ -91,13 +91,13 @@ def drums_phrase(st: Style, rng: random.Random, phrase: int, variant: int) -> li
                 if ch in VEL:
                     notes.append((base + s * STEP + swing_offset(s, st.swing), 0.2, DRUM[name], VEL[ch] + rng.randint(-4, 4)))
         last = bar == 3
-        if last and phrase == 1:  # B 乐句最后一小节：军鼓过门 + 下一遍开头的镲
+        if last and phrase % 2 == 1:  # 奇数段落（B、D）最后一小节：军鼓过门 + 下一遍开头的镲
             for k, s in enumerate(range(12, 16)):
                 notes.append((base + s * STEP, 0.2, DRUM["snare"], 70 + k * 12))
         elif last:  # A 乐句最后一小节：小鼓点
             notes.append((base + 14 * STEP, 0.2, DRUM["snare"], 80))
             notes.append((base + 15 * STEP, 0.2, DRUM["snare"], 96))
-        if bar == 0 and phrase == 1:
+        if bar == 0 and phrase % 2 == 1:
             notes.append((base, 1.0, DRUM["crash"], 96))
     return notes
 
@@ -197,7 +197,7 @@ def lead_phrase(st: Style, rng: random.Random, prog: list[int], root: int, scale
             else:
                 cur += mr.choice([-2, -1, -1, 1, 1, 2])
             if bar == 3 and n == len(rhythm) - 1:  # 乐句末尾落回主音 / 五度
-                cur = prog[0] + (0 if phrase == 0 else 4)
+                cur = prog[0] + (0 if phrase % 2 == 0 else 4)
             cur = max(0, min(cur, 9))
             notes.append((bar * BAR + s * STEP + swing_offset(s, st.swing), max(0.2, ln * STEP * 0.9), pitch(base, scale, cur), 88 if strong else 76))
     return notes
@@ -228,7 +228,7 @@ class SongPlan:
     bpm: int
     root: int  # 0..11
     mode: str
-    prog: list[list[int]]  # [A, B]
+    prog: list[list[int]]  # [A, B, C, D] 四个段落的和弦进行
     variant: int
     motif: int
 
@@ -239,16 +239,17 @@ def plan(style: Style, seed: int) -> SongPlan:
     progs = PROGRESSIONS[mode]
     a = rng.choice(progs)
     b = rng.choice([p for p in progs if p != a] or progs)
-    return SongPlan(style, seed, rng.randint(*style.bpm), rng.choice(style.keys), mode, [a, b], rng.randint(0, 5), rng.randint(0, 10**6))
+    c = rng.choice([p for p in progs if p not in (a, b)] or [b])
+    return SongPlan(style, seed, rng.randint(*style.bpm), rng.choice(style.keys), mode, [a, b, c, a], rng.randint(0, 5), rng.randint(0, 10**6))
 
 
 def phrase_notes(p: SongPlan, part: Part, phrase: int) -> list[tuple]:
-    """某个乐器在 A(0) / B(1) 乐句里的音符 [(起拍, 时长拍, 音高, 力度)]。"""
+    """某个乐器在 A(0) / B(1) / C(2) / D(3) 段落里的音符 [(起拍, 时长拍, 音高, 力度)]。"""
     st = p.style
     scale = SCALES[p.mode]
     rng = random.Random(p.seed * 31 + phrase * 7 + zlib.crc32(part.name.encode()) % 997)
     prog = p.prog[phrase]
-    pat = p.variant if part.pattern is None else part.pattern
+    pat = (p.variant if part.pattern is None else part.pattern) + phrase // 2  # C、D 段换一套节奏
     if part.kind == "drums":
         return drums_phrase(st, rng, phrase, pat)
     if part.kind == "perc":

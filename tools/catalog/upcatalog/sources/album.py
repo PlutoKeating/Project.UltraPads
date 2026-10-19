@@ -24,7 +24,7 @@ from ..model import Song, StemMeta, slugify
 from ..paths import Ctx
 
 PREFIX_SECS = 130  # 每个分轨取开头多少秒
-WINDOW_BARS = 8
+WINDOW_BARS = 16  # 4 个 4 小节段落；找不到时退到 8 小节（2 个段落）
 
 # 乐器组 → 文件名正则（在歌曲目录内匹配）。顺序 = 音色组顺序。
 GROUPS = [
@@ -176,15 +176,19 @@ def build(ctx: Ctx, only: set[str] | None = None, limit: int | None = None) -> l
         if not grid.reliable:
             print(f"[album] {folder}：速度不稳定 {grid}，跳过")
             continue
-        picked = pick_window(groups, grid.bpm, grid.offset, min_groups=4)
+        win = WINDOW_BARS
+        picked = pick_window(groups, grid.bpm, grid.offset, bars=win, min_groups=4)
         if picked is None:
-            print(f"[album] {folder}：找不到至少 4 个乐器组有声音的 {WINDOW_BARS} 小节，跳过")
+            win = WINDOW_BARS // 2
+            picked = pick_window(groups, grid.bpm, grid.offset, bars=win, min_groups=4)
+        if picked is None:
+            print(f"[album] {folder}：找不到至少 4 个乐器组有声音的 {win} 小节，跳过")
             continue
         bar, active = picked
         groups = {k: groups[k] for k in active}
         bs = 4 * 60.0 / grid.bpm
         a = int(round((grid.offset + bar * bs) * SR))
-        z = a + int(round(WINDOW_BARS * bs * SR))
+        z = a + int(round(win * bs * SR))
         stems = {k: v[a:z] for k, v in groups.items()}
         stems, _ = audio.normalize_mix(stems)
         names = list(groups)
@@ -194,7 +198,7 @@ def build(ctx: Ctx, only: set[str] | None = None, limit: int | None = None) -> l
         song = Song(
             id=id_, title=title, artist=A["artist"],
             description=f"Real multitrack recording of “{title}” (indie rock/folk) at {round(grid.bpm)} BPM, "
-                        f"bars {bar + 1}–{bar + WINDOW_BARS}, split into {len(names)} instrument groups.",
+                        f"bars {bar + 1}–{bar + win}: {win // 4} sections of 4 bars, each played in full by {len(names)} instrument pads.",
             origin="album", license="CC-BY-4.0", source_url=A["record_url"], bpm=grid.bpm, offset=0.0,
             genres=["indie rock", "folk"], tags=["album", "live-band", "multitrack"],
             stems=[StemMeta(n, meta[n], f"{i + 1}_{n.lower()}.npy") for i, n in enumerate(names)],

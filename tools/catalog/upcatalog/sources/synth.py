@@ -75,7 +75,7 @@ def build(ctx: Ctx, only: set[str] | None = None, per_style: int = PER_STYLE) ->
         plans[sp["id"]] = p
         beat = 60.0 / p.bpm
         for part in st.parts:
-            for ph, name in enumerate("AB"):
+            for ph, name in enumerate("ABCD"):
                 notes = phrase_notes(p, part, ph)
                 f = midi_root / sp["id"] / f"{part.name.lower().replace(' ', '_')}_{name}.mid"
                 write_smf(f, p.bpm, _midi_channels(part, notes, 2), title=f"{sp['title']} / {part.name} / {name}")
@@ -90,7 +90,7 @@ def build(ctx: Ctx, only: set[str] | None = None, per_style: int = PER_STYLE) ->
         stems: dict[str, np.ndarray] = {}
         for part in st.parts:
             halves = []
-            for name in "AB":
+            for name in "ABCD":
                 f = midi_root / sp["id"] / f"{part.name.lower().replace(' ', '_')}_{name}.f32"
                 raw = np.fromfile(f, dtype="<f4").reshape(-1, 2)
                 halves.append(raw[L : 2 * L])  # 第二遍
@@ -104,7 +104,7 @@ def build(ctx: Ctx, only: set[str] | None = None, per_style: int = PER_STYLE) ->
         song = Song(
             id=sp["id"], title=title, artist="UltraPads",
             description=f"Original {st.genre} loop kit at {p.bpm} BPM in {_key_name(p)}. "
-                        f"{len(st.parts)} instrument groups with 4-bar phrases, 2-bar and 1-bar loops.",
+                        f"4 sections (A–D) of 4 bars; each section is played in full by its {len(st.parts)} instrument pads.",
             origin="synth", license="CC0-1.0", source_url="https://github.com/PlutoKeating/Project.UltraPads/tree/main/tools/catalog",
             bpm=float(p.bpm), offset=0.0, genres=[st.genre], tags=sorted({*st.tags, _key_name(p).lower(), "original"}),
             stems=[StemMeta(pt.name, pt.role, f"{i + 1}_{pt.name.lower().replace(' ', '_')}.npy") for i, pt in enumerate(st.parts)],

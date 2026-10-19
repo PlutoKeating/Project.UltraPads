@@ -1,4 +1,4 @@
-"""人工抽检：每首歌一段试听 mp3（逐层加入乐器的 16 小节编排）+ 每个乐器的 4 小节循环 + HTML 清单。"""
+"""人工抽检：每首歌一段试听 mp3（依次播放各段落，每段全部乐器同时）+ 每个乐器的 4 小节循环 + HTML 清单。"""
 
 from __future__ import annotations
 
@@ -8,23 +8,21 @@ from pathlib import Path
 
 import numpy as np
 
-from . import SR, audio, licenses
+from . import SR, audio, layout, licenses
 from .model import Song, n_bars
 from .paths import Ctx
 
 
 def arrangement(song: Song, stems: dict[str, np.ndarray]) -> np.ndarray:
-    """A 乐句从鼓 + 贝斯开始逐层加乐器，B 乐句全部乐器。"""
+    """按 A、B、C… 顺序依次播放每个段落（段落内全部乐器同时），与 App 里每组全开 pad 的效果一致。"""
     bs = int(round(4 * 60.0 / song.bpm * SR))
     names = [m.name for m in song.stems]
-    bars = min(n_bars(stems[n], song.bpm, song.offset) for n in names)
-    ph = lambda n, i: stems[n][int(song.offset * SR) + i * 4 * bs : int(song.offset * SR) + (i + 1) * 4 * bs]  # noqa: E731
+    sections = layout.n_sections(min(n_bars(stems[n], song.bpm, song.offset) for n in names))
     out = []
-    steps = [(0, names[:2]), (0, names[:4]), (0, names)] if bars >= 8 else [(0, names[:2]), (0, names)]
-    for ph_i, active in steps + ([(1, names)] if bars >= 8 else []):
+    for i in range(sections):
         seg = np.zeros((4 * bs, 2), dtype=np.float32)
-        for n in active:
-            x = ph(n, ph_i)
+        for n in names:
+            x = stems[n][int(song.offset * SR) + i * 4 * bs : int(song.offset * SR) + (i + 1) * 4 * bs]
             seg[: len(x)] += x
         out.append(seg)
     mix = np.concatenate(out)
@@ -66,7 +64,7 @@ details summary{cursor:pointer;color:#9ab}audio{height:28px;width:260px}</style>
             f"<br><a href='{esc(item['source_url'])}' style='color:#9ab'>来源</a></td>"
             f"<td>{item['bpm']}</td><td>{item['group_count']} / {item['pad_count']}<br><small>{size}</small></td>"
             f"<td><audio controls preload='none' src='{esc(song.id)}/mix.mp3'></audio>"
-            f"<details><summary>各乐器 4 小节循环</summary>"
+            f"<details><summary>各乐器第一段（A）4 小节循环</summary>"
             + "".join(f"<div>{esc(n)} <audio controls loop preload='none' src='{esc(song.id)}/{esc(fn)}'></audio></div>" for n, fn in layers)
             + "</details></td></tr>"
         )

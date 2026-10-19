@@ -148,13 +148,13 @@ def genres_of(tags: str) -> list[str]:
     return list(dict.fromkeys(out))[:2] or ["other"]
 
 
-def _song(c: dict, groups: dict[str, np.ndarray], roles: dict[str, str], bpm: float, window_bar: int, kind: str) -> Song:
+def _song(c: dict, groups: dict[str, np.ndarray], roles: dict[str, str], bpm: float, window_bar: int, kind: str, win: int = 8) -> Song:
     lic = c["license"]
     names = list(groups)
     return Song(
         id=f"online-{slugify(c['title'])[:40].strip('-')}-{c['id']}", title=c["title"], artist=c["artist"],
         description=f"{'Multitrack stems' if kind == 'stems' else 'Full mix'} from ccMixter at {round(bpm)} BPM, "
-                    f"8 bars from bar {window_bar + 1}, {len(names)} group{'s' if len(names) > 1 else ''}.",
+                    f"{win} bars from bar {window_bar + 1}: {win // 4} sections of 4 bars, each played in full by {len(names)} pad{'s' if len(names) > 1 else ''}.",
         origin="online", license=lic, source_url=c["page"], bpm=bpm, offset=0.0, genres=genres_of(c["tags"]),
         tags=sorted({"ccmixter", kind, *[t for t in c["tags"].split(",") if t and not t.startswith("bpm_")][:4]}),
         stems=[StemMeta(n, roles[n], f"{i + 1}_{slugify(n)}.npy") for i, n in enumerate(names)],
@@ -200,7 +200,11 @@ def build(ctx: Ctx, only: set[str] | None = None, limit: int = 24) -> list[str]:
             if not grid.reliable or not _in_range(grid.bpm, c["bpm_lo"], c["bpm_hi"]):
                 print(f"[online] {c['title']} ({c['id']}): 速度不可靠 {grid}，丢弃")
                 continue
-            picked = pick_window(groups, grid.bpm, grid.offset, min_start_s=4.0, min_groups=min(3, len(groups)))
+            win = 16  # 4 个 4 小节段落；找不到时退到 8 小节
+            picked = pick_window(groups, grid.bpm, grid.offset, bars=win, min_start_s=4.0, min_groups=min(3, len(groups)))
+            if picked is None:
+                win = 8
+                picked = pick_window(groups, grid.bpm, grid.offset, bars=win, min_start_s=4.0, min_groups=min(3, len(groups)))
             if picked is None:
                 print(f"[online] {c['title']} ({c['id']}): 没有合适的 8 小节窗口，丢弃")
                 continue
@@ -208,10 +212,10 @@ def build(ctx: Ctx, only: set[str] | None = None, limit: int = 24) -> list[str]:
             groups = {k: groups[k] for k in active}
             bs = 4 * 60.0 / grid.bpm
             a = int(round((grid.offset + bar * bs) * SR))
-            z = a + int(round(8 * bs * SR))
+            z = a + int(round(win * bs * SR))
             stems = {k: v[a:z] for k, v in groups.items()}
             stems, _ = audio.normalize_mix(stems)
-            song = _song(c, groups, roles, grid.bpm, bar, c["kind"])
+            song = _song(c, groups, roles, grid.bpm, bar, c["kind"], win)
             if only and song.id not in only:
                 continue
             song.save(ctx.work, stems)

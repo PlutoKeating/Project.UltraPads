@@ -75,7 +75,7 @@ class AlbumTest(unittest.TestCase):
         loud = (np.random.default_rng(0).standard_normal((n, 2)) * 0.1).astype(np.float32)
         quiet = np.zeros((n, 2), dtype=np.float32)
         quiet[SR * 24 :] = loud[SR * 24 :]  # 第二个组从 24 s 才有声音
-        bar, active = album.pick_window({"a": loud, "b": quiet}, bpm, 0.0, min_start_s=2.0)
+        bar, active = album.pick_window({"a": loud, "b": quiet}, bpm, 0.0, bars=8, min_start_s=2.0)
         self.assertGreaterEqual(bar * 2.0, 24.0)  # 120 BPM 一小节 2 s
         self.assertEqual(bar % 4, 0)
         self.assertEqual(sorted(active), ["a", "b"])
@@ -84,8 +84,8 @@ class AlbumTest(unittest.TestCase):
         n = SR * 40
         loud = (np.random.default_rng(0).standard_normal((n, 2)) * 0.1).astype(np.float32)
         silent = np.zeros((n, 2), dtype=np.float32)
-        self.assertIsNone(album.pick_window({"a": loud, "b": silent}, 120.0, 0.0, min_start_s=2.0))
-        bar, active = album.pick_window({"a": loud, "b": silent}, 120.0, 0.0, min_start_s=2.0, min_groups=1)
+        self.assertIsNone(album.pick_window({"a": loud, "b": silent}, 120.0, 0.0, bars=8, min_start_s=2.0))
+        bar, active = album.pick_window({"a": loud, "b": silent}, 120.0, 0.0, bars=8, min_start_s=2.0, min_groups=1)
         self.assertEqual(active, ["a"])
 
 
