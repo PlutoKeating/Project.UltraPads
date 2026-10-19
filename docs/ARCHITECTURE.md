@@ -188,3 +188,21 @@ tools/catalog ──管理接口（X-Up-Admin）──► ultrapads-data     素
 - **入库管线** `tools/catalog`：synth（原创 MIDI + MuseScore_General 渲染，CC0）、album（AlbumDB，HTTP Range 只取需要的分轨）、online（ccMixter，逐条核对许可证）→ 分析 BPM → 按小节切片 → 打包 `.upkit` → 质检 → 预览 → 发布（默认 draft）。
 - **用户上传（UGC）**：登录用户把本地打好的 `.upkit` 经 Worker 纯透传（流式，≤ 128 MB，Worker 不读字节）存到数据服务，条目与官方条目共用 `catalog_items` 表（`origin = ugc`，另有 `owner_sub`、`visibility`、`moderation`、`source_declaration` 四列，旧库打开时自动补列）。**默认私有**，公开条件 = 有文件 + `visibility = public` + `moderation = active`，目录、facets、详情、收藏都按这个条件过滤。公开条目可被举报（`reports` 表，同一用户一次，未处理举报累计 3 人自动 `hidden`），运营在数据服务的管理接口恢复或下架（下架后 `410`）；注销账号级联删除上传。本人下载走 `/api/me/uploads/<id>/download`（`private, no-store`，不进共享缓存）。契约见 `docs/API.md` §7.5。
 - 数据服务与运维细节（服务器、隧道、密钥）记在私有运维仓库，不进本仓库。
+
+## 12. 导入歌曲与本地分轨（up-split）
+
+决策见 ADR-0005 第 9 项，接口见 `docs/API.md` §8。
+
+```
+音频文件 ──解码/重采样(up-codec)──► 立体声 44.1k
+   ├─ analyze：BPM + 小节起点（置信度/漂移）
+   ├─ [可选] Separator::separate（Demucs，本机 CPU）──► 鼓 / 贝斯 / 其他 / 人声
+   ├─ kit::pick_sections：最多 8 个 4 小节段落（最远点优先）
+   └─ kit::build_kit：每段一个音色组、组内每个乐器一个 pad ──► .upkit ──► Library::import_zip_bytes
+```
+
+- 新 crate `runtime/up-split`（依赖 up-codec、up-format，不依赖曲库）；`bridge/up-ffi` 的 `split.rs` 负责线程、取消、进度流和导入。
+- **分轨后端可插拔**（`Separator`）。先落地的 Demucs 用纯 Rust 推理库 tract 跑单文件 htdemucs ONNX（STFT 在图里），好处是 Linux、Android 三个 ABI 都不需要原生运行时库；代价是比 ONNX Runtime 慢、内存峰值约 4.6 GB（实测），所以由 `split_capabilities` 按可用内存决定是否开放，内存不够时只提供快速拆分（整曲混音，几秒）。以后要换 `ort` 等后端，只需新增一个 `Separator` 实现。
+- **模型不随应用分发**：用户同意后下载（约 158 MB，sha256 固定），存应用数据目录；Demucs 权重与该 ONNX 导出均为 MIT，署名见应用的“关于”页。
+- 实测（Linux x86_64 单进程）：51 秒音频分轨约 60 秒；分轨与原始分轨的相关系数 0.97 以上（AlbumDB 实录混音 → 鼓 / 贝斯 / 人声）。
+

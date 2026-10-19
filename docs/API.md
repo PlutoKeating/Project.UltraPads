@@ -317,7 +317,7 @@ end 16B  tag       HMAC-SHA256(会话密钥, 前面所有字节) 的前 16 字�
 | `catalog_entries(source)` / `catalog_categories(source)` | | 外部目录（私有素材包的 list.json / fetch.json）：`CatalogEntry { status: NotDownloaded / Downloaded{kitId}, genres, tags, difficulty, themeColor, videoUrl, … }` |
 | `add_sample(bytes, name, SampleOrigin)` / `add_sample_file(path, origin)` / `list_samples()` / `sample_path(id)` / `delete_sample(id)` | `sampler_record_stop` | 麦克风录音/导入的样本入库（内容寻址，`SampleId` = BLAKE3） |
 | `sample_waveform(id, buckets) -> Vec<f32>` | `sample_waveform` | 峰值概要 |
-| `tracks_list()` / `track_add(bytes, name, kit, bpm)` / `track_add_file` / `track_rename` / `track_delete` / `track_export(id, dest, TrackExportFormat::{Wav, DawProject})` / `track_to_sample(id)` / `track_path(id)` | `tracks_*` / `track_export` / `track_delete` | 录音作品；WAV 导出写 BWF `bext` |
+| `tracks_list()` / `track_add(bytes, name, kit, bpm)` / `track_add_file` / `track_rename` / `track_delete` / `track_export(id, dest, TrackExportFormat::{Wav, Flac, DawProject}, credits: Option<&str>)` / `track_to_sample(id)` / `track_path(id)` | `tracks_*` / `track_export` / `track_delete` | 录音作品；WAV 导出写 BWF `bext`，FLAC（16-bit，`flacenc`）写 Vorbis 注释；`credits` 是用到需署名素材时的署名文字，WAV 写进 `bext` 描述（截到 256 字节）与完整的编码历史，FLAC 写进 `COMMENT` |
 | `hub_store::LibraryHubStore::new(Arc<Library>, DeviceId)` | `hub_start_server` / `hub_sync` | 实现 `up_hub::LibraryStore`（feature `hub`，默认开）：Kit/样本/作品 ↔ 清单条目，blob = 内容寻址存储 |
 
 私有素材包导入器是可插拔的 `CompatSource`（`detect` + `import(emit)`）：内置 `compat-android`（Android 格式：WAV + `list.json` + 顺序教程）与 `compat-ios`（iOS 格式：Ogg/MP3 入库时转 WAV + `fetch.json`/`fetch_next.json` + 计时教程 `tutorial.json` + 分课 `<id>_lesson.json`）。`library_import("private-assets/compat-ios")` 一次导入全部 6 个内置 Kit 并合并 1259 个目录条目。
@@ -507,3 +507,20 @@ Dart：`EngineClient.appVersion` / `updateCheck` / `updateDownload` / `updateCan
 - **举报与审核**：未处理的举报累计 **3 个不同用户**，条目自动转 `moderation: hidden`（立即不再公开，上传者仍可见并看到状态）。运营在 `GET /v1/admin/reports`（数据服务运营接口）查看，`PUT /v1/admin/catalog/<id>/moderation` 恢复（`active`）或下架（`taken_down`）；处理后该条目的举报标为已处理，恢复后旧举报不再计数。下架的条目：公开详情与下载 `410`，从所有人的收藏 / 最近 / 下载记录里消失，上传者不能再下载、公开或替换文件，只能删除。
 - **缓存**：目录与详情有 60 秒边缘缓存，所以公开 / 取消公开 / 下架在最长 60 秒内生效；`.upkit` 按 `sha256` 缓存，下架后元数据缓存一过期就不再有任何入口取到。
 - **注销**：`DELETE /api/me` 同时删除该账号的全部上传条目、独占文件和它提交过的举报。
+
+## 8. 导入歌曲并自动拆成 Kit（`runtime/up-split`、`bridge/up-ffi/src/api/split.rs`）
+
+把用户本机的一首歌拆成 Kit，**全程在本机完成，歌曲不上传**。排布与官方曲库一致（ADR-0005 第 3 条）：**一个音色组（A/B/C…）= 歌曲的一个完整段落（4 小节），组内一个 pad = 一个乐器分轨**；pad 序号与乐器一一对应，同一乐器跨组互斥（`exclusive = instN`）。没有分轨（快速拆分）时，每段的 pad 1 是整段，其余 pad 是 2 小节 / 1 小节片段。
+
+| FFI | 同步 | 说明 |
+|---|---|---|
+| `split_capabilities() -> SplitCapabilities` | ✅ | `{ separation_available, available_memory_mb, separation_memory_mb }`：按 `/proc/meminfo` 的可用内存判断能否跑 Demucs 分轨（单曲约 4.6 GB 起） |
+| `split_song(path, title?, model_path?, known_bpm?) -> Stream<SplitProgress>` | | 立即返回，同一时刻一个。`model_path` 给了就先分轨，否则只拆整曲。进度流 `Progress { stage: LoadingModel/Decoding/Analyzing/Separating/Building/Importing, fraction }`，以 `Done { kit, bpm, sections, reliable, separated }` 或 `Failed { error }` 结束；完成时 Kit 已导入曲库并发出 `LibraryChanged` |
+| `split_cancel()` | | 取消进行中的拆分（流以 `Failed { [cancelled] }` 结束） |
+
+错误消息以 `[tag]` 开头：`decode`、`too_short`（不足一个 4 小节段落）、`no_grid`（找不到稳定节拍）、`insufficient_memory`、`model`（模型加载失败）、`separate`、`kit`、`cancelled`、`busy`。
+
+**Rust（`up-split`）**：`split_song(&AudioBuffer, &SplitOptions, progress) -> SplitOutcome { kit: BuiltKit { doc, assets }, grid, sections, separated }`；`analyze::estimate_grid`（谱通量 + 自相关 + 梳状网格，与入库管线同一算法，输出 `Grid { bpm, offset, confidence, drift }`）；`kit::pick_sections`（最多 8 段，最远点优先，使入选段落彼此差别最大）；`trait Separator { name, stems, memory_mb, separate(&Stereo, progress) -> Vec<Stereo> }`，自带后端 `demucs::Demucs`（htdemucs 单文件 ONNX，输入 `mix (1,2,343980)` → `stems (1,4,2,343980)`，44.1 kHz，鼓 / 贝斯 / 其他 / 人声，7.8 秒分段、25% 重叠；纯 Rust 推理（tract），无原生库依赖）。开发用命令行：`cargo run -p up-split --release --example split -- <音频> <输出目录> [模型.onnx]`。
+
+**分轨模型不随应用分发**：应用在用户同意后从 Hugging Face（`adowu/htdemucs-onnx`，MIT，权重来自 Meta Demucs v4，fp16 权重文件约 158 MB）下载，按固定 sha256 校验后放在应用数据目录 `models/`（`lib/src/split/model_store.dart`），再把路径传给 `split_song`。
+

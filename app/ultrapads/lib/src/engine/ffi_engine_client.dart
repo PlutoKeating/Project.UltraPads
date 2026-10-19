@@ -8,6 +8,7 @@ import '../rust/api/engine.dart' as ffi;
 import '../rust/api/hub.dart' as ffi_hub;
 import '../rust/api/library.dart' as ffi_lib;
 import '../rust/api/tracks.dart' as ffi_tracks;
+import '../rust/api/split.dart' as ffi_split;
 import '../rust/api/types.dart' as t;
 import '../rust/api/update.dart' as ffi_update;
 import '../rust/frb_generated.dart';
@@ -826,11 +827,20 @@ class FfiEngineClient implements EngineClient {
   Future<void> trackStop() => _call('track_stop', ffi_tracks.trackStop);
 
   @override
-  Future<void> trackExport(String trackId, String path, ExportFormat format) =>
-      _call(
-        'track_export',
-        () => ffi_tracks.trackExport(id: trackId, path: path, fmt: format.name),
-      );
+  Future<void> trackExport(
+    String trackId,
+    String path,
+    ExportFormat format, {
+    String? credits,
+  }) => _call(
+    'track_export',
+    () => ffi_tracks.trackExport(
+      id: trackId,
+      path: path,
+      fmt: format.name,
+      credits: credits,
+    ),
+  );
 
   @override
   Future<void> trackDelete(String trackId) =>
@@ -1054,6 +1064,67 @@ class FfiEngineClient implements EngineClient {
           },
         );
       });
+
+  @override
+  SplitCapabilities splitCapabilities() {
+    final c = ffi_split.splitCapabilities();
+    return SplitCapabilities(
+      separationAvailable: c.separationAvailable,
+      separationMemoryMb: c.separationMemoryMb,
+      availableMemoryMb: c.availableMemoryMb,
+    );
+  }
+
+  @override
+  Stream<SplitProgress> splitSong({
+    required String path,
+    String? title,
+    String? modelPath,
+    double? knownBpm,
+  }) async* {
+    try {
+      await for (final p in ffi_split.splitSong(
+        path: path,
+        title: title,
+        modelPath: modelPath,
+        knownBpm: knownBpm,
+      )) {
+        switch (p) {
+          case ffi_split.SplitProgress_Progress(:final stage, :final fraction):
+            yield SplitRunning(SplitStage.values[stage.index], fraction);
+          case ffi_split.SplitProgress_Done(
+            :final kit,
+            :final bpm,
+            :final sections,
+            :final reliable,
+            :final separated,
+          ):
+            yield SplitDone(
+              kit: _kit(kit),
+              bpm: bpm,
+              sections: sections,
+              reliable: reliable,
+              separated: separated,
+            );
+            return;
+          case ffi_split.SplitProgress_Failed(:final error):
+            yield SplitFailed(_error(error, 'split_song'));
+            return;
+        }
+      }
+    } catch (e) {
+      yield SplitFailed(_error(e, 'split_song'));
+    }
+  }
+
+  @override
+  void splitCancel() {
+    try {
+      ffi_split.splitCancel();
+    } catch (e) {
+      _reportOnce('split_cancel', e);
+    }
+  }
 
   @override
   Stream<UpdateProgress> updateDownload() async* {

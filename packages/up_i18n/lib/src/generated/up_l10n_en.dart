@@ -2000,4 +2000,117 @@ class UpL10nEn extends UpL10n {
   String shareExportCreditsShareText(String credits) {
     return 'Credits:\n$credits';
   }
+
+  @override
+  String get librarySplitEntryTitle => 'Split a song into a kit';
+
+  @override
+  String get librarySplitEntrySubtitle =>
+      'Pick a song on this device; it is cut into sections';
+
+  @override
+  String get librarySplitTitle => 'Split song';
+
+  @override
+  String get librarySplitIntro =>
+      'Each group (A, B, C…) is one full section of the song and each pad in it is one instrument — turn on a whole group to hear the section. Everything runs on this device; the song is never uploaded.';
+
+  @override
+  String get librarySplitModeSeparate =>
+      'Separate instruments (drums / bass / other / vocals)';
+
+  @override
+  String librarySplitModeSeparateReady(String gb) {
+    return 'Model ready. Needs about $gb GB of memory and a few minutes';
+  }
+
+  @override
+  String librarySplitModeSeparateDownload(int mb, String gb) {
+    return 'First use downloads the separation model (about $mb MB). Needs about $gb GB of memory and a few minutes';
+  }
+
+  @override
+  String librarySplitModeSeparateNoMemory(String gb) {
+    return 'Not enough free memory on this device (about $gb GB needed) — use quick split or a device with more memory';
+  }
+
+  @override
+  String get librarySplitModeQuick => 'Quick split (whole mix)';
+
+  @override
+  String get librarySplitModeQuickHint =>
+      'No separation: the first pad of each group is the whole section, the rest are 2-bar and 1-bar fragments. Takes seconds';
+
+  @override
+  String get librarySplitStart => 'Start';
+
+  @override
+  String librarySplitStageDownloadingModel(int percent) {
+    return 'Downloading the separation model… $percent%';
+  }
+
+  @override
+  String get librarySplitStageDecoding => 'Reading the song…';
+
+  @override
+  String get librarySplitStageLoadingModel => 'Loading the separation model…';
+
+  @override
+  String get librarySplitStageAnalyzing => 'Analyzing tempo and bars…';
+
+  @override
+  String librarySplitStageSeparating(int percent) {
+    return 'Separating instruments… $percent%';
+  }
+
+  @override
+  String get librarySplitStageBuilding => 'Building the kit…';
+
+  @override
+  String get librarySplitStageImporting => 'Importing into the library…';
+
+  @override
+  String librarySplitDone(String name, int sections, int bpm) {
+    return 'Created “$name”: $sections sections, about $bpm BPM';
+  }
+
+  @override
+  String get librarySplitUnreliable =>
+      'The tempo of this song is not steady, so bar lines may be slightly off; you can fine-tune them in the kit editor.';
+
+  @override
+  String get librarySplitLoadKit => 'Load and play';
+
+  @override
+  String get librarySplitCancelled => 'Cancelled';
+
+  @override
+  String get librarySplitErrorTooShort =>
+      'The song is too short to make a 4-bar section.';
+
+  @override
+  String get librarySplitErrorNoGrid =>
+      'No steady beat was found — the song may have no clear pulse or a changing tempo.';
+
+  @override
+  String get librarySplitErrorMemory =>
+      'Not enough free memory. Close other apps and retry, or use quick split.';
+
+  @override
+  String get librarySplitErrorDecode => 'This audio file could not be read.';
+
+  @override
+  String get librarySplitErrorModel =>
+      'The separation model could not be loaded. Remove it and download it again.';
+
+  @override
+  String get librarySplitErrorModelChecksum =>
+      'The downloaded model failed its checksum. Please retry.';
+
+  @override
+  String get librarySplitErrorModelDownload =>
+      'The model download failed. Check your connection and retry.';
+
+  @override
+  String get librarySplitErrorGeneric => 'Splitting failed. Please retry.';
 }

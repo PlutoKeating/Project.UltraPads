@@ -257,3 +257,11 @@ Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径
   - **令牌存储**：应用私有目录里的 `account.json`，权限 0600，写入走「临时文件 → rename」（`FileTokenStore`）。不用 flutter_secure_storage：它的 Linux 实现依赖 libsecret 与桌面 keyring，会给发布包新增系统库依赖，无 keyring 的环境读写还会失败。代价是令牌只受文件系统权限与应用沙盒保护（Android 沙盒内他人不可读），不是硬件密钥库。
 - **署名与导出**：保存 / 分享录音时，若当前 Kit 来自需署名的目录条目（非 CC0 / PD），保存面板显示署名与限制（NC：仅限非商业；SA：以相同许可证分享），分享文字附上署名（`features/catalog/credits.dart`，按录音的 `kitName` 匹配已下载记录）。**未做**：写入 WAV `bext` 元数据——应用分享的是 FLAC，署名走分享文字。
 - **测试替换**：`catalogHttpClientProvider`、`catalogDownloadDirProvider`、`tokenStoreProvider`、`authFlowProvider`、`authHttpClientProvider`；`test/harness.dart` 的 `pumpApp` 默认全部换成假实现（`FakeSite`、`FakeAuthFlow`、内存令牌、临时目录）。
+
+## 13. 导入歌曲拆成 Kit（`lib/src/split/`、`features/split/`，接口见 `docs/API.md` §8）
+
+- 入口：曲库页「我的」→「导入歌曲拆成 Kit」，选本机音频文件后弹出 `SplitSongSheet`（`showSplitSongSheet`）。
+- 两种模式：**按乐器分轨**（Demucs，本机处理；`EngineClient.splitCapabilities()` 按可用内存决定是否可选，不可选时给出所需内存）与**快速拆分**（整曲混音，几秒）。
+- `ModelStore`（`split/model_store.dart`）：分轨模型（htdemucs ONNX fp16 权重，约 158 MB）不随应用分发，用户同意后经 `http` 下载到 `<应用数据目录>/models/`，先写 `.part`、边下边算 sha256，校验通过才改名；`installed()` 以文件大小判定。测试里 `modelDirProvider` / `modelStoreProvider` 可替换。
+- `SplitController`（`splitProvider`）：必要时先下载模型（`downloadingModel`），再消费 `EngineClient.splitSong(...)` 进度流（`running` → `done` / `failed`）；取消同时停下载与引擎；失败原因是 `[tag]`（引擎）或 `model_<原因>`（下载），由面板映射成文案。完成后可「载入演奏」。
+- 引擎侧在 Rust 线程里解码、分析、分轨并直接导入曲库（`library_changed` 事件刷新列表），Dart 侧只持有进度。

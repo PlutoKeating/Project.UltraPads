@@ -11,6 +11,7 @@ import '../../routing/routes.dart';
 import '../../state/engine_state.dart';
 import '../../state/library_state.dart';
 import '../catalog/catalog_tab.dart';
+import '../split/split_song_sheet.dart';
 import 'genres.dart';
 
 /// 曲库（参考设计 `MenuScene`）：顶部导航（✕ / 标题 / 🔍），KITS / FEED / PROFILE 三个 Tab。
@@ -433,6 +434,13 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
     );
   }
 
+  Future<void> _splitSong() async {
+    final files = await FilePicker.pickFiles(type: FileType.audio);
+    final path = files.firstOrNull?.path;
+    if (path == null || !mounted) return;
+    await showSplitSongSheet(context, path);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -459,6 +467,12 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 title: l10n.libraryImportKit,
                 subtitle: l10n.libraryImportFromFile,
                 onTap: _import,
+              ),
+              UpListItem(
+                icon: Icons.content_cut_rounded,
+                title: l10n.librarySplitEntryTitle,
+                subtitle: l10n.librarySplitEntrySubtitle,
+                onTap: _splitSong,
               ),
               UpListItem(
                 icon: Icons.devices_rounded,

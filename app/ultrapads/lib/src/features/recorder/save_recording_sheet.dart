@@ -197,8 +197,14 @@ Future<void> shareTrack(
   final dir = await getTemporaryDirectory();
   final path = '${dir.path}${Platform.pathSeparator}$name.flac';
   final ok = await tryEngineDo(
-    () =>
-        ref.read(engineProvider).trackExport(trackId, path, ExportFormat.flac),
+    () => ref
+        .read(engineProvider)
+        .trackExport(
+          trackId,
+          path,
+          ExportFormat.flac,
+          credits: credits.isEmpty ? null : creditsText(l10n, credits),
+        ),
   );
   if (!ok && context.mounted) {
     showUpToast(context, l10n.errorEngineUnsupported);

@@ -1863,5 +1863,110 @@
         "type": "String"
       }
     }
-  }
+  },
+  "librarySplitEntryTitle": "Split a song into a kit",
+  "@librarySplitEntryTitle": {},
+  "librarySplitEntrySubtitle": "Pick a song on this device; it is cut into sections",
+  "@librarySplitEntrySubtitle": {},
+  "librarySplitTitle": "Split song",
+  "@librarySplitTitle": {},
+  "librarySplitIntro": "Each group (A, B, C…) is one full section of the song and each pad in it is one instrument — turn on a whole group to hear the section. Everything runs on this device; the song is never uploaded.",
+  "@librarySplitIntro": {},
+  "librarySplitModeSeparate": "Separate instruments (drums / bass / other / vocals)",
+  "@librarySplitModeSeparate": {},
+  "librarySplitModeSeparateReady": "Model ready. Needs about {gb} GB of memory and a few minutes",
+  "@librarySplitModeSeparateReady": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "librarySplitModeSeparateDownload": "First use downloads the separation model (about {mb} MB). Needs about {gb} GB of memory and a few minutes",
+  "@librarySplitModeSeparateDownload": {
+    "placeholders": {
+      "mb": {
+        "type": "int"
+      },
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "librarySplitModeSeparateNoMemory": "Not enough free memory on this device (about {gb} GB needed) — use quick split or a device with more memory",
+  "@librarySplitModeSeparateNoMemory": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "librarySplitModeQuick": "Quick split (whole mix)",
+  "@librarySplitModeQuick": {},
+  "librarySplitModeQuickHint": "No separation: the first pad of each group is the whole section, the rest are 2-bar and 1-bar fragments. Takes seconds",
+  "@librarySplitModeQuickHint": {},
+  "librarySplitStart": "Start",
+  "@librarySplitStart": {},
+  "librarySplitStageDownloadingModel": "Downloading the separation model… {percent}%",
+  "@librarySplitStageDownloadingModel": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySplitStageDecoding": "Reading the song…",
+  "@librarySplitStageDecoding": {},
+  "librarySplitStageLoadingModel": "Loading the separation model…",
+  "@librarySplitStageLoadingModel": {},
+  "librarySplitStageAnalyzing": "Analyzing tempo and bars…",
+  "@librarySplitStageAnalyzing": {},
+  "librarySplitStageSeparating": "Separating instruments… {percent}%",
+  "@librarySplitStageSeparating": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySplitStageBuilding": "Building the kit…",
+  "@librarySplitStageBuilding": {},
+  "librarySplitStageImporting": "Importing into the library…",
+  "@librarySplitStageImporting": {},
+  "librarySplitDone": "Created “{name}”: {sections} sections, about {bpm} BPM",
+  "@librarySplitDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "sections": {
+        "type": "int"
+      },
+      "bpm": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySplitUnreliable": "The tempo of this song is not steady, so bar lines may be slightly off; you can fine-tune them in the kit editor.",
+  "@librarySplitUnreliable": {},
+  "librarySplitLoadKit": "Load and play",
+  "@librarySplitLoadKit": {},
+  "librarySplitCancelled": "Cancelled",
+  "@librarySplitCancelled": {},
+  "librarySplitErrorTooShort": "The song is too short to make a 4-bar section.",
+  "@librarySplitErrorTooShort": {},
+  "librarySplitErrorNoGrid": "No steady beat was found — the song may have no clear pulse or a changing tempo.",
+  "@librarySplitErrorNoGrid": {},
+  "librarySplitErrorMemory": "Not enough free memory. Close other apps and retry, or use quick split.",
+  "@librarySplitErrorMemory": {},
+  "librarySplitErrorDecode": "This audio file could not be read.",
+  "@librarySplitErrorDecode": {},
+  "librarySplitErrorModel": "The separation model could not be loaded. Remove it and download it again.",
+  "@librarySplitErrorModel": {},
+  "librarySplitErrorModelChecksum": "The downloaded model failed its checksum. Please retry.",
+  "@librarySplitErrorModelChecksum": {},
+  "librarySplitErrorModelDownload": "The model download failed. Check your connection and retry.",
+  "@librarySplitErrorModelDownload": {},
+  "librarySplitErrorGeneric": "Splitting failed. Please retry.",
+  "@librarySplitErrorGeneric": {}
 }

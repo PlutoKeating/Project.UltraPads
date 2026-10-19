@@ -593,12 +593,17 @@ class MockEngineClient implements EngineClient {
     _emit(TrackPlaybackEvent(id, 0, playing: false));
   }
 
+  /// 测试：每次 [trackExport] 收到的署名文字。
+  final List<String?> exportedCredits = [];
+
   @override
   Future<void> trackExport(
     String trackId,
     String path,
-    ExportFormat format,
-  ) async {
+    ExportFormat format, {
+    String? credits,
+  }) async {
+    exportedCredits.add(credits);
     if (!_tracks.any((t) => t.id == trackId)) {
       throw EngineException(ErrorCode.notFound, trackId);
     }
@@ -835,6 +840,45 @@ class MockEngineClient implements EngineClient {
         notesUrl: '',
         installMode: UpdateInstallMode.manual,
       );
+
+  /// 测试 / 演示：[splitSong] 的结果；`null` 时模拟一次成功拆分。
+  SplitProgress? splitResult;
+  final List<String> splitRequests = [];
+
+  @override
+  SplitCapabilities splitCapabilities() => const SplitCapabilities(
+    separationAvailable: true,
+    separationMemoryMb: 5000,
+    availableMemoryMb: 16000,
+  );
+
+  @override
+  Stream<SplitProgress> splitSong({
+    required String path,
+    String? title,
+    String? modelPath,
+    double? knownBpm,
+  }) async* {
+    splitRequests.add('$path|${modelPath ?? ''}');
+    yield const SplitRunning(SplitStage.analyzing, 0.5);
+    yield splitResult ??
+        SplitDone(
+          kit: KitSummary(
+            id: 'split-demo',
+            name: title ?? 'Imported',
+            padCount: modelPath == null ? 21 : 12,
+            groupCount: 3,
+            bpm: 100,
+          ),
+          bpm: 100,
+          sections: 3,
+          reliable: true,
+          separated: modelPath != null,
+        );
+  }
+
+  @override
+  void splitCancel() {}
 
   @override
   Stream<UpdateProgress> updateDownload() async* {

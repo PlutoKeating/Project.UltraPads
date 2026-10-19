@@ -1942,4 +1942,108 @@ class UpL10nZh extends UpL10n {
   String shareExportCreditsShareText(String credits) {
     return '署名：\n$credits';
   }
+
+  @override
+  String get librarySplitEntryTitle => '导入歌曲拆成 Kit';
+
+  @override
+  String get librarySplitEntrySubtitle => '选一首本机的歌，自动拆成段落';
+
+  @override
+  String get librarySplitTitle => '拆分歌曲';
+
+  @override
+  String get librarySplitIntro =>
+      '每个音色组（A、B、C…）是歌曲的一个完整段落，组内每个 pad 是一个乐器，同组全开就是完整的一段。全程在本机处理，歌曲不会上传。';
+
+  @override
+  String get librarySplitModeSeparate => '按乐器分轨（鼓 / 贝斯 / 其他 / 人声）';
+
+  @override
+  String librarySplitModeSeparateReady(String gb) {
+    return '模型已就绪。处理需要约 $gb GB 内存，几分钟';
+  }
+
+  @override
+  String librarySplitModeSeparateDownload(int mb, String gb) {
+    return '首次使用需下载分轨模型（约 $mb MB）。处理需要约 $gb GB 内存，几分钟';
+  }
+
+  @override
+  String librarySplitModeSeparateNoMemory(String gb) {
+    return '本机可用内存不足（需要约 $gb GB），请改用快速拆分或在内存更大的设备上操作';
+  }
+
+  @override
+  String get librarySplitModeQuick => '快速拆分（整曲）';
+
+  @override
+  String get librarySplitModeQuickHint =>
+      '不分轨：每段的第一个 pad 是整段，其余是 2 小节 / 1 小节片段，几秒完成';
+
+  @override
+  String get librarySplitStart => '开始';
+
+  @override
+  String librarySplitStageDownloadingModel(int percent) {
+    return '正在下载分轨模型… $percent%';
+  }
+
+  @override
+  String get librarySplitStageDecoding => '正在读取歌曲…';
+
+  @override
+  String get librarySplitStageLoadingModel => '正在加载分轨模型…';
+
+  @override
+  String get librarySplitStageAnalyzing => '正在分析速度与小节…';
+
+  @override
+  String librarySplitStageSeparating(int percent) {
+    return '正在分轨… $percent%';
+  }
+
+  @override
+  String get librarySplitStageBuilding => '正在生成 Kit…';
+
+  @override
+  String get librarySplitStageImporting => '正在导入曲库…';
+
+  @override
+  String librarySplitDone(String name, int sections, int bpm) {
+    return '已生成《$name》：$sections 个段落，约 $bpm BPM';
+  }
+
+  @override
+  String get librarySplitUnreliable => '这首歌的速度不够稳定，小节线可能有点偏；可以在编辑 Kit 里微调。';
+
+  @override
+  String get librarySplitLoadKit => '载入演奏';
+
+  @override
+  String get librarySplitCancelled => '已取消';
+
+  @override
+  String get librarySplitErrorTooShort => '歌曲太短，凑不出一个 4 小节的段落。';
+
+  @override
+  String get librarySplitErrorNoGrid => '没能识别出稳定的节拍，这首歌可能没有明显的鼓点或速度不固定。';
+
+  @override
+  String get librarySplitErrorMemory => '可用内存不足，请关掉其它应用后重试，或改用快速拆分。';
+
+  @override
+  String get librarySplitErrorDecode => '无法读取这个音频文件。';
+
+  @override
+  String get librarySplitErrorModel => '分轨模型无法加载，请删除后重新下载。';
+
+  @override
+  String get librarySplitErrorModelChecksum => '模型下载后校验失败，请重试。';
+
+  @override
+  String get librarySplitErrorModelDownload => '模型下载失败，请检查网络后重试。';
+
+  @override
+  String get librarySplitErrorGeneric => '拆分失败，请重试。';
 }

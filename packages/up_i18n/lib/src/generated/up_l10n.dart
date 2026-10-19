@@ -3383,6 +3383,186 @@ abstract class UpL10n {
   /// In en, this message translates to:
   /// **'Credits:\n{credits}'**
   String shareExportCreditsShareText(String credits);
+
+  /// No description provided for @librarySplitEntryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Split a song into a kit'**
+  String get librarySplitEntryTitle;
+
+  /// No description provided for @librarySplitEntrySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a song on this device; it is cut into sections'**
+  String get librarySplitEntrySubtitle;
+
+  /// No description provided for @librarySplitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Split song'**
+  String get librarySplitTitle;
+
+  /// No description provided for @librarySplitIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Each group (A, B, C…) is one full section of the song and each pad in it is one instrument — turn on a whole group to hear the section. Everything runs on this device; the song is never uploaded.'**
+  String get librarySplitIntro;
+
+  /// No description provided for @librarySplitModeSeparate.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate instruments (drums / bass / other / vocals)'**
+  String get librarySplitModeSeparate;
+
+  /// No description provided for @librarySplitModeSeparateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Model ready. Needs about {gb} GB of memory and a few minutes'**
+  String librarySplitModeSeparateReady(String gb);
+
+  /// No description provided for @librarySplitModeSeparateDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'First use downloads the separation model (about {mb} MB). Needs about {gb} GB of memory and a few minutes'**
+  String librarySplitModeSeparateDownload(int mb, String gb);
+
+  /// No description provided for @librarySplitModeSeparateNoMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough free memory on this device (about {gb} GB needed) — use quick split or a device with more memory'**
+  String librarySplitModeSeparateNoMemory(String gb);
+
+  /// No description provided for @librarySplitModeQuick.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick split (whole mix)'**
+  String get librarySplitModeQuick;
+
+  /// No description provided for @librarySplitModeQuickHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No separation: the first pad of each group is the whole section, the rest are 2-bar and 1-bar fragments. Takes seconds'**
+  String get librarySplitModeQuickHint;
+
+  /// No description provided for @librarySplitStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get librarySplitStart;
+
+  /// No description provided for @librarySplitStageDownloadingModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading the separation model… {percent}%'**
+  String librarySplitStageDownloadingModel(int percent);
+
+  /// No description provided for @librarySplitStageDecoding.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the song…'**
+  String get librarySplitStageDecoding;
+
+  /// No description provided for @librarySplitStageLoadingModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the separation model…'**
+  String get librarySplitStageLoadingModel;
+
+  /// No description provided for @librarySplitStageAnalyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing tempo and bars…'**
+  String get librarySplitStageAnalyzing;
+
+  /// No description provided for @librarySplitStageSeparating.
+  ///
+  /// In en, this message translates to:
+  /// **'Separating instruments… {percent}%'**
+  String librarySplitStageSeparating(int percent);
+
+  /// No description provided for @librarySplitStageBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Building the kit…'**
+  String get librarySplitStageBuilding;
+
+  /// No description provided for @librarySplitStageImporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing into the library…'**
+  String get librarySplitStageImporting;
+
+  /// No description provided for @librarySplitDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Created “{name}”: {sections} sections, about {bpm} BPM'**
+  String librarySplitDone(String name, int sections, int bpm);
+
+  /// No description provided for @librarySplitUnreliable.
+  ///
+  /// In en, this message translates to:
+  /// **'The tempo of this song is not steady, so bar lines may be slightly off; you can fine-tune them in the kit editor.'**
+  String get librarySplitUnreliable;
+
+  /// No description provided for @librarySplitLoadKit.
+  ///
+  /// In en, this message translates to:
+  /// **'Load and play'**
+  String get librarySplitLoadKit;
+
+  /// No description provided for @librarySplitCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get librarySplitCancelled;
+
+  /// No description provided for @librarySplitErrorTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'The song is too short to make a 4-bar section.'**
+  String get librarySplitErrorTooShort;
+
+  /// No description provided for @librarySplitErrorNoGrid.
+  ///
+  /// In en, this message translates to:
+  /// **'No steady beat was found — the song may have no clear pulse or a changing tempo.'**
+  String get librarySplitErrorNoGrid;
+
+  /// No description provided for @librarySplitErrorMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough free memory. Close other apps and retry, or use quick split.'**
+  String get librarySplitErrorMemory;
+
+  /// No description provided for @librarySplitErrorDecode.
+  ///
+  /// In en, this message translates to:
+  /// **'This audio file could not be read.'**
+  String get librarySplitErrorDecode;
+
+  /// No description provided for @librarySplitErrorModel.
+  ///
+  /// In en, this message translates to:
+  /// **'The separation model could not be loaded. Remove it and download it again.'**
+  String get librarySplitErrorModel;
+
+  /// No description provided for @librarySplitErrorModelChecksum.
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded model failed its checksum. Please retry.'**
+  String get librarySplitErrorModelChecksum;
+
+  /// No description provided for @librarySplitErrorModelDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'The model download failed. Check your connection and retry.'**
+  String get librarySplitErrorModelDownload;
+
+  /// No description provided for @librarySplitErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Splitting failed. Please retry.'**
+  String get librarySplitErrorGeneric;
 }
 
 class _UpL10nDelegate extends LocalizationsDelegate<UpL10n> {

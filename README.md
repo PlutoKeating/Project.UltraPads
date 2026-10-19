@@ -37,7 +37,8 @@ UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter �
   - 可导入 SFZ、WAV 文件夹，也有私有素材包导入器。
   - 项目可导出为 DAWproject。
 - **编辑 Kit**：新增、删除、调整音色组顺序，给 pad 换音色（内置、麦克风、本地文件、其他 Kit、录音），调整 pad 属性，裁剪和试听样本。
-- **录音与作品**：录下主输出生成作品，作品卡带波形，可循环播放、导出 WAV 和分享。
+- **录音与作品**：录下主输出生成作品，作品卡带波形，可循环播放、导出 WAV / FLAC 和分享（用到需署名的素材时，署名写进文件元数据和分享文案）。
+- **导入歌曲拆成 Kit**：选一首本机的歌，自动识别速度和小节，挑出若干 4 小节段落，每段一个音色组、组内每个乐器一个 pad（同官方曲库的排布）。可用本机 Demucs 分轨（鼓 / 贝斯 / 其他 / 人声，首次使用需下载约 158 MB 模型，需要约 4.6 GB 可用内存），也可只做几秒钟的快速拆分。全程在本机处理，歌曲不上传。
 - **官方曲库**：应用内浏览、搜索、筛选并按需下载大量现成曲目（原创 CC0 合成曲、AlbumDB、ccMixter 等），每首都是按段落分音色组（A/B/C… 每组是歌曲的一个完整段落，组内每个 pad 是一个乐器）的 Kit，同组 pad 全开即完整一段，开箱即可即兴重排；逐条标注许可证与署名。登录 PlutoKeating 账号后云端同步收藏、最近使用与下载记录。
 - **皮肤**：3 套主题（霓虹、描边、浅色）、16 套内置皮肤预设，另有自定义皮肤编辑器。
 - **个人多设备协同（Hub）**：
@@ -141,7 +142,7 @@ docker run --rm -v "$PWD:/work" -w /work ghcr.io/plutokeating/ultrapads-cli:0.0.
 
 ```
 engine/        ① 纯引擎（Rust crates：core、dsp、graph、sampler、transport、mixer、recorder、model、format…）
-runtime/       ② 运行基座：up-host、up-library、up-hub、up-update、up-cli
+runtime/       ② 运行基座：up-host、up-library、up-split、up-hub、up-update、up-cli
 bridge/up-ffi  Rust ↔ Dart 的 FFI 接口
 app/ultrapads  ③ Flutter 应用
 packages/      up_tokens（设计 token）up_ui（组件）up_fx（光效）up_i18n（多语言）up_engine（引擎客户端契约）

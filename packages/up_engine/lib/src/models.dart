@@ -867,6 +867,72 @@ final class UpdateFailed extends UpdateProgress {
   bool get cancelled => error.message.startsWith('[cancelled]');
 }
 
+/// 本机分轨能力（`split_capabilities`）。
+final class SplitCapabilities {
+  const SplitCapabilities({
+    required this.separationAvailable,
+    required this.separationMemoryMb,
+    this.availableMemoryMb,
+  });
+
+  /// 当前可用内存足以跑 Demucs 分轨。
+  final bool separationAvailable;
+  final int? availableMemoryMb;
+
+  /// 分轨一首 4 分钟的歌需要的内存（MB）。
+  final int separationMemoryMb;
+}
+
+/// 拆分的阶段。
+enum SplitStage {
+  loadingModel,
+  decoding,
+  analyzing,
+  separating,
+  building,
+  importing,
+}
+
+/// 导入歌曲并拆成 Kit 的进度流（`split_song`），以 [SplitDone] 或 [SplitFailed] 结束。
+sealed class SplitProgress {
+  const SplitProgress();
+}
+
+final class SplitRunning extends SplitProgress {
+  const SplitRunning(this.stage, this.fraction);
+  final SplitStage stage;
+
+  /// 0..1，该阶段内的完成比例。
+  final double fraction;
+}
+
+final class SplitDone extends SplitProgress {
+  const SplitDone({
+    required this.kit,
+    required this.bpm,
+    required this.sections,
+    required this.reliable,
+    required this.separated,
+  });
+  final KitSummary kit;
+  final double bpm;
+  final int sections;
+
+  /// 速度 / 小节估计是否可靠（不可靠时界面应提示可能偏拍）。
+  final bool reliable;
+  final bool separated;
+}
+
+final class SplitFailed extends SplitProgress {
+  const SplitFailed(this.error);
+  final EngineException error;
+
+  /// 错误消息开头的 `[tag]`：cancelled / too_short / no_grid / insufficient_memory / model / decode …
+  String? get tag =>
+      RegExp(r'^\[([a-z_]+)\]').firstMatch(error.message)?.group(1);
+  bool get cancelled => tag == 'cancelled';
+}
+
 enum ErrorCode {
   unknown,
   notImplemented,

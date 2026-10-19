@@ -66,7 +66,15 @@ abstract class EngineClient {
   Future<List<TrackInfo>> tracksList();
   Future<void> trackPlay(String trackId, {bool loop = false});
   Future<void> trackStop();
-  Future<void> trackExport(String trackId, String path, ExportFormat format);
+
+  /// 导出作品。[credits]：用到需要署名的素材时的署名文字，写进文件元数据
+  /// （WAV 的 `bext`、FLAC 的 `COMMENT`）。
+  Future<void> trackExport(
+    String trackId,
+    String path,
+    ExportFormat format, {
+    String? credits,
+  });
   Future<void> trackDelete(String trackId);
   Future<void> trackRename(String trackId, String name);
 
@@ -123,6 +131,20 @@ abstract class EngineClient {
 
   /// 控制器模式下本机是否同时发声（默认关）。
   void hubControllerSetLocalEcho(bool enabled);
+
+  // ---- 导入歌曲并自动拆成 Kit（docs/API.md §8） ----
+  /// 本机能否做 Demucs 分轨（看可用内存）。
+  SplitCapabilities splitCapabilities();
+
+  /// 把 [path] 的歌拆成 Kit 并导入曲库。[modelPath] 给了就先分轨（每个乐器一个 pad），否则只拆整曲混音。
+  /// 以 [SplitDone] / [SplitFailed] 结束；同一时刻只有一个。
+  Stream<SplitProgress> splitSong({
+    required String path,
+    String? title,
+    String? modelPath,
+    double? knownBpm,
+  });
+  void splitCancel();
 
   // ---- 应用内更新（docs/API.md §6） ----
   /// 当前应用版本（`X.Y.Z`）。
