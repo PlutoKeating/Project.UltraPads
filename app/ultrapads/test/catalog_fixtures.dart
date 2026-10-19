@@ -18,6 +18,7 @@ CatalogItem fixtureItem(
   double bpm = 112,
   List<String> genres = const ['house'],
   String attribution = '',
+  String origin = 'synth',
 }) {
   final bytes = fixtureFile(id);
   return CatalogItem(
@@ -25,7 +26,7 @@ CatalogItem fixtureItem(
     title: title,
     artist: artist,
     description: 'A short loop pack.',
-    origin: 'synth',
+    origin: origin,
     license: LicenseInfo.of(license),
     licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
     attribution: attribution.isEmpty
@@ -48,11 +49,20 @@ Uint8List fixtureFile(String id) =>
 
 /// 记录下来的一次请求。
 class RecordedRequest {
-  RecordedRequest(this.method, this.uri, this.authorization, this.body);
+  RecordedRequest(
+    this.method,
+    this.uri,
+    this.authorization,
+    this.body, {
+    this.headers = const {},
+    this.contentLength,
+  });
   final String method;
   final Uri uri;
   final String? authorization;
   final String body;
+  final Map<String, String> headers;
+  final int? contentLength;
   String get path => uri.path;
 }
 
@@ -67,6 +77,18 @@ class FakeSite {
   final favorites = <String>{};
   final recent = <String>[];
 
+  /// 用户上传（docs/API.md §7.5）：本人的条目、文件、举报。
+  final uploads = <String, Map<String, Object?>>{};
+  final uploadFiles = <String, String>{};
+  final reports = <Map<String, Object?>>[];
+  var _uploadSeq = 0;
+
+  /// 达到后 `POST /api/me/uploads` 返回 429。
+  int uploadQuota = 50;
+
+  /// 设为非 null 时，`PUT .../file` 以该状态码失败。
+  int? failUploadFileWith;
+
   /// 设为非 null 时，所有请求都以该状态码失败。
   int? failWith;
 
@@ -79,7 +101,14 @@ class FakeSite {
   http.Client client() => MockClient.streaming((req, body) async {
     final text = utf8.decode(await body.expand((e) => e).toList());
     requests.add(
-      RecordedRequest(req.method, req.url, req.headers['Authorization'], text),
+      RecordedRequest(
+        req.method,
+        req.url,
+        req.headers['Authorization'],
+        text,
+        headers: req.headers,
+        contentLength: req.contentLength,
+      ),
     );
     if (failWith != null) return _json({'error': 'down'}, failWith!);
     return _handle(req, text);
@@ -117,6 +146,20 @@ class FakeSite {
         'origins': facets(count(items.map((i) => i.origin))),
       });
     }
+    final rep = RegExp(r'^/api/catalog/([^/]+)/report$').firstMatch(p);
+    if (rep != null && req.method == 'POST') {
+      if (auth == null) return _json({'error': 'missing_token'}, 401);
+      final id = Uri.decodeComponent(rep.group(1)!);
+      if (!items.any((i) => i.id == id && i.origin == 'ugc')) {
+        return _json({'error': 'not_found'}, 404);
+      }
+      if (uploads.containsKey(id)) return _json({'error': 'own_item'}, 400);
+      reports.add({
+        'id': id,
+        ...(jsonDecode(body) as Map).cast<String, Object?>(),
+      });
+      return _json({'ok': true}, 202);
+    }
     final m = RegExp(r'^/api/catalog/([^/]+)(/download)?$').firstMatch(p);
     if (m != null) {
       final item = items.where((i) => i.id == m.group(1)).firstOrNull;
@@ -138,6 +181,7 @@ class FakeSite {
     }
     if (p.startsWith('/api/me')) {
       if (auth == null) return _json({'error': 'missing_token'}, 401);
+      if (p.startsWith('/api/me/uploads')) return _uploads(req, body);
       if (p == '/api/me/state') {
         return _json({
           'favorites': favorites.toList(),
@@ -166,6 +210,88 @@ class FakeSite {
     return _json({'error': 'not_found'}, 404);
   }
 
+  http.StreamedResponse _uploads(http.BaseRequest req, String body) {
+    final p = req.url.path;
+    if (p == '/api/me/uploads') {
+      if (req.method == 'GET') {
+        return _json({'items': uploads.values.toList()});
+      }
+      if (req.method == 'POST') {
+        final j = (jsonDecode(body) as Map).cast<String, Object?>();
+        for (final k in ['title', 'credit', 'license', 'source_declaration']) {
+          if ('${j[k] ?? ''}'.trim().isEmpty) {
+            return _json({'error': 'invalid_$k'}, 400);
+          }
+        }
+        if (uploads.length >= uploadQuota) {
+          return _json({'error': 'quota_exceeded'}, 429);
+        }
+        final id = 'ugc-${(++_uploadSeq).toRadixString(16).padLeft(16, '0')}';
+        uploads[id] = {
+          'id': id,
+          'title': j['title'],
+          'artist': j['credit'],
+          'credit': j['credit'],
+          'attribution': j['credit'],
+          'origin': 'ugc',
+          'license': j['license'],
+          'source_declaration': j['source_declaration'],
+          'visibility': 'private',
+          'moderation': 'active',
+          'status': 'draft',
+          'size': null,
+          'sha256': null,
+        };
+        return _json(uploads[id], 201);
+      }
+    }
+    final m = RegExp(
+      r'^/api/me/uploads/([^/]+)(/file|/download)?$',
+    ).firstMatch(p);
+    final id = m == null ? null : Uri.decodeComponent(m.group(1)!);
+    final up = id == null ? null : uploads[id];
+    if (up == null) return _json({'error': 'not_found'}, 404);
+    switch ((req.method, m!.group(2))) {
+      case ('GET', null):
+        return _json(up);
+      case ('PATCH', null):
+        final j = (jsonDecode(body) as Map).cast<String, Object?>();
+        if (up['moderation'] == 'taken_down') {
+          return _json({'error': 'taken_down'}, 403);
+        }
+        if (j['visibility'] == 'public' && up['status'] != 'published') {
+          return _json({'error': 'no_file'}, 409);
+        }
+        up.addAll(j);
+        return _json(up);
+      case ('DELETE', null):
+        uploads.remove(id);
+        uploadFiles.remove(id);
+        return _json(null, 204);
+      case ('PUT', '/file'):
+        if (failUploadFileWith != null) {
+          return _json({'error': 'upload_failed'}, failUploadFileWith!);
+        }
+        if (req.contentLength == null) {
+          return _json({'error': 'length_required'}, 411);
+        }
+        uploadFiles[id!] = body;
+        up
+          ..['status'] = 'published'
+          ..['size'] = req.contentLength
+          ..['sha256'] = req.headers['X-Sha256'] ?? '';
+        return _json(up);
+      case ('GET', '/download'):
+        final bytes = utf8.encode(uploadFiles[id] ?? '');
+        return http.StreamedResponse(
+          Stream.value(bytes),
+          200,
+          contentLength: bytes.length,
+        );
+    }
+    return _json({'error': 'not_found'}, 404);
+  }
+
   http.StreamedResponse _list(Uri u) {
     final q = u.queryParameters;
     var list = items.toList();
@@ -178,6 +304,9 @@ class FakeSite {
     final lic = (q['license'] ?? '').split(',').where((s) => s.isNotEmpty);
     if (lic.isNotEmpty) {
       list = list.where((i) => lic.contains(i.license.id)).toList();
+    }
+    if (q['origin'] != null) {
+      list = list.where((i) => i.origin == q['origin']).toList();
     }
     if (q['genre'] != null) {
       list = list.where((i) => i.genres.contains(q['genre'])).toList();
