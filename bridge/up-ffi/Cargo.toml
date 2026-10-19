@@ -19,6 +19,8 @@ up-codec = { workspace = true }
 up-library = { workspace = true }
 up-hub = { workspace = true }
 up-update = { workspace = true }
+up-split = { path = "../../runtime/up-split" }
+up-format = { path = "../../engine/up-format" }
 arc-swap = "1"
 async-trait = "0.1"
 crossbeam-channel = "0.5"

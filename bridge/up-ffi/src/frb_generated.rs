@@ -28,7 +28,7 @@
 // Section: imports
 
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
-use flutter_rust_bridge::for_generated::{Lifetimeable, Lockable, transform_result_dco};
+use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
 
 // Section: boilerplate
@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -611867663;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1952389748;
 
 // Section: executor
 
@@ -1934,6 +1934,115 @@ fn wire__crate__api__engine__snapshot_impl(
         },
     )
 }
+fn wire__crate__api__split__split_cancel_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "split_cancel",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Ok::<_, ()>({
+                        crate::api::split::split_cancel();
+                    })?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__split__split_capabilities_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "split_capabilities",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::split::split_capabilities())?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__split__split_song_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "split_song",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            let api_title = <Option<String>>::sse_decode(&mut deserializer);
+            let api_model_path = <Option<String>>::sse_decode(&mut deserializer);
+            let api_known_bpm = <Option<f32>>::sse_decode(&mut deserializer);
+            let api_sink = <StreamSink<
+                crate::api::split::SplitProgress,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, crate::api::types::UpError>((move || {
+                    let output_ok = crate::api::split::split_song(
+                        api_path,
+                        api_title,
+                        api_model_path,
+                        api_known_bpm,
+                        api_sink,
+                    )?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__tracks__track_delete_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2424,6 +2533,16 @@ impl SseDecode
 
 impl SseDecode
     for StreamSink<crate::api::types::HubPeerEvent, flutter_rust_bridge::for_generated::SseCodec>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);
+    }
+}
+
+impl SseDecode
+    for StreamSink<crate::api::split::SplitProgress, flutter_rust_bridge::for_generated::SseCodec>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3665,6 +3784,74 @@ impl SseDecode for crate::api::types::SampleInfo {
     }
 }
 
+impl SseDecode for crate::api::split::SplitCapabilities {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_separationAvailable = <bool>::sse_decode(deserializer);
+        let mut var_availableMemoryMb = <Option<u32>>::sse_decode(deserializer);
+        let mut var_separationMemoryMb = <u32>::sse_decode(deserializer);
+        return crate::api::split::SplitCapabilities {
+            separation_available: var_separationAvailable,
+            available_memory_mb: var_availableMemoryMb,
+            separation_memory_mb: var_separationMemoryMb,
+        };
+    }
+}
+
+impl SseDecode for crate::api::split::SplitProgress {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_stage = <crate::api::split::SplitStage>::sse_decode(deserializer);
+                let mut var_fraction = <f32>::sse_decode(deserializer);
+                return crate::api::split::SplitProgress::Progress {
+                    stage: var_stage,
+                    fraction: var_fraction,
+                };
+            }
+            1 => {
+                let mut var_kit = <crate::api::types::KitSummary>::sse_decode(deserializer);
+                let mut var_bpm = <f32>::sse_decode(deserializer);
+                let mut var_sections = <u32>::sse_decode(deserializer);
+                let mut var_reliable = <bool>::sse_decode(deserializer);
+                let mut var_separated = <bool>::sse_decode(deserializer);
+                return crate::api::split::SplitProgress::Done {
+                    kit: var_kit,
+                    bpm: var_bpm,
+                    sections: var_sections,
+                    reliable: var_reliable,
+                    separated: var_separated,
+                };
+            }
+            2 => {
+                let mut var_error = <crate::api::types::UpError>::sse_decode(deserializer);
+                return crate::api::split::SplitProgress::Failed { error: var_error };
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseDecode for crate::api::split::SplitStage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::split::SplitStage::LoadingModel,
+            1 => crate::api::split::SplitStage::Decoding,
+            2 => crate::api::split::SplitStage::Analyzing,
+            3 => crate::api::split::SplitStage::Separating,
+            4 => crate::api::split::SplitStage::Building,
+            5 => crate::api::split::SplitStage::Importing,
+            _ => unreachable!("Invalid variant for SplitStage: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for crate::api::types::SyncReport {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4031,17 +4218,19 @@ fn pde_ffi_dispatcher_primary_impl(
             wire__crate__api__engine__sampler_record_start_impl(port, ptr, rust_vec_len, data_len)
         }
         55 => wire__crate__api__engine__sampler_record_stop_impl(port, ptr, rust_vec_len, data_len),
-        58 => wire__crate__api__tracks__track_delete_impl(port, ptr, rust_vec_len, data_len),
-        59 => wire__crate__api__tracks__track_export_impl(port, ptr, rust_vec_len, data_len),
-        60 => wire__crate__api__tracks__track_play_impl(port, ptr, rust_vec_len, data_len),
-        61 => wire__crate__api__tracks__track_rename_impl(port, ptr, rust_vec_len, data_len),
-        62 => wire__crate__api__tracks__track_stop_impl(port, ptr, rust_vec_len, data_len),
-        63 => wire__crate__api__tracks__tracks_list_impl(port, ptr, rust_vec_len, data_len),
-        65 => wire__crate__api__engine__tutorial_get_impl(port, ptr, rust_vec_len, data_len),
-        67 => wire__crate__api__update__update_apply_impl(port, ptr, rust_vec_len, data_len),
-        69 => wire__crate__api__update__update_check_impl(port, ptr, rust_vec_len, data_len),
-        70 => wire__crate__api__update__update_download_impl(port, ptr, rust_vec_len, data_len),
-        71 => wire__crate__api__update__update_relaunch_impl(port, ptr, rust_vec_len, data_len),
+        58 => wire__crate__api__split__split_cancel_impl(port, ptr, rust_vec_len, data_len),
+        60 => wire__crate__api__split__split_song_impl(port, ptr, rust_vec_len, data_len),
+        61 => wire__crate__api__tracks__track_delete_impl(port, ptr, rust_vec_len, data_len),
+        62 => wire__crate__api__tracks__track_export_impl(port, ptr, rust_vec_len, data_len),
+        63 => wire__crate__api__tracks__track_play_impl(port, ptr, rust_vec_len, data_len),
+        64 => wire__crate__api__tracks__track_rename_impl(port, ptr, rust_vec_len, data_len),
+        65 => wire__crate__api__tracks__track_stop_impl(port, ptr, rust_vec_len, data_len),
+        66 => wire__crate__api__tracks__tracks_list_impl(port, ptr, rust_vec_len, data_len),
+        68 => wire__crate__api__engine__tutorial_get_impl(port, ptr, rust_vec_len, data_len),
+        70 => wire__crate__api__update__update_apply_impl(port, ptr, rust_vec_len, data_len),
+        72 => wire__crate__api__update__update_check_impl(port, ptr, rust_vec_len, data_len),
+        73 => wire__crate__api__update__update_download_impl(port, ptr, rust_vec_len, data_len),
+        74 => wire__crate__api__update__update_relaunch_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -4065,9 +4254,10 @@ fn pde_ffi_dispatcher_sync_impl(
         50 => wire__crate__api__engine__pad_up_impl(ptr, rust_vec_len, data_len),
         56 => wire__crate__api__engine__send_impl(ptr, rust_vec_len, data_len),
         57 => wire__crate__api__engine__snapshot_impl(ptr, rust_vec_len, data_len),
-        64 => wire__crate__api__engine__transport_clock_impl(ptr, rust_vec_len, data_len),
-        66 => wire__crate__api__engine__tutorial_judge_impl(ptr, rust_vec_len, data_len),
-        68 => wire__crate__api__update__update_cancel_impl(ptr, rust_vec_len, data_len),
+        59 => wire__crate__api__split__split_capabilities_impl(ptr, rust_vec_len, data_len),
+        67 => wire__crate__api__engine__transport_clock_impl(ptr, rust_vec_len, data_len),
+        69 => wire__crate__api__engine__tutorial_judge_impl(ptr, rust_vec_len, data_len),
+        71 => wire__crate__api__update__update_cancel_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -4978,6 +5168,95 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::types::SampleInfo>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::split::SplitCapabilities {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.separation_available.into_into_dart().into_dart(),
+            self.available_memory_mb.into_into_dart().into_dart(),
+            self.separation_memory_mb.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::split::SplitCapabilities
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::split::SplitCapabilities>
+    for crate::api::split::SplitCapabilities
+{
+    fn into_into_dart(self) -> crate::api::split::SplitCapabilities {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::split::SplitProgress {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::split::SplitProgress::Progress { stage, fraction } => [
+                0.into_dart(),
+                stage.into_into_dart().into_dart(),
+                fraction.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
+            crate::api::split::SplitProgress::Done {
+                kit,
+                bpm,
+                sections,
+                reliable,
+                separated,
+            } => [
+                1.into_dart(),
+                kit.into_into_dart().into_dart(),
+                bpm.into_into_dart().into_dart(),
+                sections.into_into_dart().into_dart(),
+                reliable.into_into_dart().into_dart(),
+                separated.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
+            crate::api::split::SplitProgress::Failed { error } => {
+                [2.into_dart(), error.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::split::SplitProgress
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::split::SplitProgress>
+    for crate::api::split::SplitProgress
+{
+    fn into_into_dart(self) -> crate::api::split::SplitProgress {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::split::SplitStage {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::LoadingModel => 0.into_dart(),
+            Self::Decoding => 1.into_dart(),
+            Self::Analyzing => 2.into_dart(),
+            Self::Separating => 3.into_dart(),
+            Self::Building => 4.into_dart(),
+            Self::Importing => 5.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::split::SplitStage {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::split::SplitStage>
+    for crate::api::split::SplitStage
+{
+    fn into_into_dart(self) -> crate::api::split::SplitStage {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::types::SyncReport {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -5318,6 +5597,15 @@ impl SseEncode
 
 impl SseEncode
     for StreamSink<crate::api::types::HubPeerEvent, flutter_rust_bridge::for_generated::SseCodec>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        unimplemented!("")
+    }
+}
+
+impl SseEncode
+    for StreamSink<crate::api::split::SplitProgress, flutter_rust_bridge::for_generated::SseCodec>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6338,6 +6626,69 @@ impl SseEncode for crate::api::types::SampleInfo {
     }
 }
 
+impl SseEncode for crate::api::split::SplitCapabilities {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.separation_available, serializer);
+        <Option<u32>>::sse_encode(self.available_memory_mb, serializer);
+        <u32>::sse_encode(self.separation_memory_mb, serializer);
+    }
+}
+
+impl SseEncode for crate::api::split::SplitProgress {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::api::split::SplitProgress::Progress { stage, fraction } => {
+                <i32>::sse_encode(0, serializer);
+                <crate::api::split::SplitStage>::sse_encode(stage, serializer);
+                <f32>::sse_encode(fraction, serializer);
+            }
+            crate::api::split::SplitProgress::Done {
+                kit,
+                bpm,
+                sections,
+                reliable,
+                separated,
+            } => {
+                <i32>::sse_encode(1, serializer);
+                <crate::api::types::KitSummary>::sse_encode(kit, serializer);
+                <f32>::sse_encode(bpm, serializer);
+                <u32>::sse_encode(sections, serializer);
+                <bool>::sse_encode(reliable, serializer);
+                <bool>::sse_encode(separated, serializer);
+            }
+            crate::api::split::SplitProgress::Failed { error } => {
+                <i32>::sse_encode(2, serializer);
+                <crate::api::types::UpError>::sse_encode(error, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseEncode for crate::api::split::SplitStage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::split::SplitStage::LoadingModel => 0,
+                crate::api::split::SplitStage::Decoding => 1,
+                crate::api::split::SplitStage::Analyzing => 2,
+                crate::api::split::SplitStage::Separating => 3,
+                crate::api::split::SplitStage::Building => 4,
+                crate::api::split::SplitStage::Importing => 5,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for crate::api::types::SyncReport {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6574,7 +6925,7 @@ mod io {
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
-    use flutter_rust_bridge::for_generated::{Lifetimeable, Lockable, transform_result_dco};
+    use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
     use flutter_rust_bridge::{Handler, IntoIntoDart};
 
     // Section: boilerplate
@@ -6598,7 +6949,7 @@ mod web {
     };
     use flutter_rust_bridge::for_generated::wasm_bindgen;
     use flutter_rust_bridge::for_generated::wasm_bindgen::prelude::*;
-    use flutter_rust_bridge::for_generated::{Lifetimeable, Lockable, transform_result_dco};
+    use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
     use flutter_rust_bridge::{Handler, IntoIntoDart};
 
     // Section: boilerplate

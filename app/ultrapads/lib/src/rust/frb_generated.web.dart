@@ -9,6 +9,7 @@
 import 'api/engine.dart';
 import 'api/hub.dart';
 import 'api/library.dart';
+import 'api/split.dart';
 import 'api/tracks.dart';
 import 'api/types.dart';
 import 'api/update.dart';
@@ -35,6 +36,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RustStreamSink<HubPeerEvent> dco_decode_StreamSink_hub_peer_event_Sse(
+    dynamic raw,
+  );
+
+  @protected
+  RustStreamSink<SplitProgress> dco_decode_StreamSink_split_progress_Sse(
     dynamic raw,
   );
 
@@ -334,6 +340,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SampleInfo dco_decode_sample_info(dynamic raw);
 
   @protected
+  SplitCapabilities dco_decode_split_capabilities(dynamic raw);
+
+  @protected
+  SplitProgress dco_decode_split_progress(dynamic raw);
+
+  @protected
+  SplitStage dco_decode_split_stage(dynamic raw);
+
+  @protected
   SyncReport dco_decode_sync_report(dynamic raw);
 
   @protected
@@ -397,6 +412,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RustStreamSink<HubPeerEvent> sse_decode_StreamSink_hub_peer_event_Sse(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RustStreamSink<SplitProgress> sse_decode_StreamSink_split_progress_Sse(
     SseDeserializer deserializer,
   );
 
@@ -728,6 +748,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SampleInfo sse_decode_sample_info(SseDeserializer deserializer);
 
   @protected
+  SplitCapabilities sse_decode_split_capabilities(SseDeserializer deserializer);
+
+  @protected
+  SplitProgress sse_decode_split_progress(SseDeserializer deserializer);
+
+  @protected
+  SplitStage sse_decode_split_stage(SseDeserializer deserializer);
+
+  @protected
   SyncReport sse_decode_sync_report(SseDeserializer deserializer);
 
   @protected
@@ -798,6 +827,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_StreamSink_hub_peer_event_Sse(
     RustStreamSink<HubPeerEvent> self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_StreamSink_split_progress_Sse(
+    RustStreamSink<SplitProgress> self,
     SseSerializer serializer,
   );
 
@@ -1208,6 +1243,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_sample_info(SampleInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_split_capabilities(
+    SplitCapabilities self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_split_progress(SplitProgress self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_split_stage(SplitStage self, SseSerializer serializer);
 
   @protected
   void sse_encode_sync_report(SyncReport self, SseSerializer serializer);

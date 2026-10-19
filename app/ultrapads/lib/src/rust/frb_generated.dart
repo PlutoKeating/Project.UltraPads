@@ -6,6 +6,7 @@
 import 'api/engine.dart';
 import 'api/hub.dart';
 import 'api/library.dart';
+import 'api/split.dart';
 import 'api/tracks.dart';
 import 'api/types.dart';
 import 'api/update.dart';
@@ -71,7 +72,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => -611867663;
+  int get rustContentHash => -1952389748;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -228,6 +229,17 @@ abstract class RustLibApi extends BaseApi {
   void crateApiEngineSend({required Command cmd});
 
   EngineSnapshot crateApiEngineSnapshot();
+
+  Future<void> crateApiSplitSplitCancel();
+
+  SplitCapabilities crateApiSplitSplitCapabilities();
+
+  Stream<SplitProgress> crateApiSplitSplitSong({
+    required String path,
+    String? title,
+    String? modelPath,
+    double? knownBpm,
+  });
 
   Future<void> crateApiTracksTrackDelete({required String id});
 
@@ -1893,6 +1905,98 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "snapshot", argNames: []);
 
   @override
+  Future<void> crateApiSplitSplitCancel() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 58,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiSplitSplitCancelConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiSplitSplitCancelConstMeta =>
+      const TaskConstMeta(debugName: "split_cancel", argNames: []);
+
+  @override
+  SplitCapabilities crateApiSplitSplitCapabilities() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 59)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_split_capabilities,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiSplitSplitCapabilitiesConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiSplitSplitCapabilitiesConstMeta =>
+      const TaskConstMeta(debugName: "split_capabilities", argNames: []);
+
+  @override
+  Stream<SplitProgress> crateApiSplitSplitSong({
+    required String path,
+    String? title,
+    String? modelPath,
+    double? knownBpm,
+  }) {
+    final sink = RustStreamSink<SplitProgress>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_String(path, serializer);
+            sse_encode_opt_String(title, serializer);
+            sse_encode_opt_String(modelPath, serializer);
+            sse_encode_opt_box_autoadd_f_32(knownBpm, serializer);
+            sse_encode_StreamSink_split_progress_Sse(sink, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 60,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: sse_decode_up_error,
+          ),
+          constMeta: kCrateApiSplitSplitSongConstMeta,
+          argValues: [path, title, modelPath, knownBpm, sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiSplitSplitSongConstMeta => const TaskConstMeta(
+    debugName: "split_song",
+    argNames: ["path", "title", "modelPath", "knownBpm", "sink"],
+  );
+
+  @override
   Future<void> crateApiTracksTrackDelete({required String id}) {
     return handler.executeNormal(
       NormalTask(
@@ -1902,7 +2006,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 58,
+            funcId: 61,
             port: port_,
           );
         },
@@ -1936,7 +2040,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 59,
+            funcId: 62,
             port: port_,
           );
         },
@@ -1970,7 +2074,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 60,
+            funcId: 63,
             port: port_,
           );
         },
@@ -2002,7 +2106,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 61,
+            funcId: 64,
             port: port_,
           );
         },
@@ -2029,7 +2133,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 62,
+            funcId: 65,
             port: port_,
           );
         },
@@ -2056,7 +2160,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 63,
+            funcId: 66,
             port: port_,
           );
         },
@@ -2080,7 +2184,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 64)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 67)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_transport_clock,
@@ -2106,7 +2210,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 65,
+            funcId: 68,
             port: port_,
           );
         },
@@ -2141,7 +2245,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_f_64(speed, serializer);
           sse_encode_f_64(perfectMs, serializer);
           sse_encode_f_64(missMs, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 66)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 69)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_judgement,
@@ -2176,7 +2280,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 67,
+            funcId: 70,
             port: port_,
           );
         },
@@ -2200,7 +2304,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 68)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 71)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -2226,7 +2330,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 69,
+            funcId: 72,
             port: port_,
           );
         },
@@ -2256,7 +2360,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             pdeCallFfi(
               generalizedFrbRustBinding,
               serializer,
-              funcId: 70,
+              funcId: 73,
               port: port_,
             );
           },
@@ -2285,7 +2389,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 71,
+            funcId: 74,
             port: port_,
           );
         },
@@ -2319,6 +2423,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   RustStreamSink<HubPeerEvent> dco_decode_StreamSink_hub_peer_event_Sse(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
+  RustStreamSink<SplitProgress> dco_decode_StreamSink_split_progress_Sse(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -3252,6 +3364,51 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SplitCapabilities dco_decode_split_capabilities(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return SplitCapabilities(
+      separationAvailable: dco_decode_bool(arr[0]),
+      availableMemoryMb: dco_decode_opt_box_autoadd_u_32(arr[1]),
+      separationMemoryMb: dco_decode_u_32(arr[2]),
+    );
+  }
+
+  @protected
+  SplitProgress dco_decode_split_progress(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return SplitProgress_Progress(
+          stage: dco_decode_split_stage(raw[1]),
+          fraction: dco_decode_f_32(raw[2]),
+        );
+      case 1:
+        return SplitProgress_Done(
+          kit: dco_decode_box_autoadd_kit_summary(raw[1]),
+          bpm: dco_decode_f_32(raw[2]),
+          sections: dco_decode_u_32(raw[3]),
+          reliable: dco_decode_bool(raw[4]),
+          separated: dco_decode_bool(raw[5]),
+        );
+      case 2:
+        return SplitProgress_Failed(
+          error: dco_decode_box_autoadd_up_error(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  SplitStage dco_decode_split_stage(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return SplitStage.values[raw as int];
+  }
+
+  @protected
   SyncReport dco_decode_sync_report(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -3491,6 +3648,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   RustStreamSink<HubPeerEvent> sse_decode_StreamSink_hub_peer_event_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
+  RustStreamSink<SplitProgress> sse_decode_StreamSink_split_progress_Sse(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4727,6 +4892,59 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SplitCapabilities sse_decode_split_capabilities(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_separationAvailable = sse_decode_bool(deserializer);
+    var var_availableMemoryMb = sse_decode_opt_box_autoadd_u_32(deserializer);
+    var var_separationMemoryMb = sse_decode_u_32(deserializer);
+    return SplitCapabilities(
+      separationAvailable: var_separationAvailable,
+      availableMemoryMb: var_availableMemoryMb,
+      separationMemoryMb: var_separationMemoryMb,
+    );
+  }
+
+  @protected
+  SplitProgress sse_decode_split_progress(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_stage = sse_decode_split_stage(deserializer);
+        var var_fraction = sse_decode_f_32(deserializer);
+        return SplitProgress_Progress(stage: var_stage, fraction: var_fraction);
+      case 1:
+        var var_kit = sse_decode_box_autoadd_kit_summary(deserializer);
+        var var_bpm = sse_decode_f_32(deserializer);
+        var var_sections = sse_decode_u_32(deserializer);
+        var var_reliable = sse_decode_bool(deserializer);
+        var var_separated = sse_decode_bool(deserializer);
+        return SplitProgress_Done(
+          kit: var_kit,
+          bpm: var_bpm,
+          sections: var_sections,
+          reliable: var_reliable,
+          separated: var_separated,
+        );
+      case 2:
+        var var_error = sse_decode_box_autoadd_up_error(deserializer);
+        return SplitProgress_Failed(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  SplitStage sse_decode_split_stage(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return SplitStage.values[inner];
+  }
+
+  @protected
   SyncReport sse_decode_sync_report(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_pulled = sse_decode_u_32(deserializer);
@@ -5021,6 +5239,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       self.setupAndSerialize(
         codec: SseCodec(
           decodeSuccessData: sse_decode_hub_peer_event,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_StreamSink_split_progress_Sse(
+    RustStreamSink<SplitProgress> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_split_progress,
           decodeErrorData: sse_decode_AnyhowException,
         ),
       ),
@@ -6110,6 +6345,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_16(self.channels, serializer);
     sse_encode_f_64(self.durationSecs, serializer);
     sse_encode_i_64(self.createdUnixMs, serializer);
+  }
+
+  @protected
+  void sse_encode_split_capabilities(
+    SplitCapabilities self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.separationAvailable, serializer);
+    sse_encode_opt_box_autoadd_u_32(self.availableMemoryMb, serializer);
+    sse_encode_u_32(self.separationMemoryMb, serializer);
+  }
+
+  @protected
+  void sse_encode_split_progress(SplitProgress self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case SplitProgress_Progress(stage: final stage, fraction: final fraction):
+        sse_encode_i_32(0, serializer);
+        sse_encode_split_stage(stage, serializer);
+        sse_encode_f_32(fraction, serializer);
+      case SplitProgress_Done(
+        kit: final kit,
+        bpm: final bpm,
+        sections: final sections,
+        reliable: final reliable,
+        separated: final separated,
+      ):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_kit_summary(kit, serializer);
+        sse_encode_f_32(bpm, serializer);
+        sse_encode_u_32(sections, serializer);
+        sse_encode_bool(reliable, serializer);
+        sse_encode_bool(separated, serializer);
+      case SplitProgress_Failed(error: final error):
+        sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_up_error(error, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_split_stage(SplitStage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
