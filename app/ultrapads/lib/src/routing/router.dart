@@ -19,6 +19,8 @@ import '../features/recorder/mic_sampler_page.dart';
 import '../features/settings/settings_page.dart';
 import '../features/skins/skin_editor_page.dart';
 import '../features/tracks/tracks_page.dart';
+import '../features/ugc/my_uploads_page.dart';
+import '../features/ugc/upload_form_page.dart';
 import '../state/settings_state.dart';
 import 'routes.dart';
 import 'wide_body.dart';
@@ -126,6 +128,28 @@ final routerProvider = Provider<GoRouter>((ref) {
             child: CatalogDetailPage(itemId: s.pathParameters['id']!),
           ),
         ),
+      ),
+      GoRoute(
+        path: Routes.uploads,
+        pageBuilder: (c, s) => pushPage(
+          s,
+          WideBody(
+            gutter: UpTheme.of(c).colors.surfacePads,
+            child: const MyUploadsPage(),
+          ),
+        ),
+        routes: [
+          GoRoute(
+            path: 'new/:kitId',
+            pageBuilder: (c, s) => pushPage(
+              s,
+              WideBody(
+                gutter: UpTheme.of(c).colors.surfacePads,
+                child: UploadFormPage(kitId: s.pathParameters['kitId']!),
+              ),
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: Routes.editor,

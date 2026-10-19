@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:up_i18n/up_i18n.dart';
 import 'package:up_tokens/up_tokens.dart';
 import 'package:up_ui/up_ui.dart';
@@ -10,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../account/account_state.dart';
 import '../../account/auth_flow.dart';
 import '../../config/app_links.dart';
+import '../../routing/routes.dart';
 import '../catalog/catalog_state.dart';
 
 /// 设置 → 账号：PlutoKeating 账号的登录 / 退出，以及云端收藏同步状态（docs/API.md §7.1）。
@@ -110,6 +112,13 @@ class AccountSection extends ConsumerWidget {
                 showUpToast(context, l10n.settingsAccountSignedOutToast);
               }
             }, primary: false),
+          ),
+          const SizedBox(height: UpSheetTokens.itemGap),
+          UpListItem(
+            key: const ValueKey('account-my-uploads'),
+            icon: Icons.cloud_upload_rounded,
+            title: l10n.libraryUgcMyUploads,
+            onTap: () => unawaited(context.push(Routes.uploads)),
           ),
           if (ref.watch(appLinksProvider).value?.idSettingsPage != null) ...[
             const SizedBox(height: UpSheetTokens.itemGap),

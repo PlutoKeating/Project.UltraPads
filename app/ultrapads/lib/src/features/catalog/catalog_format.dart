@@ -28,7 +28,7 @@ String originLabel(UpL10n l10n, String origin) => switch (origin) {
   'album' => l10n.libraryCatalogOriginAlbum,
   'online' => l10n.libraryCatalogOriginOnline,
   'synth' => l10n.libraryCatalogOriginSynth,
-  'ugc' => l10n.libraryCatalogOriginUgc,
+  'ugc' => l10n.libraryUgcCommunityBadge,
   _ => origin,
 };
 

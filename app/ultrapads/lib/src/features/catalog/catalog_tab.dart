@@ -127,6 +127,7 @@ class _CatalogTabState extends ConsumerState<CatalogTab> {
             q.copyWith(
               licenses: const {},
               genre: () => null,
+              origin: () => null,
               bpmMin: () => null,
               bpmMax: () => null,
             ),
@@ -176,6 +177,23 @@ class _CatalogTabState extends ConsumerState<CatalogTab> {
             ? UpChipVariant.normal
             : UpChipVariant.selected,
         onTap: () => _pickTempo(context),
+      ),
+      UpChip(
+        key: const ValueKey('catalog-origin-chip'),
+        label: q.origin == null
+            ? l10n.libraryUgcFilterOrigin
+            : originLabel(l10n, q.origin!),
+        icon: Icons.groups_rounded,
+        variant: q.origin == null
+            ? UpChipVariant.normal
+            : UpChipVariant.selected,
+        onTap: () => _pickOrigin(context),
+      ),
+      UpChip(
+        key: const ValueKey('catalog-my-uploads-chip'),
+        label: l10n.libraryUgcMyUploads,
+        icon: Icons.cloud_upload_rounded,
+        onTap: () => unawaited(context.push(Routes.uploads)),
       ),
     ];
 
@@ -323,6 +341,39 @@ class _CatalogTabState extends ConsumerState<CatalogTab> {
     );
     if (v != null) {
       _setQuery(_query.copyWith(genre: () => v.isEmpty ? null : v));
+    }
+  }
+
+  Future<void> _pickOrigin(BuildContext context) async {
+    final l10n = context.l10n;
+    final facets = await _facets();
+    if (!context.mounted) return;
+    final ids = {
+      for (final f in facets?.origins ?? const <Facet>[]) f.id,
+      ?_query.origin,
+    }.toList()..sort();
+    // '' 表示「全部来源」
+    final v = await showUpSheet<String>(
+      context,
+      builder: (ctx) => UpSheet(
+        title: l10n.libraryUgcFilterOrigin,
+        children: [
+          _SheetRow(
+            label: l10n.libraryUgcOriginAll,
+            selected: _query.origin == null,
+            onTap: () => Navigator.pop(ctx, ''),
+          ),
+          for (final o in ids)
+            _SheetRow(
+              label: originLabel(l10n, o),
+              selected: _query.origin == o,
+              onTap: () => Navigator.pop(ctx, o),
+            ),
+        ],
+      ),
+    );
+    if (v != null) {
+      _setQuery(_query.copyWith(origin: () => v.isEmpty ? null : v));
     }
   }
 

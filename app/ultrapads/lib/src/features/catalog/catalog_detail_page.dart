@@ -11,6 +11,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../routing/routes.dart';
 import '../../state/library_state.dart';
+import '../../ugc/ugc_state.dart';
+import '../ugc/report_sheet.dart';
 import 'catalog_format.dart';
 import 'catalog_models.dart';
 import 'catalog_state.dart';
@@ -310,6 +312,10 @@ class _Body extends ConsumerWidget {
                   ],
                 ),
               ),
+              if (item.origin == 'ugc') ...[
+                const SizedBox(height: UpSpacing.xl),
+                _CommunityNotice(item: item),
+              ],
               if (item.attribution.isNotEmpty) ...[
                 const SizedBox(height: UpSpacing.xl),
                 section(
@@ -352,6 +358,41 @@ class _Body extends ConsumerWidget {
           padding: const EdgeInsets.all(UpPageTokens.paddingX),
           child: action,
         ),
+      ],
+    );
+  }
+}
+
+/// 社区上传条目的说明与举报入口：署名和许可证是上传者自己声明的，有问题可以举报。
+class _CommunityNotice extends ConsumerWidget {
+  const _CommunityNotice({required this.item});
+  final CatalogItem item;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final c = UpTheme.of(context).colors;
+    final own = ref.watch(myUploadsProvider.select((s) => s.owns(item.id)));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: UpSpacing.sm,
+      children: [
+        UpBadge(label: l10n.libraryUgcCommunityBadge),
+        UpText(
+          l10n.libraryUgcCommunityNotice,
+          role: UpTextRole.bodySm,
+          color: c.textSecondary,
+          maxLines: 3,
+        ),
+        if (!own)
+          UpButton(
+            key: const ValueKey('catalog-report'),
+            label: l10n.libraryUgcReport,
+            icon: Icons.flag_outlined,
+            variant: UpButtonVariant.outline,
+            size: UpButtonSize.sm,
+            onPressed: () => unawaited(showReportSheet(context, ref, item)),
+          ),
       ],
     );
   }

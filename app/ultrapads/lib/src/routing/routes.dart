@@ -6,6 +6,9 @@ abstract final class Routes {
   static String kit(String id) => '/kits/${Uri.encodeComponent(id)}';
   static const catalog = '/catalog';
   static String catalogItem(String id) => '/catalog/${Uri.encodeComponent(id)}';
+  static const uploads = '/uploads';
+  static String uploadNew(String kitId) =>
+      '/uploads/new/${Uri.encodeComponent(kitId)}';
   static const editor = '/edit';
   static const micSampler = '/edit/mic';
   static const tracks = '/tracks';
