@@ -247,6 +247,7 @@ abstract class RustLibApi extends BaseApi {
     required String id,
     required String path,
     required String fmt,
+    String? credits,
   });
 
   Future<void> crateApiTracksTrackPlay({
@@ -2029,6 +2030,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required String id,
     required String path,
     required String fmt,
+    String? credits,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -2037,6 +2039,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_String(id, serializer);
           sse_encode_String(path, serializer);
           sse_encode_String(fmt, serializer);
+          sse_encode_opt_String(credits, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -2049,7 +2052,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: sse_decode_up_error,
         ),
         constMeta: kCrateApiTracksTrackExportConstMeta,
-        argValues: [id, path, fmt],
+        argValues: [id, path, fmt, credits],
         apiImpl: this,
       ),
     );
@@ -2057,7 +2060,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiTracksTrackExportConstMeta => const TaskConstMeta(
     debugName: "track_export",
-    argNames: ["id", "path", "fmt"],
+    argNames: ["id", "path", "fmt", "credits"],
   );
 
   @override

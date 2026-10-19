@@ -20,15 +20,19 @@ Future<void> trackPlay({required String id, required bool looping}) =>
 
 Future<void> trackStop() => RustLib.instance.api.crateApiTracksTrackStop();
 
-/// Export to `path`. `fmt`: `wav` (BWF) or `dawproject`. Returns the written path.
+/// Export to `path`. `fmt`: `wav` (BWF), `flac` or `dawproject`. `credits` is the attribution
+/// text for CC BY / BY-SA material used in the take (written to the WAV `bext` chunk or the FLAC
+/// `COMMENT` tag). Returns the written path.
 Future<String> trackExport({
   required String id,
   required String path,
   required String fmt,
+  String? credits,
 }) => RustLib.instance.api.crateApiTracksTrackExport(
   id: id,
   path: path,
   fmt: fmt,
+  credits: credits,
 );
 
 Future<TrackInfo> trackRename({required String id, required String name}) =>

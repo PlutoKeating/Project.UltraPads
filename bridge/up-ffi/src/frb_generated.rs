@@ -2101,10 +2101,12 @@ fn wire__crate__api__tracks__track_export_impl(
             let api_id = <String>::sse_decode(&mut deserializer);
             let api_path = <String>::sse_decode(&mut deserializer);
             let api_fmt = <String>::sse_decode(&mut deserializer);
+            let api_credits = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, crate::api::types::UpError>((move || {
-                    let output_ok = crate::api::tracks::track_export(api_id, api_path, api_fmt)?;
+                    let output_ok =
+                        crate::api::tracks::track_export(api_id, api_path, api_fmt, api_credits)?;
                     std::result::Result::Ok(output_ok)
                 })())
             }

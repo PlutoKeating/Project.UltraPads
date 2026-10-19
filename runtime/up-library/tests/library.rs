@@ -499,12 +499,38 @@ fn save_kit_with_mic_sample_and_tracks() {
     assert_eq!(lib.tracks_list().len(), 1);
     assert!(lib.track_path(&t.id).unwrap().is_file());
     let wav_out = dir.path().join("take.wav");
-    lib.track_export(&t.id, &wav_out, TrackExportFormat::Wav)
+    lib.track_export(&t.id, &wav_out, TrackExportFormat::Wav, None)
         .unwrap();
     let meta = wav::read_metadata(&std::fs::read(&wav_out).unwrap()).unwrap();
     assert_eq!(meta.bext.unwrap().description, "Take 1");
+    // 署名：WAV 写进 bext（描述截断到 256 字节，完整文字在编码历史里）
+    let credited = dir.path().join("credited.wav");
+    let credits = "“Song” by Someone, CC BY 4.0.\nChanges: trimmed.";
+    lib.track_export(&t.id, &credited, TrackExportFormat::Wav, Some(credits))
+        .unwrap();
+    let bext = wav::read_metadata(&std::fs::read(&credited).unwrap())
+        .unwrap()
+        .bext
+        .unwrap();
+    assert!(bext.description.starts_with("Take 1 | “Song” by Someone"));
+    assert!(bext.description.len() <= 256);
+    assert_eq!(bext.coding_history, credits);
+    // FLAC：能被解码器读回，带 Vorbis 注释
+    let flac_out = dir.path().join("take.flac");
+    lib.track_export(&t.id, &flac_out, TrackExportFormat::Flac, Some(credits))
+        .unwrap();
+    let flac_bytes = std::fs::read(&flac_out).unwrap();
+    assert_eq!(&flac_bytes[..4], b"fLaC");
+    assert!(
+        flac_bytes
+            .windows(credits.len())
+            .any(|w| w == credits.as_bytes()),
+        "署名应写进 COMMENT 注释"
+    );
+    let decoded = up_codec::decode_bytes(flac_bytes, Some("flac")).unwrap();
+    assert!(decoded.frames() > 0);
     let dp = dir.path().join("take.dawproject");
-    lib.track_export(&t.id, &dp, TrackExportFormat::DawProject)
+    lib.track_export(&t.id, &dp, TrackExportFormat::DawProject, None)
         .unwrap();
     let fs = up_library::archive::read_zip_file(&dp, &ImportLimits::default()).unwrap();
     assert!(fs.files.contains_key("audio/take-1.wav"));

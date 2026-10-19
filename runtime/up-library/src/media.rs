@@ -13,6 +13,8 @@ use crate::{Library, fsutil, is_hash};
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TrackExportFormat {
     Wav,
+    /// 16-bit FLAC，带 Vorbis 注释（标题、署名）。
+    Flac,
     /// `.dawproject`：一条 audio 轨引用 `audio/<name>.wav`。
     DawProject,
 }
@@ -257,13 +259,18 @@ impl Library {
         Ok(())
     }
 
-    /// 导出录音作品：WAV（写入 BWF `bext` 来源信息）或 `.dawproject`。
+    /// 导出录音作品：WAV（写入 BWF `bext` 来源信息）、FLAC（Vorbis 注释）或 `.dawproject`。
+    ///
+    /// `credits`：作品用到需要署名的素材时的署名文字。WAV 写进 `bext` 的描述（截到 256 字节）与完整的编码历史，
+    /// FLAC 写进 `COMMENT` 注释。
     pub fn track_export(
         &self,
         id: &str,
         dest: &Path,
         format: TrackExportFormat,
+        credits: Option<&str>,
     ) -> Result<PathBuf> {
+        let credits = credits.map(str::trim).filter(|c| !c.is_empty());
         let t = self.track(id)?;
         let bytes = std::fs::read(self.track_file(id)).ctx(|| format!("读取作品 {id}"))?;
         match format {
@@ -271,7 +278,8 @@ impl Library {
                 let mut meta = wav::read_metadata(&bytes)?;
                 let created = fsutil::rfc3339(t.created_at_ms);
                 meta.bext = Some(wav::BextChunk {
-                    description: t.name.clone(),
+                    description: bext_description(&t.name, credits),
+                    coding_history: credits.unwrap_or_default().to_string(),
                     originator: "UltraPads".into(),
                     originator_reference: t.id.chars().take(32).collect(),
                     origination_date: created[..10].to_string(),
@@ -281,6 +289,14 @@ impl Library {
                 });
                 let out = wav::write_metadata(&bytes, &meta)?;
                 fsutil::atomic_write(dest, &out, false)?;
+            }
+            TrackExportFormat::Flac => {
+                let pcm = wav::decode(&bytes)?;
+                let mut comments = vec![("TITLE", t.name.as_str()), ("ENCODER", "UltraPads")];
+                if let Some(c) = credits {
+                    comments.push(("COMMENT", c));
+                }
+                fsutil::atomic_write(dest, &crate::flac::encode(&pcm, &comments)?, false)?;
             }
             TrackExportFormat::DawProject => {
                 let audio_path = format!("audio/{}.wav", up_format::path::slug(&t.name));
@@ -310,6 +326,18 @@ impl Library {
         let bytes = std::fs::read(self.track_file(id)).ctx(|| format!("读取作品 {id}"))?;
         self.add_sample(&bytes, &t.name, SampleOrigin::Track)
     }
+}
+
+/// BWF `bext` 描述最多 256 字节：名称 + 署名，超出按字符边界截断。
+fn bext_description(name: &str, credits: Option<&str>) -> String {
+    let mut s = match credits {
+        Some(c) => format!("{name} | {}", c.replace('\n', " ")),
+        None => name.to_string(),
+    };
+    while s.len() > 256 {
+        s.pop();
+    }
+    s
 }
 
 /// 计算峰值概要。

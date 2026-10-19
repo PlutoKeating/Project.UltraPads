@@ -19,6 +19,7 @@
 
 pub mod archive;
 pub mod error;
+pub mod flac;
 pub mod fsutil;
 pub mod import;
 pub mod index;

@@ -55,20 +55,23 @@ pub fn track_stop() -> R<()> {
     Ok(state::core()?.track_stop()?)
 }
 
-/// Export to `path`. `fmt`: `wav` (BWF) or `dawproject`. Returns the written path.
-pub fn track_export(id: String, path: String, fmt: String) -> R<String> {
+/// Export to `path`. `fmt`: `wav` (BWF), `flac` or `dawproject`. `credits` is the attribution
+/// text for CC BY / BY-SA material used in the take (written to the WAV `bext` chunk or the FLAC
+/// `COMMENT` tag). Returns the written path.
+pub fn track_export(id: String, path: String, fmt: String, credits: Option<String>) -> R<String> {
     let format = match fmt.to_ascii_lowercase().as_str() {
         "wav" => up_library::TrackExportFormat::Wav,
+        "flac" => up_library::TrackExportFormat::Flac,
         "dawproject" => up_library::TrackExportFormat::DawProject,
         other => {
             return Err(UpError {
                 code: ErrorCode::InvalidArgument,
-                message: format!("unknown track format {other:?} (wav, dawproject)"),
+                message: format!("unknown track format {other:?} (wav, flac, dawproject)"),
             });
         }
     };
     let out = state::library()?
-        .track_export(&id, Path::new(&path), format)
+        .track_export(&id, Path::new(&path), format, credits.as_deref())
         .map_err(lib_err)?;
     Ok(out.to_string_lossy().into_owned())
 }
