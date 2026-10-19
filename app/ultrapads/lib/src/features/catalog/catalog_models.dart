@@ -149,6 +149,7 @@ class CatalogQuery {
     this.text = '',
     this.licenses = const {},
     this.genre,
+    this.origin,
     this.bpmMin,
     this.bpmMax,
     this.sort = CatalogSort.newest,
@@ -157,6 +158,9 @@ class CatalogQuery {
   final String text;
   final Set<String> licenses;
   final String? genre;
+
+  /// 来源筛选（`album` / `online` / `synth` / `ugc`）；null = 全部。
+  final String? origin;
   final int? bpmMin;
   final int? bpmMax;
   final CatalogSort sort;
@@ -165,6 +169,7 @@ class CatalogQuery {
     String? text,
     Set<String>? licenses,
     String? Function()? genre,
+    String? Function()? origin,
     int? Function()? bpmMin,
     int? Function()? bpmMax,
     CatalogSort? sort,
@@ -172,18 +177,24 @@ class CatalogQuery {
     text: text ?? this.text,
     licenses: licenses ?? this.licenses,
     genre: genre != null ? genre() : this.genre,
+    origin: origin != null ? origin() : this.origin,
     bpmMin: bpmMin != null ? bpmMin() : this.bpmMin,
     bpmMax: bpmMax != null ? bpmMax() : this.bpmMax,
     sort: sort ?? this.sort,
   );
 
   bool get isFiltered =>
-      licenses.isNotEmpty || genre != null || bpmMin != null || bpmMax != null;
+      licenses.isNotEmpty ||
+      genre != null ||
+      origin != null ||
+      bpmMin != null ||
+      bpmMax != null;
 
   Map<String, String> toParams({String? cursor, int limit = 30}) => {
     if (text.trim().isNotEmpty) 'q': text.trim(),
     if (licenses.isNotEmpty) 'license': (licenses.toList()..sort()).join(','),
     'genre': ?genre,
+    'origin': ?origin,
     if (bpmMin != null) 'bpm_min': '$bpmMin',
     if (bpmMax != null) 'bpm_max': '$bpmMax',
     'sort': switch (sort) {
@@ -201,6 +212,7 @@ class CatalogQuery {
       other.text == text &&
       setEquals(other.licenses, licenses) &&
       other.genre == genre &&
+      other.origin == origin &&
       other.bpmMin == bpmMin &&
       other.bpmMax == bpmMax &&
       other.sort == sort;
@@ -210,6 +222,7 @@ class CatalogQuery {
     text,
     Object.hashAllUnordered(licenses),
     genre,
+    origin,
     bpmMin,
     bpmMax,
     sort,

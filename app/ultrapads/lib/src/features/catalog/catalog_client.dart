@@ -69,6 +69,17 @@ class CatalogClient {
     };
   }
 
+  // 同一站点的其它客户端（用户上传，见 lib/src/ugc）复用的底层能力。
+
+  Uri resolve(String path, [Map<String, String>? query]) => _uri(path, query);
+
+  Future<Map<String, String>> authHeaders() => _headers(auth: true);
+
+  http.Client get httpClient => _client;
+
+  /// 发送并解码 JSON 响应；网络问题与 4xx / 5xx 统一抛 [CatalogException]。
+  Future<Object?> request(Future<http.Response> Function() send) => _json(send);
+
   /// 登录后带上令牌（匿名接口也带：下载会因此记入历史）。
   Future<Map<String, String>> _optionalAuth() => _headers(auth: true);
 
@@ -165,17 +176,18 @@ class CatalogClient {
     ),
   );
 
-  /// 下载 `.upkit` 到 [dest]，边收边算 SHA-256；与 [item] 的 `sha256` 不符则删除文件并抛
+  /// 下载 `.upkit` 到 [dest]（[path] 缺省为公开下载地址；本人的上传用 `/api/me/uploads/<id>/download`），边收边算 SHA-256；与 [item] 的 `sha256` 不符则删除文件并抛
   /// `hash_mismatch`。[onProgress] 的第二个参数在服务端没给长度时为 null。
   Future<void> download(
     CatalogItem item,
     File dest, {
     void Function(int received, int? total)? onProgress,
     DownloadCancel? cancel,
+    String? path,
   }) async {
     final req = http.Request(
       'GET',
-      _uri('/api/catalog/${Uri.encodeComponent(item.id)}/download'),
+      _uri(path ?? '/api/catalog/${Uri.encodeComponent(item.id)}/download'),
     )..headers.addAll(await _optionalAuth());
     final http.StreamedResponse res;
     try {
