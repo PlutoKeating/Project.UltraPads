@@ -40,7 +40,8 @@ lib/
       ├─ perform/            演奏页、功能按钮行、键盘映射、引擎→PadData 映射
       ├─ library/            曲库（KITS / FEED / 官方曲库 / PROFILE）、Kit 预览、曲风
       ├─ catalog/            官方曲库：目录客户端、列表 / 筛选 / 下载 / 云端收藏状态、详情页、署名（见 §12）
-      ├─ account/            设置页账号区块（登录 / 退出）
+      ├─ account/            设置页账号区块（登录 / 退出、入口「我的上传」）
+      ├─ ugc/                用户上传（UGC）界面：我的上传、上传表单、举报面板（客户端与状态在 `lib/src/ugc/`，见 §12）
       ├─ editor/             编辑 Kit（LOAD SOUND、EDIT PAD、EDIT FILE 裁剪）、采样选择器
       ├─ recorder/           麦克风采样页、保存录音面板、分享
       ├─ tracks/             我的录音（TRACK 卡）
@@ -59,7 +60,9 @@ lib/
 | `/onboarding` | `OnboardingPage` | 无 | 参考设计 Walkthrough + CategoryPreference（试用页不做） |
 | `/kits` | `LibraryPage`（KITS / FEED / 官方曲库 / PROFILE + 搜索） | 底部滑入 `sheet.enter` | 参考设计 `MenuScene` |
 | `/kits/:id` | `KitDetailPage` Kit 预览 | 右侧推入 `page.push` | 参考设计 `modalUnlockKit`（去掉解锁/付费） |
-| `/catalog/:id` | `CatalogDetailPage` 官方曲库条目详情（署名、许可证、下载 / 演奏） | 右侧推入 | 新增（docs/API.md §7） |
+| `/catalog/:id` | `CatalogDetailPage` 官方曲库条目详情（署名、许可证、下载 / 演奏；社区上传条目另有说明与举报） | 右侧推入 | 新增（docs/API.md §7） |
+| `/uploads` | `MyUploadsPage` 我的上传（状态、公开 / 私有、删除、取回、选 Kit 上传） | 右侧推入 | 新增（docs/API.md §7.5） |
+| `/uploads/new/:kitId` | `UploadFormPage` 上传表单（署名、许可证、来源声明、确认有权分享） | 右侧推入 | 新增（docs/API.md §7.5） |
 | `/edit` | `EditorPage` 编辑 Kit | 底部滑入 | 参考设计 `CreateKit/Main` |
 | `/edit/mic` | `MicSamplerPage` 麦克风采样（返回 `SampleInfo`） | 推入 | 参考设计 mic 面板 |
 | `/tracks` | `TracksPage` 我的录音 | 推入 | 参考设计 PROFILE → 我的录音 |
@@ -126,6 +129,7 @@ golden：`perform_desktop_1280x800`、`perform_desktop_1024x768`、`perform_tabl
 | `catalogListProvider` / `catalogFacetsProvider` / `catalogItemProvider` | 目录分页列表与筛选、facets、单个条目 | `/api/catalog`（§12） |
 | `catalogDownloadProvider` / `catalogRecordsProvider` | 进行中的下载进度；已下载条目记录（署名来源） | 目录下载 + 引擎导入 / prefs |
 | `cloudStateProvider` | 官方曲库收藏、最近使用、待同步队列 | prefs + `/api/me/*` |
+| `myUploadsProvider` / `uploadProvider` / `reportUploadProvider` | 我的上传列表与操作；导出 → 建条目 → 流式上传的流程状态；举报 | `/api/me/uploads*`、`/api/catalog/<id>/report`（§12） |
 
 规则：业务变更一律经 `EngineClient`（命令或异步函数）；Provider 只做投影。
 `tryEngine` / `tryEngineDo` 把 `EngineNotImplemented` 转成 null / false，页面据此显示
@@ -228,7 +232,8 @@ Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径
 - `test/update_test.dart`：更新状态机（Linux 装入并重启、Android 申请「安装未知应用」后安装、手动安装不下载、Mock 不自动检查）与设置页「软件更新」。
 - `test/first_run_test.dart`（默认 Kit 顺序、打包的 CC0 Kit 与 `content/kits` 一致、空曲库导入）、
   `layout_test.dart`、`first_guide_test.dart`、`image_skin_test.dart`。
-- `test/catalog_client_test.dart` / `catalog_state_test.dart` / `catalog_test.dart`：目录客户端（查询参数、分页、sha256 校验、取消、账号数据）、列表 / 下载 / 云端收藏状态、官方曲库页与详情页（筛选、搜索防抖、下载 → 演奏、署名提示）与设置页账号区块；假服务见 `test/catalog_fixtures.dart`（`FakeSite`，按 docs/API.md §7 行为）。
+- `test/catalog_client_test.dart` / `catalog_state_test.dart` / `catalog_test.dart`：目录客户端（查询参数、分页、sha256 校验、取消、账号数据）、列表 / 下载 / 云端收藏状态、官方曲库页与详情页（筛选、搜索防抖、下载 → 演奏、署名提示）与设置页账号区块；假服务见 `test/catalog_fixtures.dart`（`FakeSite`，按 docs/API.md §7 行为，含 §7.5 的上传 / 举报）。
+- `test/ugc_test.dart`：上传表单校验、`UgcClient`（超限不发请求、取消、`Content-Length` / `X-Sha256`）、来源筛选与社区条目举报流程、我的上传（各状态、公开确认、删除、取回入口）、上传流程（成功、文件被拒后清理、配额）。
 - `test/account_test.dart`：令牌文件（0600）、登录 / 退出 / 恢复、并发刷新只发一次、`invalid_grant` 退出、桌面回环登录（真实 127.0.0.1 监听 + 假 IdP，核对 PKCE / state / 无密钥）。
 - golden 位于 `test/goldens/`，字体由 `test/flutter_test_config.dart` 加载（Open Sans + Material Icons）。
 
@@ -256,7 +261,13 @@ Impeller（Android Vulkan / GLES）不对渐变做抖动，大面积低对比径
   - 刷新（两个平台共用）：`refreshTokens` 向 token 端点 POST `refresh_token`；并发只刷一次；`invalid_grant` 退出登录，仅网络错误则沿用旧令牌。ID 令牌里没有邮箱时问一次 userinfo。
   - **令牌存储**：应用私有目录里的 `account.json`，权限 0600，写入走「临时文件 → rename」（`FileTokenStore`）。不用 flutter_secure_storage：它的 Linux 实现依赖 libsecret 与桌面 keyring，会给发布包新增系统库依赖，无 keyring 的环境读写还会失败。代价是令牌只受文件系统权限与应用沙盒保护（Android 沙盒内他人不可读），不是硬件密钥库。
 - **署名与导出**：保存 / 分享录音时，若当前 Kit 来自需署名的目录条目（非 CC0 / PD），保存面板显示署名与限制（NC：仅限非商业；SA：以相同许可证分享），分享文字附上署名（`features/catalog/credits.dart`，按录音的 `kitName` 匹配已下载记录）。**未做**：写入 WAV `bext` 元数据——应用分享的是 FLAC，署名走分享文字。
-- **测试替换**：`catalogHttpClientProvider`、`catalogDownloadDirProvider`、`tokenStoreProvider`、`authFlowProvider`、`authHttpClientProvider`；`test/harness.dart` 的 `pumpApp` 默认全部换成假实现（`FakeSite`、`FakeAuthFlow`、内存令牌、临时目录）。
+- **用户上传（UGC）**（`lib/src/ugc/`、`features/ugc/`，契约见 docs/API.md §7.5）：
+  - `UgcClient` 复用 `CatalogClient` 的站点地址、令牌与错误模型（`resolve` / `authHeaders` / `request` 几个公开口子），自己只管上传相关的请求。
+  - **上传流程**（`UploadController`）：`libraryExportKit(kit, path, upkit)` 导出到临时文件（`ugcExportProvider`）→ 本地算 SHA-256 → `POST /api/me/uploads` 建条目（恒为私有）→ `PUT …/file` 流式上传，带 `Content-Length` 与 `X-Sha256`，进度来自已交给网络层的字节（`StreamSink.addStream` 带背压，不会把整个文件读进内存）→ 加入「我的上传」。超过 128 MB 在客户端先拦住；取消或任一步失败时尽力删除已建的空条目，不占账号配额；临时文件始终清理。
+  - **表单**：标题（≤120）、署名（≤500，原样展示）、许可证（目录白名单，含 NC / SA）、来源声明（`own` / `licensed`）、来源链接（可空，须 http(s)），必须打开「我有权分享」才能提交；`validateUpload` 是纯函数，错误在第一次提交后才显示。状态码 400 / 411 / 413 / 422 / 429 / 401 / 403 / 410 / 409 映射成友好文案（`ugcErrorMessage`）。
+  - **我的上传**：显示私有 / 公开 / 已隐藏（被举报待审）/ 已下架 / 还没有文件；设为公开前确认（说明会公开署名与许可证）；已下架的只能删除；「下载到本机」取回自己的文件（含私有）并导入曲库，用于换设备。退出登录清空列表。
+  - **社区来源**：目录筛选条末尾的「来源」芯片（选项来自 facets 的 `origins`，`origin=ugc` 即社区上传）；社区条目详情页显示「社区上传」徽标、署名由上传者声明的说明和「举报」（需登录；本人上传不显示；原因 copyright / inappropriate / other + 可选说明，同一用户对同一条目只计一次）。
+- **测试替换**：`ugcExportProvider`、`ugcTempDirProvider`、`catalogHttpClientProvider`、`catalogDownloadDirProvider`、`tokenStoreProvider`、`authFlowProvider`、`authHttpClientProvider`；`test/harness.dart` 的 `pumpApp` 默认全部换成假实现（`FakeSite`、`FakeAuthFlow`、内存令牌、临时目录）。
 
 ## 13. 导入歌曲拆成 Kit（`lib/src/split/`、`features/split/`，接口见 `docs/API.md` §8）
 
