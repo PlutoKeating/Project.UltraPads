@@ -399,9 +399,9 @@ Dart：`EngineClient.appVersion` / `updateCheck` / `updateDownload` / `updateCan
 数据类 `UpdateInfo`、`UpdateInstallMode`、`UpdateProgress`（`UpdateDownloading` / `UpdateReady` / `UpdateFailed`）。
 
 
-## 7. 官方曲库目录与账号接口（`website/worker`、`data/`）
+## 7. 曲库目录、账号与用户上传接口（`website/worker`、`data/`）
 
-决策见 `docs/adr/0005-catalog-and-accounts.md`。站点 `https://ultrapads.plutokeating.beer`。目录与详情**匿名可读**；登录（PlutoKeating 账号）后解锁云端收藏、最近使用、下载记录。文件只经 Worker 透传，客户端从不直连数据服务。
+决策见 `docs/adr/0005-catalog-and-accounts.md`。站点 `https://ultrapads.plutokeating.beer`。目录与详情**匿名可读**（官方曲库 + 用户公开分享的上传）；登录（PlutoKeating 账号）后解锁云端收藏、最近使用、下载记录、上传与举报。文件只经 Worker 透传，客户端从不直连数据服务。
 
 ### 7.1 账号
 
@@ -415,8 +415,9 @@ Dart：`EngineClient.appVersion` / `updateCheck` / `updateDownload` / `updateCan
 |---|---|
 | `GET /api/catalog?q=&license=&genre=&origin=&bpm_min=&bpm_max=&sort=new\|bpm\|title&cursor=&limit=` | `{ items: [CatalogItem], next_cursor: string\|null, total }`。`license` 可重复或逗号分隔；`limit` 默认 30、最大 50；`q` 在标题、作者、标签里匹配 |
 | `GET /api/catalog/facets` | `{ licenses: [{id,count}], genres: [{id,count}], origins: [{id,count}] }` |
-| `GET /api/catalog/<id>` | `CatalogItem`；不存在 `404 {"error":"not_found"}` |
-| `GET /api/catalog/<id>/download` | `.upkit`（`application/zip`）字节流，支持 `Range`，头 `X-Digest: sha256:<hex>`、`Content-Disposition: attachment; filename="<id>.upkit"`。传了有效令牌时记入下载历史 |
+| `GET /api/catalog/<id>` | `CatalogItem`；不存在或不公开 `404 {"error":"not_found"}`；曾公开、现被运营下架的用户上传 `410 {"error":"gone"}` |
+| `GET /api/catalog/<id>/download` | `.upkit`（`application/zip`）字节流，支持 `Range`，头 `X-Digest: sha256:<hex>`、`Content-Disposition: attachment; filename="<id>.upkit"`。传了有效令牌时记入下载历史；被下架的用户上传 `410` |
+| `POST /api/catalog/<id>/report` `{ reason, note? }` | 需要登录，见 §7.5。目录接口除这一条外只接受 `GET`/`HEAD`，其余方法 `405` |
 
 ```jsonc
 // CatalogItem
@@ -425,7 +426,7 @@ Dart：`EngineClient.appVersion` / `updateCheck` / `updateDownload` / `updateCan
   "title": "Dusk Run",
   "artist": "UltraPads",
   "description": "…",
-  "origin": "synth",                   // album | online | synth | ugc（ugc 暂未开放）
+  "origin": "synth",                   // album | online | synth | ugc（ugc = 用户上传并公开分享的条目，见 §7.5）
   "license": "CC0-1.0",                // CC0-1.0 | CC-BY-4.0 | CC-BY-3.0 | CC-BY-SA-4.0 | CC-BY-SA-3.0 | CC-BY-NC-4.0 | CC-BY-NC-SA-4.0 | CC-BY-NC-3.0 | CC-BY-NC-SA-3.0 | PD
   "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
   "attribution": "“Dusk Run” by UltraPads, CC0 1.0",   // 应用内与 Kit 元数据里原样展示
@@ -453,7 +454,8 @@ Dart：`EngineClient.appVersion` / `updateCheck` / `updateDownload` / `updateCan
 | `GET /api/me/state` | `{ favorites: [id], recent: [{id,at_ms}], downloads: [{id,at_ms}] }`（最近使用与下载各保留最近 100 条，新→旧） |
 | `PUT /api/me/favorites/<id>` / `DELETE /api/me/favorites/<id>` | `204`，幂等；`id` 必须是目录里存在的条目，否则 `404` |
 | `POST /api/me/recent` `{ id }` | `204`，同一 id 只保留最新一条 |
-| `DELETE /api/me` | `204`，级联删除该账号的全部数据 |
+| `DELETE /api/me` | `204`，级联删除该账号的全部数据，**包括其上传的条目和文件**（§7.5） |
+| `/api/me/uploads*` | 用户上传，见 §7.5 |
 
 所有 JSON 错误体统一 `{ "error": <code>, "message"?: string }`。目录与详情响应带 `Cache-Control: public, max-age=60`；账号数据 `no-store`。无 CORS 要求（原生 App 调用），沿用 `/api/version` 的宽松 CORS 头即可。
 
@@ -470,5 +472,38 @@ Dart：`EngineClient.appVersion` / `updateCheck` / `updateDownload` / `updateCan
 | `PUT /v1/admin/catalog/<id>` | 创建或更新元数据（CatalogItem 去掉 `size`/`sha256`，加 `status: draft\|published`）；`license` 之外的派生字段由服务计算 |
 | `PUT /v1/admin/catalog/<id>/file` | 流式上传 `.upkit`，服务计算 `size` 与 `sha256`（带 `x-sha256` 头时核对，不符 `422`）；上传成功才允许 `published` |
 | `DELETE /v1/admin/catalog/<id>` | 删除条目与文件 |
+| `GET /v1/users/<sub>/uploads[/<id>[/file]]`、`POST /v1/users/<sub>/uploads`、`PATCH\|DELETE /v1/users/<sub>/uploads/<id>`、`PUT /v1/users/<sub>/uploads/<id>/file`、`POST /v1/users/<sub>/reports` | 用户上传与举报，见 §7.5；按 `sub` 严格隔离，他人的 id 一律 `404` |
+| `GET /v1/admin/reports`、`PUT /v1/admin/catalog/<id>/moderation` | 运营审核：未处理举报列表；`{ state: active\|taken_down }` 恢复或下架 |
 
 鉴权：普通接口 `Authorization: Bearer <ULTRAPADS_DATA_KEY>`（只在 Worker Secret 中）；`/v1/admin/*` 额外要求 `X-Up-Admin: <ULTRAPADS_ADMIN_KEY>`（只在运营者本机与服务器 `.env`，Worker 不持有）。数据与文件目录 `/data`：`ultrapads.sqlite`（WAL）、`files/<hh>/<sha256>`、每日 `VACUUM INTO` 备份。
+
+### 7.5 用户上传与举报（需要登录）
+
+用户把自己的 Kit（`.upkit`，ZIP）上传到账号下，**默认私有**，只有本人能看和下载；本人可以把条目设为公开，公开后出现在 §7.2 的目录里（`origin: "ugc"`），任何人可下载。上传由客户端在本地完成拆分和打包（拆分排布与官方曲库一致：每组是一个完整段落，组内每个 pad 是一个乐器），服务端只存储和分发，不处理音频。
+
+| 请求 | 响应 |
+|---|---|
+| `POST /api/me/uploads` `{ title, credit, license, source_declaration, source_url?, description?, bpm?, genres?, tags?, group_count?, pad_count?, duration_secs?, theme_color? }` | `201 UploadItem`，恒为私有。`title`（≤120）、`credit`（署名，≤500，原样展示）、`license`（§7.2 白名单，含 NC / SA）、`source_declaration` 必填，缺一或非法 `400`。`source_declaration`：`own` = 自己的作品 / 录音，`licensed` = 按所列许可证获得授权的素材。每个账号最多 50 条，超出 `429 quota_exceeded`。`visibility`、`origin`、`status` 等字段忽略 |
+| `PUT /api/me/uploads/<id>/file` | 请求体即 ZIP 字节流，**必须带 `Content-Length`**（缺 `411`），≤ 128 MB（超出 `413`），可选 `X-Sha256`（不符 `422`）；非 ZIP `422`。Worker 纯透传，不读字节。成功返回 `UploadItem`（带 `size`、`sha256`）。已被下架的条目 `403` |
+| `GET /api/me/uploads`、`GET /api/me/uploads/<id>` | `{ items: [UploadItem] }` / `UploadItem`。他人的或不存在的 id 一律 `404` |
+| `PATCH /api/me/uploads/<id>` | 改上面的任一元数据字段和 `visibility: private\|public`，缺省字段沿用。设为 `public` 需要已上传文件（`409 no_file`），被下架的不能公开（`403 taken_down`）。改回 `private` 立即从目录消失 |
+| `DELETE /api/me/uploads/<id>` | `204`，删除条目和无人引用的文件 |
+| `GET /api/me/uploads/<id>/download` | 本人下载（含私有），`Range`、`X-Digest`；`Cache-Control: private, no-store`，不进共享缓存；被下架 `410` |
+| `POST /api/catalog/<id>/report` `{ reason: "copyright"\|"inappropriate"\|"other", note? (≤500) }` | `202 {"ok":true}`。只能举报公开的用户上传（官方条目、私有条目 `404`），不能举报自己的（`400`）。同一用户对同一条目只计一次 |
+
+```jsonc
+// UploadItem（只有上传者本人能看到）：CatalogItem 的全部字段，另加
+{
+  "credit": "…",                       // = attribution
+  "source_declaration": "own",         // own | licensed
+  "visibility": "private",             // private | public
+  "moderation": "active",              // active | hidden（举报自动隐藏，待审）| taken_down（运营下架）
+  "status": "draft",                   // draft = 还没有文件；published = 文件就绪（是否公开由 visibility 决定）
+  "size": null, "sha256": null         // 上传文件后才有
+}
+```
+
+- **公开条件**：已有文件、`visibility = public`、`moderation = active`，三者同时满足才出现在目录、facets 与详情里，也才能被收藏。公开形态不含上传者身份和审核字段。id 形如 `ugc-<16 位十六进制>`。
+- **举报与审核**：未处理的举报累计 **3 个不同用户**，条目自动转 `moderation: hidden`（立即不再公开，上传者仍可见并看到状态）。运营在 `GET /v1/admin/reports`（数据服务运营接口）查看，`PUT /v1/admin/catalog/<id>/moderation` 恢复（`active`）或下架（`taken_down`）；处理后该条目的举报标为已处理，恢复后旧举报不再计数。下架的条目：公开详情与下载 `410`，从所有人的收藏 / 最近 / 下载记录里消失，上传者不能再下载、公开或替换文件，只能删除。
+- **缓存**：目录与详情有 60 秒边缘缓存，所以公开 / 取消公开 / 下架在最长 60 秒内生效；`.upkit` 按 `sha256` 缓存，下架后元数据缓存一过期就不再有任何入口取到。
+- **注销**：`DELETE /api/me` 同时删除该账号的全部上传条目、独占文件和它提交过的举报。

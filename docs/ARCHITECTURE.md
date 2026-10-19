@@ -178,7 +178,7 @@ App ──HTTPS──► ultrapads.plutokeating.beer（Cloudflare Worker：验�
                   │  Authorization: Bearer <ULTRAPADS_DATA_KEY>（Worker Secret）
                   ▼
                ultrapads-data（data/，Docker，127.0.0.1:8791，经 Cloudflare Tunnel 只对 Worker 开放）
-                  SQLite（条目、收藏、最近使用、下载记录）+ files/<hh>/<sha256>（.upkit）
+                  SQLite（条目、收藏、最近使用、下载记录、举报）+ files/<hh>/<sha256>（.upkit）
 tools/catalog ──管理接口（X-Up-Admin）──► ultrapads-data     素材入库管线（本机运行）
 ```
 
@@ -186,4 +186,5 @@ tools/catalog ──管理接口（X-Up-Admin）──► ultrapads-data     素
 - **目录与下载匿名可用**，登录后才有云端收藏、最近使用、下载记录。Worker 对目录响应做 60 秒边缘缓存；下载纯透传（每请求 CPU 仅 10 ms，不碰字节），完整响应按 `sha256` 缓存。完整性由客户端用目录里的 `sha256` 核对。
 - **素材**：`.upkit`（内含 FLAC，导入时引擎按内容解码），Kit 元数据里写入作者、许可证、来源和署名。许可证白名单：CC0、CC BY、CC BY-SA、CC BY-NC（3.0 / 4.0）、PD；其他一律拒绝入库。NC / SA 条目在 UI 里有徽标，保存与分享录音时带署名。
 - **入库管线** `tools/catalog`：synth（原创 MIDI + MuseScore_General 渲染，CC0）、album（AlbumDB，HTTP Range 只取需要的分轨）、online（ccMixter，逐条核对许可证）→ 分析 BPM → 按小节切片 → 打包 `.upkit` → 质检 → 预览 → 发布（默认 draft）。
+- **用户上传（UGC）**：登录用户把本地打好的 `.upkit` 经 Worker 纯透传（流式，≤ 128 MB，Worker 不读字节）存到数据服务，条目与官方条目共用 `catalog_items` 表（`origin = ugc`，另有 `owner_sub`、`visibility`、`moderation`、`source_declaration` 四列，旧库打开时自动补列）。**默认私有**，公开条件 = 有文件 + `visibility = public` + `moderation = active`，目录、facets、详情、收藏都按这个条件过滤。公开条目可被举报（`reports` 表，同一用户一次，未处理举报累计 3 人自动 `hidden`），运营在数据服务的管理接口恢复或下架（下架后 `410`）；注销账号级联删除上传。本人下载走 `/api/me/uploads/<id>/download`（`private, no-store`，不进共享缓存）。契约见 `docs/API.md` §7.5。
 - 数据服务与运维细节（服务器、隧道、密钥）记在私有运维仓库，不进本仓库。
