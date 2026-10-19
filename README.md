@@ -2,12 +2,14 @@
   <img src="design/brand/ultrapads.svg" width="128" height="128" alt="UltraPads">
 </p>
 
-# UltraPads
+<h1 align="center">UltraPads</h1>
 
-[![License](https://img.shields.io/github/license/PlutoKeating/Project.UltraPads)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/PlutoKeating/Project.UltraPads?include_prereleases)](https://github.com/PlutoKeating/Project.UltraPads/releases)
-![Platforms](https://img.shields.io/badge/verified-Linux%20x64%20%7C%20Android%208%2B-informational)
-![Stack](https://img.shields.io/badge/stack-Flutter%20%2B%20Rust-blueviolet)
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/PlutoKeating/Project.UltraPads" alt="License"></a>
+  <a href="https://github.com/PlutoKeating/Project.UltraPads/releases"><img src="https://img.shields.io/github/v/release/PlutoKeating/Project.UltraPads?include_prereleases" alt="Release"></a>
+  <img src="https://img.shields.io/badge/verified-Linux%20x64%20%7C%20Android%208%2B-informational" alt="Platforms">
+  <img src="https://img.shields.io/badge/stack-Flutter%20%2B%20Rust-blueviolet" alt="Stack">
+</p>
 
 UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter 写界面、Rust 写实时音频引擎，一份代码打包到多个平台。
 
@@ -22,9 +24,6 @@ UltraPads 是一款打击垫（launchpad）与音乐创作软件，用 Flutter �
   &nbsp;
   <img src="app/ultrapads/test/goldens/gallery_neon.png" width="240" alt="应用内设计画廊">
 </p>
-
-> [!NOTE]
-> 仓库只包含代码和 CC0 示例 Kit。可选的私有素材包（图标、Kit 音频、封面）**不随仓库分发**，没有这些素材时，应用使用开源占位资源。上图截自仓库内的 golden 测试，用的就是占位资源。
 
 ## 功能
 
@@ -79,10 +78,6 @@ curl -fsSL https://ultrapads.plutokeating.beer/install | bash
 | Android | `ultrapads-<版本>-android-<abi>.apk` |
 | 校验 | `SHA256SUMS.txt` |
 | 无头 CLI | `ghcr.io/plutokeating/ultrapads-cli`（容器镜像，见下文） |
-
-> [!IMPORTANT]
-> 从 **0.0.1 升级 Android 版**：0.1.0 起改用正式签名，需要先卸载旧版再安装（会清空本机曲库，可先用「我的设备」同步到电脑）。
-> 目前只在 **Linux x64** 和 **Android 模拟器（x86_64）** 上做过完整验证；Linux arm64 包由 CI 原生构建。Windows、Web、macOS 和 iOS 的代码可以编译开发，但还没有验证。
 
 ## 从源码构建
 
@@ -168,14 +163,6 @@ docs/          架构、API、需求、ADR、调研
 | [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) | 功能和非功能需求 |
 | [`docs/adr/`](docs/adr/) | 架构决策记录（含 ADR-0005 官方曲库与账号） |
 | [`docs/research/`](docs/research/) | 格式调研、v0.0.1 验证记录 |
-
-## 当前状态
-
-当前版本 v0.2.1（更新记录见 [`CHANGELOG.md`](CHANGELOG.md)）。v0.0.1 的已知限制见 [`docs/research/v0.0.1-verification.md`](docs/research/v0.0.1-verification.md#6-已知问题)，主要有：
-
-- 只在模拟器上验证过，还没有真机延迟数据。
-- 作品播放没有实时进度条。
-- 进阶创作功能（Step Seq、时间线、效果链、插件宿主）目前只有数据模型，还没有界面。
 
 ## 参与贡献
 
