@@ -10,7 +10,8 @@
 //   GET /dl/latest/<平台>
 //       302 到最新正式版对应平台的 /dl/ 地址（落地页的下载按钮，页面脚本跑不起来时也能用）。
 //   /api/catalog*、/api/me*
-//       官方曲库目录（匿名可读，.upkit 纯透传下载）与账号数据（PlutoKeating 账号令牌）。契约见 docs/API.md §7，
+//       曲库目录（官方 + 用户公开分享的上传，匿名可读，.upkit 纯透传下载；登录用户可举报用户上传）与账号数据、
+//       用户上传（PlutoKeating 账号令牌）。契约见 docs/API.md §7，
 //       实现在 catalog.js / me.js，数据在 data/ 服务里。
 //
 // 版本与镜像接口不含任何账号或令牌；GITHUB_TOKEN 是可选的 Worker Secret（提高 GitHub API 匿名 60 次 / 小时的限额）。
@@ -45,15 +46,14 @@ export default {
       return new Response(null, {
         status: 204,
         headers: cors(new Headers({
-          "Access-Control-Allow-Methods": "GET, HEAD, PUT, POST, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Accept, Authorization, Content-Type, Range",
+          "Access-Control-Allow-Methods": "GET, HEAD, PUT, POST, PATCH, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Accept, Authorization, Content-Type, Range, X-Sha256",
         })),
       });
     }
     if (url.pathname === "/api/me" || url.pathname.startsWith("/api/me/")) return handleMe(request, url, env);
     if (url.pathname === "/api/catalog" || url.pathname.startsWith("/api/catalog/")) {
-      if (request.method !== "GET" && request.method !== "HEAD") return jsonError(405, "method_not_allowed");
-      return handleCatalog(request, url, env, ctx);
+      return handleCatalog(request, url, env, ctx); // 目录只读；唯一的写入口 POST …/report 在里面单独放行
     }
     if (request.method !== "GET" && request.method !== "HEAD") return text(405, "GET only\n");
     if (url.pathname === "/api/version") return version(url, request, env, ctx);

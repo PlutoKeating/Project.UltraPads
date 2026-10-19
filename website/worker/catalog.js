@@ -1,7 +1,7 @@
 // /api/catalog*：官方曲库目录（匿名可读）与 .upkit 下载。契约见 docs/API.md §7.2。
 // 不处理字节：下载是纯透传（Worker 每请求只有 10 ms CPU，不在这里哈希或切分）。
 
-import { optionalUser } from "./auth.js";
+import { AuthError, optionalUser, requireUser } from "./auth.js";
 import { cors, json, jsonError } from "./http.js";
 import { UpstreamError, dataFetch } from "./data.js";
 
@@ -71,7 +71,7 @@ async function cachedGet(origin, cacheKey, env, ctx, path) {
   const hit = await cache.match(key);
   if (hit) return { status: hit.status, body: await hit.text() };
   const res = await dataFetch(env, path);
-  if (res.status === 404) return { status: 404, body: null };
+  if (res.status === 404 || res.status === 410) return { status: res.status, body: null };
   if (!res.ok) throw new UpstreamError(`data service ${res.status}`);
   const body = await res.text();
   ctx.waitUntil(cache.put(key, new Response(body, { headers: { "Content-Type": "application/json", "Cache-Control": `public, max-age=${LIST_TTL}` } })));
@@ -87,6 +87,8 @@ function jsonText(body) {
 
 export async function handleCatalog(request, url, env, ctx) {
   const path = url.pathname;
+  const readOnly = request.method === "GET" || request.method === "HEAD";
+  if (!readOnly && !path.endsWith("/report")) return jsonError(405, "method_not_allowed");
   try {
     if (path === "/api/catalog") {
       const n = normalizeListQuery(url.searchParams);
@@ -98,18 +100,53 @@ export async function handleCatalog(request, url, env, ctx) {
       const r = await cachedGet(url.origin, "facets", env, ctx, "/v1/catalog/facets");
       return jsonText(r.body);
     }
-    const m = /^\/api\/catalog\/([^/]+)(\/download)?$/.exec(path);
+    const m = /^\/api\/catalog\/([^/]+)(\/download|\/report)?$/.exec(path);
     if (!m) return jsonError(404, "not_found");
     const id = m[1];
     if (!ID.test(id)) return jsonError(404, "not_found");
-    if (m[2]) return download(request, url, env, ctx, id);
+    if (m[2] === "/report") return await report(request, env, id);
+    if (!readOnly) return jsonError(405, "method_not_allowed");
+    if (m[2]) return await download(request, url, env, ctx, id);
     const r = await cachedGet(url.origin, `item/${id}`, env, ctx, `/v1/catalog/${id}`);
     if (r.status === 404) return jsonError(404, "not_found");
+    if (r.status === 410) return jsonError(410, "gone", "this upload was taken down");
     return jsonText(r.body);
   } catch (e) {
     if (e instanceof UpstreamError) return jsonError(502, "upstream_unavailable");
     throw e;
   }
+}
+
+// ---------------------------------------------------------------- 举报（需登录）
+
+const REPORT_REASONS = new Set(["copyright", "inappropriate", "other"]);
+
+/** POST /api/catalog/<id>/report { reason, note? }：只对公开的用户上传有效；同一用户只算一次，累计 3 人自动隐藏待审。 */
+async function report(request, env, id) {
+  if (request.method !== "POST") return jsonError(405, "method_not_allowed");
+  let user;
+  try {
+    user = await requireUser(request, env);
+  } catch (e) {
+    if (e instanceof AuthError) return jsonError(e.code === "client_not_allowed" ? 403 : 401, e.code);
+    throw e;
+  }
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonError(400, "invalid_body", "JSON body { reason, note? } required");
+  }
+  if (!body || !REPORT_REASONS.has(body.reason)) return jsonError(400, "invalid_body", "reason must be copyright, inappropriate or other");
+  if (body.note !== undefined && (typeof body.note !== "string" || body.note.length > 500)) return jsonError(400, "invalid_body", "note must be a string of at most 500 characters");
+  const res = await dataFetch(env, `/v1/users/${encodeURIComponent(user.sub)}/reports`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, reason: body.reason, note: body.note ?? "" }),
+  });
+  if (res.status >= 500) throw new UpstreamError(`data service ${res.status}`);
+  if (!res.ok) return jsonError(res.status === 404 ? 404 : res.status, (await res.json().catch(() => ({}))).error ?? "error");
+  return json(202, { ok: true });
 }
 
 // ---------------------------------------------------------------- 下载
@@ -123,6 +160,7 @@ function startsAtZero(range) {
 async function download(request, url, env, ctx, id) {
   const meta = await cachedGet(url.origin, `item/${id}`, env, ctx, `/v1/catalog/${id}`);
   if (meta.status === 404) return jsonError(404, "not_found");
+  if (meta.status === 410) return jsonError(410, "gone", "this upload was taken down");
   const item = JSON.parse(meta.body);
   const sha = String(item.sha256 ?? "");
   if (!/^[0-9a-f]{64}$/.test(sha)) return jsonError(502, "upstream_unavailable");
@@ -169,6 +207,7 @@ async function download(request, url, env, ctx, id) {
 
   const up = await dataFetch(env, `/v1/catalog/${id}/file`, range ? { headers: { Range: range } } : {});
   if (up.status === 404) return jsonError(404, "not_found");
+  if (up.status === 410) return jsonError(410, "gone", "this upload was taken down");
   if (up.status === 416) return jsonError(416, "range_not_satisfiable");
   if (!up.ok || !up.body) throw new UpstreamError(`data service ${up.status}`);
   for (const h of ["Content-Length", "Content-Range"]) {
