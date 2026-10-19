@@ -2,8 +2,10 @@
 //   GET    /health
 //   GET    /v1/catalog · /v1/catalog/facets · /v1/catalog/:id · /v1/catalog/:id/file     已发布的目录与 .upkit 文件
 //   GET    /v1/users/:sub/state                                                          收藏 / 最近使用 / 下载记录
-//   PUT|DELETE /v1/users/:sub/favorites/:id · POST /v1/users/:sub/recent|downloads · DELETE /v1/users/:sub
-//   GET|PUT|DELETE /v1/admin/catalog[/:id[/file]]                                        运营接口（草稿也可见）
+//   PUT|DELETE /v1/users/:sub/favorites/:id · POST /v1/users/:sub/recent|downloads · DELETE /v1/users/:sub（连同上传的条目）
+//   GET|POST /v1/users/:sub/uploads · GET|PATCH|DELETE /v1/users/:sub/uploads/:id · PUT|GET …/uploads/:id/file   用户上传（默认私有）
+//   POST   /v1/users/:sub/reports                                                        举报公开的用户上传
+//   GET|PUT|DELETE /v1/admin/catalog[/:id[/file]] · GET /v1/admin/reports · PUT /v1/admin/catalog/:id/moderation   运营接口（草稿也可见）
 // 所有路径可带 /ultrapads 前缀（共用的 Cloudflare Tunnel 按路径分流，前缀由服务剥掉）。
 // 鉴权：Authorization: Bearer <ULTRAPADS_DATA_KEY>；/v1/admin/* 另需 X-Up-Admin: <ULTRAPADS_ADMIN_KEY>。
 import crypto from "node:crypto";
@@ -11,8 +13,8 @@ import fs from "node:fs";
 import { Readable } from "node:stream";
 import { Hono, type Context } from "hono";
 import {
-  HttpError, ID_RE, LICENSES, ORIGINS, STATUSES, publicItem,
-  type AdminItem, type Db, type MetaInput, type Origin, type Status,
+  DECLARATIONS, HttpError, ID_RE, LICENSES, MAX_UGC_FILE_BYTES, ORIGINS, REPORT_REASONS, STATUSES, VISIBILITIES, isPublic, publicItem,
+  type AdminItem, type Db, type Declaration, type MetaInput, type Origin, type ReportReason, type Status, type UgcInput, type Visibility,
 } from "./db.ts";
 
 export const VERSION = "0.1.0";
@@ -80,6 +82,50 @@ export function parseMeta(b: Record<string, unknown>): MetaInput {
   };
 }
 
+/**
+ * 用户上传的元数据。创建时 title / credit / license / source_declaration 必填；PATCH 时缺省的字段沿用 base。
+ * credit（署名）存入 attribution；artist 缺省 = credit。visibility 创建时恒为 private（由 createUpload 写死），只能事后 PATCH 公开。
+ */
+export function parseUgc(b: Record<string, unknown>, base?: AdminItem): UgcInput {
+  const pick = <T>(key: string, fallback: T | undefined): unknown => (key in b ? b[key] : fallback);
+  const license = str(pick("license", base?.license), "license", 40, true);
+  if (!(license in LICENSES)) throw new HttpError(400, "bad_request", `license 必须是 ${Object.keys(LICENSES).join(" | ")}`);
+  const decl = str(pick("source_declaration", base?.source_declaration ?? undefined), "source_declaration", 20, true);
+  if (!(DECLARATIONS as readonly string[]).includes(decl)) {
+    throw new HttpError(400, "bad_request", `source_declaration 必须是 ${DECLARATIONS.join(" | ")}（own = 自己的作品，licensed = 按所列许可证获得授权）`);
+  }
+  const credit = str(pick("credit", base?.attribution), "credit", 500, true);
+  const vis = str(pick("visibility", base?.visibility ?? "private"), "visibility", 20, true);
+  if (!(VISIBILITIES as readonly string[]).includes(vis)) throw new HttpError(400, "bad_request", `visibility 必须是 ${VISIBILITIES.join(" | ")}`);
+  const theme = str(pick("theme_color", base?.theme_color ?? "#f0a35e"), "theme_color", 9, true);
+  if (!/^#[0-9a-fA-F]{6}$/.test(theme)) throw new HttpError(400, "bad_request", "theme_color 必须是 #rrggbb");
+  const licenseUrl = "license" in b || !base ? "" : base.license_url;
+  return {
+    title: str(pick("title", base?.title), "title", 120, true),
+    artist: str(pick("artist", base?.artist), "artist", 120) || credit.slice(0, 120),
+    description: str(pick("description", base?.description), "description", 2000),
+    license,
+    license_url: httpUrl(licenseUrl, "license_url") || LICENSES[license]!,
+    attribution: credit,
+    source_url: httpUrl(str(pick("source_url", base?.source_url), "source_url", 500), "source_url"),
+    source_declaration: decl as Declaration,
+    bpm: num(pick("bpm", base?.bpm ?? undefined), "bpm", 20, 400, null),
+    genres: strList(pick("genres", base?.genres), "genres"),
+    tags: strList(pick("tags", base?.tags), "tags"),
+    group_count: num(pick("group_count", base?.group_count), "group_count", 1, 7, 1, true)!,
+    pad_count: num(pick("pad_count", base?.pad_count), "pad_count", 0, 84, 0, true)!,
+    duration_secs: num(pick("duration_secs", base?.duration_secs), "duration_secs", 0, 3600, 0)!,
+    theme_color: theme.toLowerCase(),
+    visibility: vis as Visibility,
+  };
+}
+
+/** 上传者看到的自己的条目：去掉上传者 sub，署名同时以 credit 给出。 */
+const ownerItem = (it: AdminItem) => {
+  const { owner_sub: _o, ...rest } = it;
+  return { ...rest, credit: it.attribution };
+};
+
 const enc = (o: unknown) => Buffer.from(JSON.stringify(o)).toString("base64url");
 function dec(cursor: string | undefined): number {
   if (!cursor) return 0;
@@ -122,7 +168,7 @@ function parseQuery(c: Context, includeDrafts: boolean) {
   };
 }
 
-function serveFile(c: Context, f: { path: string; size: number; sha256: string }, id: string): Response {
+function serveFile(c: Context, f: { path: string; size: number; sha256: string }, id: string, cacheControl = "public, max-age=31536000, immutable"): Response {
   const etag = `"${f.sha256}"`;
   const headers: Record<string, string> = {
     "Content-Type": "application/zip",
@@ -130,7 +176,7 @@ function serveFile(c: Context, f: { path: string; size: number; sha256: string }
     ETag: etag,
     "X-Digest": `sha256:${f.sha256}`,
     "Content-Disposition": `attachment; filename="${id}.upkit"`,
-    "Cache-Control": "public, max-age=31536000, immutable",
+    "Cache-Control": cacheControl,
   };
   if (c.req.header("if-none-match") === etag) return new Response(null, { status: 304, headers: { ETag: etag } });
   let start = 0;
@@ -184,13 +230,17 @@ export function createApp(db: Db, key: string, adminKey: string) {
     return c.json({ items: r.items.map(publicItem), next_cursor: r.nextOffset === null ? null : enc({ o: r.nextOffset }), total: r.total });
   });
   core.get("/v1/catalog/facets", (c) => c.json(db.facets()));
+  /** 曾经公开、现被运营下架的条目：详情与下载都返回 410（私有或从未公开的仍是 404，不暴露存在）。 */
+  const takenDown = (it: AdminItem | null) => !!it && it.moderation === "taken_down" && it.visibility === "public" && it.status === "published";
   core.get("/v1/catalog/:id", (c) => {
     const it = db.getItem(c.req.param("id"));
-    if (!it || it.status !== "published") return c.json({ error: "not_found" }, 404);
+    if (takenDown(it)) return c.json({ error: "gone" }, 410);
+    if (!it || !isPublic(it)) return c.json({ error: "not_found" }, 404);
     return c.json(publicItem(it));
   });
   core.get("/v1/catalog/:id/file", (c) => {
     const id = c.req.param("id");
+    if (takenDown(db.getItem(id))) return c.json({ error: "gone" }, 410);
     const f = db.openFile(id, false);
     if (!f) return c.json({ error: "not_found" }, 404);
     return serveFile(c, f, id);
@@ -242,6 +292,57 @@ export function createApp(db: Db, key: string, adminKey: string) {
     return c.body(null, 204);
   });
 
+  // ------------------------------------------------------------ 用户上传（按 sub 隔离；他人的条目一律 404）
+  const uploadId = (c: Context) => {
+    const id = c.req.param("id") ?? "";
+    if (!ID_RE.test(id)) throw new HttpError(404, "not_found");
+    return id;
+  };
+  core.post("/v1/users/:sub/uploads", async (c) => {
+    const sub = subOf(c);
+    const input = parseUgc(await jsonBody(c));
+    return c.json(ownerItem(db.createUpload(sub, { ...input, visibility: "private" })), 201);
+  });
+  core.get("/v1/users/:sub/uploads", (c) => c.json({ items: db.listUploads(subOf(c)).map(ownerItem) }));
+  core.get("/v1/users/:sub/uploads/:id", (c) => c.json(ownerItem(db.getUpload(subOf(c), uploadId(c)))));
+  core.patch("/v1/users/:sub/uploads/:id", async (c) => {
+    const sub = subOf(c);
+    const id = uploadId(c);
+    const body = await jsonBody(c);
+    return c.json(ownerItem(db.updateUpload(sub, id, parseUgc(body, db.getUpload(sub, id)))));
+  });
+  core.delete("/v1/users/:sub/uploads/:id", (c) => {
+    db.deleteUpload(subOf(c), uploadId(c));
+    return c.body(null, 204);
+  });
+  core.put("/v1/users/:sub/uploads/:id/file", async (c) => {
+    const sub = subOf(c);
+    const id = uploadId(c);
+    db.getUpload(sub, id); // 先确认归属，再接收字节
+    const len = Number(c.req.header("content-length") ?? 0);
+    if (len > MAX_UGC_FILE_BYTES) throw new HttpError(413, "too_large");
+    const sha = c.req.header("x-sha256")?.toLowerCase() ?? null;
+    if (sha !== null && !/^[0-9a-f]{64}$/.test(sha)) throw new HttpError(400, "bad_request", "x-sha256 必须是 64 位十六进制");
+    const body = c.req.raw.body;
+    if (!body) throw new HttpError(400, "bad_request", "缺少请求体");
+    return c.json(ownerItem(await db.putUploadFile(sub, id, Readable.fromWeb(body as never), sha)));
+  });
+  core.get("/v1/users/:sub/uploads/:id/file", (c) => {
+    const id = uploadId(c);
+    const f = db.openOwnedFile(subOf(c), id);
+    return f ? serveFile(c, f, id, "private, no-store") : c.json({ error: "not_found" }, 404);
+  });
+
+  // ------------------------------------------------------------ 举报
+  core.post("/v1/users/:sub/reports", async (c) => {
+    const sub = subOf(c);
+    const b = await jsonBody(c);
+    const reason = str(b.reason, "reason", 20, true);
+    if (!(REPORT_REASONS as readonly string[]).includes(reason)) throw new HttpError(400, "bad_request", `reason 必须是 ${REPORT_REASONS.join(" | ")}`);
+    const r = db.report(sub, idOf(b.id), reason as ReportReason, str(b.note, "note", 500));
+    return c.json({ ok: true, hidden: r.hidden }, 202);
+  });
+
   // ------------------------------------------------------------ 运营
   core.get("/v1/admin/catalog", (c) => {
     const r = db.listCatalog(parseQuery(c, true));
@@ -261,6 +362,12 @@ export function createApp(db: Db, key: string, adminKey: string) {
     if (!ID_RE.test(id)) throw new HttpError(400, "bad_request", "id 必须匹配 [a-z0-9][a-z0-9-]{2,63}");
     const item: AdminItem = db.putMeta(id, parseMeta(await jsonBody(c)));
     return c.json(item);
+  });
+  core.get("/v1/admin/reports", (c) => c.json({ items: db.listReports() }));
+  core.put("/v1/admin/catalog/:id/moderation", async (c) => {
+    const state = str((await jsonBody(c)).state, "state", 20, true);
+    if (state !== "active" && state !== "taken_down") throw new HttpError(400, "bad_request", "state 必须是 active | taken_down");
+    return c.json(db.setModeration(c.req.param("id"), state));
   });
   core.put("/v1/admin/catalog/:id/file", async (c) => {
     const id = c.req.param("id");

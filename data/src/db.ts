@@ -25,12 +25,25 @@ export const LICENSES: Record<string, string> = {
   "CC-BY-NC-SA-3.0": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
   PD: "https://creativecommons.org/publicdomain/mark/1.0/",
 };
+export const VISIBILITIES = ["private", "public"] as const;
+/** active 正常；hidden 被举报累计到阈值后自动隐藏、待运营审核；taken_down 运营下架（下载返回 410）。 */
+export const MODERATIONS = ["active", "hidden", "taken_down"] as const;
+/** own = 自己的作品 / 录音；licensed = 按所列许可证获得授权的第三方素材。 */
+export const DECLARATIONS = ["own", "licensed"] as const;
+export const REPORT_REASONS = ["copyright", "inappropriate", "other"] as const;
+export const MAX_UGC_FILE_BYTES = 128 * 1024 * 1024;
+export const MAX_UGC_PER_USER = 50;
+export const HIDE_THRESHOLD = 3;
 export const KEEP_RECENT = 100;
 export const KEEP_DOWNLOADS = 100;
 export const MAX_FILE_BYTES = 256 * 1024 * 1024;
 
 export type Origin = (typeof ORIGINS)[number];
 export type Status = (typeof STATUSES)[number];
+export type Visibility = (typeof VISIBILITIES)[number];
+export type Moderation = (typeof MODERATIONS)[number];
+export type Declaration = (typeof DECLARATIONS)[number];
+export type ReportReason = (typeof REPORT_REASONS)[number];
 
 export interface CatalogItem {
   id: string;
@@ -60,6 +73,10 @@ export type AdminItem = Omit<CatalogItem, "size" | "sha256"> & {
   sha256: string | null;
   status: Status;
   created_at_ms: number;
+  owner_sub: string | null;
+  visibility: Visibility;
+  moderation: Moderation;
+  source_declaration: Declaration | null;
 };
 
 export interface MetaInput {
@@ -79,6 +96,26 @@ export interface MetaInput {
   duration_secs: number;
   theme_color: string;
   status: Status;
+}
+
+/** 用户上传条目的元数据（credit 存入 attribution；artist 缺省 = credit）。 */
+export interface UgcInput {
+  title: string;
+  artist: string;
+  description: string;
+  license: string;
+  license_url: string;
+  attribution: string;
+  source_url: string;
+  source_declaration: Declaration;
+  bpm: number | null;
+  genres: string[];
+  tags: string[];
+  group_count: number;
+  pad_count: number;
+  duration_secs: number;
+  theme_color: string;
+  visibility: Visibility;
 }
 
 export interface CatalogQuery {
@@ -129,20 +166,28 @@ function toItem(r: Row): AdminItem {
     sha256: (r.sha256 as string | null) ?? null,
     theme_color: r.theme_color as string,
     status: r.status as Status,
+    owner_sub: (r.owner_sub as string | null) ?? null,
+    visibility: r.visibility as Visibility,
+    moderation: r.moderation as Moderation,
+    source_declaration: (r.source_declaration as Declaration | null) ?? null,
     created_at_ms: r.created_at_ms as number,
     updated_at_ms: r.updated_at_ms as number,
   };
 }
 
-/** 对外（公开）形态：去掉 status / created_at_ms；只发布的条目一定有 size 与 sha256。 */
+/** 对外（公开）形态：去掉 status / created_at_ms 与上传者、可见性、审核字段；公开条目一定有 size 与 sha256。 */
 export function publicItem(a: AdminItem): CatalogItem {
-  const { status: _s, created_at_ms: _c, ...rest } = a;
+  const { status: _s, created_at_ms: _c, owner_sub: _o, visibility: _v, moderation: _m, source_declaration: _d, ...rest } = a;
   return { ...rest, size: a.size ?? 0, sha256: a.sha256 ?? "" };
 }
 
 export function deriveFlags(license: string) {
   return { commercial_ok: !license.includes("NC"), share_alike: license.includes("SA") };
 }
+
+/** 公开可见：已有文件（published）、可见性公开、审核正常。官方条目的 visibility / moderation 恒为默认值。 */
+const pubSql = (t = "") => `${t}status = 'published' AND ${t}visibility = 'public' AND ${t}moderation = 'active'`;
+export const isPublic = (it: AdminItem) => it.status === "published" && it.visibility === "public" && it.moderation === "active";
 
 /** 单调递增的毫秒时间戳：同一毫秒内的多次写入也有稳定的先后顺序（最近使用 / 下载记录按它排序）。 */
 let lastMs = 0;
@@ -160,6 +205,17 @@ export function openDb(rootDir: string) {
   if (!isMem) db.exec("PRAGMA journal_mode = WAL");
   db.exec("PRAGMA synchronous = NORMAL; PRAGMA busy_timeout = 5000;");
   db.exec(SCHEMA);
+  // 旧库补列（CREATE TABLE IF NOT EXISTS 不会改已有的表）；新索引必须在补列之后建
+  const cols = new Set((db.prepare(`PRAGMA table_info(catalog_items)`).all() as { name: string }[]).map((c) => c.name));
+  for (const [name, ddl] of [
+    ["owner_sub", "TEXT"],
+    ["visibility", "TEXT NOT NULL DEFAULT 'public'"],
+    ["moderation", "TEXT NOT NULL DEFAULT 'active'"],
+    ["source_declaration", "TEXT"],
+  ] as const) {
+    if (!cols.has(name)) db.exec(`ALTER TABLE catalog_items ADD COLUMN ${name} ${ddl}`);
+  }
+  db.exec(`CREATE INDEX IF NOT EXISTS catalog_owner ON catalog_items(owner_sub) WHERE owner_sub IS NOT NULL`);
 
   const tx = <T>(fn: () => T): T => {
     db.exec("BEGIN IMMEDIATE");
@@ -179,7 +235,7 @@ export function openDb(rootDir: string) {
 
   function whereOf(q: CatalogQuery, params: (string | number)[]) {
     const w: string[] = [];
-    if (!q.includeDrafts) w.push("status = 'published'");
+    if (!q.includeDrafts) w.push(pubSql());
     if (q.q) {
       const like = `%${escapeLike(q.q.toLowerCase())}%`;
       w.push(
@@ -234,7 +290,7 @@ export function openDb(rootDir: string) {
       (
         db
           .prepare(
-            `SELECT ${col} AS id, COUNT(*) AS count FROM catalog_items WHERE status='published' GROUP BY ${col} ORDER BY count DESC, id ASC`,
+            `SELECT ${col} AS id, COUNT(*) AS count FROM catalog_items WHERE ${pubSql()} GROUP BY ${col} ORDER BY count DESC, id ASC`,
           )
           .all() as { id: string; count: number }[]
       ).map((r) => ({ id: r.id, count: r.count }));
@@ -242,7 +298,7 @@ export function openDb(rootDir: string) {
       db
         .prepare(
           `SELECT j.value AS id, COUNT(*) AS count FROM catalog_items c, json_each(c.genres) j
-           WHERE c.status='published' GROUP BY j.value ORDER BY count DESC, id ASC`,
+           WHERE ${pubSql("c.")} GROUP BY j.value ORDER BY count DESC, id ASC`,
         )
         .all() as { id: string; count: number }[]
     ).map((r) => ({ id: r.id, count: r.count }));
@@ -337,7 +393,7 @@ export function openDb(rootDir: string) {
 
   function openFile(id: string, allowDraft: boolean) {
     const it = getItem(id);
-    if (!it || !it.sha256 || (!allowDraft && it.status !== "published")) return null;
+    if (!it || !it.sha256 || (!allowDraft && !isPublic(it))) return null;
     const p = filePath(it.sha256);
     if (!fs.existsSync(p)) return null;
     return { path: p, size: it.size!, sha256: it.sha256 };
@@ -348,7 +404,7 @@ export function openDb(rootDir: string) {
     if (!it) return false;
     tx(() => {
       db.prepare(`DELETE FROM catalog_items WHERE id = ?`).run(id);
-      for (const t of ["favorites", "recent", "downloads"]) db.prepare(`DELETE FROM ${t} WHERE item_id = ?`).run(id);
+      for (const t of ["favorites", "recent", "downloads", "reports"]) db.prepare(`DELETE FROM ${t} WHERE item_id = ?`).run(id);
     });
     if (it.sha256 && sharedBlobCount(it.sha256, id) === 0) fs.rmSync(filePath(it.sha256), { force: true });
     return true;
@@ -357,7 +413,7 @@ export function openDb(rootDir: string) {
   // ------------------------------------------------------------ 账号数据
 
   const published = (id: string) =>
-    !!db.prepare(`SELECT 1 FROM catalog_items WHERE id = ? AND status='published'`).get(id);
+    !!db.prepare(`SELECT 1 FROM catalog_items WHERE id = ? AND ${pubSql()}`).get(id);
 
   function prune(table: "recent" | "downloads", sub: string, keep: number) {
     db.prepare(
@@ -371,7 +427,7 @@ export function openDb(rootDir: string) {
       db
         .prepare(
           `SELECT t.item_id AS id, t.at_ms AS at_ms FROM ${table} t JOIN catalog_items c ON c.id = t.item_id
-           WHERE t.user_sub = ? AND c.status='published' ORDER BY t.at_ms DESC, t.item_id ASC`,
+           WHERE t.user_sub = ? AND ${pubSql("c.")} ORDER BY t.at_ms DESC, t.item_id ASC`,
         )
         .all(sub) as { id: string; at_ms: number }[];
     return {
@@ -402,9 +458,131 @@ export function openDb(rootDir: string) {
   const addDownload = (sub: string, id: string) => touch("downloads", sub, id, KEEP_DOWNLOADS);
 
   function deleteUser(sub: string) {
+    const mine = (db.prepare(`SELECT id FROM catalog_items WHERE owner_sub = ?`).all(sub) as { id: string }[]).map((r) => r.id);
     tx(() => {
       for (const t of ["favorites", "recent", "downloads"]) db.prepare(`DELETE FROM ${t} WHERE user_sub = ?`).run(sub);
+      db.prepare(`DELETE FROM reports WHERE reporter_sub = ?`).run(sub);
     });
+    for (const id of mine) deleteItem(id); // 注销账号 = 连同用户上传的条目与文件一并删除
+  }
+
+  // ------------------------------------------------------------ 用户上传（UGC）
+
+  const owned = (sub: string, id: string): AdminItem => {
+    const it = getItem(id);
+    if (!it || it.owner_sub !== sub) throw new HttpError(404, "not_found");
+    return it;
+  };
+
+  function createUpload(sub: string, m: UgcInput): AdminItem {
+    return tx(() => {
+      const n = (db.prepare(`SELECT COUNT(*) AS n FROM catalog_items WHERE owner_sub = ?`).get(sub) as { n: number }).n;
+      if (n >= MAX_UGC_PER_USER) throw new HttpError(429, "quota_exceeded", `每个账号最多 ${MAX_UGC_PER_USER} 个上传条目`);
+      const id = `ugc-${crypto.randomBytes(8).toString("hex")}`;
+      const now = Date.now();
+      const f = deriveFlags(m.license);
+      db.prepare(
+        `INSERT INTO catalog_items (id, title, artist, description, origin, license, license_url, attribution, source_url,
+           commercial_ok, share_alike, bpm, genres, tags, group_count, pad_count, duration_secs, theme_color, status,
+           owner_sub, visibility, moderation, source_declaration, created_at_ms, updated_at_ms)
+         VALUES (?,?,?,?,'ugc',?,?,?,?,?,?,?,?,?,?,?,?,?,'draft',?,'private','active',?,?,?)`,
+      ).run(
+        id, m.title, m.artist, m.description, m.license, m.license_url, m.attribution, m.source_url, f.commercial_ok ? 1 : 0,
+        f.share_alike ? 1 : 0, m.bpm, JSON.stringify(m.genres), JSON.stringify(m.tags), m.group_count, m.pad_count,
+        m.duration_secs, m.theme_color, sub, m.source_declaration, now, now,
+      );
+      return getItem(id)!;
+    });
+  }
+
+  const listUploads = (sub: string): AdminItem[] =>
+    (db.prepare(`SELECT * FROM catalog_items WHERE owner_sub = ? ORDER BY updated_at_ms DESC, id ASC`).all(sub) as Row[]).map(toItem);
+
+  const getUpload = (sub: string, id: string) => owned(sub, id);
+
+  /** 改元数据 / 可见性。设为 public 前必须已有文件；被运营下架的条目不能再公开。 */
+  function updateUpload(sub: string, id: string, m: UgcInput): AdminItem {
+    return tx(() => {
+      const cur = owned(sub, id);
+      if (m.visibility === "public" && cur.visibility !== "public") {
+        if (!cur.sha256) throw new HttpError(409, "no_file", "上传文件之后才能公开");
+        if (cur.moderation === "taken_down") throw new HttpError(403, "taken_down", "该条目已被下架");
+      }
+      const f = deriveFlags(m.license);
+      db.prepare(
+        `UPDATE catalog_items SET title=?, artist=?, description=?, license=?, license_url=?, attribution=?, source_url=?,
+           commercial_ok=?, share_alike=?, bpm=?, genres=?, tags=?, group_count=?, pad_count=?, duration_secs=?, theme_color=?,
+           visibility=?, source_declaration=?, updated_at_ms=? WHERE id=?`,
+      ).run(
+        m.title, m.artist, m.description, m.license, m.license_url, m.attribution, m.source_url, f.commercial_ok ? 1 : 0,
+        f.share_alike ? 1 : 0, m.bpm, JSON.stringify(m.genres), JSON.stringify(m.tags), m.group_count, m.pad_count,
+        m.duration_secs, m.theme_color, m.visibility, m.source_declaration, Date.now(), id,
+      );
+      return getItem(id)!;
+    });
+  }
+
+  async function putUploadFile(sub: string, id: string, body: Readable, expectSha: string | null) {
+    const cur = owned(sub, id);
+    if (cur.moderation === "taken_down") throw new HttpError(403, "taken_down", "该条目已被下架");
+    await putFile(id, body, expectSha, MAX_UGC_FILE_BYTES);
+    db.prepare(`UPDATE catalog_items SET status='published' WHERE id=?`).run(id); // 有文件 = 就绪；是否公开由 visibility 决定
+    return getItem(id)!;
+  }
+
+  function openOwnedFile(sub: string, id: string) {
+    const it = owned(sub, id);
+    if (it.moderation === "taken_down") throw new HttpError(410, "gone", "该条目已被下架");
+    return openFile(id, true);
+  }
+
+  function deleteUpload(sub: string, id: string) {
+    owned(sub, id);
+    deleteItem(id);
+  }
+
+  // ------------------------------------------------------------ 举报与审核
+
+  /** 公开的用户上传条目才能被举报；同一用户只记一次；未处理的举报累计到阈值自动转 hidden。 */
+  function report(sub: string, id: string, reason: ReportReason, note: string) {
+    return tx(() => {
+      const it = getItem(id);
+      if (!it || it.origin !== "ugc" || !isPublic(it)) throw new HttpError(404, "not_found");
+      if (it.owner_sub === sub) throw new HttpError(400, "bad_request", "不能举报自己的条目");
+      db.prepare(`INSERT INTO reports (item_id, reporter_sub, reason, note, at_ms) VALUES (?,?,?,?,?) ON CONFLICT DO NOTHING`).run(
+        id, sub, reason, note, nowMs(),
+      );
+      const n = (db.prepare(`SELECT COUNT(*) AS n FROM reports WHERE item_id = ? AND resolved = 0`).get(id) as { n: number }).n;
+      let hidden = false;
+      if (n >= HIDE_THRESHOLD) {
+        db.prepare(`UPDATE catalog_items SET moderation='hidden', updated_at_ms=? WHERE id=? AND moderation='active'`).run(Date.now(), id);
+        hidden = true;
+      }
+      return { reports: n, hidden };
+    });
+  }
+
+  function setModeration(id: string, state: "active" | "taken_down"): AdminItem {
+    return tx(() => {
+      if (!getItem(id)) throw new HttpError(404, "not_found");
+      db.prepare(`UPDATE catalog_items SET moderation=?, updated_at_ms=? WHERE id=?`).run(state, Date.now(), id);
+      db.prepare(`UPDATE reports SET resolved = 1 WHERE item_id = ?`).run(id);
+      return getItem(id)!;
+    });
+  }
+
+  /** 未处理的举报，按条目汇总（运营接口）。 */
+  function listReports() {
+    const rows = db
+      .prepare(
+        `SELECT r.item_id AS id, c.title AS title, c.owner_sub AS owner_sub, c.moderation AS moderation, COUNT(*) AS count,
+                MAX(r.at_ms) AS last_at_ms
+         FROM reports r JOIN catalog_items c ON c.id = r.item_id WHERE r.resolved = 0
+         GROUP BY r.item_id ORDER BY count DESC, last_at_ms DESC`,
+      )
+      .all() as { id: string; title: string; owner_sub: string; moderation: Moderation; count: number; last_at_ms: number }[];
+    const detail = db.prepare(`SELECT reason, note, at_ms FROM reports WHERE item_id = ? AND resolved = 0 ORDER BY at_ms ASC`);
+    return rows.map((r) => ({ ...r, reports: detail.all(r.id) as { reason: ReportReason; note: string; at_ms: number }[] }));
   }
 
   function backup(dir: string, keep = 7) {
@@ -437,6 +615,16 @@ export function openDb(rootDir: string) {
     addRecent,
     addDownload,
     deleteUser,
+    createUpload,
+    listUploads,
+    getUpload,
+    updateUpload,
+    putUploadFile,
+    openOwnedFile,
+    deleteUpload,
+    report,
+    setModeration,
+    listReports,
     backup,
     close: () => db.close(),
   };
