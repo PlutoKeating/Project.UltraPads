@@ -6,6 +6,7 @@ members = [
   "engine/*",
   "runtime/up-host",
   "runtime/up-library",
+  "runtime/up-split",
   "runtime/up-hub",
   "runtime/up-cli",
   "runtime/up-update",

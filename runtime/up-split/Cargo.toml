@@ -1,0 +1,23 @@
+[package]
+name = "up-split"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "UltraPads song splitter: tempo/bar analysis, stem separation (pluggable Separator, Demucs via tract) and section-per-group kit building"
+
+[features]
+default = ["demucs"]
+## Demucs（htdemucs ONNX）分轨后端，纯 Rust 推理（tract），不需要任何原生运行时库。
+demucs = ["dep:tract-onnx"]
+
+[dependencies]
+up-codec = { workspace = true }
+up-format = { path = "../../engine/up-format" }
+realfft = "3"
+serde_json = "1"
+thiserror = "2"
+tract-onnx = { version = "0.23", optional = true }
+
+[dev-dependencies]
+tempfile = "3"
