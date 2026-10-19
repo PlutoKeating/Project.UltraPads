@@ -86,3 +86,6 @@ GoogleService-Info.plist
 
 # golden 测试失败时生成的对比图
 **/test/failures/
+
+# --- 本地 Agent 工具目录（含临时 worktree）---
+/.claude/
