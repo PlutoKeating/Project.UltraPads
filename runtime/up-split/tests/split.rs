@@ -126,3 +126,23 @@ fn too_short_is_reported() {
     let buf = AudioBuffer::new(SR, 2, song(100.0, 2, 0.0));
     assert!(split_song(&buf, &SplitOptions::default(), &mut |_, _| true).is_err());
 }
+
+/// 生成的 Kit 能被曲库真正导入：组数 = 段落数，每组 pad 数 = 乐器数，样本全部可解码。
+#[test]
+fn generated_kit_imports_into_the_library() {
+    let buf = AudioBuffer::new(SR, 2, song(100.0, 24, 0.4));
+    let opts = SplitOptions { title: "Imported", separator: Some(&Fake), ..Default::default() };
+    let out = split_song(&buf, &opts, &mut |_, _| true).expect("拆分");
+    let pkg = UpkitPackage::build(&out.kit.doc, out.kit.assets.clone(), &BuildOptions::default()).expect("打包");
+    let zip = up_library::archive::zip_to_vec(&pkg.zip_entries()).expect("zip");
+    let dir = tempfile::tempdir().unwrap();
+    let lib = up_library::Library::open(dir.path()).unwrap();
+    let rep = lib.import_zip_bytes("Imported.upkit", &zip).expect("导入");
+    assert_eq!(rep.kits.len(), 1);
+    let s = lib.kit_summary(&rep.kits[0].kit_id).unwrap();
+    assert_eq!(s.group_count() as usize, out.sections.len());
+    assert_eq!(s.pads_used as usize, out.sections.len() * 2);
+    let loaded = lib.load_kit_assets(&rep.kits[0].kit_id).unwrap();
+    assert!(loaded.warnings.is_empty(), "{:?}", loaded.warnings);
+    assert!(loaded.samples.values().all(|x| x.frames > 0));
+}

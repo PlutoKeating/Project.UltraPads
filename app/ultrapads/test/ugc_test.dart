@@ -402,7 +402,7 @@ void main() {
         expect(ftc('Taken down'), findsWidgets);
         expect(ftc('You can only delete it'), findsOneWidget);
         expect(ftc('Hidden (under review)'), findsOneWidget);
-      await shot(t, 'ugc_my_uploads');
+        await shot(t, 'ugc_my_uploads');
 
         await t.tap(ft('Private Kit'));
         await settle(t);

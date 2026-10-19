@@ -4973,6 +4973,7 @@ dependencies = [
  "tract-onnx",
  "up-codec",
  "up-format",
+ "up-library",
 ]
 
 [[package]]

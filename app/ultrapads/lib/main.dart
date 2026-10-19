@@ -14,12 +14,14 @@ import 'src/app/app.dart';
 import 'src/assets/private_assets.dart';
 import 'src/dev/dev_hooks.dart';
 import 'src/engine/engine_bootstrap.dart';
+import 'src/legal/third_party_licenses.dart';
 import 'src/library/first_run.dart';
 import 'src/state/engine_state.dart';
 import 'src/state/settings_state.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  registerThirdPartyLicenses();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   final prefs = await SharedPreferences.getInstance();
