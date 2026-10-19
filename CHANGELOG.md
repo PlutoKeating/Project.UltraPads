@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-10-19
+
+修复 Android 真机登录后仍显示未登录的问题。
+
 ### 修复
 
 - Android 真机登录后应用仍显示未登录：`MainActivity` 的 `android:taskAffinity=""` 让 AppAuth 回调 Activity 落在另一个任务栈，授权状态丢失（日志 `AppAuth: No stored state`）。已移除该属性。
